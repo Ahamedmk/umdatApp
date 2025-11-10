@@ -3,14 +3,17 @@ import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { Navbar } from './components/Navbar'
 
-// pages
-import  Home  from './pages/Home'
+import { Home } from './pages/Home'
 import { Learn } from './pages/Learn'
 import { Review } from './pages/Review'
 import { Quiz } from './pages/Quiz'
 import { Compare } from './pages/Compare'
-import  Profile  from './pages/Profile'
+import { Profile } from './pages/Profile'
 import HadithDetail from './pages/HadithDetail'
+
+// ⬇️ nouvelles pages
+import ExamQuiz from './pages/ExamQuiz'
+import ExamQuizTargeted from './pages/ExamQuizTargeted'
 
 export default function App() {
   return (
@@ -26,6 +29,9 @@ export default function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/hadith" element={<HadithDetail />} />
           <Route path="/hadith/:n" element={<HadithDetail />} />
+          {/* ⬇️ examens */}
+          <Route path="/exam" element={<ExamQuiz />} />
+          <Route path="/exam/targeted" element={<ExamQuizTargeted />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>

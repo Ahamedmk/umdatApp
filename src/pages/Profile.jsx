@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 
-export default function Profile() {
+export function Profile() {
   const { user, signIn, signOut } = useAuth();
   const [email, setEmail] = useState('');
 
@@ -30,3 +30,4 @@ export default function Profile() {
     </section>
   );
 }
+export default Profile;

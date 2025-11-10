@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Home() {
+export function Home() {
   return (
     <section className="space-y-4">
       <h1 className="text-2xl font-bold">Umdat al-Ahkam • Mémorisation & Fiqh</h1>
@@ -28,3 +28,4 @@ export default function Home() {
     </section>
   );
 }
+export default Home;
