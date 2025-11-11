@@ -1,12 +1,11 @@
-// /src/pages/ExamQuiz.jsx
 import React, { useEffect, useMemo, useRef, useState } from "react";
-
-// UI shadcn
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
+import { Switch } from "@/components/ui/switch";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
   SelectTrigger,
@@ -14,46 +13,33 @@ import {
   SelectContent,
   SelectItem
 } from "@/components/ui/select";
+import {
+  ClipboardCheck,
+  Clock,
+  Moon,
+  Sun,
+  Play,
+  CheckCircle2,
+  XCircle,
+  AlertCircle,
+  Trophy,
+  Target,
+  Zap,
+  RotateCcw,
+} from "lucide-react";
 
-// -------------------------------------------
-// Questions source (reprend la base du Quiz standard)
-// -------------------------------------------
 const QUESTIONS = [
-  // H8
-  { n: 8, q: "Dans le hadith 8, quel geste est explicitement décrit après avoir lavé le visage ?", options: ["Essuyage de la tête (avant/arrière)", "Lavage des avant-bras sans mention des coudes", "Passage d’eau sur les oreilles sans essuyage de la tête", "Lavage des pieds avant le visage"], correctIndex: 0, explain: "La description authentique mentionne le passage humide sur la tête en allers/retours (‘أقبل وأدبر’) après le lavage du visage." },
-  { n: 8, q: "Selon le seed (avis hanbalites), quel est le statut de la basmala au wudû’ ?", options: ["Nulle part mentionnée", "Recommandée (sunna) seulement", "Obligatoire, mais tombe en cas d’oubli", "Interdite"], correctIndex: 2, explain: "Chez les hanbalites (et certains), la basmala est tenue pour obligatoire, avec dispense en cas d’oubli." },
-  { n: 8, q: "Selon la majorité (hanafites/malikites/shafi‘ites), combien de lavages valident le membre au minimum ?", options: ["Deux", "Un", "Quatre", "Trois"], correctIndex: 1, explain: "Un seul lavage suffit pour la validité ; le triple est sunna, comme indiqué dans le seed." },
-  // H9
-  { n: 9, q: "Le hadith 9 enseigne le « tayammun ». Dans quels types d’actes commence-t-on par la droite ?", options: ["Dans tous les actes sans exception", "Uniquement dans les actes de purification", "Dans les actes d’honneur (purification, habillement, etc.)", "Seulement pour mettre les chaussures"], correctIndex: 2, explain: "Les quatre écoles : la droite est recommandée dans les actes d’honneur (purification, habillement…), la gauche pour l’inverse (ôter, sortir…)." },
-  { n: 9, q: "Que disent les écoles lorsqu’un texte prouve la priorité de la main gauche dans un cas précis ?", options: ["On reste toujours à droite", "On suit l’exception : la gauche est prioritaire", "On choisit librement", "On alterne une fois droite, une fois gauche"], correctIndex: 1, explain: "Les shafi‘ites, par exemple, mentionnent l’exception quand elle est textuelle." },
-  { n: 9, q: "Quel énoncé correspond le mieux à l’esprit du hadith 9 ?", options: ["Obligation stricte de commencer par la droite", "L’égalité complète entre droite et gauche", "Recommandation (sunna/adab) d’honorer la droite", "Interdiction d’utiliser la main gauche"], correctIndex: 2, explain: "C’est une recommandation, pas une obligation stricte ni une interdiction de la gauche." },
-  // H10
-  { n: 10, q: "Que signifie « الغُرّة والتحجيل » dans le hadith 10 ?", options: ["Des invocations après le wudû’", "Des marques lumineuses sur les membres lavés", "Des vêtements spéciaux", "Des ablutions sèches"], correctIndex: 1, explain: "La communauté sera appelée avec des traces lumineuses dues au wudû’ (front/membres)." },
-  { n: 10, q: "Selon le seed, que disent globalement les hanafites et malikites de l’extension au-delà du fard ?", options: ["Recommandée sans limites", "Indifférente", "Déconseillée (makrûh) — éviter l’excès", "Obligatoire"], correctIndex: 2, explain: "Hanafites/Malikites : on se limite aux zones obligatoires, l’excès est réprouvé (ghulûw)." },
-  { n: 10, q: "Selon le seed, que disent les shafi‘ites et hanbalites de l’extension modérée ?", options: ["Interdite", "Recommandée (sans excès)", "Toujours obligatoire", "Toujours nulle"], correctIndex: 1, explain: "Shafi‘ites/Hanbalites : extension légère recommandée, en évitant l’exagération." },
-  // H11
-  { n: 11, q: "Que dit-on à l’entrée des latrines selon le hadith 11 ?", options: ["On reste silencieux", "On dit : « اللهم إني أعوذ بك من الخبث والخبائث »", "On dit la basmala uniquement", "On fait du dhikr à voix haute"], correctIndex: 1, explain: "Invocation enseignée par le Prophète ﷺ : protection contre les démons mâles et femelles." },
-  { n: 11, q: "Selon les écoles, quand prononce-t-on cette invocation ?", options: ["Après être entré et assis", "Avant d’entrer", "Pendant le besoin", "Uniquement en sortant"], correctIndex: 1, explain: "Elle se dit avant d’entrer. On évite le dhikr à l’intérieur (sauf besoin)." },
-  { n: 11, q: "Quel adab latéral est souvent mentionné avec cette invocation ?", options: ["Droite pour entrer, gauche pour sortir", "Gauche pour entrer, droite pour sortir", "Toujours la droite", "Toujours la gauche"], correctIndex: 1, explain: "Entrer avec le pied gauche, sortir avec le pied droit." },
-  // H12
-  { n: 12, q: "Que prescrit le hadith 12 en plein air (désert) ?", options: ["Permis de faire face à la qibla uniquement", "Permis de tourner le dos à la qibla uniquement", "Interdit de faire face ou dos à la qibla", "Indifférent"], correctIndex: 2, explain: "En plein air : ne pas faire face ni dos à la qibla." },
-  { n: 12, q: "Que disent les écoles au sujet des toilettes bâties (intérieur) en conciliant les textes (12/13) ?", options: ["Toujours interdit", "Toujours obligatoire de s’orienter Est/Ouest", "Permis en bâti, interdit en plein air", "Identique en tout lieu"], correctIndex: 2, explain: "Majorité : extérieur = interdit ; intérieur (bâti) = permis." },
-  { n: 12, q: "Que recommande-t-on même en bâti quand c’est possible ?", options: ["Se tourner légèrement pour éviter l’axe de la qibla", "Toujours faire face à la qibla", "Toujours lui tourner le dos", "Regarder vers le nord"], correctIndex: 0, explain: "S’écarter de l’axe reste préférable si possible." },
-  // H13
-  { n: 13, q: "Que rapporte Ibn ‘Umar dans le hadith 13 ?", options: ["Prophète ﷺ en plein désert face à la qibla", "Prophète ﷺ en maison, dos à la Ka‘ba", "Interdiction du besoin en ville", "Un compagnon décrit un wudû’ partiel"], correctIndex: 1, explain: "Dans une maison, sur deux briques, dos à la Ka‘ba (vers le Shâm)." },
-  { n: 13, q: "Que déduisent les écoles de 12 & 13 ensemble ?", options: ["Interdit en tout lieu", "Toujours permis", "Interdit dehors, permis dedans", "Interdit dedans, permis dehors"], correctIndex: 2, explain: "Conciliation : extérieur = interdit ; intérieur = permis." },
-  { n: 13, q: "Quel adab reste préférable en intérieur quand la configuration le permet ?", options: ["Chercher l’axe exact de la qibla", "S’orienter Est obligatoire", "S’écarter de l’axe de la qibla", "Se tourner vers le nord"], correctIndex: 2, explain: "S’écarter de l’axe quand c’est possible." },
-  // H14
-  { n: 14, q: "Selon le hadith 14 et les avis, que peut-on utiliser pour l’istinjā’ ?", options: ["Uniquement de l’eau", "Uniquement des pierres", "Eau ou pierres, les deux valides", "Ni l’un ni l’autre"], correctIndex: 2, explain: "Deux voies légitimes ; l’eau nettoie mieux ; les pierres suffisent (min. 3)." },
-  { n: 14, q: "Quel est le minimum pour l’istinjā’ aux pierres ?", options: ["1", "2", "3", "4"], correctIndex: 2, explain: "Minimum trois passages." },
-  { n: 14, q: "Quel est le mieux selon de nombreux avis ?", options: ["Pierres seules", "Eau seule toujours", "Combiner pierres puis eau", "Respirer dans un récipient avant"], correctIndex: 2, explain: "Combiner (pierres puis eau) est souvent indiqué comme meilleur." },
-  // H15
-  { n: 15, q: "Selon le hadith 15, que ne faut-il pas faire avec la main droite pendant qu’on urine ?", options: ["Ouvrir la porte", "Tenir son sexe", "Se moucher", "Se peigner"], correctIndex: 1, explain: "« لا يمسكنَّ أحدكم ذكره بيمينه وهو يبول »." },
-  { n: 15, q: "Quel est l’avis majoritaire sur l’usage de la main droite pour l’istinjā’ ?", options: ["Recommandé", "Obligatoire", "Makrûh (réprouvé) — adab", "Sans jugement"], correctIndex: 2, explain: "Majorité : makrûh. Certains hanbalites : tahrîm pour tenir de la droite en urinant." },
-  { n: 15, q: "Que dit la fin du hadith 15 au sujet du récipient ?", options: ["Respirer dedans", "Souffler dessus", "Ne pas respirer (souffler) dans le récipient", "En boire à gauche"], correctIndex: 2, explain: "« ولا يتنفس في الإناء »." }
+  { n: 8, q: "Dans le hadith 8, quel geste est explicitement décrit après avoir lavé le visage ?", options: ["Essuyage de la tête (avant/arrière)", "Lavage des avant-bras sans mention des coudes", "Passage d'eau sur les oreilles", "Lavage des pieds avant le visage"], correctIndex: 0, explain: "La description authentique mentionne le passage humide sur la tête." },
+  { n: 8, q: "Selon les hanbalites, quel est le statut de la basmala au wudû' ?", options: ["Nulle part mentionnée", "Recommandée seulement", "Obligatoire, mais tombe en cas d'oubli", "Interdite"], correctIndex: 2, explain: "La basmala est tenue pour obligatoire avec dispense en cas d'oubli." },
+  { n: 9, q: "Dans quels types d'actes commence-t-on par la droite ?", options: ["Dans tous les actes sans exception", "Uniquement purification", "Actes d'honneur (purification, habillement)", "Seulement les chaussures"], correctIndex: 2, explain: "La droite est recommandée dans les actes d'honneur." },
+  { n: 10, q: "Que signifie « الغُرّة والتحجيل » ?", options: ["Invocations après wudû'", "Marques lumineuses sur membres lavés", "Vêtements spéciaux", "Ablutions sèches"], correctIndex: 1, explain: "Traces lumineuses dues au wudû'." },
+  { n: 11, q: "Que dit-on à l'entrée des latrines ?", options: ["On reste silencieux", "« اللهم إني أعوذ بك من الخبث والخبائث »", "Basmala uniquement", "Dhikr à voix haute"], correctIndex: 1, explain: "Invocation de protection enseignée par le Prophète ﷺ." },
+  { n: 12, q: "Que prescrit le hadith 12 en plein air ?", options: ["Permis face à qibla uniquement", "Permis dos à qibla uniquement", "Interdit face ou dos à qibla", "Indifférent"], correctIndex: 2, explain: "Ne pas faire face ni dos à la qibla en plein air." },
+  { n: 13, q: "Que rapporte Ibn 'Umar ?", options: ["Prophète en désert face qibla", "Prophète en maison, dos à Ka'ba", "Interdiction besoin en ville", "Wudû' partiel"], correctIndex: 1, explain: "Dans une maison, dos à la Ka'ba." },
+  { n: 14, q: "Que peut-on utiliser pour l'istinjā' ?", options: ["Uniquement eau", "Uniquement pierres", "Eau ou pierres, les deux valides", "Ni l'un ni l'autre"], correctIndex: 2, explain: "Deux voies légitimes." },
+  { n: 15, q: "Que ne faut-il pas faire avec la main droite pendant qu'on urine ?", options: ["Ouvrir la porte", "Tenir son sexe", "Se moucher", "Se peigner"], correctIndex: 1, explain: "Interdit de tenir de la main droite." },
 ];
 
-// outils
 const shuffle = (arr) => {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -63,44 +49,46 @@ const shuffle = (arr) => {
   return a;
 };
 
-// -------------------------------------------
-// Exam component
-// -------------------------------------------
-export default function ExamQuiz() {
-  // Écran d’accueil — configuration
-  const [scope, setScope] = useState("all"); // "all" | "8"|"9"|...|"15"
-  const [duration, setDuration] = useState(8); // minutes (par défaut 8 min pour 24 q)
+export function ExamQuiz() {
+  const [scope, setScope] = useState("all");
+  const [duration, setDuration] = useState(8);
   const [started, setStarted] = useState(false);
-
-  // État d’examen
   const [pool, setPool] = useState([]);
   const [index, setIndex] = useState(0);
-  const [answers, setAnswers] = useState([]); // indices choisis (ou null)
-  const [timeLeft, setTimeLeft] = useState(0); // en secondes
+  const [answers, setAnswers] = useState([]);
+  const [timeLeft, setTimeLeft] = useState(0);
   const [finished, setFinished] = useState(false);
+  const [dark, setDark] = useState(false);
 
-  // Prépare le pool selon le scope
+  useEffect(() => {
+    const pref = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+    const enable = pref ? pref === 'dark' : prefersDark;
+    setDark(enable);
+    document.documentElement.classList.toggle('dark', enable);
+  }, []);
+
+  const toggleTheme = (checked) => {
+    setDark(checked);
+    document.documentElement.classList.toggle('dark', checked);
+    localStorage.setItem('theme', checked ? 'dark' : 'light');
+  };
+
   const preparedPool = useMemo(() => {
-    const list = scope === "all"
-      ? QUESTIONS
-      : QUESTIONS.filter((q) => q.n === parseInt(scope, 10));
+    const list = scope === "all" ? QUESTIONS : QUESTIONS.filter((q) => q.n === parseInt(scope, 10));
     return shuffle(list);
   }, [scope]);
 
-  // Démarrer l’examen
   const startExam = () => {
     const list = preparedPool;
     setPool(list);
     setIndex(0);
     setAnswers(Array(list.length).fill(null));
-    // Minuteur total (minutes -> secondes)
-    const totalSeconds = Math.max(1, Math.floor(duration * 60));
-    setTimeLeft(totalSeconds);
+    setTimeLeft(Math.max(1, Math.floor(duration * 60)));
     setStarted(true);
     setFinished(false);
   };
 
-  // Minuteur
   const timerRef = useRef(null);
   useEffect(() => {
     if (!started || finished) return;
@@ -116,14 +104,12 @@ export default function ExamQuiz() {
     return () => clearInterval(timerRef.current);
   }, [started, finished]);
 
-  // Fin automatique (temps écoulé)
   useEffect(() => {
     if (started && timeLeft === 0 && !finished) {
       setFinished(true);
     }
   }, [timeLeft, started, finished]);
 
-  // Navigation et réponses
   const selectAnswer = (i) => {
     if (finished) return;
     setAnswers((prev) => {
@@ -134,13 +120,8 @@ export default function ExamQuiz() {
   };
 
   const nextQ = () => {
-    if (finished) return;
-    if (index + 1 < pool.length) setIndex((i) => i + 1);
-  };
-
-  const prevQ = () => {
-    // Mode examen : pas de retour en arrière (désactivé)
-    // On peut laisser vide, ou autoriser si tu le souhaites.
+    if (finished || index + 1 >= pool.length) return;
+    setIndex((i) => i + 1);
   };
 
   const endExam = () => {
@@ -148,184 +129,305 @@ export default function ExamQuiz() {
     clearInterval(timerRef.current);
   };
 
-  // Score final
   const score = useMemo(() => {
     if (!finished) return 0;
     return pool.reduce((acc, q, i) => acc + (answers[i] === q.correctIndex ? 1 : 0), 0);
   }, [finished, pool, answers]);
 
-  const progressPct = pool.length ? Math.round(((index) / pool.length) * 100) : 0;
-
-  // Formatage
+  const progressPct = pool.length ? Math.round((index / pool.length) * 100) : 0;
+  const scorePct = pool.length ? Math.round((score / pool.length) * 100) : 0;
   const mm = String(Math.floor(timeLeft / 60)).padStart(2, "0");
   const ss = String(timeLeft % 60).padStart(2, "0");
+  const timeWarning = timeLeft > 0 && timeLeft <= 60;
 
-  // UI
   if (!started) {
     return (
-      <section className="space-y-6">
-        <div className="flex items-center justify-between gap-3 flex-wrap">
-          <div className="flex items-center gap-2">
-            <Badge variant="secondary" className="rounded-full">Umdat</Badge>
-            <h2 className="text-xl font-semibold">Examen — Hadiths 8 à 15</h2>
-          </div>
-        </div>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Paramètres de l’examen</CardTitle>
-            <CardDescription>Choisis le périmètre et la durée, puis démarre.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <div className="text-sm text-muted-foreground">Périmètre</div>
-                <Select value={scope} onValueChange={setScope}>
-                  <SelectTrigger><SelectValue placeholder="Tous (8–15)" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Tous les hadiths (8–15)</SelectItem>
-                    {[8,9,10,11,12,13,14,15].map(n => (
-                      <SelectItem key={n} value={String(n)}>Hadith {n}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-red-50 to-rose-50 dark:from-slate-950 dark:via-red-950 dark:to-rose-950 p-6">
+        <div className="max-w-3xl mx-auto space-y-6">
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-gradient-to-br from-red-500 to-rose-600 rounded-xl shadow-lg">
+                <ClipboardCheck className="h-6 w-6 text-white" />
               </div>
-
-              <div className="space-y-2">
-                <div className="text-sm text-muted-foreground">Durée totale (minutes)</div>
-                <Select value={String(duration)} onValueChange={(v)=>setDuration(parseInt(v,10))}>
-                  <SelectTrigger><SelectValue placeholder="Durée" /></SelectTrigger>
-                  <SelectContent>
-                    {[5,8,10,12,15,20].map(m => (
-                      <SelectItem key={m} value={String(m)}>{m} min</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              <div>
+                <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Mode Examen</h1>
+                <p className="text-sm text-slate-600 dark:text-slate-400">Teste tes connaissances sous pression</p>
               </div>
             </div>
+            
+            <div className="flex items-center gap-2 bg-white dark:bg-slate-800 px-3 py-2 rounded-full shadow-sm border">
+              <Sun className="h-4 w-4" />
+              <Switch checked={dark} onCheckedChange={toggleTheme} />
+              <Moon className="h-4 w-4" />
+            </div>
+          </div>
 
-            <Separator />
-            <Button onClick={startExam}>Démarrer l’examen</Button>
-          </CardContent>
-        </Card>
-      </section>
+          <Card className="shadow-xl">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Target className="h-5 w-5 text-red-500" />
+                Configuration
+              </CardTitle>
+              <CardDescription>Définis le périmètre et la durée</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid sm:grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <label className="text-sm font-medium flex items-center gap-2">
+                    <Target className="h-4 w-4" />
+                    Périmètre
+                  </label>
+                  <Select value={scope} onValueChange={setScope}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Tous (8–15)</SelectItem>
+                      {[8,9,10,11,12,13,14,15].map(n => (
+                        <SelectItem key={n} value={String(n)}>Hadith {n}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-slate-500">{preparedPool.length} questions</p>
+                </div>
+
+                <div className="space-y-3">
+                  <label className="text-sm font-medium flex items-center gap-2">
+                    <Clock className="h-4 w-4" />
+                    Durée
+                  </label>
+                  <Select value={String(duration)} onValueChange={(v)=>setDuration(parseInt(v,10))}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {[5,8,10,12,15,20,30].map(m => (
+                        <SelectItem key={m} value={String(m)}>{m} min</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-slate-500">~{Math.round((duration*60)/preparedPool.length)}s/question</p>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5" />
+                  <div className="space-y-2 text-sm text-blue-800 dark:text-blue-200">
+                    <p className="font-semibold">Règles :</p>
+                    <ul className="space-y-1 list-disc list-inside text-xs">
+                      <li>Pas de retour en arrière</li>
+                      <li>Chronomètre dégressif</li>
+                      <li>Correction à la fin uniquement</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <Button 
+                onClick={startExam} 
+                className="w-full h-12 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700"
+                disabled={preparedPool.length === 0}
+              >
+                <Play className="h-5 w-5 mr-2" />
+                Démarrer
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     );
   }
 
   if (finished) {
+    const getGrade = () => {
+      if (scorePct >= 90) return { label: 'Excellent', color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-950', border: 'border-emerald-200 dark:border-emerald-800' };
+      if (scorePct >= 75) return { label: 'Très bien', color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-950', border: 'border-blue-200 dark:border-blue-800' };
+      if (scorePct >= 60) return { label: 'Bien', color: 'text-amber-600', bg: 'bg-amber-50 dark:bg-amber-950', border: 'border-amber-200 dark:border-amber-800' };
+      return { label: 'À améliorer', color: 'text-red-600', bg: 'bg-red-50 dark:bg-red-950', border: 'border-red-200 dark:border-red-800' };
+    };
+
+    const grade = getGrade();
+
     return (
-      <section className="space-y-6">
-        <div className="flex items-center justify-between gap-3 flex-wrap">
-          <div className="flex items-center gap-2">
-            <Badge variant="secondary" className="rounded-full">Umdat</Badge>
-            <h2 className="text-xl font-semibold">Résultats</h2>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-red-50 to-rose-50 dark:from-slate-950 dark:via-red-950 dark:to-rose-950 p-6">
+        <div className="max-w-4xl mx-auto space-y-6">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="p-3 bg-gradient-to-br from-red-500 to-rose-600 rounded-xl shadow-lg">
+              <Trophy className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold">Résultats</h1>
+              <p className="text-sm text-slate-600 dark:text-slate-400">Analyse de performance</p>
+            </div>
           </div>
-          <div className="text-sm text-muted-foreground">
-            Temps écoulé • Score : <span className="font-medium">{score}</span> / {pool.length}
+
+          <Card className={`border-2 ${grade.border} ${grade.bg} shadow-xl`}>
+            <CardContent className="pt-8">
+              <div className="text-center space-y-4">
+                <div className="inline-flex p-4 rounded-full bg-white dark:bg-slate-800">
+                  <Trophy className={`h-12 w-12 ${grade.color}`} />
+                </div>
+                <div>
+                  <div className={`text-6xl font-bold ${grade.color}`}>{score} / {pool.length}</div>
+                  <div className={`text-2xl font-semibold ${grade.color} mt-2`}>{scorePct}%</div>
+                  <Badge className="mt-3 px-4 py-1 text-base">{grade.label}</Badge>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="shadow-lg">
+            <CardHeader>
+              <CardTitle>Correction</CardTitle>
+              <CardDescription>Revois tes réponses</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ScrollArea className="h-[500px] pr-4">
+                <div className="space-y-4">
+                  {pool.map((q, i) => {
+                    const user = answers[i];
+                    const ok = user === q.correctIndex;
+                    
+                    return (
+                      <Card key={i} className={`border-2 ${ok ? 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950' : 'border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950'}`}>
+                        <CardContent className="pt-4 space-y-3">
+                          <div className="flex justify-between items-center">
+                            <div className="flex gap-2">
+                              <Badge variant="outline">Q{i+1}</Badge>
+                              <Badge variant="outline">H{q.n}</Badge>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              {ok ? <CheckCircle2 className="h-5 w-5 text-green-600" /> : <XCircle className="h-5 w-5 text-red-600" />}
+                              <Badge variant={ok ? "default" : "destructive"}>{ok ? "Correct" : "Incorrect"}</Badge>
+                            </div>
+                          </div>
+
+                          <div className="text-sm font-medium">{q.q}</div>
+
+                          <div className="space-y-2 text-sm">
+                            <div className={`p-2 rounded ${user != null ? 'bg-blue-100 dark:bg-blue-900' : 'bg-slate-100 dark:bg-slate-800'}`}>
+                              <span className="font-semibold">Ta réponse :</span> {user == null ? <em>Aucune</em> : q.options[user]}
+                            </div>
+                            
+                            {!ok && (
+                              <div className="p-2 rounded bg-green-100 dark:bg-green-900">
+                                <span className="font-semibold">Bonne réponse :</span> {q.options[q.correctIndex]}
+                              </div>
+                            )}
+                          </div>
+
+                          {q.explain && (
+                            <>
+                              <Separator />
+                              <div className="text-xs text-slate-600 dark:text-slate-400">
+                                <span className="font-semibold">Explication :</span> {q.explain}
+                              </div>
+                            </>
+                          )}
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              </ScrollArea>
+            </CardContent>
+          </Card>
+
+          <div className="flex gap-3">
+            <Button 
+              onClick={() => setStarted(false)}
+              className="flex-1 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700"
+            >
+              <RotateCcw className="h-4 w-4 mr-2" />
+              Refaire
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const q = pool[index];
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-red-50 to-rose-50 dark:from-slate-950 dark:via-red-950 dark:to-rose-950 p-6">
+      <div className="max-w-3xl mx-auto space-y-6">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex gap-2">
+            <Badge variant="secondary">Q {index + 1}/{pool.length}</Badge>
+            <Badge variant="outline">H{q?.n}</Badge>
+          </div>
+          
+          <div className={`flex items-center gap-2 px-4 py-2 rounded-full font-mono text-lg font-bold ${
+            timeWarning ? 'bg-red-100 dark:bg-red-900 text-red-700 animate-pulse' : 'bg-slate-100 dark:bg-slate-800'
+          }`}>
+            <Clock className="h-5 w-5" />
+            {mm}:{ss}
           </div>
         </div>
 
         <Card>
-          <CardHeader>
-            <CardTitle>Correction</CardTitle>
-            <CardDescription>Vos réponses vs. réponses attendues.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {pool.map((q, i) => {
-              const user = answers[i];
-              const correct = q.correctIndex;
-              const ok = user === correct;
-              return (
-                <div key={i} className="rounded-md border p-3 space-y-2">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="font-medium">Q{i+1} — Hadith {q.n}</div>
-                    <Badge variant={ok ? "default" : "outline"}>{ok ? "✅ Correct" : "❌ Incorrect"}</Badge>
-                  </div>
-                  <div className="text-sm">{q.q}</div>
-                  <div className="text-sm">
-                    <span className="font-medium">Votre réponse :</span>{" "}
-                    {user == null ? <em>—</em> : q.options[user]}
-                  </div>
-                  <div className="text-sm">
-                    <span className="font-medium">Bonne réponse :</span>{" "}
-                    {q.options[correct]}
-                  </div>
-                  {q.explain && (
-                    <>
-                      <Separator />
-                      <div className="text-xs text-muted-foreground">{q.explain}</div>
-                    </>
-                  )}
-                </div>
-              );
-            })}
-            <div className="flex gap-2">
-              <Button onClick={() => { setStarted(false); }}>Refaire un examen</Button>
+          <CardContent className="pt-4">
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span>Progression</span>
+                <span className="font-semibold">{progressPct}%</span>
+              </div>
+              <Progress value={progressPct} className="h-2" />
             </div>
           </CardContent>
         </Card>
-      </section>
-    );
-  }
 
-  // Écran examen en cours
-  const q = pool[index];
-  return (
-    <section className="space-y-6">
-      <div className="flex items-center justify-between gap-3 flex-wrap">
-        <div className="flex items-center gap-2">
-          <Badge variant="secondary" className="rounded-full">Umdat</Badge>
-          <h2 className="text-xl font-semibold">Examen — Hadiths 8 à 15</h2>
-        </div>
-        <div className="text-sm">
-          Temps restant : <span className="font-medium tabular-nums">{mm}:{ss}</span>
-        </div>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Question {index + 1} / {pool.length}</CardTitle>
-          <CardDescription>Hadith {q?.n}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="text-base font-medium">{q?.q}</div>
-          <div className="grid gap-2">
-            {q?.options.map((opt, i) => {
-              const selected = answers[index] === i;
-              return (
-                <Button
-                  key={i}
-                  variant={selected ? "default" : "outline"}
-                  onClick={() => selectAnswer(i)}
-                  className="justify-start"
-                >
-                  {opt}
-                </Button>
-              );
-            })}
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="w-full mr-3">
-              <Progress value={progressPct} />
+        <Card className="shadow-xl">
+          <CardHeader>
+            <CardTitle className="text-xl">{q?.q}</CardTitle>
+          </CardHeader>
+          <Separator />
+          <CardContent className="pt-6 space-y-4">
+            <div className="grid gap-3">
+              {q?.options.map((opt, i) => {
+                const selected = answers[index] === i;
+                return (
+                  <Button
+                    key={i}
+                    variant={selected ? "default" : "outline"}
+                    onClick={() => selectAnswer(i)}
+                    className={`justify-start h-auto py-4 ${selected ? 'bg-gradient-to-r from-red-500 to-rose-600' : ''}`}
+                  >
+                    <div className="flex items-center gap-3 w-full">
+                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                        selected ? 'border-white bg-white/20' : 'border-slate-300'
+                      }`}>
+                        {selected && <div className="w-3 h-3 rounded-full bg-white" />}
+                      </div>
+                      <span className="flex-1 text-left">{opt}</span>
+                    </div>
+                  </Button>
+                );
+              })}
             </div>
-            <div className="flex gap-2">
-              {/* <Button variant="ghost" disabled onClick={prevQ}>Précédent</Button>  // désactivé en mode exam */}
-              <Button onClick={index + 1 < pool.length ? nextQ : endExam}>
-                {index + 1 < pool.length ? "Suivant" : "Terminer"}
+
+            <div className="flex justify-between items-center pt-4">
+              <p className="text-xs text-slate-500 flex items-center gap-2">
+                <Zap className="h-3 w-3" />
+                Pas de retour
+              </p>
+              <Button 
+                onClick={index + 1 < pool.length ? nextQ : endExam}
+                disabled={answers[index] == null}
+                className="bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700"
+              >
+                {index + 1 < pool.length ? "Suivant →" : "Terminer"}
               </Button>
             </div>
-          </div>
+          </CardContent>
+        </Card>
 
-          <div className="text-xs text-muted-foreground">
-            Pas de retour en arrière. Aucune correction affichée avant la fin.
-          </div>
-        </CardContent>
-      </Card>
-
-      <div className="flex gap-2">
-        <Button variant="outline" onClick={endExam}>Terminer maintenant</Button>
+        <Button variant="outline" onClick={endExam} className="w-full">
+          Terminer maintenant
+        </Button>
       </div>
-    </section>
+    </div>
   );
 }
+
+export default ExamQuiz;
