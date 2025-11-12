@@ -104,9 +104,9 @@ export function Learn() {
               <BookOpen className="h-6 w-6 text-white" />
             </div>
             <div className="min-w-0">
-              <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100 truncate">
+              <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 truncate">
                 Apprendre
-              </h1>
+              </h2>
               <p className="text-sm text-slate-600 dark:text-slate-400">
                 Hadiths 8 → 15
               </p>
