@@ -13,162 +13,66 @@ import {
   SelectContent,
   SelectItem
 } from "@/components/ui/select";
-import { Brain, CheckCircle2, XCircle, Lightbulb, Moon, Sun, Trophy, Target, RotateCcw, Sparkles } from 'lucide-react';
+import {
+  Brain, CheckCircle2, XCircle, Lightbulb,
+  Moon, Sun, Trophy, Target, RotateCcw, Sparkles
+} from "lucide-react";
 
-// Mock data
+/* === Mock data (remplace par tes vraies données quand prêtes) === */
 const HADITHS_8_15 = [
-  { number: 8, arabic_text: 'النص العربي للحديث الثامن حول الوضوء...', french_text: 'Description du wudû\' par le Prophète ﷺ...' },
-  { number: 9, arabic_text: 'النص العربي للحديث التاسع حول التيمن...', french_text: 'Commencer par la droite dans les actes d\'honneur...' },
-  { number: 10, arabic_text: 'النص العربي للحديث العاشر...', french_text: 'Les marques lumineuses (ghurra/tahjîl)...' },
-  { number: 11, arabic_text: 'النص العربي للحديث الحادي عشر...', french_text: 'Invocation à l\'entrée des latrines...' },
-  { number: 12, arabic_text: 'النص العربي للحديث الثاني عشر...', french_text: 'Ne pas faire face à la qibla en plein air...' },
-  { number: 13, arabic_text: 'النص العربي للحديث الثالث عشر...', french_text: 'Ibn \'Umar voit le Prophète ﷺ dans une maison...' },
-  { number: 14, arabic_text: 'النص العربي للحديث الرابع عشر...', french_text: 'Istinjâ\' avec eau ou pierres...' },
-  { number: 15, arabic_text: 'النص العربي للحديث الخامس عشر...', french_text: 'Ne pas tenir de la main droite pendant le besoin...' },
+  { number: 8, arabic_text: "النص العربي للحديث الثامن حول الوضوء...", french_text: "Description du wudû' par le Prophète ﷺ..." },
+  { number: 9, arabic_text: "النص العربي للحديث التاسع حول التيمن...", french_text: "Commencer par la droite dans les actes d'honneur..." },
+  { number: 10, arabic_text: "النص العربي للحديث العاشر...", french_text: "Les marques lumineuses (ghurra/tahjîl)..." },
+  { number: 11, arabic_text: "النص العربي للحديث الحادي عشر...", french_text: "Invocation à l'entrée des latrines..." },
+  { number: 12, arabic_text: "النص العربي للحديث الثاني عشر...", french_text: "Ne pas faire face à la qibla en plein air..." },
+  { number: 13, arabic_text: "النص العربي للحديث الثالث عشر...", french_text: "Ibn 'Umar voit le Prophète ﷺ dans une maison..." },
+  { number: 14, arabic_text: "النص العربي للحديث الرابع عشر...", french_text: "Istinjâ' avec eau ou pierres..." },
+  { number: 15, arabic_text: "النص العربي للحديث الخامس عشر...", french_text: "Ne pas tenir de la main droite pendant le besoin..." },
 ];
 
 const QUESTIONS = [
-  // HADITH 8
-  {
-    n: 8,
-    q: "Dans le hadith 8, quel geste est explicitement décrit après avoir lavé le visage ?",
-    options: [
-      "Essuyage de la tête (avant/arrière)",
-      "Lavage des avant-bras sans mention des coudes",
-      "Passage d'eau sur les oreilles sans essuyage de la tête",
-      "Lavage des pieds avant le visage"
-    ],
-    correctIndex: 0,
-    explain: "La description authentique mentionne le passage humide sur la tête en allers/retours ('أقبل وأدبر') après le lavage du visage."
+  { n: 8, q: "Dans le hadith 8, quel geste est explicitement décrit après avoir lavé le visage ?",
+    options: ["Essuyage de la tête (avant/arrière)", "Lavage des avant-bras sans mention des coudes", "Passage d'eau sur les oreilles sans essuyage de la tête", "Lavage des pieds avant le visage"],
+    correctIndex: 0, explain: "La description authentique mentionne le passage humide sur la tête en allers/retours ('أقبل وأدبر')."
   },
-  {
-    n: 8,
-    q: "Selon le seed (avis hanbalites), quel est le statut de la basmala au wudû' ?",
-    options: [
-      "Nulle part mentionnée",
-      "Recommandée (sunna) seulement",
-      "Obligatoire, mais tombe en cas d'oubli",
-      "Interdite"
-    ],
-    correctIndex: 2,
-    explain: "Chez les hanbalites (et certains), la basmala est tenue pour obligatoire, avec dispense en cas d'oubli."
+  { n: 8, q: "Selon le seed (avis hanbalites), quel est le statut de la basmala au wudû' ?",
+    options: ["Nulle part mentionnée", "Recommandée (sunna) seulement", "Obligatoire, mais tombe en cas d'oubli", "Interdite"],
+    correctIndex: 2, explain: "Chez les hanbalites, la basmala est tenue pour obligatoire avec dispense en cas d'oubli."
   },
-  {
-    n: 8,
-    q: "Selon la majorité (hanafites/malikites/shafi'ites), combien de lavages valident le membre au minimum ?",
-    options: ["Deux", "Un", "Quatre", "Trois"],
-    correctIndex: 1,
-    explain: "Un seul lavage suffit pour la validité ; le triple est sunna, comme indiqué dans le seed."
+  { n: 8, q: "Selon la majorité (hanafites/malikites/shafi'ites), combien de lavages valident le membre au minimum ?",
+    options: ["Deux", "Un", "Quatre", "Trois"], correctIndex: 1, explain: "Un seul lavage suffit pour la validité ; le triple est sunna."
   },
-
-  // HADITH 9
-  {
-    n: 9,
-    q: "Le hadith 9 enseigne le « tayammun ». Dans quels types d'actes commence-t-on par la droite ?",
-    options: [
-      "Dans tous les actes sans exception",
-      "Uniquement dans les actes de purification",
-      "Dans les actes d'honneur (purification, habillement, etc.)",
-      "Seulement pour mettre les chaussures"
-    ],
-    correctIndex: 2,
-    explain: "Les quatre écoles : la droite est recommandée dans les actes d'honneur (purification, habillement…), la gauche pour l'inverse (ôter, sortir…)."
+  { n: 9, q: "Le hadith 9 enseigne le « tayammun ». Dans quels types d'actes commence-t-on par la droite ?",
+    options: ["Dans tous les actes sans exception","Uniquement purification","Actes d'honneur (purification, habillement, etc.)","Seulement pour les chaussures"],
+    correctIndex: 2, explain: "La droite est recommandée dans les actes d'honneur ; la gauche pour l'inverse."
   },
-  {
-    n: 9,
-    q: "Que disent les écoles lorsqu'un texte prouve la priorité de la main gauche dans un cas précis ?",
-    options: [
-      "On reste toujours à droite",
-      "On suit l'exception : la gauche est prioritaire",
-      "On choisit librement",
-      "On alterne une fois droite, une fois gauche"
-    ],
-    correctIndex: 1,
-    explain: "Les shafi'ites, par exemple, mentionnent l'exception quand elle est textuelle."
+  { n: 9, q: "Que disent les écoles lorsqu'un texte prouve la priorité de la gauche dans un cas précis ?",
+    options: ["Toujours droite", "On suit l'exception (gauche prioritaire)", "Libre", "On alterne"],
+    correctIndex: 1, explain: "On suit l'exception textuelle."
   },
-
-  // HADITH 10
-  {
-    n: 10,
-    q: "Que signifie « الغُرّة والتحجيل » dans le hadith 10 ?",
-    options: [
-      "Des invocations après le wudû'",
-      "Des marques lumineuses sur les membres lavés",
-      "Des vêtements spéciaux",
-      "Des ablutions sèches"
-    ],
-    correctIndex: 1,
-    explain: "La communauté sera appelée avec des traces lumineuses dues au wudû' (front/membres)."
+  { n: 10, q: "Que signifie « الغُرّة والتحجيل » dans le hadith 10 ?",
+    options: ["Invocations après le wudû'", "Marques lumineuses sur membres lavés", "Vêtements spéciaux", "Ablutions sèches"],
+    correctIndex: 1, explain: "Traces lumineuses dues au wudû'."
   },
-
-  // HADITH 11
-  {
-    n: 11,
-    q: "Que dit-on à l'entrée des latrines selon le hadith 11 ?",
-    options: [
-      "On reste silencieux",
-      "On dit : « اللهم إني أعوذ بك من الخبث والخبائث »",
-      "On dit la basmala uniquement",
-      "On fait du dhikr à voix haute"
-    ],
-    correctIndex: 1,
-    explain: "C'est l'invocation enseignée par le Prophète ﷺ : demande de protection contre les démons mâles et femelles."
+  { n: 11, q: "Que dit-on à l'entrée des latrines (hadith 11) ?",
+    options: ["Silence", "اللهم إني أعوذ بك من الخبث والخبائث", "Basmala seulement", "Dhikr à voix haute"],
+    correctIndex: 1, explain: "Invocation enseignée par le Prophète ﷺ."
   },
-
-  // HADITH 12
-  {
-    n: 12,
-    q: "Que prescrit le hadith 12 en plein air (désert) ?",
-    options: [
-      "Permis de faire face à la qibla uniquement",
-      "Permis de tourner le dos à la qibla uniquement",
-      "Interdit de faire face ou dos à la qibla",
-      "Indifférent"
-    ],
-    correctIndex: 2,
-    explain: "En plein air : ne pas faire face ni dos à la qibla pour uriner/déféquer."
+  { n: 12, q: "Que prescrit le hadith 12 en plein air (désert) ?",
+    options: ["Face à la qibla uniquement", "Dos à la qibla uniquement", "Ni face ni dos", "Indifférent"],
+    correctIndex: 2, explain: "En plein air : ne pas faire face ni dos à la qibla."
   },
-
-  // HADITH 13
-  {
-    n: 13,
-    q: "Que rapporte Ibn 'Umar dans le hadith 13 ?",
-    options: [
-      "Qu'il a vu le Prophète ﷺ en plein désert face à la qibla",
-      "Qu'il a vu le Prophète ﷺ dans une maison, dos à la Ka'ba",
-      "Qu'il a vu le Prophète ﷺ interdire le besoin en ville",
-      "Qu'il a entendu un compagnon décrire un wudû' partiel"
-    ],
-    correctIndex: 1,
-    explain: "Il voit le Prophète ﷺ sur deux briques, dans une maison, tourné vers le Shâm, dos à la Ka'ba."
+  { n: 13, q: "Que rapporte Ibn 'Umar (hadith 13) ?",
+    options: ["Le Prophète en plein désert face à la qibla", "Le Prophète dans une maison, dos à la Ka'ba", "Interdiction en ville", "Description d'un wudû' partiel"],
+    correctIndex: 1, explain: "Dans une maison, tourné vers le Shâm, dos à la Ka'ba."
   },
-
-  // HADITH 14
-  {
-    n: 14,
-    q: "Selon le hadith 14 et les avis, que peut-on utiliser pour l'istinjā' ?",
-    options: [
-      "Uniquement de l'eau",
-      "Uniquement des pierres",
-      "Eau ou pierres, avec validité des deux",
-      "Ni l'un ni l'autre"
-    ],
-    correctIndex: 2,
-    explain: "Les deux sont légitimes ; l'eau est plus nettoyante, et les pierres suffisent au minimum trois passages."
+  { n: 14, q: "Selon le hadith 14, que peut-on utiliser pour l'istinjā' ?",
+    options: ["Eau uniquement", "Pierres uniquement", "Eau ou pierres (valide)", "Ni l'un ni l'autre"],
+    correctIndex: 2, explain: "Les deux sont légitimes ; minimum trois passages pour les pierres."
   },
-
-  // HADITH 15
-  {
-    n: 15,
-    q: "Selon le hadith 15, que ne faut-il pas faire avec la main droite pendant qu'on urine ?",
-    options: [
-      "Ouvrir la porte",
-      "Tenir son sexe",
-      "Se moucher",
-      "Se peigner"
-    ],
-    correctIndex: 1,
-    explain: "« لا يمسكنَّ أحدكم ذكره بيمينه وهو يبول » : ne pas tenir le sexe de la main droite."
+  { n: 15, q: "Selon le hadith 15, que ne faut-il pas faire avec la main droite pendant qu'on urine ?",
+    options: ["Ouvrir la porte", "Tenir son sexe", "Se moucher", "Se peigner"],
+    correctIndex: 1, explain: "« لا يمسكنَّ أحدكم ذكره بيمينه وهو يبول »."
   },
 ];
 
@@ -182,17 +86,17 @@ export function Quiz() {
   const [showHint, setShowHint] = useState(false);
 
   useEffect(() => {
-    const pref = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
-    const enable = pref ? pref === 'dark' : prefersDark;
+    const pref = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
+    const enable = pref ? pref === "dark" : prefersDark;
     setDark(enable);
-    document.documentElement.classList.toggle('dark', enable);
+    document.documentElement.classList.toggle("dark", enable);
   }, []);
 
   const toggleTheme = (checked) => {
     setDark(checked);
-    document.documentElement.classList.toggle('dark', checked);
-    localStorage.setItem('theme', checked ? 'dark' : 'light');
+    document.documentElement.classList.toggle("dark", checked);
+    localStorage.setItem("theme", checked ? "dark" : "light");
   };
 
   const pool = useMemo(() => {
@@ -203,7 +107,8 @@ export function Quiz() {
 
   const current = pool[index];
   const progress = pool.length ? Math.round(((index + (done ? 1 : 0)) / pool.length) * 100) : 0;
-  const accuracy = pool.length ? Math.round((score / (index + (done ? 1 : 0))) * 100) : 0;
+  const answered = index + (done ? 1 : 0);
+  const accuracy = answered ? Math.round((score / answered) * 100) : 0;
 
   const onValidate = () => {
     if (selected == null) return;
@@ -216,9 +121,7 @@ export function Quiz() {
     setSelected(null);
     setDone(false);
     setShowHint(false);
-    if (index + 1 < pool.length) {
-      setIndex((i) => i + 1);
-    }
+    if (index + 1 < pool.length) setIndex((i) => i + 1);
   };
 
   const onRestart = () => {
@@ -234,48 +137,58 @@ export function Quiz() {
     onRestart();
   };
 
+  if (!pool.length) {
+    // garde un écran propre si pool vide
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-pink-50 dark:from-slate-950 dark:via-purple-950 dark:to-pink-950 p-6 transition-colors duration-300">
-      <div className="max-w-4xl mx-auto space-y-6">
+    <div className="min-h-screen w-full overflow-x-clip bg-gradient-to-br from-slate-50 via-purple-50 to-pink-50 dark:from-slate-950 dark:via-purple-950 dark:to-pink-950 px-4 sm:px-6 py-6 transition-colors duration-300">
+      <div className="max-w-4xl w-full mx-auto space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-3">
-            <div className="p-3 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl shadow-lg">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="p-3 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl shadow-lg shrink-0">
               <Brain className="h-6 w-6 text-white" />
             </div>
-            <div>
-              <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Quiz Interactif</h1>
-              <p className="text-sm text-slate-600 dark:text-slate-400">Teste tes connaissances sur les hadiths</p>
+            <div className="min-w-0">
+              <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 truncate">
+                Quiz Interactif
+              </h2>
+              <p className="text-sm text-slate-600 dark:text-slate-400">
+                Teste tes connaissances sur les hadiths
+              </p>
             </div>
           </div>
-          
-          <div className="flex items-center gap-4">
+
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
             <Select value={filterN} onValueChange={handleFilterChange}>
-              <SelectTrigger className="w-40 bg-white dark:bg-slate-800">
+              <SelectTrigger className="w-full sm:w-44 bg-white dark:bg-slate-800">
                 <SelectValue placeholder="Tous" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Tous (8–15)</SelectItem>
-                {[8,9,10,11,12,13,14,15].map(n => (
-                  <SelectItem key={n} value={String(n)}>Hadith {n}</SelectItem>
+                {[8, 9, 10, 11, 12, 13, 14, 15].map((n) => (
+                  <SelectItem key={n} value={String(n)}>
+                    Hadith {n}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
 
-            <div className="flex items-center gap-2 bg-white dark:bg-slate-800 px-3 py-2 rounded-full shadow-sm border border-slate-200 dark:border-slate-700">
+            <div className="flex items-center justify-between sm:justify-center gap-2 bg-white dark:bg-slate-800 px-3 py-2 rounded-full shadow-sm border border-slate-200 dark:border-slate-700">
               <Sun className="h-4 w-4 text-slate-600 dark:text-slate-400" />
-              <Switch checked={dark} onCheckedChange={toggleTheme} />
+              <Switch checked={dark} onCheckedChange={toggleTheme} className="scale-90" />
               <Moon className="h-4 w-4 text-slate-600 dark:text-slate-400" />
             </div>
           </div>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <Card className="bg-gradient-to-br from-purple-500 to-pink-600 border-0 text-white shadow-lg">
             <CardContent className="pt-4 pb-3 text-center">
               <Target className="h-5 w-5 mx-auto mb-1 opacity-90" />
-              <div className="text-2xl font-bold mb-1">{index + (done ? 1 : 0)}</div>
+              <div className="text-2xl font-bold mb-1">{answered}</div>
               <div className="text-xs opacity-90">Questions</div>
             </CardContent>
           </Card>
@@ -291,7 +204,7 @@ export function Quiz() {
           <Card className="bg-gradient-to-br from-blue-500 to-indigo-600 border-0 text-white shadow-lg">
             <CardContent className="pt-4 pb-3 text-center">
               <Sparkles className="h-5 w-5 mx-auto mb-1 opacity-90" />
-              <div className="text-2xl font-bold mb-1">{accuracy}%</div>
+              <div className="text-2xl font-bold mb-1">{isNaN(accuracy) ? 0 : accuracy}%</div>
               <div className="text-xs opacity-90">Précision</div>
             </CardContent>
           </Card>
@@ -327,19 +240,14 @@ export function Quiz() {
             </CardContent>
           </Card>
         ) : (
-          <Card className="border-slate-200 dark:border-slate-700 shadow-xl bg-white dark:bg-slate-800 overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5" />
-            
+          <Card className="border-slate-200 dark:border-slate-700 shadow-xl bg-white dark:bg-slate-800 overflow-hidden relative">
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5" />
             <CardHeader className="relative z-10">
-              <div className="flex items-center justify-between mb-2">
-                <Badge variant="secondary" className="rounded-full">
-                  Question {index + 1} / {pool.length}
-                </Badge>
-                <Badge variant="outline" className="text-xs">
-                  Hadith {current.n}
-                </Badge>
+              <div className="flex items-center justify-between gap-2 mb-2 min-w-0">
+                <Badge variant="secondary" className="rounded-full shrink-0">Question {index + 1} / {pool.length}</Badge>
+                <Badge variant="outline" className="text-xs shrink-0">Hadith {current.n}</Badge>
               </div>
-              <CardTitle className="text-xl text-slate-800 dark:text-slate-100">
+              <CardTitle className="text-xl text-slate-800 dark:text-slate-100 break-words text-pretty">
                 {current.q}
               </CardTitle>
             </CardHeader>
@@ -353,27 +261,28 @@ export function Quiz() {
                   const isSelected = selected === i;
                   const isCorrect = done && i === current.correctIndex;
                   const isWrong = done && isSelected && i !== current.correctIndex;
-                  
                   return (
                     <Button
                       key={i}
                       variant={isSelected && !done ? "default" : "outline"}
                       disabled={done}
                       onClick={() => setSelected(i)}
-                      className={`justify-start text-left h-auto py-4 px-4 transition-all ${
+                      className={`justify-start text-left h-auto py-4 px-4 transition-all min-w-0 whitespace-normal break-words text-pretty ${
                         isCorrect ? "border-green-500 bg-green-50 dark:bg-green-950 border-2" : ""
-                      } ${
-                        isWrong ? "border-red-500 bg-red-50 dark:bg-red-950 border-2" : ""
-                      }`}
+                      } ${isWrong ? "border-red-500 bg-red-50 dark:bg-red-950 border-2" : ""}`}
                     >
-                      <div className="flex items-center gap-3 w-full">
-                        <div className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                          isSelected && !done ? "border-white bg-white/20" : "border-slate-300 dark:border-slate-600"
-                        } ${isCorrect ? "border-green-500 bg-green-500" : ""} ${isWrong ? "border-red-500 bg-red-500" : ""}`}>
+                      <div className="flex items-start gap-3 w-full">
+                        <div
+                          className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                            isSelected && !done ? "border-white bg-white/20" : "border-slate-300 dark:border-slate-600"
+                          } ${isCorrect ? "border-green-500 bg-green-500" : ""} ${isWrong ? "border-red-500 bg-red-500" : ""}`}
+                        >
                           {isCorrect && <CheckCircle2 className="h-4 w-4 text-white" />}
                           {isWrong && <XCircle className="h-4 w-4 text-white" />}
                         </div>
-                        <span className="flex-1">{opt}</span>
+                        <span className="flex-1 min-w-0 break-words">
+                          {opt}
+                        </span>
                       </div>
                     </Button>
                   );
@@ -381,31 +290,31 @@ export function Quiz() {
               </div>
 
               {/* Actions */}
-              <div className="flex items-center gap-3 flex-wrap">
+              <div className="grid grid-cols-1 sm:flex sm:flex-wrap sm:items-center gap-2">
                 {!done ? (
                   <>
-                    <Button 
-                      onClick={onValidate} 
+                    <Button
+                      onClick={onValidate}
                       disabled={selected == null}
-                      className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white shadow-md"
+                      className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white shadow-md"
                     >
                       Valider ma réponse
                     </Button>
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       size="sm"
                       onClick={() => setShowHint(!showHint)}
-                      className="gap-2"
+                      className="w-full sm:w-auto gap-2"
                     >
-                      <Lightbulb className="h-4 w-4" />
+                      <Lightbulb className="h-4 w-4 shrink-0" />
                       {showHint ? "Masquer" : "Indice"}
                     </Button>
                   </>
                 ) : (
-                  <Button 
-                    variant="default" 
+                  <Button
+                    variant="default"
                     onClick={onNext}
-                    className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-md"
+                    className="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-md"
                   >
                     {index + 1 < pool.length ? "Question suivante →" : "Terminer le quiz"}
                   </Button>
@@ -428,10 +337,13 @@ export function Quiz() {
 
               {/* Explanation */}
               {done && (
-                <Card className={selected === current.correctIndex 
-                  ? "bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800" 
-                  : "bg-red-50 dark:bg-red-950 border-red-200 dark:border-red-800"
-                }>
+                <Card
+                  className={
+                    selected === current.correctIndex
+                      ? "bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800"
+                      : "bg-red-50 dark:bg-red-950 border-red-200 dark:border-red-800"
+                  }
+                >
                   <CardContent className="pt-4">
                     <div className="flex items-start gap-2">
                       {selected === current.correctIndex ? (
@@ -439,19 +351,23 @@ export function Quiz() {
                       ) : (
                         <XCircle className="h-5 w-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
                       )}
-                      <div>
-                        <div className={`text-sm font-semibold mb-1 ${
-                          selected === current.correctIndex 
-                            ? "text-green-800 dark:text-green-200" 
-                            : "text-red-800 dark:text-red-200"
-                        }`}>
+                      <div className="min-w-0">
+                        <div
+                          className={`text-sm font-semibold mb-1 ${
+                            selected === current.correctIndex
+                              ? "text-green-800 dark:text-green-200"
+                              : "text-red-800 dark:text-red-200"
+                          }`}
+                        >
                           {selected === current.correctIndex ? "Excellente réponse !" : "Pas tout à fait..."}
                         </div>
-                        <div className={`text-sm ${
-                          selected === current.correctIndex 
-                            ? "text-green-700 dark:text-green-300" 
-                            : "text-red-700 dark:text-red-300"
-                        }`}>
+                        <div
+                          className={`text-sm break-words text-pretty ${
+                            selected === current.correctIndex
+                              ? "text-green-700 dark:text-green-300"
+                              : "text-red-700 dark:text-red-300"
+                          }`}
+                        >
                           {current.explain}
                         </div>
                       </div>
@@ -468,22 +384,25 @@ export function Quiz() {
           <Card className="border-slate-200 dark:border-slate-700 shadow-lg bg-white dark:bg-slate-800">
             <CardHeader>
               <CardTitle className="text-base flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-yellow-500" />
-                Rappel — Hadith {current.n}
+                <Sparkles className="h-4 w-4 text-yellow-500 shrink-0" />
+                <span className="truncate">Rappel — Hadith {current.n}</span>
               </CardTitle>
               <CardDescription>Contexte pour ancrer ta compréhension</CardDescription>
             </CardHeader>
             <CardContent>
-              <ScrollArea className="max-h-60">
+              <ScrollArea className="max-h-60 pr-2 sm:pr-4">
                 {(() => {
                   const h = HADITHS_8_15.find((x) => x.number === current.n);
                   if (!h) return <div className="text-sm text-muted-foreground">—</div>;
                   return (
-                    <div className="space-y-3 pr-4">
-                      <div dir="rtl" className="p-4 rounded-lg bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900 border border-slate-200 dark:border-slate-700 font-serif text-lg leading-loose">
+                    <div className="space-y-3">
+                      <div
+                        dir="rtl"
+                        className="p-4 rounded-lg bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900 border border-slate-200 dark:border-slate-700 font-serif text-lg leading-loose break-words"
+                      >
                         {h.arabic_text}
                       </div>
-                      <div className="p-4 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-300">
+                      <div className="p-4 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-300 break-words">
                         {h.french_text}
                       </div>
                     </div>
@@ -496,12 +415,8 @@ export function Quiz() {
 
         {/* Restart Button */}
         {pool.length > 0 && (
-          <div className="flex justify-center">
-            <Button 
-              variant="outline" 
-              onClick={onRestart}
-              className="gap-2"
-            >
+          <div className="flex flex-col sm:flex-row justify-center gap-2">
+            <Button variant="outline" onClick={onRestart} className="w-full sm:w-auto gap-2">
               <RotateCcw className="h-4 w-4" />
               Recommencer ce quiz
             </Button>

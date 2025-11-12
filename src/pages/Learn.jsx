@@ -113,11 +113,11 @@ export function Learn() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 bg-white dark:bg-slate-800 px-3 py-2 rounded-full shadow-sm border border-slate-200 dark:border-slate-700 shrink-0">
+          {/* <div className="flex items-center gap-2 bg-white dark:bg-slate-800 px-3 py-2 rounded-full shadow-sm border border-slate-200 dark:border-slate-700 shrink-0">
             <Sun className="h-4 w-4 text-slate-600 dark:text-slate-400" />
             <Switch checked={dark} onCheckedChange={toggleTheme} />
             <Moon className="h-4 w-4 text-slate-600 dark:text-slate-400" />
-          </div>
+          </div> */}
         </div>
 
         {/* Recherche & filtre */}

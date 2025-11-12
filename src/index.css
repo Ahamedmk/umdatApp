@@ -4,7 +4,6 @@
 @custom-variant dark (&:is(.dark *));
 
 
-
 html {
   scroll-behavior: smooth;
 }
@@ -77,6 +76,20 @@ h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
+
+/* debug provisoire */
+/* * {
+  outline-offset: 0px;
+}
+@media (max-width: 640px) {
+  * {
+    outline: 0px solid transparent;
+  }
+  [style*="width:"], [class*="w-["], [class*="min-w-"], [class*="max-w-"] {
+    outline: 1px dashed rgba(255,0,0,.35);
+  }
+} */
+
 
 button {
   border-radius: 8px;

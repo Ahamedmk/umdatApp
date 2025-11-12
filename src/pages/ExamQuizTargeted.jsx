@@ -178,16 +178,16 @@ export function ExamQuizTargeted() {
                 <Target className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold">Révision ciblée</h1>
+                <h2 className="text-2xl font-bold">Révision ciblée</h2>
                 <p className="text-sm text-slate-600 dark:text-slate-400">Focus sur tes points faibles</p>
               </div>
             </div>
             
-            <div className="flex items-center gap-2 bg-white dark:bg-slate-800 px-3 py-2 rounded-full shadow-sm border">
+            {/* <div className="flex items-center gap-2 bg-white dark:bg-slate-800 px-3 py-2 rounded-full shadow-sm border">
               <Sun className="h-4 w-4" />
               <Switch checked={dark} onCheckedChange={toggleTheme} />
               <Moon className="h-4 w-4" />
-            </div>
+            </div> */}
           </div>
 
           <Card className="border-2 border-cyan-200 dark:border-cyan-800 shadow-xl bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-950 dark:to-blue-950">

@@ -150,7 +150,7 @@ export function ExamQuiz() {
                 <ClipboardCheck className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Mode Examen</h1>
+                <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Mode Examen</h2>
                 <p className="text-sm text-slate-600 dark:text-slate-400">Teste tes connaissances sous pression</p>
               </div>
             </div>
