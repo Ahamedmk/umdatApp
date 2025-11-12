@@ -2,7 +2,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -12,9 +12,8 @@ import { Switch } from "@/components/ui/switch";
 
 import { BookOpen, Search, Filter, ArrowRight, Moon, Sun, Sparkles } from "lucide-react";
 
-// === vraies dépendances app ===
 import { supabase } from "../lib/supabase";
-import { HADITHS_8_15 } from "../data/seed_hadiths_8_15"; // fallback local si DB vide/erreur
+import { HADITHS_8_15 } from "../data/seed_hadiths_8_15";
 
 export function Learn() {
   const [items, setItems] = useState([]);
@@ -23,7 +22,6 @@ export function Learn() {
   const [dark, setDark] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Thème persistant
   useEffect(() => {
     const pref = localStorage.getItem("theme");
     const prefersDark =
@@ -41,7 +39,6 @@ export function Learn() {
     localStorage.setItem("theme", checked ? "dark" : "light");
   };
 
-  // Charger depuis Supabase (hadiths 8→15), sinon fallback seed
   useEffect(() => {
     let active = true;
     async function load() {
@@ -56,19 +53,16 @@ export function Learn() {
 
         if (error) throw error;
 
-        // Si la table est vide/incomplète, fallback intelligent au seed
         const dbMap = new Map((data || []).map((h) => [h.number, h]));
         const merged = [];
         for (let n = 8; n <= 15; n++) {
           const fromDb = dbMap.get(n);
           const fromSeed = HADITHS_8_15.find((x) => x.number === n) || null;
-          // priorité DB, sinon seed
           if (fromDb) merged.push(fromDb);
           else if (fromSeed) merged.push(fromSeed);
         }
         if (active) setItems(merged.filter(Boolean));
       } catch {
-        // fallback complet seed
         if (active) setItems(HADITHS_8_15);
       } finally {
         if (active) setLoading(false);
@@ -80,14 +74,12 @@ export function Learn() {
     };
   }, []);
 
-  // Sources disponibles (all + trouvées)
   const sources = useMemo(() => {
     const set = new Set();
     items.forEach((h) => h.source && set.add(h.source));
     return ["all", ...Array.from(set)];
   }, [items]);
 
-  // Filtrage
   const filteredItems = useMemo(() => {
     const q = searchQuery.trim();
     return (items || []).filter((h) => {
@@ -103,46 +95,50 @@ export function Learn() {
   }, [items, searchQuery, filterSource]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-blue-950 dark:to-indigo-950 p-6 transition-colors duration-300">
-      <div className="max-w-5xl mx-auto space-y-6">
+    <div className="min-h-screen overflow-x-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-blue-950 dark:to-indigo-950">
+      <div className="max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-3">
-            <div className="p-3 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl shadow-lg">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="p-3 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl shadow-lg shrink-0">
               <BookOpen className="h-6 w-6 text-white" />
             </div>
-            <div>
-              <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Apprendre</h1>
-              <p className="text-sm text-slate-600 dark:text-slate-400">Hadiths 8 → 15</p>
+            <div className="min-w-0">
+              <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100 truncate">
+                Apprendre
+              </h1>
+              <p className="text-sm text-slate-600 dark:text-slate-400">
+                Hadiths 8 → 15
+              </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 bg-white dark:bg-slate-800 px-3 py-2 rounded-full shadow-sm border border-slate-200 dark:border-slate-700">
+          <div className="flex items-center gap-2 bg-white dark:bg-slate-800 px-3 py-2 rounded-full shadow-sm border border-slate-200 dark:border-slate-700 shrink-0">
             <Sun className="h-4 w-4 text-slate-600 dark:text-slate-400" />
             <Switch checked={dark} onCheckedChange={toggleTheme} />
             <Moon className="h-4 w-4 text-slate-600 dark:text-slate-400" />
           </div>
         </div>
 
-        {/* Barre de recherche & filtre */}
+        {/* Recherche & filtre */}
         <Card className="border-slate-200 dark:border-slate-700 shadow-lg bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
           <CardContent className="pt-6">
-            <div className="flex flex-col sm:flex-row gap-3">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+              <div className="relative flex-1 min-w-0">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
                 <Input
                   placeholder="Rechercher par numéro, texte arabe ou français..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-white dark:bg-slate-900"
+                  className="pl-10 bg-white dark:bg-slate-900 w-full"
                 />
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 shrink-0">
                 <Filter className="h-4 w-4 text-slate-500" />
                 <select
                   value={filterSource}
                   onChange={(e) => setFilterSource(e.target.value)}
-                  className="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm"
+                  className="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm max-w-[55vw] sm:max-w-none"
                 >
                   {sources.map((s) => (
                     <option key={s} value={s}>
@@ -156,7 +152,7 @@ export function Learn() {
         </Card>
 
         {/* Stats rapides */}
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Card className="bg-gradient-to-br from-emerald-500 to-teal-600 border-0 text-white shadow-lg">
             <CardContent className="pt-6 text-center">
               <div className="text-3xl font-bold mb-1">{items.length}</div>
@@ -165,21 +161,23 @@ export function Learn() {
           </Card>
           <Card className="bg-gradient-to-br from-blue-500 to-indigo-600 border-0 text-white shadow-lg">
             <CardContent className="pt-6 text-center">
-              <div className="text-3xl font-bold mb-1">{loading ? "…" : filteredItems.length}</div>
+              <div className="text-3xl font-bold mb-1">
+                {loading ? "…" : filteredItems.length}
+              </div>
               <div className="text-sm opacity-90">Résultats</div>
             </CardContent>
           </Card>
           <Card className="bg-gradient-to-br from-purple-500 to-pink-600 border-0 text-white shadow-lg">
             <CardContent className="pt-6 text-center">
-              <div className="text-3xl font-bold mb-1">{sources.length - 1}</div>
+              <div className="text-3xl font-bold mb-1">{Math.max(0, sources.length - 1)}</div>
               <div className="text-sm opacity-90">Sources</div>
             </CardContent>
           </Card>
         </div>
 
         {/* Liste des hadiths */}
-        <ScrollArea className="h-[600px] pr-4">
-          <div className="space-y-4">
+        <ScrollArea className="h-[65vh] max-w-full overscroll-contain">
+          <div className="space-y-4 px-0 sm:px-1">
             {loading ? (
               <>
                 <Card className="animate-pulse border-slate-200 dark:border-slate-700">
@@ -200,23 +198,24 @@ export function Learn() {
               filteredItems.map((h) => (
                 <Card
                   key={h.number}
-                  className="group hover:shadow-xl transition-all duration-300 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden relative"
+                  className="group relative w-full overflow-hidden border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 transition-shadow duration-300 hover:shadow-lg"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  {/* overlay sécurisé */}
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                   <CardHeader className="pb-3 relative z-10">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-2">
-                          <Badge variant="secondary" className="rounded-full">
+                          <Badge variant="secondary" className="rounded-full shrink-0">
                             #{h.number}
                           </Badge>
-                          <Badge variant="outline" className="text-xs">
+                          <Badge variant="outline" className="text-xs truncate max-w-[40vw] sm:max-w-none">
                             {h.source || "Source PDF"}
                           </Badge>
-                          <Sparkles className="h-3 w-3 text-yellow-500" />
+                          <Sparkles className="h-3 w-3 text-yellow-500 shrink-0" />
                         </div>
-                        <CardTitle className="text-lg text-slate-800 dark:text-slate-100">
+                        <CardTitle className="text-lg text-slate-800 dark:text-slate-100 truncate">
                           Hadith {h.number}
                         </CardTitle>
                       </div>
@@ -224,7 +223,7 @@ export function Learn() {
                       <Button
                         asChild
                         size="sm"
-                        className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-md group-hover:scale-105 transition-transform"
+                        className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md md:group-hover:scale-[1.03] transition-transform will-change-transform"
                       >
                         <Link to={`/hadith/${h.number}`} className="flex items-center gap-2">
                           Ouvrir
@@ -240,12 +239,12 @@ export function Learn() {
                     <div className="space-y-3">
                       <div
                         dir="rtl"
-                        className="text-lg font-serif leading-loose text-slate-800 dark:text-slate-200 line-clamp-2 group-hover:line-clamp-none transition-all"
+                        className="text-lg font-serif leading-loose text-slate-800 dark:text-slate-200 break-words overflow-hidden line-clamp-3 md:group-hover:line-clamp-none transition-all"
                       >
                         {h.arabic_text}
                       </div>
                       {h.french_text && (
-                        <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 group-hover:line-clamp-none transition-all">
+                        <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-3 md:group-hover:line-clamp-none transition-all">
                           {h.french_text}
                         </p>
                       )}
@@ -260,3 +259,5 @@ export function Learn() {
     </div>
   );
 }
+
+export default Learn;
