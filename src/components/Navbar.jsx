@@ -19,6 +19,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetDescription,
+  SheetClose,
 } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
 
@@ -26,7 +27,7 @@ import {
   BookOpen,
   Brain,
   RotateCcw,
-  Scale3d, // ⬅️ évite 'Scale'
+  Scale3d,
   User2,
   Menu,
   Search,
@@ -37,6 +38,7 @@ import {
   Sparkles,
   Target,
   ClipboardCheck,
+  X,
 } from "lucide-react";
 
 import { useAuth } from "../context/AuthContext";
@@ -70,7 +72,7 @@ export function Navbar() {
 
   // Aller à un hadith par numéro
   const goToHadith = (n) => {
-    const num = Math.max(8, Math.min(15, Number(n))); // borne 8–15 (ajuste si besoin)
+    const num = Math.max(8, Math.min(15, Number(n)));
     navigate(`/hadith/${num}`);
     setOpen(false);
   };
@@ -171,7 +173,7 @@ export function Navbar() {
 
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center gap-2">
-          {/* Quick Jump (form pour Enter + bouton) */}
+          {/* Quick Jump */}
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -253,30 +255,44 @@ export function Navbar() {
             variant="ghost"
             size="icon"
             onClick={() => toggleTheme(!dark)}
-            className="h-9 w-9"
+            className="h-9 w-9 hover:bg-slate-100 dark:hover:bg-slate-800"
           >
-            {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            {dark ? (
+              <Sun className="h-4 w-4 text-slate-700 dark:text-slate-300" />
+            ) : (
+              <Moon className="h-4 w-4 text-slate-700 dark:text-slate-300" />
+            )}
           </Button>
 
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
-              <Button variant="outline" size="icon" className="h-9 w-9">
-                <Menu className="h-5 w-5" />
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-9 w-9 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800"
+              >
+                <Menu className="h-5 w-5 text-slate-700 dark:text-slate-300" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-80">
+            <SheetContent side="right" className="w-80 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+              {/* Bouton de fermeture personnalisé */}
+              <SheetClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
+                <X className="h-4 w-4 text-slate-700 dark:text-slate-300" />
+                <span className="sr-only">Close</span>
+              </SheetClose>
+
               <SheetHeader>
-                <SheetTitle className="flex items-center gap-2">
+                <SheetTitle className="flex items-center gap-2 text-slate-900 dark:text-slate-100">
                   <Sparkles className="h-5 w-5 text-emerald-500" />
                   Navigation
                 </SheetTitle>
-                <SheetDescription>
+                <SheetDescription className="text-slate-600 dark:text-slate-400">
                   Accède rapidement aux différentes sections
                 </SheetDescription>
               </SheetHeader>
 
               <div className="mt-6 space-y-6">
-                {/* Quick Jump mobile (form) */}
+                {/* Quick Jump mobile */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
                     Accès direct
