@@ -104,7 +104,7 @@ export function Navbar() {
         <Button
           variant={active ? "default" : "ghost"}
           className={`w-full justify-start gap-2 ${
-            active ? `bg-gradient-to-r ${gradient} text-white` : ""
+            active ? `bg-gradient-to-r ${gradient} text-black` : ""
           }`}
           asChild
           onClick={() => setOpen(false)}
@@ -187,8 +187,8 @@ export function Navbar() {
               placeholder="# Hadith"
               className="h-7 w-24 text-sm border-0 bg-transparent focus-visible:ring-0"
             />
-            <Button size="sm" variant="ghost" className="h-7 w-7 p-0" type="submit">
-              <Search className="h-3.5 w-3.5" />
+            <Button size="sm" variant="ghost" className="h-7 w-7 p-0 bg-slate-800 " type="submit">
+              <Search className="h-3.5 w-3.5 dark:text-slate-400 " />
             </Button>
           </form>
 
@@ -255,10 +255,10 @@ export function Navbar() {
             variant="ghost"
             size="icon"
             onClick={() => toggleTheme(!dark)}
-            className="h-9 w-9 hover:bg-slate-100 dark:hover:bg-slate-800"
+            className="h-9 w-9 hover:bg-slate-100 dark:hover:bg-slate-800 "
           >
             {dark ? (
-              <Sun className="h-4 w-4 text-slate-700 dark:text-slate-300" />
+              <Sun className="h-4 w-4 text-slate-700 dark:text-slate-300 " />
             ) : (
               <Moon className="h-4 w-4 text-slate-700 dark:text-slate-300" />
             )}
@@ -294,7 +294,7 @@ export function Navbar() {
               <div className="mt-6 space-y-6">
                 {/* Quick Jump mobile */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                  <label className="text-sm font-medium px-2.5 text-slate-700 dark:text-slate-300">
                     Accès direct
                   </label>
                   <form
@@ -302,7 +302,7 @@ export function Navbar() {
                       e.preventDefault();
                       handleGo();
                     }}
-                    className="flex items-center gap-2"
+                    className="flex items-center px-2.5 gap-2"
                   >
                     <Input
                       value={goto}
@@ -323,7 +323,7 @@ export function Navbar() {
 
                 {/* Navigation Links */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                  <label className="text-sm font-medium px-2.5 text-slate-700 dark:text-slate-300">
                     Pages principales
                   </label>
                   <div className="space-y-1">
