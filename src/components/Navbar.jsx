@@ -322,7 +322,7 @@ export function Navbar() {
                 </div>
 
                 {/* Navigation Links */}
-                <div className="space-y-2">
+                <div className="space-y-2 mx-3">
                   <label className="text-sm font-medium px-2.5 text-slate-700 dark:text-slate-300">
                     Pages principales
                   </label>
@@ -334,8 +334,8 @@ export function Navbar() {
                 </div>
 
                 {/* User Section */}
-                <div className="pt-4 border-t border-slate-200 dark:border-slate-700 space-y-2">
-                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                <div className="pt-4 border-t mx-3 border-slate-200 dark:border-slate-700 space-y-2">
+                  <label className="text-sm font-medium text-slate-700 px-2 dark:text-slate-300">
                     Compte
                   </label>
                   {user ? (
