@@ -1,21 +1,47 @@
-import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { BookOpen, RotateCcw, Brain, Scale } from 'lucide-react';
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { BookOpen, RotateCcw, Brain, Scale } from "lucide-react";
 
 export function Home() {
-  // Optionnel : synchronise le thème si tu stockes "theme" dans localStorage
+  const navigate = useNavigate();
+
+  // synchro thème
   useEffect(() => {
-    const pref = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
-    const enable = pref ? pref === 'dark' : prefersDark;
-    document.documentElement.classList.toggle('dark', enable);
+    const pref = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
+    const enable = pref ? pref === "dark" : prefersDark;
+    document.documentElement.classList.toggle("dark", enable);
   }, []);
 
   const features = [
-    { icon: BookOpen,  title: 'Apprendre', description: 'Texte arabe, audio, et opinions détaillées des savants', href: '/learn',   gradient: 'from-emerald-500 to-teal-600' },
-    { icon: RotateCcw, title: 'Réviser',   description: 'Système de révision espacée intelligent (SM-2)',        href: '/review',  gradient: 'from-blue-500 to-indigo-600' },
-    { icon: Brain,     title: 'Quiz',      description: 'Teste et renforce ta compréhension',                    href: '/quiz',    gradient: 'from-purple-500 to-pink-600' },
-    { icon: Scale,     title: 'Comparer',  description: 'Analyse comparative des 4 écoles juridiques',           href: '/compare', gradient: 'from-amber-500 to-orange-600' }
+    {
+      icon: BookOpen,
+      title: "Apprendre",
+      description: "Texte arabe, audio, et opinions détaillées des savants",
+      href: "/learn",
+      gradient: "from-emerald-500 to-teal-600",
+    },
+    {
+      icon: RotateCcw,
+      title: "Réviser",
+      description: "Système de révision espacée intelligent (SM-2)",
+      href: "/review",
+      gradient: "from-blue-500 to-indigo-600",
+    },
+    {
+      icon: Brain,
+      title: "Quiz",
+      description: "Teste et renforce ta compréhension",
+      href: "/quiz",
+      gradient: "from-purple-500 to-pink-600",
+    },
+    {
+      icon: Scale,
+      title: "Comparer",
+      description: "Analyse comparative des 4 écoles juridiques",
+      href: "/compare",
+      gradient: "from-amber-500 to-orange-600",
+    },
   ];
 
   return (
@@ -41,44 +67,59 @@ export function Home() {
           {features.map((feature, index) => {
             const Icon = feature.icon;
             return (
-              <Link
+              <button
                 key={index}
-                href={feature.href}
-                className="group relative bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-xl
-                           transition-all duration-300 border border-slate-200 dark:border-slate-700 overflow-hidden"
+                type="button"
+                onClick={() => navigate(feature.href)}
+                className="group relative w-full text-left bg-white dark:bg-slate-800 rounded-2xl p-6 
+                           shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-200 
+                           dark:border-slate-700 overflow-hidden"
               >
-                {/* Gradient overlay on hover */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient}
-                                 opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
-                
+                {/* overlay, sans bloquer les clics */}
+                <div
+                  className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${feature.gradient}
+                              opacity-0 group-hover:opacity-5 transition-opacity duration-300`}
+                />
+
                 <div className="relative z-10">
                   {/* Icon */}
-                  <div className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${feature.gradient}
-                                   mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                  <div
+                    className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${feature.gradient}
+                                mb-4 group-hover:scale-110 transition-transform duration-300`}
+                  >
                     <Icon className="w-6 h-6 text-white" />
                   </div>
-                  
+
                   {/* Content */}
-                  <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2
-                                 group-hover:text-transparent group-hover:bg-clip-text
-                                 group-hover:bg-gradient-to-r group-hover:from-slate-800 group-hover:to-slate-600
-                                 dark:group-hover:from-slate-100 dark:group-hover:to-slate-300 transition-all duration-300">
+                  <h3
+                    className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2
+                               group-hover:text-transparent group-hover:bg-clip-text
+                               group-hover:bg-gradient-to-r group-hover:from-slate-800 group-hover:to-slate-600
+                               dark:group-hover:from-slate-100 dark:group-hover:to-slate-300 transition-all duration-300"
+                  >
                     {feature.title}
                   </h3>
                   <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
                     {feature.description}
                   </p>
-                  
-                  {/* Arrow indicator */}
-                  <div className="mt-4 flex items-center text-sm font-semibold text-slate-400 dark:text-slate-500
-                                  group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors">
+
+                  {/* Arrow */}
+                  <div
+                    className="mt-4 flex items-center text-sm font-semibold text-slate-400 dark:text-slate-500
+                               group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors"
+                  >
                     <span>Commencer</span>
-                    <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg
+                      className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   </div>
                 </div>
-              </Link>
+              </button>
             );
           })}
         </div>
