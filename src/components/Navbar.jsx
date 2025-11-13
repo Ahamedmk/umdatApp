@@ -187,8 +187,8 @@ export function Navbar() {
               placeholder="# Hadith"
               className="h-7 w-24 text-sm border-0 bg-transparent focus-visible:ring-0"
             />
-            <Button size="sm" variant="ghost" className="h-7 w-7 p-0 bg-slate-800 " type="submit">
-              <Search className="h-3.5 w-3.5 dark:text-slate-400 " />
+            <Button size="sm" variant="ghost" className="h-7 w-7 p-0  " type="submit">
+              <Search className="h-3.5 w-3.5 dark:text-slate-400  " />
             </Button>
           </form>
 
@@ -255,12 +255,12 @@ export function Navbar() {
             variant="ghost"
             size="icon"
             onClick={() => toggleTheme(!dark)}
-            className="h-9 w-9 hover:bg-slate-100 dark:hover:bg-slate-800 "
+            className="h-9 w-9 hover:bg-slate-100 dark:hover:bg-slate-800  "
           >
             {dark ? (
               <Sun className="h-4 w-4 text-slate-700 dark:text-slate-300 " />
             ) : (
-              <Moon className="h-4 w-4 text-slate-700 dark:text-slate-300" />
+              <Moon className="h-4 w-4 text-slate-700 dark:text-slate-300 " />
             )}
           </Button>
 
@@ -269,7 +269,7 @@ export function Navbar() {
               <Button
                 variant="outline"
                 size="icon"
-                className="h-9 w-9 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800"
+                className="h-9 w-9 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 "
               >
                 <Menu className="h-5 w-5 text-slate-700 dark:text-slate-300" />
               </Button>

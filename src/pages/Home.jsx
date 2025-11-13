@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { BookOpen, RotateCcw, Brain, Scale } from 'lucide-react';
 
 export function Home() {
@@ -40,7 +41,7 @@ export function Home() {
           {features.map((feature, index) => {
             const Icon = feature.icon;
             return (
-              <a
+              <Link
                 key={index}
                 href={feature.href}
                 className="group relative bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-xl
@@ -77,7 +78,7 @@ export function Home() {
                     </svg>
                   </div>
                 </div>
-              </a>
+              </Link>
             );
           })}
         </div>
