@@ -13,33 +13,16 @@ import {
   CheckCircle2,
   Sparkles,
 } from "lucide-react";
-import { supabase } from "../lib/supabase"; // ⬅️ importe bien ton client
 
-export function ProfileGuest() {
+export function ProfileGuest({ onSignIn }) {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSignIn = async () => {
     if (!email.trim()) return;
-
     setLoading(true);
     try {
-      const redirectTo = window.location.origin; // localhost en dev, domaine Vercel en prod
-
-      const { error } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          emailRedirectTo: redirectTo,
-        },
-      });
-
-      if (error) {
-        console.error("Erreur Supabase:", error);
-        // ici tu peux afficher un toast / message d’erreur
-      } else {
-        // ici tu peux afficher un message "Mail envoyé"
-        console.log("Lien magique envoyé à", email);
-      }
+      await onSignIn(email);
     } finally {
       setLoading(false);
     }
