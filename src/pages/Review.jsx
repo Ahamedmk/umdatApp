@@ -436,23 +436,32 @@ export function Review() {
                 </div>
 
                 {hiddenPart && (
-                  <div className="flex justify-center">
-                    <Button
-  size="sm"
-  onClick={() => setShowFr(false)}
-  className="border rounded-full px-3 py-1"
-  style={{
-    backgroundColor: "#ffffff",
-    color: "#0f172a",
-    borderColor: "#e2e8f0",
-  }}
->
-  <EyeOff className="h-4 w-4 mr-2" />
-  Masquer
-</Button>
+  <div className="flex justify-center">
+    <Button
+      size="sm"
+      onClick={() => setShowFullArabic((v) => !v)}
+      className="border rounded-full px-3 py-1"
+      style={{
+        backgroundColor: "#ffffff",
+        color: "#0f172a",
+        borderColor: "#e2e8f0",
+      }}
+    >
+      {showFullArabic ? (
+        <>
+          <EyeOff className="h-4 w-4 mr-2" />
+          Masquer la fin du hadith
+        </>
+      ) : (
+        <>
+          <Eye className="h-4 w-4 mr-2" />
+          Afficher tout le texte arabe
+        </>
+      )}
+    </Button>
+  </div>
+)}
 
-                  </div>
-                )}
               </div>
 
               {/* Bouton reveal / Traduction */}
