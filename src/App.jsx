@@ -10,6 +10,8 @@ import { Quiz } from './pages/Quiz'
 import { Compare } from './pages/Compare'
 import { Profile } from './pages/Profile'
 import HadithDetail from './pages/HadithDetail'
+import ProfileGuest from "./pages/ProfileGuest"; // écran email
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 // ⬇️ nouvelles pages
 import ExamQuiz from './pages/ExamQuiz'
@@ -21,18 +23,92 @@ export default function App() {
       <Navbar />
       <main className="max-w-3xl mx-auto">
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/learn" element={<Learn />} />
-          <Route path="/review" element={<Review />} />
-          <Route path="/quiz" element={<Quiz />} />
-          <Route path="/compare" element={<Compare />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/hadith" element={<HadithDetail />} />
-          <Route path="/hadith/:n" element={<HadithDetail />} />
+          <Route path="/profile" element={<ProfileGuest />} />
+          <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
+         <Route
+          path="/learn"
+          element={
+            <ProtectedRoute>
+              <Learn />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/review"
+          element={
+            <ProtectedRoute>
+              <Review />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/quiz"
+          element={
+            <ProtectedRoute>
+              <Quiz />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/compare"
+          element={
+            <ProtectedRoute>
+              <Compare />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/account"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        /> 
+          <Route path="/hadith"
+           element={
+            <ProtectedRoute>
+           <HadithDetail />
+           </ProtectedRoute>
+          } 
+          />
+           <Route path="/hadith/:n"
+           element={
+            <ProtectedRoute>
+           <HadithDetail />
+           </ProtectedRoute>
+          } 
+          />
           {/* ⬇️ examens */}
-          <Route path="/exam" element={<ExamQuiz />} />
-          <Route path="/exam/targeted" element={<ExamQuizTargeted />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="/exam"
+           element={
+            <ProtectedRoute>
+           <ExamQuiz />
+           </ProtectedRoute>
+          } 
+          />
+          <Route path="/exam/targeted"
+           element={
+            <ProtectedRoute>
+           <ExamQuizTargeted />
+           </ProtectedRoute>
+          } 
+          />
+          <Route path="*"
+           element={
+            <ProtectedRoute>
+           <Navigate to="/" replace  />
+           </ProtectedRoute>
+          } 
+          />
+
         </Routes>
       </main>
     </div>

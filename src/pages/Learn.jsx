@@ -8,20 +8,62 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Switch } from "@/components/ui/switch";
 
-import { BookOpen, Search, Filter, ArrowRight, Moon, Sun, Sparkles } from "lucide-react";
+import { BookOpen, Search, Filter, ArrowRight, Sparkles } from "lucide-react";
 
 import { supabase } from "../lib/supabase";
 import { HADITHS_8_15 } from "../data/seed_hadiths_8_15";
+import { useAuth } from "../context/AuthContext";
+
+// Petit helper pour l'affichage des statuts
+function getStatusMeta(row) {
+  if (!row) {
+    return {
+      label: "Nouveau",
+      className:
+        "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200",
+    };
+  }
+
+  switch (row.status) {
+    case "mastered":
+      return {
+        label: "Maîtrisé",
+        className:
+          "bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200",
+      };
+    case "learning":
+      return {
+        label: "En cours",
+        className:
+          "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200",
+      };
+    case "review":
+      return {
+        label: "À revoir",
+        className:
+          "bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-200",
+      };
+    case "new":
+    default:
+      return {
+        label: "Nouveau",
+        className:
+          "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200",
+      };
+  }
+}
 
 export function Learn() {
+  const { user } = useAuth();
+
   const [items, setItems] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterSource, setFilterSource] = useState("all");
-  const [dark, setDark] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [progressByHadith, setProgressByHadith] = useState({}); // { [number]: row }
 
+  // thème déjà géré globalement → on garde juste la synchro initiale
   useEffect(() => {
     const pref = localStorage.getItem("theme");
     const prefersDark =
@@ -29,16 +71,10 @@ export function Learn() {
       window.matchMedia &&
       window.matchMedia("(prefers-color-scheme: dark)").matches;
     const enable = pref ? pref === "dark" : prefersDark;
-    setDark(enable);
     document.documentElement.classList.toggle("dark", enable);
   }, []);
 
-  const toggleTheme = (checked) => {
-    setDark(checked);
-    document.documentElement.classList.toggle("dark", checked);
-    localStorage.setItem("theme", checked ? "dark" : "light");
-  };
-
+  // Charger les hadiths (8 → 15) DB + fallback seed
   useEffect(() => {
     let active = true;
     async function load() {
@@ -74,12 +110,75 @@ export function Learn() {
     };
   }, []);
 
+  // Charger la progression de l'utilisateur (si connecté)
+  useEffect(() => {
+    if (!user) {
+      setProgressByHadith({});
+      return;
+    }
+
+    let active = true;
+    async function loadProgress() {
+      try {
+        const { data, error } = await supabase
+          .from("user_hadith_progress")
+          .select("hadith_number, status, next_review_date, last_result")
+          .eq("user_id", user.id)
+          .gte("hadith_number", 8)
+          .lte("hadith_number", 15);
+
+        if (error) {
+          console.error("Erreur loadProgress:", error);
+          if (active) setProgressByHadith({});
+          return;
+        }
+
+        const map = {};
+        (data || []).forEach((row) => {
+          map[row.hadith_number] = row;
+        });
+
+        if (active) setProgressByHadith(map);
+      } catch (e) {
+        console.error("Exception loadProgress:", e);
+        if (active) setProgressByHadith({});
+      }
+    }
+
+    loadProgress();
+    return () => {
+      active = false;
+    };
+  }, [user]);
+
+  // Liste des sources pour le filtre
   const sources = useMemo(() => {
     const set = new Set();
     items.forEach((h) => h.source && set.add(h.source));
     return ["all", ...Array.from(set)];
   }, [items]);
 
+  // Stats basées sur la progression Supabase
+  const stats = useMemo(() => {
+    const res = {
+      total: items.length,
+      dueToday: 0,
+      mastered: 0,
+    };
+
+    const today = new Date().toISOString().slice(0, 10);
+
+    Object.values(progressByHadith).forEach((row) => {
+      if (row.status === "mastered") res.mastered += 1;
+      if (row.next_review_date && row.next_review_date <= today) {
+        res.dueToday += 1;
+      }
+    });
+
+    return res;
+  }, [items, progressByHadith]);
+
+  // Filtrage (recherche + source)
   const filteredItems = useMemo(() => {
     const q = searchQuery.trim();
     return (items || []).filter((h) => {
@@ -110,14 +209,13 @@ export function Learn() {
               <p className="text-sm text-slate-600 dark:text-slate-400">
                 Hadiths 8 → 15
               </p>
+              {!user && (
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  Connecte-toi pour sauvegarder ta progression.
+                </p>
+              )}
             </div>
           </div>
-
-          {/* <div className="flex items-center gap-2 bg-white dark:bg-slate-800 px-3 py-2 rounded-full shadow-sm border border-slate-200 dark:border-slate-700 shrink-0">
-            <Sun className="h-4 w-4 text-slate-600 dark:text-slate-400" />
-            <Switch checked={dark} onCheckedChange={toggleTheme} />
-            <Moon className="h-4 w-4 text-slate-600 dark:text-slate-400" />
-          </div> */}
         </div>
 
         {/* Recherche & filtre */}
@@ -151,26 +249,28 @@ export function Learn() {
           </CardContent>
         </Card>
 
-        {/* Stats rapides */}
+        {/* Stats rapides (connectées à Supabase) */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Card className="bg-gradient-to-br from-emerald-500 to-teal-600 border-0 text-white shadow-lg">
             <CardContent className="pt-6 text-center">
-              <div className="text-3xl font-bold mb-1">{items.length}</div>
-              <div className="text-sm opacity-90">Hadiths</div>
+              <div className="text-3xl font-bold mb-1">{stats.total}</div>
+              <div className="text-sm opacity-90">Hadiths (8–15)</div>
             </CardContent>
           </Card>
+
           <Card className="bg-gradient-to-br from-blue-500 to-indigo-600 border-0 text-white shadow-lg">
             <CardContent className="pt-6 text-center">
-              <div className="text-3xl font-bold mb-1">
-                {loading ? "…" : filteredItems.length}
+              <div className="text-3xl font-bold mb-1">{user ? stats.dueToday : "–"}</div>
+              <div className="text-sm opacity-90">
+                À réviser aujourd&apos;hui
               </div>
-              <div className="text-sm opacity-90">Résultats</div>
             </CardContent>
           </Card>
+
           <Card className="bg-gradient-to-br from-purple-500 to-pink-600 border-0 text-white shadow-lg">
             <CardContent className="pt-6 text-center">
-              <div className="text-3xl font-bold mb-1">{Math.max(0, sources.length - 1)}</div>
-              <div className="text-sm opacity-90">Sources</div>
+              <div className="text-3xl font-bold mb-1">{user ? stats.mastered : "–"}</div>
+              <div className="text-sm opacity-90">Hadiths maîtrisés</div>
             </CardContent>
           </Card>
         </div>
@@ -191,67 +291,86 @@ export function Learn() {
               <Card className="border-dashed border-2 border-slate-300 dark:border-slate-700">
                 <CardContent className="py-12 text-center">
                   <Search className="h-12 w-12 text-slate-400 mx-auto mb-3" />
-                  <p className="text-slate-600 dark:text-slate-400">Aucun hadith trouvé</p>
+                  <p className="text-slate-600 dark:text-slate-400">
+                    Aucun hadith trouvé
+                  </p>
                 </CardContent>
               </Card>
             ) : (
-              filteredItems.map((h) => (
-                <Card
-                  key={h.number}
-                  className="group relative w-full overflow-hidden border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 transition-shadow duration-300 hover:shadow-lg"
-                >
-                  {/* overlay sécurisé */}
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              filteredItems.map((h) => {
+                const progress = progressByHadith[h.number];
+                const statusMeta = getStatusMeta(progress);
 
-                  <CardHeader className="pb-3 relative z-10">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Badge variant="secondary" className="rounded-full shrink-0">
-                            #{h.number}
-                          </Badge>
-                          <Badge variant="outline" className="text-xs truncate max-w-[40vw] sm:max-w-none">
-                            {h.source || "Source PDF"}
-                          </Badge>
-                          <Sparkles className="h-3 w-3 text-yellow-500 shrink-0" />
+                return (
+                  <Card
+                    key={h.number}
+                    className="group relative w-full overflow-hidden border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 transition-shadow duration-300 hover:shadow-lg"
+                  >
+                    {/* overlay sécurisé */}
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                    <CardHeader className="pb-3 relative z-10">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex flex-wrap items-center gap-2 mb-2">
+                            <Badge variant="secondary" className="rounded-full shrink-0">
+                              #{h.number}
+                            </Badge>
+                            <Badge
+                              variant="outline"
+                              className="text-xs truncate max-w-[40vw] sm:max-w-none"
+                            >
+                              {h.source || "Source PDF"}
+                            </Badge>
+                            <Badge
+                              variant="secondary"
+                              className={`text-[10px] sm:text-xs rounded-full ${statusMeta.className}`}
+                            >
+                              {statusMeta.label}
+                            </Badge>
+                            <Sparkles className="h-3 w-3 text-yellow-500 shrink-0" />
+                          </div>
+                          <CardTitle className="text-lg text-slate-800 dark:text-slate-100 truncate">
+                            Hadith {h.number}
+                          </CardTitle>
                         </div>
-                        <CardTitle className="text-lg text-slate-800 dark:text-slate-100 truncate">
-                          Hadith {h.number}
-                        </CardTitle>
+
+                        <Button
+                          asChild
+                          size="sm"
+                          className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md md:group-hover:scale-[1.03] transition-transform will-change-transform"
+                        >
+                          <Link
+                            to={`/hadith/${h.number}`}
+                            className="flex items-center gap-2"
+                          >
+                            Ouvrir
+                            <ArrowRight className="h-4 w-4" />
+                          </Link>
+                        </Button>
                       </div>
+                    </CardHeader>
 
-                      <Button
-                        asChild
-                        size="sm"
-                        className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md md:group-hover:scale-[1.03] transition-transform will-change-transform"
-                      >
-                        <Link to={`/hadith/${h.number}`} className="flex items-center gap-2">
-                          Ouvrir
-                          <ArrowRight className="h-4 w-4" />
-                        </Link>
-                      </Button>
-                    </div>
-                  </CardHeader>
+                    <Separator className="bg-slate-200 dark:bg-slate-700" />
 
-                  <Separator className="bg-slate-200 dark:bg-slate-700" />
-
-                  <CardContent className="pt-4 relative z-10">
-                    <div className="space-y-3">
-                      <div
-                        dir="rtl"
-                        className="text-lg font-serif leading-loose text-slate-800 dark:text-slate-200 break-words overflow-hidden line-clamp-3 md:group-hover:line-clamp-none transition-all"
-                      >
-                        {h.arabic_text}
+                    <CardContent className="pt-4 relative z-10">
+                      <div className="space-y-3">
+                        <div
+                          dir="rtl"
+                          className="text-lg font-serif leading-loose text-slate-800 dark:text-slate-200 break-words overflow-hidden line-clamp-3 md:group-hover:line-clamp-none transition-all"
+                        >
+                          {h.arabic_text}
+                        </div>
+                        {h.french_text && (
+                          <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-3 md:group-hover:line-clamp-none transition-all">
+                            {h.french_text}
+                          </p>
+                        )}
                       </div>
-                      {h.french_text && (
-                        <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-3 md:group-hover:line-clamp-none transition-all">
-                          {h.french_text}
-                        </p>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
+                    </CardContent>
+                  </Card>
+                );
+              })
             )}
           </div>
         </ScrollArea>
