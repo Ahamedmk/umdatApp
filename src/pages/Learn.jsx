@@ -12,7 +12,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { BookOpen, Search, Filter, ArrowRight, Sparkles } from "lucide-react";
 
 import { supabase } from "../lib/supabase";
-import { HADITHS_8_15 } from "../data/seed_hadiths_8_15";
+import { HADITHS_1_15 } from "../data/seed_hadiths_1_15";
 import { useAuth } from "../context/AuthContext";
 
 // Petit helper pour l'affichage des statuts
@@ -83,7 +83,7 @@ export function Learn() {
         const { data, error } = await supabase
           .from("hadiths")
           .select("number, arabic_text, french_text, source")
-          .gte("number", 8)
+          .gte("number", 1)
           .lte("number", 15)
           .order("number", { ascending: true });
 
@@ -91,15 +91,15 @@ export function Learn() {
 
         const dbMap = new Map((data || []).map((h) => [h.number, h]));
         const merged = [];
-        for (let n = 8; n <= 15; n++) {
+        for (let n = 1; n <= 15; n++) {
           const fromDb = dbMap.get(n);
-          const fromSeed = HADITHS_8_15.find((x) => x.number === n) || null;
+          const fromSeed = HADITHS_1_15.find((x) => x.number === n) || null;
           if (fromDb) merged.push(fromDb);
           else if (fromSeed) merged.push(fromSeed);
         }
         if (active) setItems(merged.filter(Boolean));
       } catch {
-        if (active) setItems(HADITHS_8_15);
+        if (active) setItems(HADITHS_1_15);
       } finally {
         if (active) setLoading(false);
       }
@@ -124,7 +124,7 @@ export function Learn() {
           .from("user_hadith_progress")
           .select("hadith_number, status, next_review_date, last_result")
           .eq("user_id", user.id)
-          .gte("hadith_number", 8)
+          .gte("hadith_number", 1)
           .lte("hadith_number", 15);
 
         if (error) {
@@ -186,7 +186,8 @@ export function Learn() {
         q === "" ||
         h.number?.toString().includes(q) ||
         (h.arabic_text && h.arabic_text.includes(q)) ||
-        (h.french_text && h.french_text.toLowerCase().includes(q.toLowerCase()));
+        (h.french_text &&
+          h.french_text.toLowerCase().includes(q.toLowerCase()));
 
       const matchesSource = filterSource === "all" || h.source === filterSource;
       return matchesSearch && matchesSource;
@@ -207,7 +208,7 @@ export function Learn() {
                 Apprendre
               </h2>
               <p className="text-sm text-slate-600 dark:text-slate-400">
-                Hadiths 8 → 15
+                Hadiths 1 → 15
               </p>
               {!user && (
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
@@ -254,13 +255,15 @@ export function Learn() {
           <Card className="bg-gradient-to-br from-emerald-500 to-teal-600 border-0 text-white shadow-lg">
             <CardContent className="pt-6 text-center">
               <div className="text-3xl font-bold mb-1">{stats.total}</div>
-              <div className="text-sm opacity-90">Hadiths (8–15)</div>
+              <div className="text-sm opacity-90">Hadiths (1–15)</div>
             </CardContent>
           </Card>
 
           <Card className="bg-gradient-to-br from-blue-500 to-indigo-600 border-0 text-white shadow-lg">
             <CardContent className="pt-6 text-center">
-              <div className="text-3xl font-bold mb-1">{user ? stats.dueToday : "–"}</div>
+              <div className="text-3xl font-bold mb-1">
+                {user ? stats.dueToday : "–"}
+              </div>
               <div className="text-sm opacity-90">
                 À réviser aujourd&apos;hui
               </div>
@@ -269,7 +272,9 @@ export function Learn() {
 
           <Card className="bg-gradient-to-br from-purple-500 to-pink-600 border-0 text-white shadow-lg">
             <CardContent className="pt-6 text-center">
-              <div className="text-3xl font-bold mb-1">{user ? stats.mastered : "–"}</div>
+              <div className="text-3xl font-bold mb-1">
+                {user ? stats.mastered : "–"}
+              </div>
               <div className="text-sm opacity-90">Hadiths maîtrisés</div>
             </CardContent>
           </Card>
@@ -313,7 +318,10 @@ export function Learn() {
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex-1 min-w-0">
                           <div className="flex flex-wrap items-center gap-2 mb-2">
-                            <Badge variant="secondary" className="rounded-full shrink-0">
+                            <Badge
+                              variant="secondary"
+                              className="rounded-full shrink-0"
+                            >
                               #{h.number}
                             </Badge>
                             <Badge

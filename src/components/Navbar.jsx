@@ -72,7 +72,7 @@ export function Navbar() {
 
   // Aller à un hadith par numéro
   const goToHadith = (n) => {
-    const num = Math.max(8, Math.min(15, Number(n)));
+    const num = Math.max(1, Math.min(15, Number(n)));
     navigate(`/hadith/${num}`);
     setOpen(false);
   };
@@ -172,7 +172,7 @@ export function Navbar() {
         </div>
 
         {/* Desktop Actions */}
-        <div className="hidden md:flex items-center gap-2">
+        <div className="hidden md:flex items-center gap-2 ">
           {/* Quick Jump */}
           <form
             onSubmit={(e) => {
@@ -187,8 +187,8 @@ export function Navbar() {
               placeholder="# Hadith"
               className="h-7 w-24 text-sm border-0 bg-transparent focus-visible:ring-0"
             />
-            <Button size="sm" variant="ghost" className="h-7 w-7 p-0  " type="submit">
-              <Search className="h-3.5 w-3.5 dark:text-slate-400  " />
+            <Button size="sm" variant="ghost" className="h-7 w-7 p-0 dark:bg-slate-800 " type="submit">
+              <Search className=" dark:text-slate-800  " />
             </Button>
           </form>
 
@@ -202,9 +202,9 @@ export function Navbar() {
           {/* User Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="gap-2 border-slate-200 dark:border-slate-700">
-                <User2 className="h-4 w-4" />
-                <span className="hidden lg:inline">
+              <Button variant="outline" size="sm" className="gap-2 border-slate-200 dark:bg-slate-800 dark:border-slate-200">
+                <User2 className="h-4 w-4 dark:text-slate-800" />
+                <span className="hidden lg:inline dark:text-slate-800">
                   {user ? user.name?.split(" ")[0] || "Profil" : "Connexion"}
                 </span>
               </Button>

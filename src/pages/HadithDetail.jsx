@@ -1,13 +1,29 @@
 // /src/pages/HadithDetail.jsx
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useParams, useSearchParams, useLocation } from "react-router-dom";
+import {
+  Link,
+  useParams,
+  useSearchParams,
+  useLocation,
+} from "react-router-dom";
 
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Switch } from "@/components/ui/switch";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -32,14 +48,14 @@ import {
 // === dépendances app (réelles) ===
 import { supabase } from "../lib/supabase";
 import { nextReview } from "../lib/spaced";
-import { HADITHS_8_15 } from "../data/seed_hadiths_8_15";
+import { HADITHS_1_15 } from "../data/seed_hadiths_1_15";
 import { useAuth } from "../context/AuthContext";
 
 // --- util: récupérer le numéro depuis /hadith/:n ou ?n= ---
 function useHadithNumberFromRouter() {
   const { n: nParam } = useParams(); // route style /hadith/:n
-  const [sp] = useSearchParams();    // route style /hadith?n=8
-  const loc = useLocation();         // force update quand l’URL change
+  const [sp] = useSearchParams(); // route style /hadith?n=8
+  const loc = useLocation(); // force update quand l’URL change
   const raw = nParam ?? sp.get("n") ?? "8";
   const num = parseInt(raw, 10);
   return Number.isNaN(num) ? 8 : num;
@@ -73,7 +89,11 @@ function InlineAudio({ url }) {
             onClick={toggle}
             className="gap-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white"
           >
-            {playing ? <Pause className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+            {playing ? (
+              <Pause className="h-4 w-4" />
+            ) : (
+              <Volume2 className="h-4 w-4" />
+            )}
             {playing ? "Pause" : "Écouter"}
           </Button>
           <Badge variant="outline" className="hidden sm:inline">
@@ -144,7 +164,7 @@ export default function HadithDetail() {
 
   // fallback local (seed) si pas en DB
   const localSeed = useMemo(
-    () => HADITHS_8_15.find((h) => h.number === hadithNumber) || null,
+    () => HADITHS_1_15.find((h) => h.number === hadithNumber) || null,
     [hadithNumber]
   );
 
@@ -180,10 +200,14 @@ export default function HadithDetail() {
 
           const opinions = { Hanafi: {}, Maliki: {}, Shafi: {}, Hanbali: {} };
           (ops || []).forEach((o) => {
-            if (o.school === "Hanafi") opinions.Hanafi = { ar: o.arabic_text, fr: o.french_text };
-            if (o.school === "Maliki") opinions.Maliki = { ar: o.arabic_text, fr: o.french_text };
-            if (o.school === "Shafi") opinions.Shafi = { ar: o.arabic_text, fr: o.french_text };
-            if (o.school === "Hanbali") opinions.Hanbali = { ar: o.arabic_text, fr: o.french_text };
+            if (o.school === "Hanafi")
+              opinions.Hanafi = { ar: o.arabic_text, fr: o.french_text };
+            if (o.school === "Maliki")
+              opinions.Maliki = { ar: o.arabic_text, fr: o.french_text };
+            if (o.school === "Shafi")
+              opinions.Shafi = { ar: o.arabic_text, fr: o.french_text };
+            if (o.school === "Hanbali")
+              opinions.Hanbali = { ar: o.arabic_text, fr: o.french_text };
           });
 
           const full = {
@@ -233,7 +257,10 @@ export default function HadithDetail() {
 
       // si pas connecté ou pas d’id DB, stock local
       if (!user || !hadith.id) {
-        localStorage.setItem(`progress_${hadith.number}`, JSON.stringify(payload));
+        localStorage.setItem(
+          `progress_${hadith.number}`,
+          JSON.stringify(payload)
+        );
         setProgress(payload);
       } else {
         const { error } = await supabase.from("user_progress").upsert(payload);
@@ -252,7 +279,10 @@ export default function HadithDetail() {
         last_review_date: new Date().toISOString().slice(0, 10),
         next_review_date: calc.next_review_date,
       };
-      localStorage.setItem(`progress_${hadith?.number || "local"}`, JSON.stringify(payload));
+      localStorage.setItem(
+        `progress_${hadith?.number || "local"}`,
+        JSON.stringify(payload)
+      );
       setProgress(payload);
     } finally {
       setSaving(false);
@@ -303,7 +333,9 @@ export default function HadithDetail() {
                   </h1>
                 </div>
                 {hadith.source && (
-                  <p className="text-sm text-slate-600 dark:text-slate-400">{hadith.source}</p>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                    {hadith.source}
+                  </p>
                 )}
               </div>
             </div>
@@ -323,7 +355,9 @@ export default function HadithDetail() {
                 <Sparkles className="h-5 w-5 text-yellow-500" />
                 Texte & Audio
               </CardTitle>
-              <CardDescription>Lis attentivement, écoute, puis mémorise.</CardDescription>
+              <CardDescription>
+                Lis attentivement, écoute, puis mémorise.
+              </CardDescription>
             </CardHeader>
             <Separator className="bg-slate-200 dark:bg-slate-700" />
             <CardContent className="space-y-6 pt-6 relative z-10">
@@ -338,7 +372,12 @@ export default function HadithDetail() {
 
               <div className="flex items-center justify-between gap-3 flex-wrap">
                 <InlineAudio url={hadith.audio_url} />
-                <Button size="sm" variant="outline" onClick={() => setHideFR((v) => !v)} className="gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setHideFR((v) => !v)}
+                  className="gap-2"
+                >
                   {hideFR ? (
                     <>
                       <Eye className="h-4 w-4" />
@@ -371,7 +410,9 @@ export default function HadithDetail() {
                   <Scale3d className="h-5 w-5 text-amber-500" />
                   Avis des quatre écoles juridiques
                 </CardTitle>
-                <CardDescription>Compare rapidement les formulations ar/fr.</CardDescription>
+                <CardDescription>
+                  Compare rapidement les formulations ar/fr.
+                </CardDescription>
               </CardHeader>
               <Separator className="bg-slate-200 dark:bg-slate-700" />
               <CardContent className="pt-6">
@@ -399,28 +440,47 @@ export default function HadithDetail() {
                     return (
                       <TabsContent key={key} value={key} className="mt-6">
                         <div className="grid md:grid-cols-2 gap-4">
-                          <Card className={`${colors.bg} ${colors.border} border-2`}>
+                          <Card
+                            className={`${colors.bg} ${colors.border} border-2`}
+                          >
                             <CardHeader>
                               <div className="flex items-center justify-between">
-                                <CardDescription className="text-xs font-semibold">النص الفقهي</CardDescription>
-                                <Badge className={`bg-gradient-to-r ${colors.gradient} text-white`}>عربي</Badge>
+                                <CardDescription className="text-xs font-semibold">
+                                  النص الفقهي
+                                </CardDescription>
+                                <Badge
+                                  className={`bg-gradient-to-r ${colors.gradient} text-white`}
+                                >
+                                  عربي
+                                </Badge>
                               </div>
                               <Separator />
                             </CardHeader>
                             <CardContent>
                               <ScrollArea className="h-48 pr-3">
-                                <div dir="rtl" className="leading-8 text-slate-800 dark:text-slate-200">
+                                <div
+                                  dir="rtl"
+                                  className="leading-8 text-slate-800 dark:text-slate-200"
+                                >
                                   {hadith.opinions?.[key]?.ar || "—"}
                                 </div>
                               </ScrollArea>
                             </CardContent>
                           </Card>
 
-                          <Card className={`${colors.bg} ${colors.border} border-2`}>
+                          <Card
+                            className={`${colors.bg} ${colors.border} border-2`}
+                          >
                             <CardHeader>
                               <div className="flex items-center justify-between">
-                                <CardDescription className="text-xs font-semibold">Texte en français</CardDescription>
-                                <Badge className={`bg-gradient-to-r ${colors.gradient} text-white`}>FR</Badge>
+                                <CardDescription className="text-xs font-semibold">
+                                  Texte en français
+                                </CardDescription>
+                                <Badge
+                                  className={`bg-gradient-to-r ${colors.gradient} text-white`}
+                                >
+                                  FR
+                                </Badge>
                               </div>
                               <Separator />
                             </CardHeader>
@@ -448,7 +508,9 @@ export default function HadithDetail() {
                 <CheckCircle2 className="h-5 w-5 text-emerald-500" />
                 Auto-évaluation (SM-2)
               </CardTitle>
-              <CardDescription>Note ta maîtrise pour planifier la prochaine révision.</CardDescription>
+              <CardDescription>
+                Note ta maîtrise pour planifier la prochaine révision.
+              </CardDescription>
             </CardHeader>
             <Separator className="bg-slate-200 dark:bg-slate-700" />
             <CardContent className="space-y-6 pt-6">
@@ -483,14 +545,22 @@ export default function HadithDetail() {
                   <div className="flex items-start gap-3">
                     <Clock className="h-5 w-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
                     <div className="text-sm text-emerald-800 dark:text-emerald-200">
-                      <div className="font-semibold mb-1">Prochaine révision programmée</div>
+                      <div className="font-semibold mb-1">
+                        Prochaine révision programmée
+                      </div>
                       <div className="flex items-center gap-2 flex-wrap">
                         <span>{progress.next_review_date}</span>
-                        <Badge variant="outline" className="bg-white dark:bg-slate-800">
-                          {progress.status === "learned" ? "✅ Appris" : "📚 En cours"}
+                        <Badge
+                          variant="outline"
+                          className="bg-white dark:bg-slate-800"
+                        >
+                          {progress.status === "learned"
+                            ? "✅ Appris"
+                            : "📚 En cours"}
                         </Badge>
                         <span className="text-xs">
-                          • {progress.repetitions} révision{progress.repetitions > 1 ? "s" : ""}
+                          • {progress.repetitions} révision
+                          {progress.repetitions > 1 ? "s" : ""}
                         </span>
                       </div>
                     </div>
@@ -508,7 +578,10 @@ export default function HadithDetail() {
               disabled={hadith.number <= 8}
               className="flex-1 sm:flex-none"
             >
-              <Link to={`/hadith/${hadith.number - 1}`} className="flex items-center gap-2">
+              <Link
+                to={`/hadith/${hadith.number - 1}`}
+                className="flex items-center gap-2"
+              >
                 <ChevronLeft className="h-4 w-4" />
                 Précédent
               </Link>
@@ -522,7 +595,10 @@ export default function HadithDetail() {
             </Button>
 
             <Button variant="outline" asChild className="flex-1 sm:flex-none">
-              <Link to={`/hadith/${hadith.number + 1}`} className="flex items-center gap-2">
+              <Link
+                to={`/hadith/${hadith.number + 1}`}
+                className="flex items-center gap-2"
+              >
                 Suivant
                 <ChevronRight className="h-4 w-4" />
               </Link>

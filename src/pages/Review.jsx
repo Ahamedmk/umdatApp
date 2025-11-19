@@ -32,15 +32,13 @@ import {
 } from "lucide-react";
 
 import { supabase } from "../lib/supabase";
-import { HADITHS_8_15 } from "../data/seed_hadiths_8_15";
+import { HADITHS_1_15 } from "../data/seed_hadiths_1_15";
 
 // Mini SM-2 côté client
 const nextReview = (current, quality) => {
   const ease =
-    (current.ease ?? current.ease_factor ?? 2.5) +
-    (quality >= 4 ? 0.1 : -0.2);
-  const interval_days =
-    quality >= 4 ? (current.interval_days ?? 0) + 1 : 0;
+    (current.ease ?? current.ease_factor ?? 2.5) + (quality >= 4 ? 0.1 : -0.2);
+  const interval_days = quality >= 4 ? (current.interval_days ?? 0) + 1 : 0;
   const repetitions = (current.repetitions ?? 0) + 1;
 
   const next_review_date = new Date(
@@ -141,7 +139,7 @@ export function Review() {
 
         for (const n of dueNumbers) {
           merged.push(
-            dbMap.get(n) || HADITHS_8_15.find((x) => x.number === n) || null
+            dbMap.get(n) || HADITHS_1_15.find((x) => x.number === n) || null
           );
         }
 
@@ -156,7 +154,7 @@ export function Review() {
       } catch (err) {
         console.error("Erreur chargement révision:", err);
         if (active) {
-          setHadiths(HADITHS_8_15);
+          setHadiths(HADITHS_1_15);
           setProgressByNumber({});
         }
       } finally {
@@ -404,7 +402,8 @@ export function Review() {
                     Hadith {hCurrent.number}
                   </CardTitle>
                   <CardDescription>
-                    Récite en arabe, puis révèle la traduction pour t’auto-évaluer
+                    Récite en arabe, puis révèle la traduction pour
+                    t’auto-évaluer
                   </CardDescription>
                 </CardHeader>
 
