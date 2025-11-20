@@ -37,8 +37,10 @@ import { HADITHS_1_15 } from "../data/seed_hadiths_1_15";
 // Mini SM-2 côté client
 const nextReview = (current, quality) => {
   const ease =
-    (current.ease ?? current.ease_factor ?? 2.5) + (quality >= 4 ? 0.1 : -0.2);
-  const interval_days = quality >= 4 ? (current.interval_days ?? 0) + 1 : 0;
+    (current.ease ?? current.ease_factor ?? 2.5) +
+    (quality >= 4 ? 0.1 : -0.2);
+  const interval_days =
+    quality >= 4 ? (current.interval_days ?? 0) + 1 : 0;
   const repetitions = (current.repetitions ?? 0) + 1;
 
   const next_review_date = new Date(
@@ -58,7 +60,6 @@ export function Review() {
   const [progressByNumber, setProgressByNumber] = useState({});
   const [idx, setIdx] = useState(0);
   const [showFr, setShowFr] = useState(false);
-  const [dark, setDark] = useState(false);
   const [loading, setLoading] = useState(true);
   const [sessionStats, setSessionStats] = useState({
     total: 0,
@@ -67,24 +68,17 @@ export function Review() {
     needs_work: 0,
   });
 
-  const h = useMemo(() => hadiths[idx], [hadiths, idx]);
-  const arabicText = h?.arabic_text || "";
-  const visibleChars = 35; // tu peux ajuster
-  const visiblePart = arabicText.slice(0, visibleChars);
-  const hiddenPart = arabicText.slice(visibleChars);
-
-  // Thème persistant
+  // --- Thème (inchangé, mais simple) ---
   useEffect(() => {
     const pref = localStorage.getItem("theme");
     const prefersDark =
       typeof window !== "undefined" &&
       window.matchMedia?.("(prefers-color-scheme: dark)").matches;
     const enable = pref ? pref === "dark" : prefersDark;
-    setDark(enable);
     document.documentElement.classList.toggle("dark", enable);
   }, []);
 
-  // Charger les hadiths à réviser pour ce user (ou fallback 8→15)
+  // --- Chargement des hadiths à réviser ---
   useEffect(() => {
     let active = true;
 
@@ -154,7 +148,7 @@ export function Review() {
       } catch (err) {
         console.error("Erreur chargement révision:", err);
         if (active) {
-          setHadiths(HADITHS_1_15);
+          setHadiths(HADITHS_8_15);
           setProgressByNumber({});
         }
       } finally {
@@ -168,6 +162,16 @@ export function Review() {
     };
   }, [user?.id]);
 
+  const h = useMemo(() => hadiths[idx], [hadiths, idx]);
+  const arabicText = h?.arabic_text || "";
+  const visibleChars = 35;
+  const visiblePart = arabicText.slice(0, visibleChars);
+  const hiddenPart = arabicText.slice(visibleChars);
+
+  const progressPercent = hadiths.length
+    ? ((idx + 1) / hadiths.length) * 100
+    : 0;
+
   const answer = (quality) => {
     if (!h) return;
 
@@ -179,9 +183,7 @@ export function Review() {
     };
 
     const res = nextReview(current, quality);
-    console.log("Spaced result:", res);
 
-    // Stats de session
     setSessionStats((prev) => ({
       total: prev.total + 1,
       perfect: prev.perfect + (quality === 5 ? 1 : 0),
@@ -211,65 +213,55 @@ export function Review() {
       );
     }
 
-    // Hadith suivant
     setIdx((i) => (i + 1) % (hadiths.length || 1));
     setShowFr(false);
     setShowFullArabic(false);
   };
-
-  const progressPercent = hadiths.length
-    ? ((idx + 1) / hadiths.length) * 100
-    : 0;
 
   const qualityLabels = [
     {
       value: 0,
       label: "Oublié",
       desc: "Je ne me souviens pas du tout",
-      color: "from-red-500 to-rose-600",
     },
     {
       value: 1,
       label: "Très difficile",
       desc: "Je me souviens à peine",
-      color: "from-orange-500 to-red-500",
     },
     {
       value: 2,
       label: "Difficile",
       desc: "Plusieurs erreurs",
-      color: "from-yellow-500 to-orange-500",
     },
     {
       value: 3,
       label: "Moyen",
       desc: "Quelques hésitations",
-      color: "from-blue-500 to-indigo-500",
     },
     {
       value: 4,
       label: "Facile",
       desc: "Bien mémorisé",
-      color: "from-emerald-500 to-teal-600",
     },
     {
       value: 5,
       label: "Parfait",
       desc: "Récitation fluide",
-      color: "from-green-500 to-emerald-600",
     },
   ];
 
   const isLoadingInitial = loading && !hadiths.length;
   const noHadiths = !loading && !hadiths.length;
+
   const hCurrent = h || null;
 
   return (
     <TooltipProvider>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-blue-950 dark:to-indigo-950">
         <div className="max-w-4xl w-full mx-auto px-3 sm:px-6 py-6 space-y-6">
-          {/* Header (toujours présent) */}
-          <div className="flex items-center justify-between mb-6">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-3 min-w-0">
               <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-lg shrink-0">
                 <RotateCcw className="h-6 w-6 text-white" />
@@ -283,28 +275,79 @@ export function Review() {
                 </p>
                 {!user && (
                   <p className="text-xs text-red-500 mt-1">
-                    Tu n&apos;es pas connecté : ta progression ne sera pas
-                    sauvegardée.
+                    Tu n&apos;es pas connecté : ta progression ne sera pas sauvegardée.
                   </p>
                 )}
               </div>
             </div>
           </div>
 
-          {/* Skeleton de chargement initial, dans le même layout */}
+          {/* Progress bar */}
+          <Card className="border-slate-200 dark:border-slate-700 shadow-lg bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
+            <CardContent className="pt-6">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-slate-600 dark:text-slate-400">
+                    Progression de la session
+                  </span>
+                  <span className="font-semibold text-slate-800 dark:text-slate-200">
+                    {hadiths.length ? `${idx + 1} / ${hadiths.length}` : "–"}
+                  </span>
+                </div>
+                <Progress value={progressPercent} className="h-3" />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Session stats */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <Card className="bg-gradient-to-br from-blue-500 to-indigo-600 border-0 text-white shadow-lg">
+              <CardContent className="pt-4 pb-3 text-center">
+                <div className="text-2xl font-bold mb-1">
+                  {sessionStats.total}
+                </div>
+                <div className="text-xs opacity-90">Total</div>
+              </CardContent>
+            </Card>
+            <Card className="bg-gradient-to-br from-green-500 to-emerald-600 border-0 text-white shadow-lg">
+              <CardContent className="pt-4 pb-3 text-center">
+                <div className="text-2xl font-bold mb-1">
+                  {sessionStats.perfect}
+                </div>
+                <div className="text-xs opacity-90">Parfait</div>
+              </CardContent>
+            </Card>
+            <Card className="bg-gradient-to-br from-emerald-500 to-teal-600 border-0 text-white shadow-lg">
+              <CardContent className="pt-4 pb-3 text-center">
+                <div className="text-2xl font-bold mb-1">
+                  {sessionStats.good}
+                </div>
+                <div className="text-xs opacity-90">Facile</div>
+              </CardContent>
+            </Card>
+            <Card className="bg-gradient-to-br from-orange-500 to-red-500 border-0 text-white shadow-lg">
+              <CardContent className="pt-4 pb-3 text-center">
+                <div className="text-2xl font-bold mb-1">
+                  {sessionStats.needs_work}
+                </div>
+                <div className="text-xs opacity-90">À revoir</div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Cas 1 : chargement initial → skeleton dans une carte de hauteur fixe */}
           {isLoadingInitial && (
-            <>
-              <Card className="border-slate-200 dark:border-slate-700 shadow-lg">
-                <CardContent className="h-24 pt-6 animate-pulse" />
-              </Card>
-              <Card className="border-slate-200 dark:border-slate-700 shadow-lg">
-                <CardContent className="h-40 pt-6 animate-pulse" />
-              </Card>
-            </>
+            <Card className="border-slate-200 dark:border-slate-700 shadow-xl bg-white/80 dark:bg-slate-800/80 overflow-hidden relative">
+              <CardContent className="pt-6 space-y-4 animate-pulse min-h-[320px]">
+                <div className="h-6 bg-slate-200 dark:bg-slate-700 rounded w-1/3" />
+                <div className="h-8 bg-slate-200 dark:bg-slate-700 rounded w-2/3" />
+                <div className="h-40 bg-slate-200 dark:bg-slate-700 rounded" />
+              </CardContent>
+            </Card>
           )}
 
-          {/* Message aucun hadith à réviser */}
-          {noHadiths && (
+          {/* Cas 2 : aucun hadith à réviser */}
+          {noHadiths && !isLoadingInitial && (
             <Card className="border-dashed border-2 border-slate-300 dark:border-slate-700">
               <CardContent className="py-12 text-center space-y-3">
                 <RotateCcw className="h-10 w-10 text-slate-400 mx-auto mb-2" />
@@ -319,63 +362,10 @@ export function Review() {
             </Card>
           )}
 
-          {/* Contenu normal : seulement quand on a des hadiths */}
-          {!isLoadingInitial && !noHadiths && hCurrent && (
+          {/* Cas 3 : contenu normal */}
+          {hCurrent && !isLoadingInitial && (
             <>
-              {/* Progress bar */}
-              <Card className="border-slate-200 dark:border-slate-700 shadow-lg bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
-                <CardContent className="pt-6">
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-slate-600 dark:text-slate-400">
-                        Progression de la session
-                      </span>
-                      <span className="font-semibold text-slate-800 dark:text-slate-200">
-                        {idx + 1} / {hadiths.length}
-                      </span>
-                    </div>
-                    <Progress value={progressPercent} className="h-3" />
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Session stats */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <Card className="bg-gradient-to-br from-blue-500 to-indigo-600 border-0 text-white shadow-lg">
-                  <CardContent className="pt-4 pb-3 text-center">
-                    <div className="text-2xl font-bold mb-1">
-                      {sessionStats.total}
-                    </div>
-                    <div className="text-xs opacity-90">Total</div>
-                  </CardContent>
-                </Card>
-                <Card className="bg-gradient-to-br from-green-500 to-emerald-600 border-0 text-white shadow-lg">
-                  <CardContent className="pt-4 pb-3 text-center">
-                    <div className="text-2xl font-bold mb-1">
-                      {sessionStats.perfect}
-                    </div>
-                    <div className="text-xs opacity-90">Parfait</div>
-                  </CardContent>
-                </Card>
-                <Card className="bg-gradient-to-br from-emerald-500 to-teal-600 border-0 text-white shadow-lg">
-                  <CardContent className="pt-4 pb-3 text-center">
-                    <div className="text-2xl font-bold mb-1">
-                      {sessionStats.good}
-                    </div>
-                    <div className="text-xs opacity-90">Facile</div>
-                  </CardContent>
-                </Card>
-                <Card className="bg-gradient-to-br from-orange-500 to-red-500 border-0 text-white shadow-lg">
-                  <CardContent className="pt-4 pb-3 text-center">
-                    <div className="text-2xl font-bold mb-1">
-                      {sessionStats.needs_work}
-                    </div>
-                    <div className="text-xs opacity-90">À revoir</div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Main review card */}
+              {/* Carte principale */}
               <Card className="border-slate-200 dark:border-slate-700 shadow-xl bg-white dark:bg-slate-800 overflow-hidden relative">
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-blue-500/5 to-indigo-500/5" />
 
@@ -402,15 +392,14 @@ export function Review() {
                     Hadith {hCurrent.number}
                   </CardTitle>
                   <CardDescription>
-                    Récite en arabe, puis révèle la traduction pour
-                    t’auto-évaluer
+                    Récite en arabe, puis révèle la traduction pour t’auto-évaluer
                   </CardDescription>
                 </CardHeader>
 
                 <Separator className="bg-slate-200 dark:bg-slate-700 relative z-10" />
 
                 <CardContent className="space-y-6 pt-6 relative z-10">
-                  {/* Texte arabe flouté */}
+                  {/* Texte arabe + floutage */}
                   <div className="p-6 bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
                     <div
                       dir="rtl"
@@ -458,7 +447,7 @@ export function Review() {
                     )}
                   </div>
 
-                  {/* Bouton reveal / Traduction */}
+                  {/* Traduction */}
                   <div className="space-y-4">
                     {!showFr ? (
                       <Button
@@ -478,7 +467,8 @@ export function Review() {
                           <Button
                             size="sm"
                             onClick={() => setShowFr(false)}
-                            className="text-slate-700 dark:text-slate-100 bg-transparent"
+                            className="text-slate-700 dark:text-slate-100"
+                            style={{ background: "transparent", border: "none" }}
                           >
                             <EyeOff className="h-4 w-4 mr-2" />
                             Masquer
@@ -513,16 +503,14 @@ export function Review() {
                                 style={
                                   q.value >= 4
                                     ? {
-                                        // boutons "verts/bleus" pour 4 et 5
                                         backgroundImage:
                                           q.value === 4
-                                            ? "linear-gradient(135deg,#10b981,#0f766e)" // émeraude/teal
-                                            : "linear-gradient(135deg,#22c55e,#16a34a)", // vert pour "parfait"
+                                            ? "linear-gradient(135deg,#10b981,#0f766e)"
+                                            : "linear-gradient(135deg,#22c55e,#16a34a)",
                                         color: "#ffffff",
                                         border: "none",
                                       }
                                     : {
-                                        // boutons neutres pour 0–3
                                         backgroundColor: "#ffffff",
                                         color: "#0f172a",
                                         border: "1px solid #e2e8f0",

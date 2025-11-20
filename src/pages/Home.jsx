@@ -63,7 +63,7 @@ export function Home() {
         </header>
 
         {/* Features Grid */}
-        <div className="grid sm:grid-cols-2 gap-6 mb-8">
+        <div className="grid sm:grid-cols-2 gap-6 mb-8 ">
           {features.map((feature, index) => {
             const Icon = feature.icon;
             return (
@@ -71,7 +71,7 @@ export function Home() {
                 key={index}
                 type="button"
                 onClick={() => navigate(feature.href)}
-                className="group relative w-full text-left bg-white dark:bg-slate-800 rounded-2xl p-6 
+                className="group relative w-full text-left bg-white dark:bg-slate-black rounded-2xl p-6 
                            shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-200 
                            dark:border-slate-700 overflow-hidden"
               >
@@ -92,7 +92,7 @@ export function Home() {
 
                   {/* Content */}
                   <h3
-                    className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2
+                    className="text-xl font-bold text-slate-800 dark:text-slate-500 mb-2
                                group-hover:text-transparent group-hover:bg-clip-text
                                group-hover:bg-gradient-to-r group-hover:from-slate-800 group-hover:to-slate-600
                                dark:group-hover:from-slate-100 dark:group-hover:to-slate-300 transition-all duration-300"

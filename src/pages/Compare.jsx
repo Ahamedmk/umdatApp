@@ -225,7 +225,7 @@ export function Compare() {
                   variant="ghost"
                   size="sm"
                   onClick={() => toggleDetails(detailKey)}
-                  className="h-6 px-2 text-xs"
+                  className="h-6 px-2 text-xs text-black dark:hover:text-black"
                 >
                   {isExpanded ? "Masquer" : "Détails"}
                 </Button>
@@ -464,7 +464,7 @@ export function Compare() {
                                                 variant="ghost"
                                                 size="sm"
                                                 onClick={() => toggleDetails(detailKey)}
-                                                className="h-6 px-2 text-xs"
+                                                className="h-6 px-2 text-xs text-black"
                                               >
                                                 {isExpanded ? "Masquer" : "Détails"}
                                               </Button>

@@ -179,7 +179,7 @@ export function ExamQuiz() {
                   </label>
                   <Select value={scope} onValueChange={setScope}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
+                    <SelectContent >
                       <SelectItem value="all">Tous (8–15)</SelectItem>
                       {[8,9,10,11,12,13,14,15].map(n => (
                         <SelectItem key={n} value={String(n)}>Hadith {n}</SelectItem>
