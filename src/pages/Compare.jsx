@@ -210,7 +210,7 @@ export function Compare() {
     ].filter(p => selectedSchool === "all" ? true : p.key === selectedSchool);
 
     return (
-      <div className="rounded-lg border border-slate-200 dark:border-slate-700 p-4 space-y-3">
+      <div className="rounded-lg border w-full border-slate-200 dark:border-slate-700 p-4 space-y-3">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <div className="font-medium text-slate-800 dark:text-slate-200 break-words text-pretty">

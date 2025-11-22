@@ -172,14 +172,14 @@ export function ExamQuiz() {
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid sm:grid-cols-2 gap-6">
-                <div className="space-y-3">
+                <div className="space-y-3 dark:text-gray-400">
                   <label className="text-sm font-medium flex items-center gap-2">
                     <Target className="h-4 w-4" />
                     Périmètre
                   </label>
                   <Select value={scope} onValueChange={setScope}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent >
+                    <SelectContent  >
                       <SelectItem value="all">Tous (8–15)</SelectItem>
                       {[8,9,10,11,12,13,14,15].map(n => (
                         <SelectItem key={n} value={String(n)}>Hadith {n}</SelectItem>
@@ -189,8 +189,8 @@ export function ExamQuiz() {
                   <p className="text-xs text-slate-500">{preparedPool.length} questions</p>
                 </div>
 
-                <div className="space-y-3">
-                  <label className="text-sm font-medium flex items-center gap-2">
+                <div className="space-y-3 dark:text-gray-400">
+                  <label className="text-sm font-medium flex items-center gap-2 dark:text-gray-400">
                     <Clock className="h-4 w-4" />
                     Durée
                   </label>
@@ -382,7 +382,7 @@ export function ExamQuiz() {
             <CardTitle className="text-xl">{q?.q}</CardTitle>
           </CardHeader>
           <Separator />
-          <CardContent className="pt-6 space-y-4">
+          <CardContent className="pt-6 space-y-4 dark:text-gray-400">
             <div className="grid gap-3">
               {q?.options.map((opt, i) => {
                 const selected = answers[index] === i;
@@ -391,7 +391,7 @@ export function ExamQuiz() {
                     key={i}
                     variant={selected ? "default" : "outline"}
                     onClick={() => selectAnswer(i)}
-                    className={`justify-start h-auto py-4 ${selected ? 'bg-gradient-to-r from-red-500 to-rose-600' : ''}`}
+                    className={`justify-start h-auto py-4 dark:text-gray-400 ${selected ? 'bg-gradient-to-r from-red-500 to-rose-600' : ''}`}
                   >
                     <div className="flex items-center gap-3 w-full">
                       <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
@@ -422,7 +422,7 @@ export function ExamQuiz() {
           </CardContent>
         </Card>
 
-        <Button variant="outline" onClick={endExam} className="w-full">
+        <Button variant="outline" onClick={endExam} className="w-full dark:text-gray-400">
           Terminer maintenant
         </Button>
       </div>

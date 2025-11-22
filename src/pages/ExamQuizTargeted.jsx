@@ -230,7 +230,7 @@ export function ExamQuizTargeted() {
                   Durée
                 </label>
                 <Select value={String(duration)} onValueChange={(v)=>setDuration(parseInt(v,10))}>
-                  <SelectTrigger className="w-48"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="w-48 dark:text-gray-400"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {[4,6,8,10,12,15].map(m => (
                       <SelectItem key={m} value={String(m)}>{m} min</SelectItem>

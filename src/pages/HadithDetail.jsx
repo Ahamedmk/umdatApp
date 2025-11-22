@@ -376,7 +376,7 @@ export default function HadithDetail() {
                   size="sm"
                   variant="outline"
                   onClick={() => setHideFR((v) => !v)}
-                  className="gap-2"
+                  className="gap-2 dark:text-gray-400"
                 >
                   {hideFR ? (
                     <>
@@ -417,7 +417,7 @@ export default function HadithDetail() {
               <Separator className="bg-slate-200 dark:bg-slate-700" />
               <CardContent className="pt-6">
                 <Tabs defaultValue="Hanafi" className="w-full">
-                  <TabsList className="grid grid-cols-4 w-full">
+                  <TabsList className="grid grid-cols-4 w-full gap-3">
                     {["Hanafi", "Maliki", "Shafi", "Hanbali"].map((school) => (
                       <TabsTrigger
                         key={school}
