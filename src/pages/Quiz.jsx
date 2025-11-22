@@ -34,7 +34,7 @@ import {
 } from "lucide-react";
 
 import { HADITHS_1_15 } from "@/data/seed_hadiths_1_15";
-import { QUIZ_QUESTIONS_8_15 } from "@/data/quiz_questions_8_15";
+import { QUIZ_QUESTIONS_1_15 } from "@/data/quiz_questions_1_15";
 
 export function Quiz() {
   const [filterN, setFilterN] = useState("all");
@@ -66,9 +66,9 @@ export function Quiz() {
 
   // Pool de questions filtré par hadith
   const pool = useMemo(() => {
-    if (filterN === "all") return QUIZ_QUESTIONS_8_15;
+    if (filterN === "all") return QUIZ_QUESTIONS_1_15;
     const num = parseInt(filterN, 10);
-    return QUIZ_QUESTIONS_8_15.filter((q) => q.n === num);
+    return QUIZ_QUESTIONS_1_15.filter((q) => q.n === num);
   }, [filterN]);
 
   const current = pool[index];
@@ -248,7 +248,7 @@ export function Quiz() {
                 <SelectValue placeholder="Tous" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tous (8–15)</SelectItem>
+                <SelectItem value="all">Tous (1–15)</SelectItem>
                 {[8, 9, 10, 11, 12, 13, 14, 15].map((n) => (
                   <SelectItem key={n} value={String(n)}>
                     Hadith {n}

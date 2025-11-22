@@ -305,13 +305,14 @@ export default function HadithDetail() {
   }
 
   const qualityLabels = [
-    { value: 0, label: "Oublié", emoji: "❌" },
-    { value: 1, label: "Très difficile", emoji: "😰" },
-    { value: 2, label: "Difficile", emoji: "😕" },
-    { value: 3, label: "Moyen", emoji: "🤔" },
-    { value: 4, label: "Facile", emoji: "😊" },
-    { value: 5, label: "Parfait", emoji: "✨" },
-  ];
+  { value: 0, label: "Oublié", emoji: "❌" },
+  { value: 1, label: "Très difficile", emoji: "😰" },
+  { value: 2, label: "Difficile", emoji: "😕" },
+  { value: 3, label: "Je le retrouve avec effort", emoji: "🤔" },
+  { value: 4, label: "Je le connais bien", emoji: "😊" },
+  { value: 5, label: "Je le maîtrise parfaitement", emoji: "✨" },
+];
+
 
   return (
     <TooltipProvider>
@@ -509,8 +510,10 @@ export default function HadithDetail() {
                 Auto-évaluation (SM-2)
               </CardTitle>
               <CardDescription>
-                Note ta maîtrise pour planifier la prochaine révision.
-              </CardDescription>
+  1) Répète le hadith de mémoire. 2) Clique sur la note qui
+  correspond à ton niveau : cela crée le suivi et programme
+  la prochaine révision.
+</CardDescription>
             </CardHeader>
             <Separator className="bg-slate-200 dark:bg-slate-700" />
             <CardContent className="space-y-6 pt-6">

@@ -198,26 +198,55 @@ export function Compare() {
   }, [searchQuery]);
 
   /* ---- Rendu d’une ligne “mobile card” ---- */
-  const MobileItem = ({ item, detailKey, isExpanded }) => {
+const MobileItem = ({ item, detailKey, isExpanded }) => {
     const { level, label } = getConsensus(item);
     const consensusClass = CONSENSUS_STYLES[level];
 
     const pairs = [
-      { label: "Hanafite", color: "bg-blue-500", value: item.hanafi, key: "hanafi" },
-      { label: "Malikite", color: "bg-green-500", value: item.maliki, key: "maliki" },
-      { label: "Chafi'ite", color: "bg-purple-500", value: item.shafi, key: "shafi" },
-      { label: "Hanbalite", color: "bg-amber-500", value: item.hanbali, key: "hanbali" },
-    ].filter(p => selectedSchool === "all" ? true : p.key === selectedSchool);
+      {
+        label: "Hanafite",
+        color: "bg-blue-500",
+        value: item.hanafi,
+        key: "hanafi",
+      },
+      {
+        label: "Malikite",
+        color: "bg-green-500",
+        value: item.maliki,
+        key: "maliki",
+      },
+      {
+        label: "Chafi'ite",
+        color: "bg-purple-500",
+        value: item.shafi,
+        key: "shafi",
+      },
+      {
+        label: "Hanbalite",
+        color: "bg-amber-500",
+        value: item.hanbali,
+        key: "hanbali",
+      },
+    ].filter((p) => (selectedSchool === "all" ? true : p.key === selectedSchool));
 
     return (
-      <div className="rounded-lg border w-full border-slate-200 dark:border-slate-700 p-4 space-y-3">
+      <div
+        className="
+          rounded-lg border w-full border-slate-200 dark:border-slate-700 
+          p-4 space-y-3 
+          max-h-64  /* ≈ 256px */
+        "
+      >
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <div className="font-medium text-slate-800 dark:text-slate-200 break-words text-pretty">
               {item.point}
             </div>
             <div className="mt-1 flex items-center gap-2">
-              <Badge variant="outline" className={consensusClass + " text-xs"}>
+              <Badge
+                variant="outline"
+                className={consensusClass + " text-xs whitespace-nowrap"}
+              >
                 {label}
               </Badge>
               {item.details && (
@@ -237,7 +266,9 @@ export function Compare() {
         <div className="space-y-2">
           {pairs.map((p, i) => (
             <div key={i} className="flex items-start gap-2">
-              <div className={`w-1.5 h-1.5 rounded-full ${p.color} mt-2 shrink-0`} />
+              <div
+                className={`w-1.5 h-1.5 rounded-full ${p.color} mt-2 shrink-0`}
+              />
               <div className="text-slate-700 dark:text-slate-300 break-words">
                 <span className="font-semibold">{p.label} : </span>
                 {p.value}
@@ -248,13 +279,17 @@ export function Compare() {
 
         {isExpanded && item.details && (
           <div className="mt-2 rounded-lg bg-slate-50 dark:bg-slate-900/50 p-3 text-sm text-slate-600 dark:text-slate-400 break-words">
-            <span className="font-semibold text-slate-700 dark:text-slate-300">Précision : </span>
+            <span className="font-semibold text-slate-700 dark:text-slate-300">
+              Précision :{" "}
+            </span>
             {item.details}
           </div>
         )}
       </div>
     );
   };
+
+
 
   return (
     <div className="min-h-screen w-full overflow-x-clip bg-gradient-to-br from-slate-50 via-amber-50 to-orange-50 dark:from-slate-950 dark:via-amber-950 dark:to-orange-950 px-4 sm:px-6 py-6 transition-colors duration-300">
@@ -325,9 +360,9 @@ export function Compare() {
                 <Button
                   variant="outline"
                   onClick={() => setSelectedSchool("all")}
-                  className="gap-2 w-full sm:w-auto"
+                  className="gap-2 w-full sm:w-auto bg-slate-900! text-gray-500" 
                 >
-                  <Filter className="h-4 w-4" />
+                  <Filter className="h-4 w-4 " />
                   Réinitialiser le filtre
                 </Button>
               )}

@@ -148,7 +148,7 @@ export function Review() {
       } catch (err) {
         console.error("Erreur chargement révision:", err);
         if (active) {
-          setHadiths(HADITHS_8_15);
+          setHadiths(HADITHS_1_15);
           setProgressByNumber({});
         }
       } finally {

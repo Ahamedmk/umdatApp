@@ -255,7 +255,7 @@ export function Navbar() {
             variant="ghost"
             size="icon"
             onClick={() => toggleTheme(!dark)}
-            className="h-9 w-9 hover:bg-slate-100 dark:hover:bg-slate-800  "
+            className="h-9 w-9 hover:bg-slate-100 dark:hover:bg-slate-800 da "
           >
             {dark ? (
               <Sun className="h-4 w-4 text-slate-700 dark:text-slate-300 " />
