@@ -258,9 +258,9 @@ export function Navbar() {
             className="h-9 w-9 hover:bg-slate-100 dark:hover:bg-slate-800 da "
           >
             {dark ? (
-              <Sun className="h-4 w-4 text-slate-700 dark:text-slate-300 " />
+              <Sun className="h-4 w-4 text-slate-700 dark:text-slate-500 " />
             ) : (
-              <Moon className="h-4 w-4 text-slate-700 dark:text-slate-300 " />
+              <Moon className="h-4 w-4 text-slate-700 dark:text-slate-500 " />
             )}
           </Button>
 

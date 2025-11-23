@@ -28,12 +28,15 @@ import { Switch } from "@/components/ui/switch";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 import {
+  Play,
+  Pause,
   Moon,
   Sun,
   ChevronLeft,
   ChevronRight,
   BookOpen,
   Sparkles,
+  Volume2,
   Eye,
   EyeOff,
   CheckCircle2,
@@ -42,233 +45,191 @@ import {
   Scale3d,
   Mic,
   Square,
-  RefreshCw,
-  Headphones,
 } from "lucide-react";
 
 // === dépendances app (réelles) ===
 import { supabase } from "../lib/supabase";
-import { nextReview } from "../lib/spaced";
 import { HADITHS_1_15 } from "../data/seed_hadiths_1_15";
 import { useAuth } from "../context/AuthContext";
+import { saveReviewResult } from "../lib/hadithProgress";
 
 // --- util: récupérer le numéro depuis /hadith/:n ou ?n= ---
 function useHadithNumberFromRouter() {
   const { n: nParam } = useParams(); // route style /hadith/:n
   const [sp] = useSearchParams(); // route style /hadith?n=8
-  useLocation(); // juste pour réagir au changement d’URL
+  const loc = useLocation(); // force update quand l’URL change
   const raw = nParam ?? sp.get("n") ?? "8";
   const num = parseInt(raw, 10);
   return Number.isNaN(num) ? 8 : num;
 }
 
-// --- composant d’enregistrement de récitation ---
-function RecitationRecorder({ referenceUrl, onRecordingChange }) {
-  const [supported, setSupported] = useState(true);
-  const [permissionError, setPermissionError] = useState("");
-  const [recording, setRecording] = useState(false);
-  const [audioUrl, setAudioUrl] = useState(null);
-  const [duration, setDuration] = useState(0);
+// --- petit helper SM-2 (même logique que Review) ---
+const computeNextReview = (current, quality) => {
+  const easeBase = current.ease ?? current.ease_factor ?? 2.5;
+  const intervalBase = current.interval_days ?? 0;
+  const repetitionsBase = current.repetitions ?? 0;
 
-  const mediaRecorderRef = useRef(null);
-  const chunksRef = useRef([]);
-  const timerRef = useRef(null);
+  const ease = easeBase + (quality >= 4 ? 0.1 : -0.2);
+  const interval_days = quality >= 4 ? intervalBase + 1 : 0;
+  const repetitions = repetitionsBase + 1;
 
-  // vérifier support navigateur
-  useEffect(() => {
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      setSupported(false);
+  const next_review_date = new Date(
+    Date.now() + (quality >= 4 ? 86400000 : 3600000) // 1 jour ou 1h
+  )
+    .toISOString()
+    .slice(0, 10);
+
+  return { ease, interval_days, repetitions, next_review_date };
+};
+
+// --- lecteur audio inline (récitation modèle) ---
+function InlineAudio({ url }) {
+  const audioRef = useRef(null);
+  const [playing, setPlaying] = useState(false);
+
+  const toggle = () => {
+    if (!audioRef.current) return;
+    if (playing) {
+      audioRef.current.pause();
+      setPlaying(false);
+    } else {
+      audioRef.current.playbackRate = 0.9;
+      audioRef.current.play();
+      setPlaying(true);
     }
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-      if (audioUrl) URL.revokeObjectURL(audioUrl);
-      if (mediaRecorderRef.current) {
-        mediaRecorderRef.current.stream
-          ?.getTracks()
-          ?.forEach((t) => t.stop());
-      }
-    };
-  }, [audioUrl]);
-
-  const startTimer = () => {
-    setDuration(0);
-    if (timerRef.current) clearInterval(timerRef.current);
-    timerRef.current = setInterval(() => {
-      setDuration((d) => d + 1);
-    }, 1000);
   };
 
-  const stopTimer = () => {
+  return (
+    <div className="flex items-center gap-2">
+      {url ? (
+        <>
+          <audio ref={audioRef} src={url} onEnded={() => setPlaying(false)} />
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={toggle}
+            className="gap-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white"
+          >
+            {playing ? (
+              <Pause className="h-4 w-4" />
+            ) : (
+              <Volume2 className="h-4 w-4" />
+            )}
+            {playing ? "Pause" : "Écouter"}
+          </Button>
+          <Badge variant="outline" className="hidden sm:inline">
+            0.9x
+          </Badge>
+        </>
+      ) : (
+        <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+          <Volume2 className="h-4 w-4" />
+          <span>Audio indisponible</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// --- hook enregistrement audio local ---
+function useAudioRecorder() {
+  const [isSupported, setIsSupported] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [audioUrl, setAudioUrl] = useState(null);
+  const [error, setError] = useState(null);
+  const [elapsed, setElapsed] = useState(0);
+  const mediaRecorderRef = useRef(null);
+  const timerRef = useRef(null);
+  const playerRef = useRef(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && navigator.mediaDevices?.getUserMedia) {
+      setIsSupported(true);
+    } else {
+      setIsSupported(false);
+    }
+  }, []);
+
+  const startRecording = async () => {
+    if (!isSupported || isRecording) return;
+    setError(null);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mr = new MediaRecorder(stream);
+      mediaRecorderRef.current = mr;
+      const chunks = [];
+
+      mr.ondataavailable = (e) => {
+        if (e.data.size > 0) chunks.push(e.data);
+      };
+
+      mr.onstop = () => {
+        const blob = new Blob(chunks, { type: "audio/webm" });
+        const url = URL.createObjectURL(blob);
+        setAudioUrl((prev) => {
+          if (prev) URL.revokeObjectURL(prev);
+          return url;
+        });
+        stream.getTracks().forEach((t) => t.stop());
+      };
+
+      mr.start();
+      setIsRecording(true);
+      setElapsed(0);
+      timerRef.current = setInterval(() => {
+        setElapsed((t) => t + 1);
+      }, 1000);
+    } catch (e) {
+      console.error(e);
+      setError("Impossible d'accéder au micro.");
+    }
+  };
+
+  const stopRecording = () => {
+    if (!isRecording || !mediaRecorderRef.current) return;
+    mediaRecorderRef.current.stop();
+    setIsRecording(false);
     if (timerRef.current) {
       clearInterval(timerRef.current);
       timerRef.current = null;
     }
   };
 
-  const startRecording = async () => {
-    setPermissionError("");
-    setRecording(true);
-    onRecordingChange?.(true);
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      chunksRef.current = [];
-      const mr = new MediaRecorder(stream);
-      mediaRecorderRef.current = mr;
-
-      mr.ondataavailable = (e) => {
-        if (e.data && e.data.size > 0) {
-          chunksRef.current.push(e.data);
-        }
-      };
-
-      mr.onstop = () => {
-        stopTimer();
-        const blob = new Blob(chunksRef.current, { type: "audio/webm" });
-        const url = URL.createObjectURL(blob);
-        if (audioUrl) URL.revokeObjectURL(audioUrl); // nettoyer ancienne URL
-        setAudioUrl(url);
-        stream.getTracks().forEach((t) => t.stop());
-        setRecording(false);
-      };
-
-      mr.start();
-      setRecording(true);
-      startTimer();
-    } catch (err) {
-      console.error("Erreur permission micro:", err);
-      setPermissionError(
-        "Impossible d’accéder au micro. Vérifie les permissions du navigateur."
-      );
-      setSupported(false);
-    }
-  };
-
-  const stopRecording = () => {
-    if (mediaRecorderRef.current && recording) {
-      mediaRecorderRef.current.stop();
-      setRecording(false);
-      onRecordingChange?.(false);
-    }
-  };
-
   const resetRecording = () => {
-    stopTimer();
-    setRecording(false);
-    onRecordingChange?.(false);
-    if (audioUrl) URL.revokeObjectURL(audioUrl);
+    if (isRecording) stopRecording();
+    if (audioUrl) {
+      URL.revokeObjectURL(audioUrl);
+    }
     setAudioUrl(null);
-    setDuration(0);
-    setRecording(false);
-    chunksRef.current = [];
+    setElapsed(0);
+    setError(null);
+    if (playerRef.current) {
+      playerRef.current.pause();
+      playerRef.current.currentTime = 0;
+    }
   };
 
-  const mm = String(Math.floor(duration / 60)).padStart(2, "0");
-  const ss = String(duration % 60).padStart(2, "0");
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+      if (audioUrl) URL.revokeObjectURL(audioUrl);
+      if (mediaRecorderRef.current?.state === "recording") {
+        mediaRecorderRef.current.stop();
+      }
+    };
+  }, [audioUrl]);
 
-  if (!supported) {
-    return (
-      <div className="p-3 rounded-lg bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 text-xs text-red-700 dark:text-red-200">
-        Ton navigateur ne semble pas supporter l’enregistrement audio, ou le
-        micro n’est pas accessible.
-      </div>
-    );
-  }
-
-  return (
-    <div className="w-full space-y-3">
-      <div className="flex items-start justify-between gap-3 flex-wrap">
-        <div className="space-y-1">
-          <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
-            Enregistrer ma récitation
-          </p>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            1) Cache le texte. 2) Lance l’enregistrement et récite de mémoire.
-            3) Écoute en suivant le texte pour te corriger.
-          </p>
-        </div>
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-900 text-xs text-slate-600 dark:text-slate-300">
-          <Clock className="h-3 w-3" />
-          <span>
-            {mm}:{ss}
-          </span>
-        </div>
-      </div>
-
-      <div className="flex flex-wrap items-center gap-3">
-        {!recording ? (
-          <Button
-            size="sm"
-            onClick={startRecording}
-            className="flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white"
-          >
-            <Mic className="h-4 w-4" />
-            Commencer l’enregistrement
-          </Button>
-        ) : (
-          <Button
-            size="sm"
-            variant="destructive"
-            onClick={stopRecording}
-            className="flex items-center gap-2 text-black"
-          >
-            <Square className="h-4 w-4" />
-            Arrêter
-          </Button>
-        )}
-
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={resetRecording}
-          disabled={!audioUrl && !recording}
-          className="flex items-center gap-2 text-black dark:text-black"
-        >
-          <RefreshCw className="h-4 w-4" />
-          Réinitialiser
-        </Button>
-
-        {referenceUrl && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                size="sm"
-                variant="ghost"
-                className="flex items-center gap-2 text-xs"
-                onClick={(e) => {
-                  e.preventDefault();
-                  const audio = new Audio(referenceUrl);
-                  audio.playbackRate = 0.9;
-                  audio.play();
-                }}
-              >
-                <Headphones className="h-4 w-4" />
-                Audio de référence
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent className="text-xs">
-              Écoute la version de référence (0.9x)
-            </TooltipContent>
-          </Tooltip>
-        )}
-      </div>
-
-      {permissionError && (
-        <p className="text-xs text-red-600 dark:text-red-400">
-          {permissionError}
-        </p>
-      )}
-
-      {audioUrl && !recording && (
-        <div className="mt-2 p-3 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 space-y-1">
-          <p className="text-xs font-medium text-slate-600 dark:text-slate-300 mb-1 flex items-center gap-2">
-            <Headphones className="h-3 w-3" />
-            Ta récitation enregistrée
-          </p>
-          <audio controls src={audioUrl} className="w-full" />
-        </div>
-      )}
-    </div>
-  );
+  return {
+    isSupported,
+    isRecording,
+    audioUrl,
+    error,
+    elapsed,
+    startRecording,
+    stopRecording,
+    resetRecording,
+    playerRef,
+  };
 }
 
 const SCHOOL_COLORS = {
@@ -297,13 +258,26 @@ const SCHOOL_COLORS = {
 export default function HadithDetail() {
   const hadithNumber = useHadithNumberFromRouter();
   const { user } = useAuth();
-  const [isRecording, setIsRecording] = useState(false);
+
   const [hadith, setHadith] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [progress, setProgress] = useState(null);
+  const [hasProgress, setHasProgress] = useState(false); // 👉 déjà planifié ?
   const [hideFR, setHideFR] = useState(false);
   const [dark, setDark] = useState(false);
+
+  const {
+    isSupported: isRecSupported,
+    isRecording,
+    audioUrl,
+    error: recError,
+    elapsed,
+    startRecording,
+    stopRecording,
+    resetRecording,
+    playerRef,
+  } = useAudioRecorder();
 
   // thème sombre persistant
   useEffect(() => {
@@ -329,7 +303,7 @@ export default function HadithDetail() {
     [hadithNumber]
   );
 
-  // charge le hadith (DB -> fallback seed)
+  // charge le hadith (DB -> fallback seed) + progression
   useEffect(() => {
     let active = true;
 
@@ -337,6 +311,7 @@ export default function HadithDetail() {
       setLoading(true);
       setHadith(null);
       setProgress(null);
+      setHasProgress(false);
 
       try {
         // 1) hadith
@@ -347,6 +322,8 @@ export default function HadithDetail() {
           .limit(1);
 
         if (error) throw error;
+
+        let full = null;
 
         if (rows && rows.length) {
           const row = rows[0];
@@ -371,7 +348,7 @@ export default function HadithDetail() {
               opinions.Hanbali = { ar: o.arabic_text, fr: o.french_text };
           });
 
-          const full = {
+          full = {
             id: row.id,
             number: row.number,
             arabic_text: row.arabic_text,
@@ -380,13 +357,57 @@ export default function HadithDetail() {
             audio_url: row.audio_url || null,
             opinions,
           };
-          if (active) setHadith(full);
         } else {
-          if (active) setHadith(localSeed);
+          full = localSeed;
+        }
+
+        if (!full) {
+          if (active) setHadith(null);
+          return;
+        }
+
+        // 3) progression existante ?
+        let progRow = null;
+
+        const hadithNum = full.number;
+
+        if (user?.id) {
+          const { data: p, error: pErr } = await supabase
+            .from("user_hadith_progress")
+            .select(
+              "hadith_number, ease_factor, interval_days, repetitions, next_review_date, last_result"
+            )
+            .eq("user_id", user.id)
+            .eq("hadith_number", hadithNum)
+            .maybeSingle();
+
+          if (!pErr && p) {
+            progRow = p;
+          }
+        } else {
+          // petit fallback local éventuel
+          const raw = localStorage.getItem(`progress_${hadithNum}`);
+          if (raw) {
+            try {
+              progRow = JSON.parse(raw);
+            } catch {
+              progRow = null;
+            }
+          }
+        }
+
+        if (active) {
+          setHadith(full);
+          setProgress(progRow);
+          setHasProgress(!!progRow);
         }
       } catch (e) {
-        console.error("Erreur chargement hadith:", e);
-        if (active) setHadith(localSeed);
+        console.error(e);
+        if (active) {
+          setHadith(localSeed);
+          setProgress(null);
+          setHasProgress(false);
+        }
       } finally {
         if (active) setLoading(false);
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -397,55 +418,54 @@ export default function HadithDetail() {
     return () => {
       active = false;
     };
-  }, [hadithNumber, localSeed]);
+  }, [hadithNumber, localSeed, user?.id]);
 
   const handleQuality = async (quality) => {
-    if (!hadith) return;
+    if (!hadith || hasProgress) return; // 👉 déjà planifié, on ne refait pas ici
     setSaving(true);
     try {
-      const base = progress || { ease: 2.5, interval_days: 0, repetitions: 0 };
-      const calc = nextReview(base, quality);
-      const payload = {
-        user_id: user ? user.id : null,
-        hadith_id: hadith.id || null,
-        status: quality >= 4 ? "learned" : "learning",
-        ease: calc.ease,
-        interval_days: calc.interval_days,
-        repetitions: calc.repetitions,
-        last_review_date: new Date().toISOString().slice(0, 10),
-        next_review_date: calc.next_review_date,
+      const userId = user?.id || user?.user?.id || user?.uid || null;
+
+      const base = {
+        ease: progress?.ease_factor ?? progress?.ease ?? 2.5,
+        interval_days: progress?.interval_days ?? 0,
+        repetitions: progress?.repetitions ?? 0,
       };
 
-      // si pas connecté ou pas d’id DB, stock local
-      if (!user || !hadith.id) {
+      const calc = computeNextReview(base, quality);
+
+      if (userId) {
+        await saveReviewResult(userId, hadith.number, quality, calc);
+      } else {
+        // mode local uniquement (si jamais pas connecté)
+        const payload = {
+          hadith_number: hadith.number,
+          ease: calc.ease,
+          interval_days: calc.interval_days,
+          repetitions: calc.repetitions,
+          next_review_date: calc.next_review_date,
+          last_result: quality,
+          status: quality >= 4 ? "learned" : "learning",
+        };
         localStorage.setItem(
           `progress_${hadith.number}`,
           JSON.stringify(payload)
         );
-        setProgress(payload);
-      } else {
-        const { error } = await supabase.from("user_progress").upsert(payload);
-        if (error) throw error;
-        setProgress(payload);
       }
-    } catch (err) {
-      console.error("Erreur sauvegarde progression:", err);
-      // fallback local si échec
-      const base = progress || { ease: 2.5, interval_days: 0, repetitions: 0 };
-      const calc = nextReview(base, quality);
-      const payload = {
-        status: quality >= 4 ? "learned" : "learning",
-        ease: calc.ease,
+
+      const newProg = {
+        hadith_number: hadith.number,
+        ease_factor: calc.ease,
         interval_days: calc.interval_days,
         repetitions: calc.repetitions,
-        last_review_date: new Date().toISOString().slice(0, 10),
         next_review_date: calc.next_review_date,
+        last_result: quality,
       };
-      localStorage.setItem(
-        `progress_${hadith?.number || "local"}`,
-        JSON.stringify(payload)
-      );
-      setProgress(payload);
+
+      setProgress(newProg);
+      setHasProgress(true); // 👉 à partir de maintenant : tout passe par Révision
+    } catch (e) {
+      console.error("Erreur enregistrement progression:", e);
     } finally {
       setSaving(false);
     }
@@ -474,6 +494,9 @@ export default function HadithDetail() {
     { value: 4, label: "Je le connais bien", emoji: "😊" },
     { value: 5, label: "Je le maîtrise parfaitement", emoji: "✨" },
   ];
+
+  const minutes = String(Math.floor(elapsed / 60)).padStart(2, "0");
+  const seconds = String(elapsed % 60).padStart(2, "0");
 
   return (
     <TooltipProvider>
@@ -509,7 +532,7 @@ export default function HadithDetail() {
             </div>
           </div>
 
-          {/* Texte & enregistrement */}
+          {/* Texte & récitation */}
           <Card className="border-slate-200 dark:border-slate-700 shadow-xl bg-white dark:bg-slate-800 overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-teal-500/5 pointer-events-none" />
             <CardHeader className="relative z-10">
@@ -518,29 +541,33 @@ export default function HadithDetail() {
                 Texte & récitation
               </CardTitle>
               <CardDescription>
-                Lis attentivement, enregistre-toi, puis corrige-toi en suivant le texte.
+                Lis, écoute la récitation modèle, puis enregistre la tienne.
               </CardDescription>
             </CardHeader>
             <Separator className="bg-slate-200 dark:bg-slate-700" />
             <CardContent className="space-y-6 pt-6 relative z-10">
+              {/* Texte arabe (flouté pendant l'enregistrement) */}
               <div className="p-6 rounded-xl bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900 border border-slate-200 dark:border-slate-700">
                 <div
-  dir="rtl"
-  className={`text-2xl md:text-3xl leading-[2.5rem] font-serif tracking-wide text-slate-900 dark:text-slate-100 text-center transition-all duration-300 ${
-    isRecording ? "blur-xl select-none" : ""
-  }`}
->
-  {hadith.arabic_text}
-</div>
-
+                  dir="rtl"
+                  className={`text-2xl md:text-3xl leading-[2.5rem] font-serif tracking-wide text-slate-900 dark:text-slate-100 text-center transition-all ${
+                    isRecording ? "blur-md select-none" : ""
+                  }`}
+                >
+                  {hadith.arabic_text}
+                </div>
+                {isRecording && (
+                  <p className="mt-3 text-xs text-center text-amber-600 dark:text-amber-300">
+                    Le texte est flouté pour t’aider à réciter de mémoire.
+                  </p>
+                )}
               </div>
 
-              <div className="flex items-center justify-between gap-3 flex-wrap">
-                <RecitationRecorder
-  referenceUrl={hadith.audio_url}
-  onRecordingChange={(rec) => setIsRecording(rec)}
-/>
-
+              {/* Bandeau audio modèle + bouton traduction */}
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <InlineAudio url={hadith.audio_url} />
+                </div>
                 <Button
                   size="sm"
                   variant="outline"
@@ -568,6 +595,105 @@ export default function HadithDetail() {
                   </p>
                 </div>
               )}
+
+              {/* Enregistrement perso */}
+              <div className="mt-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 space-y-4">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <div className="p-2 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600">
+                      <Mic className="h-4 w-4 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">
+                        Ta récitation (non envoyée, stockée localement)
+                      </p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                        1) Cache le texte en regardant ailleurs. 2) Lance
+                        l’enregistrement. 3) Récite. 4) Réécoute en suivant le
+                        texte.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-xs font-mono text-slate-600 dark:text-slate-300">
+                    {minutes}:{seconds}
+                  </div>
+                </div>
+
+                {!isRecSupported && (
+                  <p className="text-xs text-red-500">
+                    Ton navigateur ne supporte pas l’enregistrement audio
+                    (MediaRecorder).
+                  </p>
+                )}
+
+                {isRecSupported && (
+                  <>
+                    <div className="flex flex-wrap gap-2 items-center">
+                      {!isRecording ? (
+                        <Button
+                          size="sm"
+                          onClick={startRecording}
+                          className="gap-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white"
+                        >
+                          <Mic className="h-4 w-4" />
+                          Commencer l&apos;enregistrement
+                        </Button>
+                      ) : (
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={stopRecording}
+                          className="gap-2 rounded-full"
+                        >
+                          <Square className="h-4 w-4" />
+                          Arrêter
+                        </Button>
+                      )}
+
+                      {audioUrl && !isRecording && (
+                        <>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="gap-2"
+                            onClick={() => {
+                              if (playerRef.current) {
+                                playerRef.current.currentTime = 0;
+                                playerRef.current.play();
+                              }
+                            }}
+                          >
+                            <Play className="h-4 w-4" />
+                            Réécouter ta récitation
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="gap-2 text-xs"
+                            onClick={resetRecording}
+                          >
+                            <RotateCcw className="h-4 w-4" />
+                            Effacer
+                          </Button>
+                        </>
+                      )}
+                    </div>
+
+                    {recError && (
+                      <p className="text-xs text-red-500 mt-1">{recError}</p>
+                    )}
+
+                    {audioUrl && (
+                      <audio
+                        ref={playerRef}
+                        src={audioUrl}
+                        className="w-full mt-2"
+                        controls
+                      />
+                    )}
+                  </>
+                )}
+              </div>
             </CardContent>
           </Card>
 
@@ -670,75 +796,75 @@ export default function HadithDetail() {
             </Card>
           )}
 
-          {/* Auto-évaluation */}
-          <Card className="border-slate-200 dark:border-slate-700 shadow-xl bg-white dark:bg-slate-800">
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <CheckCircle2 className="h-5 w-5 text-emerald-500" />
-                Auto-évaluation (SM-2)
-              </CardTitle>
-              <CardDescription>
-                1) Récite le hadith de mémoire. 2) Choisis la note qui
-                correspond à ton niveau : cela programme la prochaine révision.
-              </CardDescription>
-            </CardHeader>
-            <Separator className="bg-slate-200 dark:bg-slate-700" />
-            <CardContent className="space-y-6 pt-6">
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-                {qualityLabels.map((q) => (
-                  <Tooltip key={q.value}>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant={q.value >= 4 ? "default" : "outline"}
-                        onClick={() => handleQuality(q.value)}
-                        disabled={saving}
-                        className={`h-auto py-4 flex-col gap-2 ${
-                          q.value >= 4
-                            ? "bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white"
-                            : "hover:border-slate-400 dark:hover:border-slate-500"
-                        }`}
-                      >
-                        <span className="text-3xl">{q.emoji}</span>
-                        <span className="text-lg font-bold">{q.value}</span>
-                        <span className="text-xs">{q.label}</span>
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p className="text-xs">{q.label}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                ))}
-              </div>
-
-              {progress?.next_review_date && (
-                <div className="p-4 rounded-lg bg-emerald-50 dark:bg-emerald-950 border border-emerald-200 dark:border-emerald-800">
-                  <div className="flex items-start gap-3">
-                    <Clock className="h-5 w-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
-                    <div className="text-sm text-emerald-800 dark:text-emerald-200">
-                      <div className="font-semibold mb-1">
-                        Prochaine révision programmée
-                      </div>
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span>{progress.next_review_date}</span>
-                        <Badge
-                          variant="outline"
-                          className="bg-white dark:bg-slate-800"
+          {/* Auto-évaluation : UNIQUEMENT si pas encore de progression */}
+          {!hasProgress && (
+            <Card className="border-slate-200 dark:border-slate-700 shadow-xl bg-white dark:bg-slate-800">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                  Première auto-évaluation (SM-2)
+                </CardTitle>
+                <CardDescription>
+                  1) Récite le hadith de mémoire. 2) Choisis une note : cela
+                  crée ton planning de révision. Ensuite, tu continueras dans
+                  l&apos;onglet <strong>Révision</strong>.
+                </CardDescription>
+              </CardHeader>
+              <Separator className="bg-slate-200 dark:bg-slate-700" />
+              <CardContent className="space-y-6 pt-6">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                  {qualityLabels.map((q) => (
+                    <Tooltip key={q.value}>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant={q.value >= 4 ? "default" : "outline"}
+                          onClick={() => handleQuality(q.value)}
+                          disabled={saving}
+                          className={`h-auto py-4 flex-col gap-2 ${
+                            q.value >= 4
+                              ? "bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white"
+                              : "hover:border-slate-400 dark:hover:border-slate-500"
+                          }`}
                         >
-                          {progress.status === "learned"
-                            ? "✅ Appris"
-                            : "📚 En cours"}
-                        </Badge>
-                        <span className="text-xs">
-                          • {progress.repetitions || 0} révision
-                          {progress.repetitions > 1 ? "s" : ""}
-                        </span>
-                      </div>
+                          <span className="text-3xl">{q.emoji}</span>
+                          <span className="text-lg font-bold">{q.value}</span>
+                          <span className="text-xs text-center">
+                            {q.label}
+                          </span>
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="text-xs max-w-[180px]">{q.label}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Si progression existe déjà → petit rappel vers Révision */}
+          {hasProgress && progress?.next_review_date && (
+            <Card className="border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950 shadow-lg">
+              <CardContent className="py-4">
+                <div className="flex items-start gap-3">
+                  <Clock className="h-5 w-5 text-emerald-600 dark:text-emerald-400 mt-0.5" />
+                  <div className="text-sm text-emerald-900 dark:text-emerald-100">
+                    <div className="font-semibold mb-1">
+                      Ce hadith est déjà dans ton planning de révision.
                     </div>
+                    <p>
+                      Tu le retrouveras dans l&apos;onglet{" "}
+                      <strong>Révision</strong> à partir du{" "}
+                      <strong>{progress.next_review_date}</strong>. À partir de
+                      maintenant, c&apos;est cette page qui ajustera le rythme
+                      en fonction de tes performances.
+                    </p>
                   </div>
                 </div>
-              )}
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Navigation */}
           <div className="flex items-center justify-between gap-4 pt-4">
