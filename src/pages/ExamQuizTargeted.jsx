@@ -1,5 +1,13 @@
-import React, { useEffect, useMemo, useRef, useState } from "react"; 
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+// /src/pages/ExamQuizTargeted.jsx
+
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -11,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
   SelectContent,
-  SelectItem
+  SelectItem,
 } from "@/components/ui/select";
 import {
   Target,
@@ -29,8 +37,9 @@ import {
   Sparkles,
 } from "lucide-react";
 
-// 🔗 On utilise maintenant le gros fichier commun
 import { QUIZ_QUESTIONS_1_15 } from "@/data/quiz_questions_1_15";
+import { useAuth } from "../context/AuthContext";
+import { supabase } from "../lib/supabase";
 
 // 🧮 Liste dynamique des numéros de hadith présents dans le fichier
 const HADITH_NUMBERS = Array.from(
@@ -46,28 +55,55 @@ const shuffle = (arr) => {
   return a;
 };
 
-// 🔍 Charge les hadiths "faibles" à partir du localStorage, de façon dynamique
-async function loadWeakHadithNumbers() {
-  const today = new Date().toISOString().slice(0, 10);
-  const numbers = [];
+/**
+ * 🔍 Charge les hadiths "faibles" depuis Supabase :
+ * - status != 'learned'
+ * - OU ease_factor < 2.4
+ * - OU last_result <= 3
+ * - OU next_review_date <= aujourd'hui
+ */
+async function loadWeakHadithNumbers(userId) {
+  if (!userId) return [];
 
-  for (const n of HADITH_NUMBERS) {
-    const raw = localStorage.getItem(`progress_${n}`);
-    if (!raw) {
-      numbers.push(n);
-      continue;
-    }
-    try {
-      const p = JSON.parse(raw);
-      const due = p.next_review_date && p.next_review_date <= today;
-      const weak = p.status !== "learned" || (p.ease != null && p.ease < 2.4);
-      if (due || weak) numbers.push(n);
-    } catch {
-      numbers.push(n);
-    }
+  const today = new Date().toISOString().slice(0, 10);
+
+  const { data, error } = await supabase
+    .from("user_hadith_progress")
+    .select(
+      "hadith_number, status, ease_factor, next_review_date, last_result"
+    )
+    .eq("user_id", userId);
+
+  if (error) {
+    console.error("Erreur chargement hadiths faibles:", error);
+    return [];
   }
 
-  return numbers.length ? numbers : HADITH_NUMBERS;
+  const weak = [];
+
+  (data || []).forEach((row) => {
+    const n = row.hadith_number;
+    if (typeof n !== "number") return;
+
+    const isDue =
+      row.next_review_date && row.next_review_date <= today;
+    const isWeakStatus = row.status !== "learned";
+    const isLowEase =
+      row.ease_factor != null && row.ease_factor < 2.4;
+    const isLowResult =
+      row.last_result != null && row.last_result <= 3;
+
+    if (isDue || isWeakStatus || isLowEase || isLowResult) {
+      weak.push(n);
+    }
+  });
+
+  // Uniques + tri + on reste dans 1–15
+  const uniqueSorted = Array.from(new Set(weak))
+    .filter((n) => HADITH_NUMBERS.includes(n))
+    .sort((a, b) => a - b);
+
+  return uniqueSorted;
 }
 
 /**
@@ -103,8 +139,10 @@ const buildTargetedPool = (scope) => {
 };
 
 export function ExamQuizTargeted() {
+  const { user } = useAuth();
+
   const [loading, setLoading] = useState(true);
-  const [scope, setScope] = useState([]);           // tableau de hadiths ciblés
+  const [scope, setScope] = useState([]); // tableau de hadiths ciblés (faibles)
   const [duration, setDuration] = useState(6);
   const [started, setStarted] = useState(false);
   const [pool, setPool] = useState([]);
@@ -114,9 +152,12 @@ export function ExamQuizTargeted() {
   const [finished, setFinished] = useState(false);
   const [dark, setDark] = useState(false);
 
+  // Thème
   useEffect(() => {
     const pref = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
+    const prefersDark =
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-color-scheme: dark)").matches;
     const enable = pref ? pref === "dark" : prefersDark;
     setDark(enable);
     document.documentElement.classList.toggle("dark", enable);
@@ -128,15 +169,32 @@ export function ExamQuizTargeted() {
     localStorage.setItem("theme", checked ? "dark" : "light");
   };
 
-  // 🔁 On calcule les hadiths "faibles"
+  // 🔁 On calcule les hadiths "faibles" pour cet utilisateur
   useEffect(() => {
-    (async () => {
+    let active = true;
+
+    async function load() {
       setLoading(true);
-      const targets = await loadWeakHadithNumbers();
-      setScope(targets);
-      setLoading(false);
-    })();
-  }, []);
+      try {
+        if (!user?.id) {
+          if (active) setScope([]);
+          return;
+        }
+        const targets = await loadWeakHadithNumbers(user.id);
+        if (active) setScope(targets);
+      } catch (err) {
+        console.error("Erreur calcul scope ciblé:", err);
+        if (active) setScope([]);
+      } finally {
+        if (active) setLoading(false);
+      }
+    }
+
+    load();
+    return () => {
+      active = false;
+    };
+  }, [user?.id]);
 
   // 🧠 Pool préparé : 1 question / hadith du scope
   const preparedPool = useMemo(() => buildTargetedPool(scope), [scope]);
@@ -154,13 +212,21 @@ export function ExamQuizTargeted() {
   useEffect(() => {
     if (!started || finished) return;
     timerRef.current = setInterval(() => {
-      setTimeLeft((t) => (t <= 1 ? 0 : t - 1));
+      setTimeLeft((t) => {
+        if (t <= 1) {
+          clearInterval(timerRef.current);
+          return 0;
+        }
+        return t - 1;
+      });
     }, 1000);
     return () => clearInterval(timerRef.current);
   }, [started, finished]);
 
   useEffect(() => {
-    if (started && timeLeft === 0 && !finished) setFinished(true);
+    if (started && timeLeft === 0 && !finished) {
+      setFinished(true);
+    }
   }, [timeLeft, started, finished]);
 
   const selectAnswer = (i) => {
@@ -173,7 +239,9 @@ export function ExamQuizTargeted() {
   };
 
   const nextQ = () => {
-    if (!finished && index + 1 < pool.length) setIndex((i) => i + 1);
+    if (!finished && index + 1 < pool.length) {
+      setIndex((i) => i + 1);
+    }
   };
 
   const endExam = () => {
@@ -189,8 +257,12 @@ export function ExamQuizTargeted() {
     );
   }, [finished, pool, answers]);
 
-  const progressPct = pool.length ? Math.round((index / pool.length) * 100) : 0;
-  const scorePct = pool.length ? Math.round((score / pool.length) * 100) : 0;
+  const progressPct = pool.length
+    ? Math.round((index / pool.length) * 100)
+    : 0;
+  const scorePct = pool.length
+    ? Math.round((score / pool.length) * 100)
+    : 0;
   const mm = String(Math.floor(timeLeft / 60)).padStart(2, "0");
   const ss = String(timeLeft % 60).padStart(2, "0");
   const timeWarning = timeLeft > 0 && timeLeft <= 60;
@@ -212,6 +284,8 @@ export function ExamQuizTargeted() {
 
   // --------- ÉCRAN AVANT DE COMMENCER ----------
   if (!started) {
+    const noWeak = scope.length === 0;
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50 to-blue-50 dark:from-slate-950 dark:via-cyan-950 dark:to-blue-950 p-6">
         <div className="max-w-3xl mx-auto space-y-6">
@@ -225,17 +299,21 @@ export function ExamQuizTargeted() {
                 <p className="text-sm text-slate-600 dark:text-slate-400">
                   Focus sur tes points faibles
                 </p>
+                {noWeak && (
+                  <p className="text-xs text-emerald-600 mt-1">
+                    Pour l&apos;instant, aucun hadith n&apos;est marqué comme
+                    faible ou en retard. Continue à apprendre et réviser,
+                    les hadiths à travailler apparaîtront ici.
+                  </p>
+                )}
               </div>
             </div>
 
-            {/* Si tu veux réactiver le toggle thème, dé-commente : */}
-            {/* 
             <div className="flex items-center gap-2 bg-white dark:bg-slate-800 px-3 py-2 rounded-full shadow-sm border">
               <Sun className="h-4 w-4" />
               <Switch checked={dark} onCheckedChange={toggleTheme} />
               <Moon className="h-4 w-4" />
-            </div> 
-            */}
+            </div>
           </div>
 
           <Card className="border-2 border-cyan-200 dark:border-cyan-800 shadow-xl bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-950 dark:to-blue-950">
@@ -245,10 +323,13 @@ export function ExamQuizTargeted() {
                   <Brain className="h-6 w-6 text-cyan-600 dark:text-cyan-400" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold mb-2">Analyse de progression</h3>
+                  <h3 className="font-semibold mb-2">
+                    Analyse de progression
+                  </h3>
                   <p className="text-sm mb-3">
-                    {scope.length} hadith{scope.length > 1 ? "s" : ""} nécessitant une
-                    révision prioritaire
+                    {scope.length} hadith
+                    {scope.length > 1 ? "s" : ""} nécessitant une révision
+                    prioritaire
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {scope.map((n) => (
@@ -259,6 +340,11 @@ export function ExamQuizTargeted() {
                         H{n}
                       </Badge>
                     ))}
+                    {scope.length === 0 && (
+                      <span className="text-xs text-slate-500">
+                        Aucun hadith faible détecté pour le moment.
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -273,7 +359,7 @@ export function ExamQuizTargeted() {
               </CardTitle>
               <CardDescription>
                 {preparedPool.length} question
-                {preparedPool.length > 1 ? "s" : ""}
+                {preparedPool.length > 1 ? "s" : ""} générée(s)
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -285,6 +371,7 @@ export function ExamQuizTargeted() {
                 <Select
                   value={String(duration)}
                   onValueChange={(v) => setDuration(parseInt(v, 10))}
+                  disabled={noWeak}
                 >
                   <SelectTrigger className="w-48 dark:text-gray-400">
                     <SelectValue />
@@ -314,7 +401,8 @@ export function ExamQuizTargeted() {
                   <div className="text-sm">
                     <p className="font-semibold mb-1">Mode intelligent</p>
                     <p className="text-xs text-blue-800 dark:text-blue-200">
-                      Questions sélectionnées selon ton historique
+                      Questions sélectionnées automatiquement en fonction
+                      de ton historique SM-2 (facile / difficile, retards…)
                     </p>
                   </div>
                 </div>
@@ -447,7 +535,9 @@ export function ExamQuizTargeted() {
 
                           <div className="space-y-2 text-sm">
                             <div className="p-2 rounded bg-blue-100 dark:bg-blue-900">
-                              <span className="font-semibold">Ta réponse :</span>{" "}
+                              <span className="font-semibold">
+                                Ta réponse :
+                              </span>{" "}
                               {userA == null ? (
                                 <em>Aucune</em>
                               ) : (
@@ -484,7 +574,14 @@ export function ExamQuizTargeted() {
 
           <div className="flex gap-3">
             <Button
-              onClick={() => window.location.reload()}
+              onClick={() => {
+                setStarted(false);
+                setFinished(false);
+                setPool([]);
+                setAnswers([]);
+                setIndex(0);
+                setTimeLeft(0);
+              }}
               className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600"
             >
               <RotateCcw className="h-4 w-4 mr-2" />

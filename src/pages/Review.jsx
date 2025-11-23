@@ -39,8 +39,7 @@ const nextReview = (current, quality) => {
   const ease =
     (current.ease ?? current.ease_factor ?? 2.5) +
     (quality >= 4 ? 0.1 : -0.2);
-  const interval_days =
-    quality >= 4 ? (current.interval_days ?? 0) + 1 : 0;
+  const interval_days = quality >= 4 ? (current.interval_days ?? 0) + 1 : 0;
   const repetitions = (current.repetitions ?? 0) + 1;
 
   const next_review_date = new Date(
@@ -90,6 +89,7 @@ export function Review() {
         let progMap = {};
 
         if (user) {
+          // On ne prend que les hadiths dont la prochaine révision est "due"
           const { data: progress, error: progError } = await supabase
             .from("user_hadith_progress")
             .select(
@@ -106,24 +106,31 @@ export function Review() {
               progMap[p.hadith_number] = p;
             });
           }
+        } else {
+          // Pas connecté → pas de révisions (on pourrait un jour lire localStorage ici)
+          dueNumbers = [];
+          progMap = {};
         }
 
+        // ✅ Si aucune révision due → aucun hadith à réviser
+        if (dueNumbers.length === 0) {
+          if (active) {
+            setHadiths([]);
+            setProgressByNumber(progMap);
+            setIdx(0);
+            setShowFr(false);
+            setShowFullArabic(false);
+            setSessionStats({ total: 0, perfect: 0, good: 0, needs_work: 0 });
+          }
+          return;
+        }
+
+        // Sinon on charge uniquement les hadiths concernés
         let hadithQuery = supabase
           .from("hadiths")
-          .select("number, arabic_text, french_text, source");
-
-        if (dueNumbers.length > 0) {
-          hadithQuery = hadithQuery
-            .in("number", dueNumbers)
-            .order("number", { ascending: true });
-        } else {
-          // Fallback : 8 → 15
-          dueNumbers = Array.from({ length: 8 }, (_, i) => 8 + i);
-          hadithQuery = hadithQuery
-            .gte("number", 8)
-            .lte("number", 15)
-            .order("number", { ascending: true });
-        }
+          .select("number, arabic_text, french_text, source")
+          .in("number", dueNumbers)
+          .order("number", { ascending: true });
 
         const { data: hadithData, error } = await hadithQuery;
         if (error) throw error;
@@ -148,8 +155,10 @@ export function Review() {
       } catch (err) {
         console.error("Erreur chargement révision:", err);
         if (active) {
-          setHadiths(HADITHS_1_15);
+          // En cas d'erreur, on affiche simplement "aucun hadith à réviser"
+          setHadiths([]);
           setProgressByNumber({});
+          setIdx(0);
         }
       } finally {
         if (active) setLoading(false);
@@ -275,7 +284,8 @@ export function Review() {
                 </p>
                 {!user && (
                   <p className="text-xs text-red-500 mt-1">
-                    Tu n&apos;es pas connecté : ta progression ne sera pas sauvegardée.
+                    Tu n&apos;es pas connecté : ta progression ne sera pas
+                    sauvegardée.
                   </p>
                 )}
               </div>
@@ -335,7 +345,7 @@ export function Review() {
             </Card>
           </div>
 
-          {/* Cas 1 : chargement initial → skeleton dans une carte de hauteur fixe */}
+          {/* Cas 1 : chargement initial */}
           {isLoadingInitial && (
             <Card className="border-slate-200 dark:border-slate-700 shadow-xl bg-white/80 dark:bg-slate-800/80 overflow-hidden relative">
               <CardContent className="pt-6 space-y-4 animate-pulse min-h-[320px]">
@@ -355,8 +365,10 @@ export function Review() {
                   Aucun hadith à réviser pour l’instant.
                 </p>
                 <p className="text-sm text-slate-500 dark:text-slate-400">
-                  Continue d’apprendre de nouveaux hadiths, ils apparaîtront ici
-                  automatiquement quand ils seront à réviser.
+                  Commence par apprendre un hadith depuis la page
+                  &nbsp;
+                  <span className="font-semibold">Apprendre</span>. Dès que tu
+                  l’auras évalué, il apparaîtra ici automatiquement.
                 </p>
               </CardContent>
             </Card>
@@ -392,7 +404,8 @@ export function Review() {
                     Hadith {hCurrent.number}
                   </CardTitle>
                   <CardDescription>
-                    Récite en arabe, puis révèle la traduction pour t’auto-évaluer
+                    Récite en arabe, puis révèle la traduction pour
+                    t’auto-évaluer
                   </CardDescription>
                 </CardHeader>
 
@@ -468,7 +481,10 @@ export function Review() {
                             size="sm"
                             onClick={() => setShowFr(false)}
                             className="text-slate-700 dark:text-slate-100"
-                            style={{ background: "transparent", border: "none" }}
+                            style={{
+                              background: "transparent",
+                              border: "none",
+                            }}
                           >
                             <EyeOff className="h-4 w-4 mr-2" />
                             Masquer
@@ -541,7 +557,9 @@ export function Review() {
                 {/* Précédent */}
                 <Button
                   onClick={() => {
-                    setIdx((i) => (i - 1 + hadiths.length) % hadiths.length);
+                    setIdx((i) =>
+                      hadiths.length ? (i - 1 + hadiths.length) % hadiths.length : 0
+                    );
                     setShowFr(false);
                     setShowFullArabic(false);
                   }}
@@ -573,7 +591,9 @@ export function Review() {
                 {/* Suivant */}
                 <Button
                   onClick={() => {
-                    setIdx((i) => (i + 1) % hadiths.length);
+                    setIdx((i) =>
+                      hadiths.length ? (i + 1) % hadiths.length : 0
+                    );
                     setShowFr(false);
                     setShowFullArabic(false);
                   }}

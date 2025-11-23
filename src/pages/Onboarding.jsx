@@ -283,13 +283,13 @@ export default function Onboarding() {
             </div>
 
             <div className="mt-6 space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-center gap-1">
                 <Button
                   variant="outline"
                   size="sm"
                   disabled={index === 0}
                   onClick={handlePrev}
-                  className="gap-1"
+                  className="gap-1 px-0.5! dark:text-gray-300"
                 >
                   <ChevronLeft className="h-4 w-4" />
                   Précédent

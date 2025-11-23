@@ -28,21 +28,22 @@ import { Switch } from "@/components/ui/switch";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 import {
-  Play,
-  Pause,
   Moon,
   Sun,
   ChevronLeft,
   ChevronRight,
   BookOpen,
   Sparkles,
-  Volume2,
   Eye,
   EyeOff,
   CheckCircle2,
   Clock,
   RotateCcw,
-  Scale3d, // ⬅️ remplace Scale
+  Scale3d,
+  Mic,
+  Square,
+  RefreshCw,
+  Headphones,
 } from "lucide-react";
 
 // === dépendances app (réelles) ===
@@ -55,55 +56,215 @@ import { useAuth } from "../context/AuthContext";
 function useHadithNumberFromRouter() {
   const { n: nParam } = useParams(); // route style /hadith/:n
   const [sp] = useSearchParams(); // route style /hadith?n=8
-  const loc = useLocation(); // force update quand l’URL change
+  useLocation(); // juste pour réagir au changement d’URL
   const raw = nParam ?? sp.get("n") ?? "8";
   const num = parseInt(raw, 10);
   return Number.isNaN(num) ? 8 : num;
 }
 
-// --- lecteur audio inline ---
-function InlineAudio({ url }) {
-  const audioRef = useRef(null);
-  const [playing, setPlaying] = useState(false);
+// --- composant d’enregistrement de récitation ---
+function RecitationRecorder({ referenceUrl, onRecordingChange }) {
+  const [supported, setSupported] = useState(true);
+  const [permissionError, setPermissionError] = useState("");
+  const [recording, setRecording] = useState(false);
+  const [audioUrl, setAudioUrl] = useState(null);
+  const [duration, setDuration] = useState(0);
 
-  const toggle = () => {
-    if (!audioRef.current) return;
-    if (playing) {
-      audioRef.current.pause();
-      setPlaying(false);
-    } else {
-      audioRef.current.playbackRate = 0.9;
-      audioRef.current.play();
-      setPlaying(true);
+  const mediaRecorderRef = useRef(null);
+  const chunksRef = useRef([]);
+  const timerRef = useRef(null);
+
+  // vérifier support navigateur
+  useEffect(() => {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      setSupported(false);
+    }
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+      if (audioUrl) URL.revokeObjectURL(audioUrl);
+      if (mediaRecorderRef.current) {
+        mediaRecorderRef.current.stream
+          ?.getTracks()
+          ?.forEach((t) => t.stop());
+      }
+    };
+  }, [audioUrl]);
+
+  const startTimer = () => {
+    setDuration(0);
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setDuration((d) => d + 1);
+    }, 1000);
+  };
+
+  const stopTimer = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
     }
   };
 
+  const startRecording = async () => {
+    setPermissionError("");
+    setRecording(true);
+    onRecordingChange?.(true);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      chunksRef.current = [];
+      const mr = new MediaRecorder(stream);
+      mediaRecorderRef.current = mr;
+
+      mr.ondataavailable = (e) => {
+        if (e.data && e.data.size > 0) {
+          chunksRef.current.push(e.data);
+        }
+      };
+
+      mr.onstop = () => {
+        stopTimer();
+        const blob = new Blob(chunksRef.current, { type: "audio/webm" });
+        const url = URL.createObjectURL(blob);
+        if (audioUrl) URL.revokeObjectURL(audioUrl); // nettoyer ancienne URL
+        setAudioUrl(url);
+        stream.getTracks().forEach((t) => t.stop());
+        setRecording(false);
+      };
+
+      mr.start();
+      setRecording(true);
+      startTimer();
+    } catch (err) {
+      console.error("Erreur permission micro:", err);
+      setPermissionError(
+        "Impossible d’accéder au micro. Vérifie les permissions du navigateur."
+      );
+      setSupported(false);
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && recording) {
+      mediaRecorderRef.current.stop();
+      setRecording(false);
+      onRecordingChange?.(false);
+    }
+  };
+
+  const resetRecording = () => {
+    stopTimer();
+    setRecording(false);
+    onRecordingChange?.(false);
+    if (audioUrl) URL.revokeObjectURL(audioUrl);
+    setAudioUrl(null);
+    setDuration(0);
+    setRecording(false);
+    chunksRef.current = [];
+  };
+
+  const mm = String(Math.floor(duration / 60)).padStart(2, "0");
+  const ss = String(duration % 60).padStart(2, "0");
+
+  if (!supported) {
+    return (
+      <div className="p-3 rounded-lg bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 text-xs text-red-700 dark:text-red-200">
+        Ton navigateur ne semble pas supporter l’enregistrement audio, ou le
+        micro n’est pas accessible.
+      </div>
+    );
+  }
+
   return (
-    <div className="flex items-center gap-2">
-      {url ? (
-        <>
-          <audio ref={audioRef} src={url} onEnded={() => setPlaying(false)} />
+    <div className="w-full space-y-3">
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div className="space-y-1">
+          <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
+            Enregistrer ma récitation
+          </p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            1) Cache le texte. 2) Lance l’enregistrement et récite de mémoire.
+            3) Écoute en suivant le texte pour te corriger.
+          </p>
+        </div>
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-900 text-xs text-slate-600 dark:text-slate-300">
+          <Clock className="h-3 w-3" />
+          <span>
+            {mm}:{ss}
+          </span>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-3">
+        {!recording ? (
           <Button
-            variant="secondary"
             size="sm"
-            onClick={toggle}
-            className="gap-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white"
+            onClick={startRecording}
+            className="flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white"
           >
-            {playing ? (
-              <Pause className="h-4 w-4" />
-            ) : (
-              <Volume2 className="h-4 w-4" />
-            )}
-            {playing ? "Pause" : "Écouter"}
+            <Mic className="h-4 w-4" />
+            Commencer l’enregistrement
           </Button>
-          <Badge variant="outline" className="hidden sm:inline">
-            0.9x
-          </Badge>
-        </>
-      ) : (
-        <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-          <Volume2 className="h-4 w-4" />
-          <span>Audio indisponible</span>
+        ) : (
+          <Button
+            size="sm"
+            variant="destructive"
+            onClick={stopRecording}
+            className="flex items-center gap-2 text-black"
+          >
+            <Square className="h-4 w-4" />
+            Arrêter
+          </Button>
+        )}
+
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={resetRecording}
+          disabled={!audioUrl && !recording}
+          className="flex items-center gap-2 text-black dark:text-black"
+        >
+          <RefreshCw className="h-4 w-4" />
+          Réinitialiser
+        </Button>
+
+        {referenceUrl && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="flex items-center gap-2 text-xs"
+                onClick={(e) => {
+                  e.preventDefault();
+                  const audio = new Audio(referenceUrl);
+                  audio.playbackRate = 0.9;
+                  audio.play();
+                }}
+              >
+                <Headphones className="h-4 w-4" />
+                Audio de référence
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent className="text-xs">
+              Écoute la version de référence (0.9x)
+            </TooltipContent>
+          </Tooltip>
+        )}
+      </div>
+
+      {permissionError && (
+        <p className="text-xs text-red-600 dark:text-red-400">
+          {permissionError}
+        </p>
+      )}
+
+      {audioUrl && !recording && (
+        <div className="mt-2 p-3 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 space-y-1">
+          <p className="text-xs font-medium text-slate-600 dark:text-slate-300 mb-1 flex items-center gap-2">
+            <Headphones className="h-3 w-3" />
+            Ta récitation enregistrée
+          </p>
+          <audio controls src={audioUrl} className="w-full" />
         </div>
       )}
     </div>
@@ -136,7 +297,7 @@ const SCHOOL_COLORS = {
 export default function HadithDetail() {
   const hadithNumber = useHadithNumberFromRouter();
   const { user } = useAuth();
-
+  const [isRecording, setIsRecording] = useState(false);
   const [hadith, setHadith] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -224,10 +385,10 @@ export default function HadithDetail() {
           if (active) setHadith(localSeed);
         }
       } catch (e) {
+        console.error("Erreur chargement hadith:", e);
         if (active) setHadith(localSeed);
       } finally {
         if (active) setLoading(false);
-        // remonte en haut à chaque changement
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
     }
@@ -267,7 +428,8 @@ export default function HadithDetail() {
         if (error) throw error;
         setProgress(payload);
       }
-    } catch {
+    } catch (err) {
+      console.error("Erreur sauvegarde progression:", err);
       // fallback local si échec
       const base = progress || { ease: 2.5, interval_days: 0, repetitions: 0 };
       const calc = nextReview(base, quality);
@@ -305,14 +467,13 @@ export default function HadithDetail() {
   }
 
   const qualityLabels = [
-  { value: 0, label: "Oublié", emoji: "❌" },
-  { value: 1, label: "Très difficile", emoji: "😰" },
-  { value: 2, label: "Difficile", emoji: "😕" },
-  { value: 3, label: "Je le retrouve avec effort", emoji: "🤔" },
-  { value: 4, label: "Je le connais bien", emoji: "😊" },
-  { value: 5, label: "Je le maîtrise parfaitement", emoji: "✨" },
-];
-
+    { value: 0, label: "Oublié", emoji: "❌" },
+    { value: 1, label: "Très difficile", emoji: "😰" },
+    { value: 2, label: "Difficile", emoji: "😕" },
+    { value: 3, label: "Je le retrouve avec effort", emoji: "🤔" },
+    { value: 4, label: "Je le connais bien", emoji: "😊" },
+    { value: 5, label: "Je le maîtrise parfaitement", emoji: "✨" },
+  ];
 
   return (
     <TooltipProvider>
@@ -348,31 +509,38 @@ export default function HadithDetail() {
             </div>
           </div>
 
-          {/* Texte & audio */}
+          {/* Texte & enregistrement */}
           <Card className="border-slate-200 dark:border-slate-700 shadow-xl bg-white dark:bg-slate-800 overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-teal-500/5 pointer-events-none" />
             <CardHeader className="relative z-10">
               <CardTitle className="text-lg flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-yellow-500" />
-                Texte & Audio
+                Texte & récitation
               </CardTitle>
               <CardDescription>
-                Lis attentivement, écoute, puis mémorise.
+                Lis attentivement, enregistre-toi, puis corrige-toi en suivant le texte.
               </CardDescription>
             </CardHeader>
             <Separator className="bg-slate-200 dark:bg-slate-700" />
             <CardContent className="space-y-6 pt-6 relative z-10">
               <div className="p-6 rounded-xl bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900 border border-slate-200 dark:border-slate-700">
                 <div
-                  dir="rtl"
-                  className="text-2xl md:text-3xl leading-[2.5rem] font-serif tracking-wide text-slate-900 dark:text-slate-100 text-center"
-                >
-                  {hadith.arabic_text}
-                </div>
+  dir="rtl"
+  className={`text-2xl md:text-3xl leading-[2.5rem] font-serif tracking-wide text-slate-900 dark:text-slate-100 text-center transition-all duration-300 ${
+    isRecording ? "blur-xl select-none" : ""
+  }`}
+>
+  {hadith.arabic_text}
+</div>
+
               </div>
 
               <div className="flex items-center justify-between gap-3 flex-wrap">
-                <InlineAudio url={hadith.audio_url} />
+                <RecitationRecorder
+  referenceUrl={hadith.audio_url}
+  onRecordingChange={(rec) => setIsRecording(rec)}
+/>
+
                 <Button
                   size="sm"
                   variant="outline"
@@ -510,10 +678,9 @@ export default function HadithDetail() {
                 Auto-évaluation (SM-2)
               </CardTitle>
               <CardDescription>
-  1) Répète le hadith de mémoire. 2) Clique sur la note qui
-  correspond à ton niveau : cela crée le suivi et programme
-  la prochaine révision.
-</CardDescription>
+                1) Récite le hadith de mémoire. 2) Choisis la note qui
+                correspond à ton niveau : cela programme la prochaine révision.
+              </CardDescription>
             </CardHeader>
             <Separator className="bg-slate-200 dark:bg-slate-700" />
             <CardContent className="space-y-6 pt-6">
@@ -562,7 +729,7 @@ export default function HadithDetail() {
                             : "📚 En cours"}
                         </Badge>
                         <span className="text-xs">
-                          • {progress.repetitions} révision
+                          • {progress.repetitions || 0} révision
                           {progress.repetitions > 1 ? "s" : ""}
                         </span>
                       </div>

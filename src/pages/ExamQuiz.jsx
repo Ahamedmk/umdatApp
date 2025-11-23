@@ -1,7 +1,13 @@
-// src/pages/ExamQuiz.jsx (par exemple)
+// /src/pages/ExamQuiz.jsx
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -13,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
   SelectContent,
-  SelectItem
+  SelectItem,
 } from "@/components/ui/select";
 import {
   ClipboardCheck,
@@ -30,8 +36,11 @@ import {
   RotateCcw,
 } from "lucide-react";
 
-// 🔗 on utilise maintenant ton fichier global 1–15
+// 🔗 questions 1–15
 import { QUIZ_QUESTIONS_1_15 } from "@/data/quiz_questions_1_15";
+// 🔗 auth + Supabase
+import { useAuth } from "../context/AuthContext";
+import { supabase } from "../lib/supabase";
 
 // --- helpers ---
 const shuffle = (arr) => {
@@ -45,38 +54,44 @@ const shuffle = (arr) => {
 
 /**
  * Construit le pool de questions :
- * - scope === "all"  → tous les hadiths disponibles
- * - scope === "n"    → uniquement hadith n
+ * - allowedNumbers = hadiths que l'utilisateur a appris (status = "learned")
+ * - scope === "all" → tous les hadiths appris
+ * - scope === "n"   → uniquement hadith n (si appris)
  * - 1 question aléatoire par hadith
  */
-const buildQuestionPool = (scope) => {
-  const targetNumber = scope === "all" ? null : parseInt(scope, 10);
+const buildQuestionPool = (scope, allowedNumbers) => {
+  if (!allowedNumbers || allowedNumbers.length === 0) return [];
 
-  // 1. filtrer par périmètre
-  const base = QUIZ_QUESTIONS_1_15.filter((q) =>
-    targetNumber ? q.n === targetNumber : true
-  );
+  const targetNumber =
+    scope === "all" ? null : Number.isNaN(parseInt(scope, 10)) ? null : parseInt(scope, 10);
 
-  if (base.length === 0) return [];
+  const filteredByScope = QUIZ_QUESTIONS_1_15.filter((q) => {
+    if (!allowedNumbers.includes(q.n)) return false; // ❗ seulement les hadiths appris
+    if (!targetNumber) return true; // "all" → tous les appris
+    return q.n === targetNumber;
+  });
 
-  // 2. regrouper par numéro de hadith
-  const byHadith = base.reduce((acc, q) => {
+  if (filteredByScope.length === 0) return [];
+
+  // regrouper par hadith
+  const byHadith = filteredByScope.reduce((acc, q) => {
     if (!acc[q.n]) acc[q.n] = [];
     acc[q.n].push(q);
     return acc;
   }, {});
 
-  // 3. choisir 1 question aléatoire par hadith
+  // 1 question aléatoire par hadith
   const onePerHadith = Object.values(byHadith).map((questionsForHadith) => {
     const randIndex = Math.floor(Math.random() * questionsForHadith.length);
     return questionsForHadith[randIndex];
   });
 
-  // 4. mélanger
   return shuffle(onePerHadith);
 };
 
 export function ExamQuiz() {
+  const { user } = useAuth();
+
   const [scope, setScope] = useState("all");
   const [duration, setDuration] = useState(8);
   const [started, setStarted] = useState(false);
@@ -87,9 +102,16 @@ export function ExamQuiz() {
   const [finished, setFinished] = useState(false);
   const [dark, setDark] = useState(false);
 
+  // hadiths réellement appris
+  const [learnedNumbers, setLearnedNumbers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // thème
   useEffect(() => {
     const pref = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
+    const prefersDark =
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-color-scheme: dark)").matches;
     const enable = pref ? pref === "dark" : prefersDark;
     setDark(enable);
     document.documentElement.classList.toggle("dark", enable);
@@ -101,8 +123,54 @@ export function ExamQuiz() {
     localStorage.setItem("theme", checked ? "dark" : "light");
   };
 
-  // 🧠 pool préparé : 1 question par hadith selon le scope
-  const preparedPool = useMemo(() => buildQuestionPool(scope), [scope]);
+  // 🧠 Charger les hadiths appris (status = 'learned')
+  useEffect(() => {
+    let active = true;
+
+    async function loadLearned() {
+      setLoading(true);
+      try {
+        if (!user?.id) {
+          if (active) {
+            setLearnedNumbers([]);
+          }
+          return;
+        }
+
+        const { data, error } = await supabase
+          .from("user_hadith_progress")
+          .select("hadith_number, status")
+          .eq("user_id", user.id)
+          .eq("status", "learned"); // 🔥 seulement les hadiths marqués appris
+
+        if (error) throw error;
+
+        const nums = (data || [])
+          .map((row) => row.hadith_number)
+          .filter((n) => typeof n === "number");
+
+        if (active) {
+          setLearnedNumbers(Array.from(new Set(nums)).sort((a, b) => a - b));
+        }
+      } catch (err) {
+        console.error("Erreur chargement hadiths appris pour exam:", err);
+        if (active) setLearnedNumbers([]);
+      } finally {
+        if (active) setLoading(false);
+      }
+    }
+
+    loadLearned();
+    return () => {
+      active = false;
+    };
+  }, [user?.id]);
+
+  // 🧠 pool préparé : 1 question par hadith appris selon le scope
+  const preparedPool = useMemo(
+    () => buildQuestionPool(scope, learnedNumbers),
+    [scope, learnedNumbers]
+  );
 
   const startExam = () => {
     const list = preparedPool;
@@ -156,17 +224,26 @@ export function ExamQuiz() {
 
   const score = useMemo(() => {
     if (!finished) return 0;
-    return pool.reduce((acc, q, i) => acc + (answers[i] === q.correctIndex ? 1 : 0), 0);
+    return pool.reduce(
+      (acc, q, i) => acc + (answers[i] === q.correctIndex ? 1 : 0),
+      0
+    );
   }, [finished, pool, answers]);
 
-  const progressPct = pool.length ? Math.round((index / pool.length) * 100) : 0;
-  const scorePct = pool.length ? Math.round((score / pool.length) * 100) : 0;
+  const progressPct = pool.length
+    ? Math.round((index / pool.length) * 100)
+    : 0;
+  const scorePct = pool.length
+    ? Math.round((score / pool.length) * 100)
+    : 0;
   const mm = String(Math.floor(timeLeft / 60)).padStart(2, "0");
   const ss = String(timeLeft % 60).padStart(2, "0");
   const timeWarning = timeLeft > 0 && timeLeft <= 60;
 
   // ---------- ÉCRAN DE CONFIG ----------
   if (!started) {
+    const noLearned = !loading && learnedNumbers.length === 0;
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-red-50 to-rose-50 dark:from-slate-950 dark:via-red-950 dark:to-rose-950 p-6">
         <div className="max-w-3xl mx-auto space-y-6">
@@ -176,10 +253,19 @@ export function ExamQuiz() {
                 <ClipboardCheck className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Mode Examen</h2>
+                <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">
+                  Mode Examen
+                </h2>
                 <p className="text-sm text-slate-600 dark:text-slate-400">
                   Teste tes connaissances sous pression
                 </p>
+                {noLearned && (
+                  <p className="text-xs text-red-500 mt-1">
+                    Tu dois d&apos;abord apprendre au moins un hadith
+                    (et le marquer comme appris dans le détail) avant de
+                    lancer un examen.
+                  </p>
+                )}
               </div>
             </div>
 
@@ -196,7 +282,9 @@ export function ExamQuiz() {
                 <Target className="h-5 w-5 text-red-500" />
                 Configuration
               </CardTitle>
-              <CardDescription>Définis le périmètre et la durée</CardDescription>
+              <CardDescription>
+                Définis le périmètre et la durée
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid sm:grid-cols-2 gap-6">
@@ -205,21 +293,37 @@ export function ExamQuiz() {
                     <Target className="h-4 w-4" />
                     Périmètre
                   </label>
-                  <Select value={scope} onValueChange={setScope}>
+                  <Select
+                    value={scope}
+                    onValueChange={setScope}
+                    disabled={noLearned}
+                  >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">Tous (1–15)</SelectItem>
+                      <SelectItem value="all">
+                        Tous les hadiths appris
+                      </SelectItem>
+                      {/* on affiche 1–15 mais l'examen ne prendra que ceux appris */}
                       {Array.from({ length: 15 }, (_, i) => i + 1).map((n) => (
-                        <SelectItem key={n} value={String(n)}>
+                        <SelectItem
+                          key={n}
+                          value={String(n)}
+                          disabled={!learnedNumbers.includes(n)}
+                        >
                           Hadith {n}
+                          {!learnedNumbers.includes(n) && " (non appris)"}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                   <p className="text-xs text-slate-500">
-                    {preparedPool.length} question(s) sélectionnée(s)
+                    {loading
+                      ? "Chargement des hadiths appris..."
+                      : learnedNumbers.length > 0
+                      ? `${preparedPool.length} question(s) sélectionnée(s)`
+                      : "Aucun hadith appris pour le moment"}
                   </p>
                 </div>
 
@@ -231,6 +335,7 @@ export function ExamQuiz() {
                   <Select
                     value={String(duration)}
                     onValueChange={(v) => setDuration(parseInt(v, 10))}
+                    disabled={noLearned}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -245,7 +350,9 @@ export function ExamQuiz() {
                   </Select>
                   <p className="text-xs text-slate-500">
                     {preparedPool.length > 0
-                      ? `~${Math.round((duration * 60) / preparedPool.length)}s/question`
+                      ? `~${Math.round(
+                          (duration * 60) / preparedPool.length
+                        )}s/question`
                       : "-"}
                   </p>
                 </div>
@@ -262,6 +369,10 @@ export function ExamQuiz() {
                       <li>Pas de retour en arrière</li>
                       <li>Chronomètre dégressif</li>
                       <li>Correction à la fin uniquement</li>
+                      <li>
+                        Questions uniquement sur les hadiths que tu as
+                        vraiment appris
+                      </li>
                     </ul>
                   </div>
                 </div>
@@ -325,7 +436,9 @@ export function ExamQuiz() {
             </div>
             <div>
               <h1 className="text-2xl font-bold">Résultats</h1>
-              <p className="text-sm text-slate-600 dark:text-slate-400">Analyse de performance</p>
+              <p className="text-sm text-slate-600 dark:text-slate-400">
+                Analyse de performance
+              </p>
             </div>
           </div>
 
@@ -339,8 +452,14 @@ export function ExamQuiz() {
                   <div className={`text-6xl font-bold ${grade.color}`}>
                     {score} / {pool.length}
                   </div>
-                  <div className={`text-2xl font-semibold ${grade.color} mt-2`}>{scorePct}%</div>
-                  <Badge className="mt-3 px-4 py-1 text-base">{grade.label}</Badge>
+                  <div
+                    className={`text-2xl font-semibold ${grade.color} mt-2`}
+                  >
+                    {scorePct}%
+                  </div>
+                  <Badge className="mt-3 px-4 py-1 text-base">
+                    {grade.label}
+                  </Badge>
                 </div>
               </div>
             </CardContent>
@@ -395,13 +514,21 @@ export function ExamQuiz() {
                                   : "bg-slate-100 dark:bg-slate-800"
                               }`}
                             >
-                              <span className="font-semibold">Ta réponse :</span>{" "}
-                              {user == null ? <em>Aucune</em> : q.options[user]}
+                              <span className="font-semibold">
+                                Ta réponse :
+                              </span>{" "}
+                              {user == null ? (
+                                <em>Aucune</em>
+                              ) : (
+                                q.options[user]
+                              )}
                             </div>
 
                             {!ok && (
                               <div className="p-2 rounded bg-green-100 dark:bg-green-900">
-                                <span className="font-semibold">Bonne réponse :</span>{" "}
+                                <span className="font-semibold">
+                                  Bonne réponse :
+                                </span>{" "}
                                 {q.options[q.correctIndex]}
                               </div>
                             )}
@@ -411,7 +538,10 @@ export function ExamQuiz() {
                             <>
                               <Separator />
                               <div className="text-xs text-slate-600 dark:text-slate-400">
-                                <span className="font-semibold">Explication :</span> {q.explain}
+                                <span className="font-semibold">
+                                  Explication :
+                                </span>{" "}
+                                {q.explain}
                               </div>
                             </>
                           )}
@@ -426,7 +556,14 @@ export function ExamQuiz() {
 
           <div className="flex gap-3">
             <Button
-              onClick={() => setStarted(false)}
+              onClick={() => {
+                setStarted(false);
+                setFinished(false);
+                setPool([]);
+                setAnswers([]);
+                setIndex(0);
+                setTimeLeft(0);
+              }}
               className="flex-1 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700"
             >
               <RotateCcw className="h-4 w-4 mr-2" />
@@ -471,7 +608,7 @@ export function ExamQuiz() {
                 <span>Progression</span>
                 <span className="font-semibold">{progressPct}%</span>
               </div>
-            <Progress value={progressPct} className="h-2" />
+              <Progress value={progressPct} className="h-2" />
             </div>
           </CardContent>
         </Card>
@@ -491,16 +628,22 @@ export function ExamQuiz() {
                     variant={selected ? "default" : "outline"}
                     onClick={() => selectAnswer(i)}
                     className={`justify-start h-auto py-4 dark:text-gray-400 ${
-                      selected ? "bg-gradient-to-r from-red-500 to-rose-600" : ""
+                      selected
+                        ? "bg-gradient-to-r from-red-500 to-rose-600"
+                        : ""
                     }`}
                   >
                     <div className="flex items-center gap-3 w-full">
                       <div
                         className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                          selected ? "border-white bg-white/20" : "border-slate-300"
+                          selected
+                            ? "border-white bg-white/20"
+                            : "border-slate-300"
                         }`}
                       >
-                        {selected && <div className="w-3 h-3 rounded-full bg-white" />}
+                        {selected && (
+                          <div className="w-3 h-3 rounded-full bg-white" />
+                        )}
                       </div>
                       <span className="flex-1 text-left">{opt}</span>
                     </div>
@@ -525,7 +668,11 @@ export function ExamQuiz() {
           </CardContent>
         </Card>
 
-        <Button variant="outline" onClick={endExam} className="w-full dark:text-gray-400">
+        <Button
+          variant="outline"
+          onClick={endExam}
+          className="w-full dark:text-gray-400"
+        >
           Terminer maintenant
         </Button>
       </div>
