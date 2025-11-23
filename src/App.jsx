@@ -2,7 +2,7 @@
 import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { Navbar } from './components/Navbar'
-
+import { OnboardingGate } from "./components/OnboardingGate";
 import { Home } from './pages/Home'
 import { Learn } from './pages/Learn'
 import { Review } from './pages/Review'
@@ -12,6 +12,7 @@ import { Profile } from './pages/Profile'
 import HadithDetail from './pages/HadithDetail'
 import ProfileGuest from "./pages/ProfileGuest"; // écran email
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import Onboarding from "./pages/Onboarding";
 
 // ⬇️ nouvelles pages
 import ExamQuiz from './pages/ExamQuiz'
@@ -22,6 +23,7 @@ export default function App() {
     <div className="min-h-screen bg-background">
       <Navbar />
       <main className="max-w-3xl mx-auto">
+        <OnboardingGate>
         <Routes>
           <Route path="/profile" element={<ProfileGuest />} />
           <Route
@@ -32,6 +34,12 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/onboarding"
+         element={
+            <ProtectedRoute>
+              <Onboarding />
+            </ProtectedRoute>
+          } />
          <Route
           path="/learn"
           element={
@@ -110,6 +118,7 @@ export default function App() {
           />
 
         </Routes>
+        </OnboardingGate>
       </main>
     </div>
   )
