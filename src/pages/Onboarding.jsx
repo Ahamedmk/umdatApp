@@ -110,12 +110,11 @@ export default function Onboarding() {
   const touchStartX = useRef(null);
 
   const finishOnboarding = () => {
-    // ✅ clé unique utilisée aussi par OnboardingGate
     localStorage.setItem(ONBOARDING_KEY, "1");
     navigate("/learn", { replace: true });
   };
 
-  // Thème
+  // thème sombre
   useEffect(() => {
     const pref = localStorage.getItem("theme");
     const prefersDark =
@@ -137,17 +136,23 @@ export default function Onboarding() {
   const current = SCREENS[index];
   const progressValue = ((index + 1) / SCREENS.length) * 100;
 
-  const handleNext = () => {
-    if (index < SCREENS.length - 1) {
-      setIndex((i) => i + 1);
-    }
-  };
+ const handleNext = () => {
+  if (index < SCREENS.length - 1) {
+    setIndex((i) => i + 1);
+  } else {
+    localStorage.setItem(ONBOARDING_KEY, "1");
+    navigate("/learn", { replace: true });
+  }
+};
 
   const handlePrev = () => {
     if (index > 0) setIndex((i) => i - 1);
   };
 
-  // Swipe mobile
+  const handlePrimaryClick = () => {
+    handleNext();
+  };
+
   const onTouchStart = (e) => {
     touchStartX.current = e.touches[0].clientX;
   };
@@ -156,11 +161,8 @@ export default function Onboarding() {
     if (touchStartX.current == null) return;
     const deltaX = e.changedTouches[0].clientX - touchStartX.current;
     const threshold = 50;
-    if (deltaX < -threshold) {
-      handleNext();
-    } else if (deltaX > threshold) {
-      handlePrev();
-    }
+    if (deltaX < -threshold) handleNext();
+    else if (deltaX > threshold) handlePrev();
     touchStartX.current = null;
   };
 
@@ -168,7 +170,6 @@ export default function Onboarding() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-blue-950 dark:to-indigo-950 px-4 py-6 flex items-center justify-center">
       <div className="w-full max-w-md">
         <Card className="relative overflow-hidden border-slate-200 dark:border-slate-700 shadow-xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm">
-          {/* halo de couleur */}
           <div
             className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${current.gradient} opacity-10`}
           />
@@ -214,12 +215,10 @@ export default function Onboarding() {
             onTouchStart={onTouchStart}
             onTouchEnd={onTouchEnd}
           >
-            {/* barre de progression */}
             <div className="mb-4">
               <Progress value={progressValue} className="h-1.5" />
             </div>
 
-            {/* carrousel */}
             <div className="overflow-hidden">
               <div
                 className="flex transition-transform duration-500 ease-out"
@@ -273,8 +272,7 @@ export default function Onboarding() {
                         <div className="mt-1 flex items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400">
                           <CheckCircle2 className="h-3 w-3 text-emerald-500" />
                           <span>
-                            Tu pourras toujours revenir ici depuis le menu plus
-                            tard.
+                            Tu pourras toujours revenir ici depuis le menu plus tard.
                           </span>
                         </div>
                       )}
@@ -284,15 +282,14 @@ export default function Onboarding() {
               </div>
             </div>
 
-            {/* nav + CTA */}
             <div className="mt-6 space-y-4">
-              <div className="flex items-center justify-center gap-1">
+              <div className="flex items-center justify-between">
                 <Button
                   variant="outline"
                   size="sm"
                   disabled={index === 0}
                   onClick={handlePrev}
-                  className="gap-1 dark:text-gray-400"
+                  className="gap-1"
                 >
                   <ChevronLeft className="h-4 w-4" />
                   Précédent
@@ -313,19 +310,21 @@ export default function Onboarding() {
                 </div>
 
                 <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={finishOnboarding}
-                  className="text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400"
-                >
-                  Passer
-                </Button>
+  size="sm"
+  variant="ghost"
+  onClick={() => {
+    localStorage.setItem(ONBOARDING_KEY, "1");
+    navigate("/learn", { replace: true });
+  }}
+  className="text-xs text-slate-500 hover:text-slate-700 dark:text-slate-300"
+>
+  Passer
+</Button>
+
               </div>
 
               <Button
-                onClick={
-                  index < SCREENS.length - 1 ? handleNext : finishOnboarding
-                }
+                onClick={handlePrimaryClick}
                 className="w-full h-11 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold shadow-lg"
               >
                 {index < SCREENS.length - 1 ? (

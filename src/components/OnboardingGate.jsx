@@ -1,39 +1,24 @@
-// src/components/OnboardingGate.jsx
-import React, { useEffect, useState } from "react";
+// /src/components/OnboardingGate.jsx
+import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
-const ONBOARDING_KEY = "onboarding_done_umdatu"; // nom de clé unique
+export const ONBOARDING_KEY = "onboarding_done";
 
 export function OnboardingGate({ children }) {
+  const { user, loading } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    // on lit la clé en localStorage
-    const done = localStorage.getItem(ONBOARDING_KEY) === "1";
+    if (loading) return;            // on attend que l'auth soit prête
+    if (!user) return;              // pas connecté → pas d’onboarding
 
-    // si l'onboarding n'est PAS fait et qu'on n'est pas déjà sur /onboarding → redirection
+    const done = localStorage.getItem(ONBOARDING_KEY);
     if (!done && location.pathname !== "/onboarding") {
       navigate("/onboarding", { replace: true });
-      return;
     }
+  }, [user, loading, location.pathname, navigate]);
 
-    // sinon on laisse l’app s’afficher normalement
-    setReady(true);
-  }, [location.pathname, navigate]);
-
-  // Cas spécial : si on est sur /onboarding, on affiche toujours l’onboarding
-  if (location.pathname === "/onboarding") {
-    return children;
-  }
-
-  // pendant la redirection on peut ne rien rendre (ou un loader si tu veux)
-  if (!ready) {
-    return null;
-  }
-
-  return children;
+  return <>{children}</>;
 }
-
-export { ONBOARDING_KEY };
