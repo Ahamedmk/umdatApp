@@ -49,6 +49,7 @@ import {
 
 // === dépendances app (réelles) ===
 import { supabase } from "../lib/supabase";
+import { nextReview } from "../lib/spaced";
 import { HADITHS_1_15 } from "../data/seed_hadiths_1_15";
 import { useAuth } from "../context/AuthContext";
 import { saveReviewResult } from "../lib/hadithProgress";
@@ -263,6 +264,8 @@ export default function HadithDetail() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [progress, setProgress] = useState(null);
+  const hasReviewPlan = !!progress?.next_review_date;
+
   const [hasProgress, setHasProgress] = useState(false); // 👉 déjà planifié ?
   const [hideFR, setHideFR] = useState(false);
   const [dark, setDark] = useState(false);
@@ -420,56 +423,94 @@ export default function HadithDetail() {
     };
   }, [hadithNumber, localSeed, user?.id]);
 
-  const handleQuality = async (quality) => {
-    if (!hadith || hasProgress) return; // 👉 déjà planifié, on ne refait pas ici
-    setSaving(true);
-    try {
-      const userId = user?.id || user?.user?.id || user?.uid || null;
+  // HadithDetail.jsx
 
-      const base = {
-        ease: progress?.ease_factor ?? progress?.ease ?? 2.5,
-        interval_days: progress?.interval_days ?? 0,
-        repetitions: progress?.repetitions ?? 0,
-      };
+const handleQuality = async (quality) => {
+  if (!hadith) return;
+   if (progress?.next_review_date) {
+    console.warn("Ce hadith a déjà un planning de révision, passe par l’onglet Révision.");
+    return;
+  }
 
-      const calc = computeNextReview(base, quality);
+  setSaving(true);
+  setSaving(true);
 
-      if (userId) {
-        await saveReviewResult(userId, hadith.number, quality, calc);
-      } else {
-        // mode local uniquement (si jamais pas connecté)
-        const payload = {
-          hadith_number: hadith.number,
-          ease: calc.ease,
-          interval_days: calc.interval_days,
-          repetitions: calc.repetitions,
-          next_review_date: calc.next_review_date,
-          last_result: quality,
-          status: quality >= 4 ? "learned" : "learning",
-        };
-        localStorage.setItem(
-          `progress_${hadith.number}`,
-          JSON.stringify(payload)
-        );
-      }
+  try {
+    // Progression actuelle (valeurs par défaut si rien encore)
+    const base = progress || {
+      ease: 2.5,
+      interval_days: 0,
+      repetitions: 0,
+    };
 
-      const newProg = {
-        hadith_number: hadith.number,
-        ease_factor: calc.ease,
-        interval_days: calc.interval_days,
-        repetitions: calc.repetitions,
-        next_review_date: calc.next_review_date,
-        last_result: quality,
-      };
+    const calc = nextReview(base, quality);
 
-      setProgress(newProg);
-      setHasProgress(true); // 👉 à partir de maintenant : tout passe par Révision
-    } catch (e) {
-      console.error("Erreur enregistrement progression:", e);
-    } finally {
-      setSaving(false);
+    // 🟢 Règle de statut :
+    // - quality >= 4  → learned
+    // - sinon         → learning
+    const status = quality >= 4 ? "learned" : "learning";
+
+    const payload = {
+      user_id: user ? user.id : null,
+      hadith_number: hadith.number,
+      status,
+      ease_factor: calc.ease,
+      interval_days: calc.interval_days,
+      repetitions: calc.repetitions,
+      last_review_date: new Date().toISOString().slice(0, 10),
+      next_review_date: calc.next_review_date,
+      last_result: quality,
+    };
+
+    // 👉 On utilise maintenant UNIQUEMENT user_hadith_progress
+    if (user) {
+      const { error } = await supabase
+        .from("user_hadith_progress")
+        .upsert(payload, {
+          onConflict: "user_id,hadith_number",
+        });
+
+      if (error) throw error;
+    } else {
+      // fallback local si non connecté
+      localStorage.setItem(
+        `progress_${hadith.number}`,
+        JSON.stringify(payload)
+      );
     }
-  };
+
+    setProgress(payload);
+  } catch (e) {
+    console.error("Erreur handleQuality:", e);
+    // fallback local si erreur Supabase
+    const base = progress || {
+      ease: 2.5,
+      interval_days: 0,
+      repetitions: 0,
+    };
+    const calc = nextReview(base, quality);
+    const status = quality >= 4 ? "learned" : "learning";
+
+    const payload = {
+      status,
+      ease_factor: calc.ease,
+      interval_days: calc.interval_days,
+      repetitions: calc.repetitions,
+      last_review_date: new Date().toISOString().slice(0, 10),
+      next_review_date: calc.next_review_date,
+      last_result: quality,
+    };
+
+    localStorage.setItem(
+      `progress_${hadith.number}`,
+      JSON.stringify(payload)
+    );
+    setProgress(payload);
+  } finally {
+    setSaving(false);
+  }
+};
+
 
   if (loading || !hadith) {
     return (
@@ -799,48 +840,90 @@ export default function HadithDetail() {
           {/* Auto-évaluation : UNIQUEMENT si pas encore de progression */}
           {!hasProgress && (
             <Card className="border-slate-200 dark:border-slate-700 shadow-xl bg-white dark:bg-slate-800">
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-emerald-500" />
-                  Première auto-évaluation (SM-2)
-                </CardTitle>
-                <CardDescription>
-                  1) Récite le hadith de mémoire. 2) Choisis une note : cela
-                  crée ton planning de révision. Ensuite, tu continueras dans
-                  l&apos;onglet <strong>Révision</strong>.
-                </CardDescription>
-              </CardHeader>
-              <Separator className="bg-slate-200 dark:bg-slate-700" />
-              <CardContent className="space-y-6 pt-6">
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-                  {qualityLabels.map((q) => (
-                    <Tooltip key={q.value}>
-                      <TooltipTrigger asChild>
-                        <Button
-                          variant={q.value >= 4 ? "default" : "outline"}
-                          onClick={() => handleQuality(q.value)}
-                          disabled={saving}
-                          className={`h-auto py-4 flex-col gap-2 ${
-                            q.value >= 4
-                              ? "bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white"
-                              : "hover:border-slate-400 dark:hover:border-slate-500"
-                          }`}
-                        >
-                          <span className="text-3xl">{q.emoji}</span>
-                          <span className="text-lg font-bold">{q.value}</span>
-                          <span className="text-xs text-center">
-                            {q.label}
-                          </span>
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p className="text-xs max-w-[180px]">{q.label}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+  <CardHeader>
+    <CardTitle className="text-lg flex items-center gap-2">
+      <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+      Auto-évaluation (SM-2)
+    </CardTitle>
+    <CardDescription>
+      1) Répète le hadith de mémoire. 2) Choisis une note : cela crée ton
+      planning de révision. Ensuite, tu continueras dans l’onglet Révision.
+    </CardDescription>
+  </CardHeader>
+  <Separator className="bg-slate-200 dark:bg-slate-700" />
+  <CardContent className="space-y-6 pt-6">
+    {/* 🟢 Si pas encore de planning → on affiche les boutons */}
+    {!hasReviewPlan && (
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        {qualityLabels.map((q) => (
+          <Tooltip key={q.value}>
+            <TooltipTrigger asChild>
+              <Button
+                variant={q.value >= 4 ? "default" : "outline"}
+                onClick={() => handleQuality(q.value)}
+                disabled={saving}
+                className={`h-auto py-4 flex-col gap-2 ${
+                  q.value >= 4
+                    ? "bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white"
+                    : "hover:border-slate-400 dark:hover:border-slate-500"
+                }`}
+              >
+                <span className="text-3xl">{q.emoji}</span>
+                <span className="text-lg font-bold">{q.value}</span>
+                <span className="text-xs">{q.label}</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p className="text-xs">{q.label}</p>
+            </TooltipContent>
+          </Tooltip>
+        ))}
+      </div>
+    )}
+
+    {/* 🟡 Si un planning existe déjà → petit message explicatif */}
+    {hasReviewPlan && (
+      <div className="p-4 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm">
+        <p className="font-semibold mb-1">
+          Ce hadith a déjà été évalué une première fois ✅
+        </p>
+        <p className="text-slate-700 dark:text-slate-300">
+          Tu retrouveras désormais ce hadith dans l’onglet{" "}
+          <span className="font-semibold">Révision</span> à la date prévue
+          ci-dessous. Pas besoin de re-noter ici.
+        </p>
+      </div>
+    )}
+
+    {/* 📝 Bloc "prochaine révision programmée" que tu avais déjà */}
+    {progress?.next_review_date && (
+      <div className="p-4 rounded-lg bg-emerald-50 dark:bg-emerald-950 border border-emerald-200 dark:border-emerald-800">
+        <div className="flex items-start gap-3">
+          <Clock className="h-5 w-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
+          <div className="text-sm text-emerald-800 dark:text-emerald-200">
+            <div className="font-semibold mb-1">
+              Prochaine révision programmée
+            </div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span>{progress.next_review_date}</span>
+              <Badge
+                variant="outline"
+                className="bg-white dark:bg-slate-800"
+              >
+                {progress.status === "learned" ? "✅ Appris" : "📚 En cours"}
+              </Badge>
+              <span className="text-xs">
+                • {progress.repetitions} révision
+                {progress.repetitions > 1 ? "s" : ""}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+  </CardContent>
+</Card>
+
           )}
 
           {/* Si progression existe déjà → petit rappel vers Révision */}

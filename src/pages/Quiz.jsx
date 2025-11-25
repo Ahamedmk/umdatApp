@@ -35,8 +35,8 @@ import {
 
 import { HADITHS_1_15 } from "@/data/seed_hadiths_1_15";
 import { QUIZ_QUESTIONS_1_15 } from "@/data/quiz_questions_1_15";
-import { useAuth } from "../context/AuthContext";
-import { supabase } from "../lib/supabase";
+import { useAuth } from "@/context/AuthContext";
+import { supabase } from "@/lib/supabase";
 
 export function Quiz() {
   const { user } = useAuth();
@@ -50,8 +50,7 @@ export function Quiz() {
   const [showHint, setShowHint] = useState(false);
   const [showFrenchRef, setShowFrenchRef] = useState(false);
 
-  // 🔥 nouveaux états
-  const [learnedNumbers, setLearnedNumbers] = useState([]); // liste des hadiths appris
+  const [learnedNumbers, setLearnedNumbers] = useState([]); // hadith appris
   const [loadingLearned, setLoadingLearned] = useState(true);
 
   // Thème (light / dark) persistant
@@ -72,96 +71,41 @@ export function Quiz() {
     localStorage.setItem("theme", checked ? "dark" : "light");
   };
 
-  // 🔍 Charger la liste des hadiths appris (DB + fallback localStorage)
+  // 🔥 Charger la liste des hadiths APPRIS depuis user_hadith_progress
   useEffect(() => {
     let active = true;
 
     async function loadLearned() {
       setLoadingLearned(true);
+
       try {
-        let numbers = [];
-        const userId = user?.id || user?.user?.id || user?.uid;
-
-        if (userId) {
-          // 1️⃣ Table de révision principale (utilisée par Review)
-          const { data: p1, error: e1 } = await supabase
-            .from("user_hadith_progress")
-            .select("hadith_number, status")
-            .eq("user_id", userId);
-
-          if (e1) throw e1;
-
-          numbers = (p1 || [])
-            .filter((row) => row.status === "learned" || row.status === "learning")
-            .map((row) => row.hadith_number)
-            .filter((n) => typeof n === "number");
-
-          // 2️⃣ Si vraiment rien trouvé (premiers tests, ancienne version)
-          if (!numbers.length) {
-            const { data: p2, error: e2 } = await supabase
-              .from("user_progress")
-              .select("status, hadith_id")
-              .eq("user_id", userId);
-
-            if (e2) throw e2;
-
-            const ids = (p2 || [])
-              .filter((row) => row.status === "learned" || row.status === "learning")
-              .map((row) => row.hadith_id)
-              .filter(Boolean);
-
-            if (ids.length) {
-              const { data: hadithRows, error: e3 } = await supabase
-                .from("hadiths")
-                .select("id, number")
-                .in("id", ids);
-
-              if (e3) throw e3;
-
-              const idToNumber = new Map(
-                (hadithRows || []).map((h) => [h.id, h.number])
-              );
-
-              numbers = ids
-                .map((id) => idToNumber.get(id))
-                .filter((n) => typeof n === "number");
-            }
-          }
-        } else {
-          // 3️⃣ Pas connecté → fallback localStorage
-          numbers = HADITHS_1_15.map((h) => h.number).filter((n) => {
-            const raw = localStorage.getItem(`progress_${n}`);
-            if (!raw) return false;
-            try {
-              const p = JSON.parse(raw);
-              return p.status === "learned" || p.status === "learning";
-            } catch {
-              return false;
-            }
-          });
+        if (!user) {
+          setLearnedNumbers([]);
+          return;
         }
 
-        const uniqueSorted = Array.from(new Set(numbers)).sort((a, b) => a - b);
+        const { data, error } = await supabase
+          .from("user_hadith_progress")
+          .select("hadith_number, status")
+          .eq("user_id", user.id)
+          .eq("status", "learned"); // ⚠️ on ne prend que les appris
+
+        if (error) throw error;
+
+        const nums = Array.from(
+          new Set((data || []).map((r) => r.hadith_number))
+        ).sort((a, b) => a - b);
 
         if (active) {
-          setLearnedNumbers(uniqueSorted);
-
-          // Si le filtre actuel ne fait plus partie des hadiths appris → reset
-          if (
-            filterN !== "all" &&
-            !uniqueSorted.includes(parseInt(filterN, 10))
-          ) {
+          setLearnedNumbers(nums);
+          // si le filtre actuel ne fait pas partie des appris → reset
+          if (nums.length === 0 || (filterN !== "all" && !nums.includes(parseInt(filterN, 10)))) {
             setFilterN("all");
             setIndex(0);
-            setSelected(null);
-            setDone(false);
-            setScore(0);
-            setShowHint(false);
-            setShowFrenchRef(false);
           }
         }
       } catch (e) {
-        console.error("Erreur chargement hadiths appris pour le quiz:", e);
+        console.error("Erreur loadLearned:", e);
         if (active) setLearnedNumbers([]);
       } finally {
         if (active) setLoadingLearned(false);
@@ -172,31 +116,30 @@ export function Quiz() {
     return () => {
       active = false;
     };
-  }, [user?.id, filterN]);
+  }, [user?.id]);
 
-  // Pool de questions filtré par hadith appris
+  // Pool de questions filtré :
+  // 1) seulement les hadiths APPRIS
+  // 2) + filtre optionnel sur un numéro précis
   const pool = useMemo(() => {
     if (!learnedNumbers.length) return [];
 
-    let allowedNumbers;
-    if (filterN === "all") {
-      allowedNumbers = learnedNumbers;
-    } else {
-      const num = parseInt(filterN, 10);
-      allowedNumbers = learnedNumbers.includes(num) ? [num] : [];
-    }
-
-    const raw = QUIZ_QUESTIONS_1_15.filter((q) =>
-      allowedNumbers.includes(q.n)
+    let base = QUIZ_QUESTIONS_1_15.filter((q) =>
+      learnedNumbers.includes(q.n)
     );
 
-    return raw;
-  }, [filterN, learnedNumbers]);
+    if (filterN !== "all") {
+      const num = parseInt(filterN, 10);
+      base = base.filter((q) => q.n === num);
+    }
+
+    return base;
+  }, [learnedNumbers, filterN]);
 
   const current = pool[index];
 
   const answered = index + (done ? 1 : 0);
-  const progress = pool.length
+  const progressValue = pool.length
     ? Math.round((answered / pool.length) * 100)
     : 0;
   const accuracy = answered ? Math.round((score / answered) * 100) : 0;
@@ -217,13 +160,13 @@ export function Quiz() {
       setShowHint(false);
       setShowFrenchRef(false);
     } else {
-      // fin de quiz → reset
-      setDone(false);
+      // fin de quiz → on reset la session
+      setIndex(0);
       setSelected(null);
+      setDone(false);
+      setScore(0);
       setShowHint(false);
       setShowFrenchRef(false);
-      setIndex(0);
-      setScore(0);
     }
   };
 
@@ -246,14 +189,12 @@ export function Quiz() {
     setShowFrenchRef(false);
   };
 
-  // Quand on change de question, on masque la traduction du rappel
   useEffect(() => {
     setShowFrenchRef(false);
   }, [index, filterN]);
 
-  // Styles “manuels” pour les boutons d’options
+  // Styles pour les options (identiques à ta version)
   const getOptionStyle = (isSelected, isCorrect, isWrong) => {
-    // Après validation
     if (done) {
       if (isCorrect) {
         return {
@@ -269,7 +210,6 @@ export function Quiz() {
           border: "none",
         };
       }
-      // Non sélectionnées après validation
       return dark
         ? {
             backgroundColor: "#020617",
@@ -283,9 +223,7 @@ export function Quiz() {
           };
     }
 
-    // Avant validation
     if (isSelected) {
-      // Sélectionnée
       return dark
         ? {
             backgroundImage: "linear-gradient(135deg,#4c1d95,#db2777)",
@@ -299,7 +237,6 @@ export function Quiz() {
           };
     }
 
-    // Non sélectionnée
     return dark
       ? {
           backgroundColor: "#020617",
@@ -345,6 +282,7 @@ export function Quiz() {
       : { borderColor: "#cbd5f5", backgroundColor: "transparent", color: "#0f172a" };
   };
 
+  // ================== RENDER ==================
   return (
     <div className="min-h-screen w-full overflow-x-clip bg-gradient-to-br from-slate-50 via-purple-50 to-pink-50 dark:from-slate-950 dark:via-purple-950 dark:to-pink-950 px-4 sm:px-6 py-6 transition-colors duration-300">
       <div className="max-w-4xl w-full mx-auto space-y-6">
@@ -365,24 +303,12 @@ export function Quiz() {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
-            <Select
-              value={filterN}
-              onValueChange={handleFilterChange}
-              disabled={loadingLearned || !learnedNumbers.length}
-            >
-              <SelectTrigger className="w-full sm:w-56 bg-white dark:bg-slate-800">
-                <SelectValue
-                  placeholder={
-                    loadingLearned
-                      ? "Chargement..."
-                      : "Aucun hadith appris"
-                  }
-                />
+            <Select value={filterN} onValueChange={handleFilterChange}>
+              <SelectTrigger className="w-full sm:w-44 bg-white dark:bg-slate-800">
+                <SelectValue placeholder="Tous" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">
-                  Tous mes hadiths appris ({learnedNumbers.length})
-                </SelectItem>
+                <SelectItem value="all">Tous (appris)</SelectItem>
                 {learnedNumbers.map((n) => (
                   <SelectItem key={n} value={String(n)}>
                     Hadith {n}
@@ -403,30 +329,13 @@ export function Quiz() {
           </div>
         </div>
 
-        {/* MESSAGE SI AUCUN HADITH APPRIS */}
-        {!loadingLearned && !learnedNumbers.length && (
-          <Card className="border-dashed border-2 border-slate-300 dark:border-slate-700">
-            <CardContent className="py-8 text-center space-y-2">
-              <Brain className="h-10 w-10 text-slate-400 mx-auto mb-2" />
-              <p className="text-slate-700 dark:text-slate-200 font-semibold">
-                Tu n&apos;as pas encore de hadith marqué comme appris.
-              </p>
-              <p className="text-sm text-slate-500 dark:text-slate-400">
-                Commence par apprendre un hadith dans la page{" "}
-                <span className="font-semibold">Apprendre</span> puis fais une
-                première auto-évaluation : il apparaîtra ici.
-              </p>
-            </CardContent>
-          </Card>
-        )}
-
         {/* STATS */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <Card className="bg-gradient-to-br from-purple-500 to-pink-600 border-0 text-white shadow-lg">
             <CardContent className="pt-4 pb-3 text-center">
               <Target className="h-5 w-5 mx-auto mb-1 opacity-90" />
               <div className="text-2xl font-bold mb-1">{answered}</div>
-              <div className="text-xs opacity-90">Questions</div>
+              <div className="text-xs opacity-90">Questions vues</div>
             </CardContent>
           </Card>
 
@@ -434,7 +343,7 @@ export function Quiz() {
             <CardContent className="pt-4 pb-3 text-center">
               <Trophy className="h-5 w-5 mx-auto mb-1 opacity-90" />
               <div className="text-2xl font-bold mb-1">{score}</div>
-              <div className="text-xs opacity-90">Bonnes</div>
+              <div className="text-xs opacity-90">Bonnes réponses</div>
             </CardContent>
           </Card>
 
@@ -452,7 +361,7 @@ export function Quiz() {
             <CardContent className="pt-4 pb-3 text-center">
               <RotateCcw className="h-5 w-5 mx-auto mb-1 opacity-90" />
               <div className="text-2xl font-bold mb-1">{pool.length}</div>
-              <div className="text-xs opacity-90">Total</div>
+              <div className="text-xs opacity-90">Questions dispo</div>
             </CardContent>
           </Card>
         </div>
@@ -463,261 +372,291 @@ export function Quiz() {
             <div className="space-y-3">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-slate-600 dark:text-slate-400">
-                  Progression globale
+                  Progression du quiz
                 </span>
                 <span className="font-semibold text-slate-800 dark:text-slate-200">
-                  {progress}%
+                  {progressValue}%
                 </span>
               </div>
-              <Progress value={progress} className="h-3" />
+              <Progress value={progressValue} className="h-3" />
             </div>
           </CardContent>
         </Card>
 
-        {/* CARTE PRINCIPALE QUIZ */}
-        {pool.length === 0 || !current ? (
-          <Card className="border-dashed border-2 border-slate-300 dark:border-slate-700">
-            <CardContent className="py-16 text-center">
-              <Brain className="h-16 w-16 text-slate-400 mx-auto mb-4" />
-              <p className="text-slate-600 dark:text-slate-400">
-                {loadingLearned
-                  ? "Chargement de tes hadiths appris..."
-                  : "Sélectionne un hadith appris ci-dessus pour commencer"}
+        {/* CAS : pas connecté ou aucun hadith appris */}
+        {loadingLearned ? (
+          <Card className="border-slate-200 dark:border-slate-700 shadow-xl">
+            <CardContent className="py-12 text-center animate-pulse">
+              <Brain className="h-10 w-10 text-slate-400 mx-auto mb-3" />
+              <p className="text-slate-600 dark:text-slate-400 text-sm">
+                Chargement de tes hadiths appris...
               </p>
             </CardContent>
           </Card>
-        ) : (
-          <Card className="border-slate-200 dark:border-slate-700 shadow-xl bg-white dark:bg-slate-800 overflow-hidden relative">
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5" />
-
-            <CardHeader className="relative z-10">
-              <div className="flex items-center justify-between gap-2 mb-2 min-w-0">
-                <Badge variant="secondary" className="rounded-full shrink-0">
-                  Question {index + 1} / {pool.length}
-                </Badge>
-                <Badge variant="outline" className="text-xs shrink-0">
-                  Hadith {current.n}
-                </Badge>
-              </div>
-              <CardTitle className="text-xl text-slate-800 dark:text-slate-100 break-words text-pretty">
-                {current.q}
-              </CardTitle>
-            </CardHeader>
-
-            <Separator className="bg-slate-200 dark:bg-slate-700" />
-
-            <CardContent className="space-y-6 pt-6 relative z-10">
-              {/* OPTIONS */}
-              <div className="grid gap-3">
-                {current.options.map((opt, i) => {
-                  const isSelected = selected === i;
-                  const isCorrect = done && i === current.correctIndex;
-                  const isWrong =
-                    done && isSelected && i !== current.correctIndex;
-
-                  const buttonStyle = getOptionStyle(
-                    isSelected,
-                    isCorrect,
-                    isWrong
-                  );
-                  const radioStyle = getRadioStyle(
-                    isSelected,
-                    isCorrect,
-                    isWrong
-                  );
-
-                  return (
-                    <Button
-                      key={i}
-                      onClick={() => !done && setSelected(i)}
-                      disabled={done}
-                      className="justify-start text-left h-auto py-4 px-4 transition-all min-w-0 whitespace-normal break-words text-pretty rounded-xl"
-                      style={buttonStyle}
-                    >
-                      <div className="flex items-start gap-3 w-full">
-                        <div
-                          className="flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center"
-                          style={radioStyle}
-                        >
-                          {isCorrect && (
-                            <CheckCircle2 className="h-4 w-4 text-white" />
-                          )}
-                          {isWrong && (
-                            <XCircle className="h-4 w-4 text-white" />
-                          )}
-                        </div>
-                        <span className="flex-1 min-w-0 break-words">
-                          {opt}
-                        </span>
-                      </div>
-                    </Button>
-                  );
-                })}
-              </div>
-
-              {/* ACTIONS */}
-              <div className="grid grid-cols-1 sm:flex sm:flex-wrap sm:items-center gap-2">
-                {!done ? (
-                  <>
-                    <Button
-                      onClick={onValidate}
-                      disabled={selected == null}
-                      className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white shadow-md"
-                    >
-                      Valider ma réponse
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setShowHint(!showHint)}
-                      className="w-full sm:w-auto gap-2 text-black "
-                    >
-                      <Lightbulb className="h-4 w-4 shrink-0 " />
-                      {showHint ? "Masquer" : "Indice"}
-                    </Button>
-                  </>
-                ) : (
-                  <Button
-                    onClick={onNext}
-                    className="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-md"
-                  >
-                    {index + 1 < pool.length
-                      ? "Question suivante →"
-                      : "Recommencer le quiz"}
-                  </Button>
-                )}
-              </div>
-
-              {/* INDICE */}
-              {showHint && !done && (
-                <Card className="bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
-                  <CardContent className="pt-4">
-                    <div className="flex items-start gap-2">
-                      <Lightbulb className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
-                      <div className="text-sm text-blue-800 dark:text-blue-200">
-                        Relis le hadith {current.n} et son explication pour
-                        retrouver la bonne réponse.
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-
-              {/* EXPLICATION APRES VALIDATION */}
-              {done && (
-                <Card
-                  className={
-                    selected === current.correctIndex
-                      ? "bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800"
-                      : "bg-red-50 dark:bg-red-950 border-red-200 dark:border-red-800"
-                  }
-                >
-                  <CardContent className="pt-4">
-                    <div className="flex items-start gap-2">
-                      {selected === current.correctIndex ? (
-                        <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
-                      ) : (
-                        <XCircle className="h-5 w-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
-                      )}
-                      <div className="min-w-0">
-                        <div
-                          className={`text-sm font-semibold mb-1 ${
-                            selected === current.correctIndex
-                              ? "text-green-800 dark:text-green-200"
-                              : "text-red-800 dark:text-red-200"
-                          }`}
-                        >
-                          {selected === current.correctIndex
-                            ? "Excellente réponse !"
-                            : "Pas tout à fait..."}
-                        </div>
-                        <div
-                          className={`text-sm break-words text-pretty ${
-                            selected === current.correctIndex
-                              ? "text-green-700 dark:text-green-300"
-                              : "text-red-700 dark:text-red-300"
-                          }`}
-                        >
-                          {current.explain}
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
+        ) : !user ? (
+          <Card className="border-slate-200 dark:border-slate-700 shadow-xl">
+            <CardContent className="py-12 text-center space-y-3">
+              <Brain className="h-10 w-10 text-slate-400 mx-auto mb-2" />
+              <p className="text-slate-700 dark:text-slate-200 font-semibold">
+                Connecte-toi pour accéder au quiz.
+              </p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                Le quiz utilise ta progression personnelle (table
+                <code className="mx-1">user_hadith_progress</code>).
+              </p>
             </CardContent>
           </Card>
-        )}
+        ) : learnedNumbers.length === 0 ? (
+          <Card className="border-dashed border-2 border-slate-300 dark:border-slate-700">
+            <CardContent className="py-12 text-center space-y-3">
+              <Brain className="h-10 w-10 text-slate-400 mx-auto mb-2" />
+              <p className="text-slate-700 dark:text-slate-200 font-semibold">
+                Tu n&apos;as pas encore de hadith marqué comme appris.
+              </p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                Va dans la page <span className="font-semibold">Apprendre</span>,
+                auto-évalue un hadith avec une note <strong>4 ou 5</strong>, puis reviens
+                ici pour l&apos;avoir en quiz.
+              </p>
+            </CardContent>
+          </Card>
+        ) : null}
 
-        {/* RAPPEL HADITH */}
-        {pool.length > 0 && current && (
-          <Card className="border-slate-200 dark:border-slate-700 shadow-lg bg-white dark:bg-slate-800">
-            <CardHeader>
-              <CardTitle className="text-base flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-yellow-500 shrink-0" />
-                <span className="truncate">Rappel — Hadith {current.n}</span>
-              </CardTitle>
-              <CardDescription>
-                Contexte pour ancrer ta compréhension
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {(() => {
-                const h = HADITHS_1_15.find((x) => x.number === current.n);
-                if (!h) {
-                  return (
-                    <div className="text-sm text-slate-500 dark:text-slate-400">
-                      —
-                    </div>
-                  );
-                }
+        {/* CARTE PRINCIPALE QUIZ */}
+        {pool.length === 0 || !current ? null : (
+          <>
+            <Card className="border-slate-200 dark:border-slate-700 shadow-xl bg-white dark:bg-slate-800 overflow-hidden relative">
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5" />
 
-                return (
-                  <>
-                    <div className="space-y-3 max-h-64 overflow-y-auto pr-2">
-                      <div
-                        dir="rtl"
-                        className="p-4 rounded-lg bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900 border border-slate-200 dark:border-slate-700 font-serif text-lg leading-loose break-words"
+              <CardHeader className="relative z-10">
+                <div className="flex items-center justify-between gap-2 mb-2 min-w-0">
+                  <Badge variant="secondary" className="rounded-full shrink-0">
+                    Question {index + 1} / {pool.length}
+                  </Badge>
+                  <Badge variant="outline" className="text-xs shrink-0">
+                    Hadith {current.n}
+                  </Badge>
+                </div>
+                <CardTitle className="text-xl text-slate-800 dark:text-slate-100 break-words text-pretty">
+                  {current.q}
+                </CardTitle>
+              </CardHeader>
+
+              <Separator className="bg-slate-200 dark:bg-slate-700" />
+
+              <CardContent className="space-y-6 pt-6 relative z-10">
+                {/* OPTIONS */}
+                <div className="grid gap-3">
+                  {current.options.map((opt, i) => {
+                    const isSelected = selected === i;
+                    const isCorrect = done && i === current.correctIndex;
+                    const isWrong =
+                      done && isSelected && i !== current.correctIndex;
+
+                    const buttonStyle = getOptionStyle(
+                      isSelected,
+                      isCorrect,
+                      isWrong
+                    );
+                    const radioStyle = getRadioStyle(
+                      isSelected,
+                      isCorrect,
+                      isWrong
+                    );
+
+                    return (
+                      <Button
+                        key={i}
+                        onClick={() => !done && setSelected(i)}
+                        disabled={done}
+                        className="justify-start text-left h-auto py-4 px-4 transition-all min-w-0 whitespace-normal break-words text-pretty rounded-xl"
+                        style={buttonStyle}
                       >
-                        {h.arabic_text}
+                        <div className="flex items-start gap-3 w-full">
+                          <div
+                            className="flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center"
+                            style={radioStyle}
+                          >
+                            {isCorrect && (
+                              <CheckCircle2 className="h-4 w-4 text-white" />
+                            )}
+                            {isWrong && (
+                              <XCircle className="h-4 w-4 text-white" />
+                            )}
+                          </div>
+                          <span className="flex-1 min-w-0 break-words">
+                            {opt}
+                          </span>
+                        </div>
+                      </Button>
+                    );
+                  })}
+                </div>
+
+                {/* ACTIONS */}
+                <div className="grid grid-cols-1 sm:flex sm:flex-wrap sm:items-center gap-2">
+                  {!done ? (
+                    <>
+                      <Button
+                        onClick={onValidate}
+                        disabled={selected == null}
+                        className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white shadow-md"
+                      >
+                        Valider ma réponse
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setShowHint(!showHint)}
+                        className="w-full sm:w-auto gap-2 text-black "
+                      >
+                        <Lightbulb className="h-4 w-4 shrink-0 " />
+                        {showHint ? "Masquer" : "Indice"}
+                      </Button>
+                    </>
+                  ) : (
+                    <Button
+                      onClick={onNext}
+                      className="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-md"
+                    >
+                      {index + 1 < pool.length
+                        ? "Question suivante →"
+                        : "Recommencer le quiz"}
+                    </Button>
+                  )}
+                </div>
+
+                {/* INDICE */}
+                {showHint && !done && (
+                  <Card className="bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
+                    <CardContent className="pt-4">
+                      <div className="flex items-start gap-2">
+                        <Lightbulb className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+                        <div className="text-sm text-blue-800 dark:text-blue-200">
+                          Relis le hadith {current.n} et son explication pour
+                          retrouver la bonne réponse.
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* EXPLICATION APRES VALIDATION */}
+                {done && (
+                  <Card
+                    className={
+                      selected === current.correctIndex
+                        ? "bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800"
+                        : "bg-red-50 dark:bg-red-950 border-red-200 dark:border-red-800"
+                    }
+                  >
+                    <CardContent className="pt-4">
+                      <div className="flex items-start gap-2">
+                        {selected === current.correctIndex ? (
+                          <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                        ) : (
+                          <XCircle className="h-5 w-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+                        )}
+                        <div className="min-w-0">
+                          <div
+                            className={`text-sm font-semibold mb-1 ${
+                              selected === current.correctIndex
+                                ? "text-green-800 dark:text-green-200"
+                                : "text-red-800 dark:text-red-200"
+                            }`}
+                          >
+                            {selected === current.correctIndex
+                              ? "Excellente réponse !"
+                              : "Pas tout à fait..."}
+                          </div>
+                          <div
+                            className={`text-sm break-words text-pretty ${
+                              selected === current.correctIndex
+                                ? "text-green-700 dark:text-green-300"
+                                : "text-red-700 dark:text-red-300"
+                            }`}
+                          >
+                            {current.explain}
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* RAPPEL HADITH */}
+            <Card className="border-slate-200 dark:border-slate-700 shadow-lg bg-white dark:bg-slate-800">
+              <CardHeader>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Sparkles className="h-4 w-4 text-yellow-500 shrink-0" />
+                  <span className="truncate">
+                    Rappel — Hadith {current.n}
+                  </span>
+                </CardTitle>
+                <CardDescription>
+                  Contexte pour ancrer ta compréhension
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {(() => {
+                  const h = HADITHS_1_15.find(
+                    (x) => x.number === current.n
+                  );
+                  if (!h) {
+                    return (
+                      <div className="text-sm text-slate-500 dark:text-slate-400">
+                        —
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <>
+                      <div className="space-y-3 max-h-64 overflow-y-auto pr-2">
+                        <div
+                          dir="rtl"
+                          className="p-4 rounded-lg bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900 border border-slate-200 dark:border-slate-700 font-serif text-lg leading-loose break-words"
+                        >
+                          {h.arabic_text}
+                        </div>
+
+                        {showFrenchRef && (
+                          <div className="p-4 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-300 break-words">
+                            {h.french_text}
+                          </div>
+                        )}
                       </div>
 
-                      {showFrenchRef && (
-                        <div className="p-4 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-300 break-words">
-                          {h.french_text}
-                        </div>
-                      )}
-                    </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setShowFrenchRef((v) => !v)}
+                        className="mt-2 text-black"
+                      >
+                        {showFrenchRef
+                          ? "Masquer la traduction"
+                          : "Afficher la traduction"}
+                      </Button>
+                    </>
+                  );
+                })()}
+              </CardContent>
+            </Card>
 
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setShowFrenchRef((v) => !v)}
-                      className="mt-2 text-black"
-                    >
-                      {showFrenchRef
-                        ? "Masquer la traduction"
-                        : "Afficher la traduction"}
-                    </Button>
-                  </>
-                );
-              })()}
-            </CardContent>
-          </Card>
-        )}
-
-        {/* BOUTON RESTART GLOBAL */}
-        {pool.length > 0 && (
-          <div className="flex flex-col sm:flex-row justify-center gap-2">
-            <Button
-              variant="outline"
-              onClick={onRestart}
-              className="w-full sm:w-auto gap-2 text-black"
-            >
-              <RotateCcw className="h-4 w-4" />
-              Recommencer ce quiz
-            </Button>
-          </div>
+            {/* BOUTON RESTART GLOBAL */}
+            <div className="flex flex-col sm:flex-row justify-center gap-2">
+              <Button
+                variant="outline"
+                onClick={onRestart}
+                className="w-full sm:w-auto gap-2 text-black"
+              >
+                <RotateCcw className="h-4 w-4" />
+                Recommencer ce quiz
+              </Button>
+            </div>
+          </>
         )}
       </div>
     </div>
