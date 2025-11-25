@@ -234,62 +234,62 @@ export const HADITHS_1_15 = [
 ,
   
   {
-    number: 8,
-    arabic_text:
-      "عن يحيى بنِ عَمْرٍو… شَهِدْتُ عَبْدَ اللَّهِ بْنَ زَيْدٍ، فسأله عن وضوءِ رسولِ الله ﷺ فتوضأ لهم… فأكفأ على يديه من التور فغسلهما ثلاثًا، ثم مضمض واستنشق ثلاثًا بثلاث غرفات، ثم أدخل يده فغسل وجهه ثلاثًا، ثم غسل يديه إلى المرفقين، ثم مسح برأسه فأقبل بيديه وأدبر، ثم غسل رجليه… وفي رواية: بدأ بمقدَّم رأسه حتى رجع إلى المكان الذي بدأ منه.",
-    french_text:
-      "Yahyâ b. ‘Amr : ‘J’ai assisté ‘Abd Allâh b. Zayd, on l’interrogea sur le wudû’ du Messager d’Allah ﷺ ; il fit l’ablution devant eux : rinça la bouche et le nez trois fois avec trois prises d’eau, lava le visage trois fois, les mains jusqu’aux coudes, passa les mains mouillées sur la tête (avant/arrière), puis lava les pieds.’",
-    source: "Abû Dâwûd, at-Tirmidhî (cf. PDF)",
-    tags: ["tahara","wudu"],
-    opinions: {
-      Hanafi: {
-        ar: "التيْسميَةُ في الوضوء سُنّةٌ عند الحنفية، والسِّواكُ سُنّة، وتخليلُ أصابعِ اليدينِ والرجلين مستحب، وتثليثُ الغسلِ سُنّة والمرةُ مجزئة، ومسحُ الرأسِ مرةً يكفي، ويُكره الإسرافُ في الماء.",
-        fr: "Basmala : sunna ; siwâk : sunna ; entrelacer doigts/orteils : recommandé ; laver 3× : sunna (1× suffit) ; essuyage de la tête 1× ; gaspillage d’eau réprouvé."
-      },
-      Maliki: {
-        ar: "التسميةُ مستحبة، والسواكُ سُنّة، وتثليثُ الغسل سُنّة مع الإجزاء بالمرة، وتخليلُ الأصابع مستحب، ومسحُ الرأسِ مرة، ويُكره الغلوّ والإسراف في الماء.",
-        fr: "Basmala : recommandée ; siwâk : sunna ; 3× sunna (1× valide) ; entrelacement : recommandé ; essuyage 1× ; excès d’eau blâmé."
-      },
-      Shafi: {
-        ar: "التسميةُ سُنّة، والسواك سُنّة، وتخليلُ اللحية الكثيفة والأصابع سُنّة، وتثليثُ الغسل سُنّة مع كفاية المرة، ومسح الرأس مرة.",
-        fr: "Basmala : sunna ; siwâk : sunna ; takhlîl de la barbe épaisse et des doigts : sunna ; 3× sunna (1× suffit) ; essuyage 1×."
-      },
-      Hanbali: {
-        ar: "ذهب أحمدُ وإسحاقُ وأهلُ الظاهر إلى وُجوبِ التسمية، والراجح عند المتأخرين أنها واجبةٌ وتسقط بالنسيان؛ والسواك سُنّة، وتثليثُ الغسل سُنّة، وتخليلُ الأصابع سُنّة، ويُنهى عن الإسراف.",
-        fr: "Basmala : obligation (tombe par oubli selon l’avis retenu) ; siwâk : sunna ; 3× : sunna ; entrelacement : sunna ; gaspillage d’eau blâmé."
-      }
+  number: 8,
+  arabic_text:
+    "عَنْ عَمْرِو بْنِ يَحْيَى الْمَازِنِيِّ عَنْ أَبِيهِ قَالَ: «شَهِدْتُ عَمْرَو بْنَ أَبِي حَسَنٍ سَأَلَ عَبْدَ اللَّهِ بْنَ زَيْدٍ عَنْ وُضُوءِ النَّبِيِّ ﷺ، فَدَعَا بِتَوْرٍ مِنْ مَاءٍ، فَتَوَضَّأَ لَهُمْ وُضُوءَ النَّبِيِّ ﷺ، فَأَكْفَأَ عَلَى يَدَيْهِ مِنَ التَّوْرِ، فَغَسَلَ يَدَيْهِ ثَلَاثًا، ثُمَّ أَدْخَلَ يَدَهُ فِي التَّوْرِ، فَمَضْمَضَ وَاسْتَنْشَقَ وَاسْتَنْثَرَ ثَلَاثًا بِثَلَاثِ غَرَفَاتٍ، ثُمَّ أَدْخَلَ يَدَهُ فَغَسَلَ وَجْهَهُ ثَلَاثًا، ثُمَّ أَدْخَلَ يَدَهُ فَغَسَلَ يَدَيْهِ إِلَى الْمِرْفَقَيْنِ مَرَّتَيْنِ، ثُمَّ أَدْخَلَ يَدَهُ فَمَسَحَ رَأْسَهُ فَأَقْبَلَ بِهِمَا وَأَدْبَرَ مَرَّةً وَاحِدَةً، ثُمَّ غَسَلَ رِجْلَيْهِ. وَفِي رِوَايَةٍ: «بَدَأَ بِمُقَدَّمِ رَأْسِهِ حَتَّى ذَهَبَ بِهِمَا إِلَى قَفَاهُ، ثُمَّ رَدَّهُمَا حَتَّى رَجَعَ إِلَى الْمَكَانِ الَّذِي بَدَأَ مِنْهُ.» وَفِي رِوَايَةٍ: «أَنَّ رَسُولَ اللَّهِ ﷺ أُتِيَ لَهُ بِمَاءٍ فِي تَوْرٍ مِنْ صُفْرٍ.»",
+  french_text:
+    "‘Amr b. Yahyâ al-Mâzinî rapporte de son père : « J’ai assisté à la scène où ‘Amr b. Abî Hasan interrogea ‘Abd Allâh b. Zayd au sujet des ablutions du Prophète ﷺ. Il demanda qu’on lui apporte un récipient d’eau et réalisa pour eux les ablutions du Prophète ﷺ : il versa de l’eau sur ses mains et les lava trois fois, se rinça la bouche et le nez trois fois avec trois poignées d’eau, lava son visage trois fois, lava ses mains jusqu’aux coudes deux fois, passa ses mains mouillées sur sa tête en allant vers l’avant puis vers l’arrière une fois, puis lava ses pieds. » Dans une autre version : « Il commença par l’avant de sa tête jusqu’à la nuque, puis revint au point de départ. » Et dans une autre version : « On apporta au Messager d’Allah ﷺ de l’eau dans un récipient en cuivre jaune. »",
+  source: "Abû Dâwûd, at-Tirmidhî (cf. PDF)",
+  tags: ["tahara", "wudu"],
+  opinions: {
+    Hanafi: {
+      ar: "التَّسْمِيَةُ فِي الوُضوءِ سُنَّةٌ عِنْدَ الحَنَفِيَّةِ، وَالسِّوَاكُ سُنَّةٌ، وَتَخْلِيلُ أَصَابِعِ الْيَدَيْنِ وَالرِّجْلَيْنِ مُسْتَحَبٌّ، وَتَثْلِيثُ الْغَسْلِ سُنَّةٌ وَالْمَرَّةُ مُجْزِئَةٌ، وَمَسْحُ الرَّأْسِ مَرَّةً يَكْفِي، وَيُكْرَهُ الإِسْرَافُ فِي المَاءِ.",
+      fr: "Basmala : sunna ; siwâk : sunna ; entrelacer les doigts et orteils : recommandé ; laver trois fois : sunna (une fois suffit) ; essuyage de la tête une fois ; gaspillage d’eau réprouvé."
     },
-    audio_url: null
+    Maliki: {
+      ar: "التَّسْمِيَةُ مُسْتَحَبَّةٌ، وَالسِّوَاكُ سُنَّةٌ، وَتَثْلِيثُ الْغَسْلِ سُنَّةٌ مَعَ الإِجْزَاءِ بِالْمَرَّةِ، وَتَخْلِيلُ الأَصَابِعِ مُسْتَحَبٌّ، وَمَسْحُ الرَّأْسِ مَرَّةً، وَيُكْرَهُ الغُلُوُّ وَالإِسْرَافُ فِي المَاءِ.",
+      fr: "Basmala : recommandée ; siwâk : sunna ; trois lavages : sunna (une fois valide) ; entrelacement des doigts : recommandé ; essuyage de la tête une fois ; excès d’eau blâmé."
+    },
+    Shafi: {
+      ar: "التَّسْمِيَةُ سُنَّةٌ، وَالسِّوَاكُ سُنَّةٌ، وَتَخْلِيلُ اللِّحْيَةِ الْكَثِيفَةِ وَالأَصَابِعِ سُنَّةٌ، وَتَثْلِيثُ الْغَسْلِ سُنَّةٌ مَعَ كِفَايَةِ الْمَرَّةِ، وَمَسْحُ الرَّأْسِ مَرَّةً.",
+      fr: "Basmala : sunna ; siwâk : sunna ; takhlîl de la barbe épaisse et des doigts : sunna ; trois lavages : sunna (une fois suffit) ; essuyage de la tête une fois."
+    },
+    Hanbali: {
+      ar: "ذَهَبَ أَحْمَدُ وَإِسْحَاقُ وَأَهْلُ الظَّاهِرِ إِلَى وُجُوبِ التَّسْمِيَةِ، وَالرَّاجِحُ عِنْدَ الْمُتَأَخِّرِينَ أَنَّهَا وَاجِبَةٌ وَتَسْقُطُ بِالنِّسْيَانِ؛ وَالسِّوَاكُ سُنَّةٌ، وَتَثْلِيثُ الْغَسْلِ سُنَّةٌ، وَتَخْلِيلُ الأَصَابِعِ سُنَّةٌ، وَيُنْهَى عَنِ الإِسْرَافِ.",
+      fr: "Basmala : obligation (qui tombe par oubli selon l’avis retenu) ; siwâk : sunna ; trois lavages : sunna ; entrelacement des doigts : sunna ; gaspillage d’eau blâmé."
+    }
   },
+  audio_url: null
+},
 
   {
-    number: 9,
-    arabic_text:
-      "عن عائشةَ رضي الله عنها قالت: كان رسولُ الله ﷺ يُعجبه التيمنُ في شأنه كلِّه، في طهوره، وتنعُّله، وترجُّله.",
-    french_text:
-      "‘Â’isha (ra) : « Le Messager d’Allah ﷺ aimait commencer par la droite dans toutes ses affaires : purification, chaussure, coiffure. »",
-    source: "Abû Dâwûd, at-Tirmidhî (cf. PDF)",
-    tags: ["adab","tahara","droite"],
-    opinions: {
-      Hanafi: {
-        ar: "التيمنُ مستحبٌّ فيما كان من بابِ الإكرام كالوُضوء واللباس والدخول، وتُقدَّمُ اليسرى فيما ليس من ذلك.",
-        fr: "Commencer par la droite recommandé pour les actes d’honneur (wudû’, habillement, etc.) ; la gauche est prioritaire pour l’inverse."
-      },
-      Maliki: {
-        ar: "التيمنُ سُنّةٌ في أبوابِ الإكرام، ولا يُتشدَّدُ فيما لا دليلَ عليه، وتُقدَّمُ اليسرى في ضدِّه.",
-        fr: "Droite : sunna dans les actes honorifiques ; pas d’excès ; gauche pour ce qui est à l’inverse."
-      },
-      Shafi: {
-        ar: "التيمنُ سُنّةٌ مؤكدةٌ في الطهارة واللباس ونحوِهما، مع استثناء ما ورد بتقديم اليسرى.",
-        fr: "Droite : sunna confirmée (ablution, habillement) ; exceptions où la gauche est prioritaire."
-      },
-      Hanbali: {
-        ar: "التيمنُ سُنّةٌ في كلِّ ما شُرِف، واليسرى فيما سواه كالخلعِ والخروج.",
-        fr: "Droite : sunna pour ce qui est noble ; gauche pour ôter/sortir, etc."
-      }
+  number: 9,
+  arabic_text:
+    "عَنْ عَائِشَةَ رَضِيَ اللَّهُ عَنْهَا قَالَتْ: « كَانَ رَسُولُ اللَّهِ ﷺ يُعْجِبُهُ التَّيَمُّنُ فِي تَنَعُّلِهِ، وَتَرَجُّلِهِ، وَطُهُورِهِ، وَفِي شَأْنِهِ كُلِّهِ. »",
+  french_text:
+    "‘Â’isha (ra) : « Le Messager d’Allah ﷺ aimait commencer par la droite dans ses sandales, sa coiffure, sa purification et dans toutes ses affaires. »",
+  source: "Al-Bukhârî & Muslim",
+  tags: ["adab", "tahara", "droite"],
+  opinions: {
+    Hanafi: {
+      ar: "التيمنُ مُسْتَحَبٌّ فِيما كانَ مِن بابِ الإِكْرامِ كالوُضوءِ واللِّباسِ والدُّخولِ، وتُقَدَّمُ اليُسْرَى فِيمَا لَيْسَ مِن ذَلِكَ.",
+      fr: "Commencer par la droite est recommandé pour les actes d’honneur (wudû’, habillement, entrée). La gauche est prioritaire pour l’inverse."
     },
-    audio_url: null
+    Maliki: {
+      ar: "التيمنُ سُنَّةٌ فِي أَبْوابِ الإِكْرامِ، ولا يُتَشَدَّدُ فِيمَا لَا دَلِيلَ عَلَيْهِ، وتُقَدَّمُ اليُسْرَى فِي ضِدِّهِ.",
+      fr: "La droite est une sunna dans les actes honorifiques ; pas d’exagération ; la gauche est prioritaire pour ce qui est à l’inverse."
+    },
+    Shafi: {
+      ar: "التيمنُ سُنَّةٌ مُؤَكَّدَةٌ فِي الطَّهارَةِ واللِّباسِ ونحوِهِمَا، مَعَ اسْتِثْناءِ ما وَرَدَ بِتَقْدِيمِ اليُسْرَى.",
+      fr: "La droite est une sunna confirmée (ablution, habillement) avec des exceptions où la gauche est prioritaire."
+    },
+    Hanbali: {
+      ar: "التيمنُ سُنَّةٌ فِي كُلِّ ما شُرِّفَ، واليُسْرَى فِيمَا سِوَى ذَلِكَ كَالْخَلْعِ والخُرُوجِ.",
+      fr: "La droite est sunna pour tout acte noble ; la gauche est prioritaire pour enlever ou sortir."
+    }
   },
+  audio_url: null
+},
 
   {
     number: 10,

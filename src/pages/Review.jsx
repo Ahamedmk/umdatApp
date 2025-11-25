@@ -29,6 +29,7 @@ import {
   Trophy,
   Sparkles,
   Brain,
+  Clock,
 } from "lucide-react";
 
 import { supabase } from "../lib/supabase";
@@ -66,6 +67,8 @@ export function Review() {
     good: 0,
     needs_work: 0,
   });
+  const [reviewed, setReviewed] = useState({}); // { hadith_number: true }
+  const [sessionDone, setSessionDone] = useState(false);
 
   // --- Thème (inchangé, mais simple) ---
   useEffect(() => {
@@ -107,7 +110,7 @@ export function Review() {
             });
           }
         } else {
-          // Pas connecté → pas de révisions (on pourrait un jour lire localStorage ici)
+          // Pas connecté → pas de révisions pour l’instant (on pourrait un jour lire localStorage ici)
           dueNumbers = [];
           progMap = {};
         }
@@ -121,6 +124,8 @@ export function Review() {
             setShowFr(false);
             setShowFullArabic(false);
             setSessionStats({ total: 0, perfect: 0, good: 0, needs_work: 0 });
+            setReviewed({});
+            setSessionDone(false);
           }
           return;
         }
@@ -145,12 +150,15 @@ export function Review() {
         }
 
         if (active) {
-          setHadiths(merged.filter(Boolean));
+          const filtered = merged.filter(Boolean);
+          setHadiths(filtered);
           setProgressByNumber(progMap);
           setIdx(0);
           setShowFr(false);
           setShowFullArabic(false);
           setSessionStats({ total: 0, perfect: 0, good: 0, needs_work: 0 });
+          setReviewed({});
+          setSessionDone(false);
         }
       } catch (err) {
         console.error("Erreur chargement révision:", err);
@@ -159,6 +167,8 @@ export function Review() {
           setHadiths([]);
           setProgressByNumber({});
           setIdx(0);
+          setReviewed({});
+          setSessionDone(false);
         }
       } finally {
         if (active) setLoading(false);
@@ -177,8 +187,9 @@ export function Review() {
   const visiblePart = arabicText.slice(0, visibleChars);
   const hiddenPart = arabicText.slice(visibleChars);
 
+  const reviewedCount = hadiths.filter((x) => reviewed[x.number]).length;
   const progressPercent = hadiths.length
-    ? ((idx + 1) / hadiths.length) * 100
+    ? (reviewedCount / hadiths.length) * 100
     : 0;
 
   const answer = (quality) => {
@@ -192,13 +203,17 @@ export function Review() {
     };
 
     const res = nextReview(current, quality);
+    const alreadyReviewed = !!reviewed[h.number];
 
-    setSessionStats((prev) => ({
-      total: prev.total + 1,
-      perfect: prev.perfect + (quality === 5 ? 1 : 0),
-      good: prev.good + (quality === 4 ? 1 : 0),
-      needs_work: prev.needs_work + (quality < 3 ? 1 : 0),
-    }));
+    // Stats de session → on ne compte qu'une fois par hadith
+    if (!alreadyReviewed) {
+      setSessionStats((prev) => ({
+        total: prev.total + 1,
+        perfect: prev.perfect + (quality === 5 ? 1 : 0),
+        good: prev.good + (quality === 4 ? 1 : 0),
+        needs_work: prev.needs_work + (quality < 3 ? 1 : 0),
+      }));
+    }
 
     const userId = user?.id || user?.user?.id || user?.uid;
 
@@ -222,7 +237,37 @@ export function Review() {
       );
     }
 
-    setIdx((i) => (i + 1) % (hadiths.length || 1));
+    // 🧠 On marque ce hadith comme "révisé" pour CETTE session
+    const updatedReviewed = {
+      ...reviewed,
+      [h.number]: true,
+    };
+    setReviewed(updatedReviewed);
+
+    const remaining = hadiths.filter((hh) => !updatedReviewed[hh.number]);
+
+    // Si plus aucun hadith à réviser → session terminée
+    if (remaining.length === 0) {
+      setSessionDone(true);
+    } else {
+      // Sinon, on passe au prochain hadith NON encore révisé
+      const length = hadiths.length;
+      if (length > 0) {
+        let nextIndex = idx;
+
+        for (let offset = 1; offset <= length; offset++) {
+          const candidateIndex = (idx + offset) % length;
+          const candidate = hadiths[candidateIndex];
+          if (!updatedReviewed[candidate.number]) {
+            nextIndex = candidateIndex;
+            break;
+          }
+        }
+
+        setIdx(nextIndex);
+      }
+    }
+
     setShowFr(false);
     setShowFullArabic(false);
   };
@@ -264,6 +309,7 @@ export function Review() {
   const noHadiths = !loading && !hadiths.length;
 
   const hCurrent = h || null;
+  const currentProg = hCurrent ? progressByNumber[hCurrent.number] : null;
 
   return (
     <TooltipProvider>
@@ -301,7 +347,9 @@ export function Review() {
                     Progression de la session
                   </span>
                   <span className="font-semibold text-slate-800 dark:text-slate-200">
-                    {hadiths.length ? `${idx + 1} / ${hadiths.length}` : "–"}
+                    {hadiths.length
+                      ? `${reviewedCount} / ${hadiths.length}`
+                      : "–"}
                   </span>
                 </div>
                 <Progress value={progressPercent} className="h-3" />
@@ -356,7 +404,7 @@ export function Review() {
             </Card>
           )}
 
-          {/* Cas 2 : aucun hadith à réviser */}
+          {/* Cas 2 : aucun hadith à réviser du tout */}
           {noHadiths && !isLoadingInitial && (
             <Card className="border-dashed border-2 border-slate-300 dark:border-slate-700">
               <CardContent className="py-12 text-center space-y-3">
@@ -365,8 +413,7 @@ export function Review() {
                   Aucun hadith à réviser pour l’instant.
                 </p>
                 <p className="text-sm text-slate-500 dark:text-slate-400">
-                  Commence par apprendre un hadith depuis la page
-                  &nbsp;
+                  Commence par apprendre un hadith depuis la page{" "}
                   <span className="font-semibold">Apprendre</span>. Dès que tu
                   l’auras évalué, il apparaîtra ici automatiquement.
                 </p>
@@ -374,8 +421,25 @@ export function Review() {
             </Card>
           )}
 
-          {/* Cas 3 : contenu normal */}
-          {hCurrent && !isLoadingInitial && (
+          {/* Cas 3 : session terminée (tous les hadiths du jour ont été revus) */}
+          {sessionDone && hadiths.length > 0 && !isLoadingInitial && (
+            <Card className="border-2 border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950 shadow-xl">
+              <CardContent className="py-10 text-center space-y-4">
+                <Trophy className="h-10 w-10 text-emerald-600 dark:text-emerald-400 mx-auto" />
+                <p className="text-lg font-semibold text-emerald-800 dark:text-emerald-100">
+                  Session terminée 🎉
+                </p>
+                <p className="text-sm text-emerald-800/80 dark:text-emerald-100/80 max-w-md mx-auto">
+                  Tu as révisé tous les hadiths prévus pour aujourd’hui.
+                  Ils réapparaîtront automatiquement ici quand il sera temps
+                  de les revoir, selon le système SM-2.
+                </p>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Cas 4 : contenu normal (il reste au moins un hadith non révisé) */}
+          {hCurrent && !isLoadingInitial && !sessionDone && (
             <>
               {/* Carte principale */}
               <Card className="border-slate-200 dark:border-slate-700 shadow-xl bg-white dark:bg-slate-800 overflow-hidden relative">
@@ -405,8 +469,18 @@ export function Review() {
                   </CardTitle>
                   <CardDescription>
                     Récite en arabe, puis révèle la traduction pour
-                    t’auto-évaluer
+                    t’auto-évaluer.
                   </CardDescription>
+
+                  {currentProg?.next_review_date && (
+                    <p className="mt-2 flex items-center gap-1 text-xs text-emerald-700 dark:text-emerald-300">
+                      <Clock className="h-3 w-3" />
+                      Prochaine révision programmée :{" "}
+                      <span className="font-semibold">
+                        {currentProg.next_review_date}
+                      </span>
+                    </p>
+                  )}
                 </CardHeader>
 
                 <Separator className="bg-slate-200 dark:bg-slate-700 relative z-10" />
