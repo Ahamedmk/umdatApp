@@ -74,6 +74,7 @@ export function Quiz() {
   };
 
   // 🔍 Charge la liste des hadiths appris
+    // 🔍 Charge la liste des hadiths appris (DB + fallback)
   useEffect(() => {
     let active = true;
 
@@ -82,20 +83,44 @@ export function Quiz() {
       try {
         let numbers = [];
 
-        if (user) {
-          // ✅ connecté → on lit la table user_hadith_progress
-          const { data, error } = await supabase
+        // Récup userId de manière robuste
+        const userId = user?.id || user?.user?.id || user?.uid;
+
+        if (userId) {
+          // 1️⃣ Nouvelle table : user_hadith_progress
+          const { data: p1, error: e1 } = await supabase
             .from("user_hadith_progress")
             .select("hadith_number, status")
-            .eq("user_id", user.id);
+            .eq("user_id", userId);
 
-          if (error) throw error;
+          if (e1) throw e1;
 
-          numbers = (data || [])
-            .filter((row) => row.status === "learned" || row.status === "learning")
-            .map((row) => row.hadith_number);
+          if (p1 && p1.length > 0) {
+            numbers = p1
+              .filter(
+                (row) =>
+                  row.status === "learned" || row.status === "learning"
+              )
+              .map((row) => row.hadith_number);
+          } else {
+            // 2️⃣ Ancienne table : user_progress (celle utilisée par HadithDetail)
+            const { data: p2, error: e2 } = await supabase
+              .from("user_progress")
+              .select("status, hadiths(number)")
+              .eq("user_id", userId);
+
+            if (e2) throw e2;
+
+            numbers = (p2 || [])
+              .filter(
+                (row) =>
+                  row.status === "learned" || row.status === "learning"
+              )
+              .map((row) => row.hadiths?.number)
+              .filter(Boolean);
+          }
         } else {
-          // 📴 pas connecté → on regarde localStorage
+          // 3️⃣ Pas connecté → fallback localStorage
           numbers = HADITHS_1_15.map((h) => h.number).filter((n) => {
             const raw = localStorage.getItem(`progress_${n}`);
             if (!raw) return false;
@@ -108,12 +133,12 @@ export function Quiz() {
           });
         }
 
-        // on dédoublonne + tri
         const uniqueSorted = Array.from(new Set(numbers)).sort((a, b) => a - b);
 
         if (active) {
           setLearnedNumbers(uniqueSorted);
-          // si le filtre actuel n'est plus valide, on repasse sur "all"
+
+          // Si filtre actuel n'est plus cohérent, on reset sur "all"
           if (
             filterN !== "all" &&
             !uniqueSorted.includes(parseInt(filterN, 10))
@@ -139,8 +164,8 @@ export function Quiz() {
     return () => {
       active = false;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.id]);
+  }, [user?.id]); // 👈 garde cette dépendance
+
 
   // Pool de questions filtré par hadith APPRIS
   const pool = useMemo(() => {
