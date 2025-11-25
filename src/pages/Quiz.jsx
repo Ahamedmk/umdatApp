@@ -35,15 +35,13 @@ import {
 
 import { HADITHS_1_15 } from "@/data/seed_hadiths_1_15";
 import { QUIZ_QUESTIONS_1_15 } from "@/data/quiz_questions_1_15";
-
-// 🔗 on utilise Supabase + Auth pour savoir quels hadiths sont appris
-import { supabase } from "../lib/supabase";
 import { useAuth } from "../context/AuthContext";
+import { supabase } from "../lib/supabase";
 
 export function Quiz() {
   const { user } = useAuth();
 
-  const [filterN, setFilterN] = useState("all"); // "all" = tous les hadiths appris
+  const [filterN, setFilterN] = useState("all");
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState(null);
   const [score, setScore] = useState(0);
@@ -52,7 +50,8 @@ export function Quiz() {
   const [showHint, setShowHint] = useState(false);
   const [showFrenchRef, setShowFrenchRef] = useState(false);
 
-  const [learnedNumbers, setLearnedNumbers] = useState([]); // 📌 liste des hadiths appris
+  // 🔥 nouveaux états
+  const [learnedNumbers, setLearnedNumbers] = useState([]); // liste des hadiths appris
   const [loadingLearned, setLoadingLearned] = useState(true);
 
   // Thème (light / dark) persistant
@@ -73,8 +72,7 @@ export function Quiz() {
     localStorage.setItem("theme", checked ? "dark" : "light");
   };
 
-  // 🔍 Charge la liste des hadiths appris
-    // 🔍 Charge la liste des hadiths appris (DB + fallback)
+  // 🔍 Charger la liste des hadiths appris (DB + fallback localStorage)
   useEffect(() => {
     let active = true;
 
@@ -82,12 +80,10 @@ export function Quiz() {
       setLoadingLearned(true);
       try {
         let numbers = [];
-
-        // Récup userId de manière robuste
         const userId = user?.id || user?.user?.id || user?.uid;
 
         if (userId) {
-          // 1️⃣ Nouvelle table : user_hadith_progress
+          // 1️⃣ Table de révision principale (utilisée par Review)
           const { data: p1, error: e1 } = await supabase
             .from("user_hadith_progress")
             .select("hadith_number, status")
@@ -95,29 +91,41 @@ export function Quiz() {
 
           if (e1) throw e1;
 
-          if (p1 && p1.length > 0) {
-            numbers = p1
-              .filter(
-                (row) =>
-                  row.status === "learned" || row.status === "learning"
-              )
-              .map((row) => row.hadith_number);
-          } else {
-            // 2️⃣ Ancienne table : user_progress (celle utilisée par HadithDetail)
+          numbers = (p1 || [])
+            .filter((row) => row.status === "learned" || row.status === "learning")
+            .map((row) => row.hadith_number)
+            .filter((n) => typeof n === "number");
+
+          // 2️⃣ Si vraiment rien trouvé (premiers tests, ancienne version)
+          if (!numbers.length) {
             const { data: p2, error: e2 } = await supabase
               .from("user_progress")
-              .select("status, hadiths(number)")
+              .select("status, hadith_id")
               .eq("user_id", userId);
 
             if (e2) throw e2;
 
-            numbers = (p2 || [])
-              .filter(
-                (row) =>
-                  row.status === "learned" || row.status === "learning"
-              )
-              .map((row) => row.hadiths?.number)
+            const ids = (p2 || [])
+              .filter((row) => row.status === "learned" || row.status === "learning")
+              .map((row) => row.hadith_id)
               .filter(Boolean);
+
+            if (ids.length) {
+              const { data: hadithRows, error: e3 } = await supabase
+                .from("hadiths")
+                .select("id, number")
+                .in("id", ids);
+
+              if (e3) throw e3;
+
+              const idToNumber = new Map(
+                (hadithRows || []).map((h) => [h.id, h.number])
+              );
+
+              numbers = ids
+                .map((id) => idToNumber.get(id))
+                .filter((n) => typeof n === "number");
+            }
           }
         } else {
           // 3️⃣ Pas connecté → fallback localStorage
@@ -138,7 +146,7 @@ export function Quiz() {
         if (active) {
           setLearnedNumbers(uniqueSorted);
 
-          // Si filtre actuel n'est plus cohérent, on reset sur "all"
+          // Si le filtre actuel ne fait plus partie des hadiths appris → reset
           if (
             filterN !== "all" &&
             !uniqueSorted.includes(parseInt(filterN, 10))
@@ -164,23 +172,25 @@ export function Quiz() {
     return () => {
       active = false;
     };
-  }, [user?.id]); // 👈 garde cette dépendance
+  }, [user?.id, filterN]);
 
-
-  // Pool de questions filtré par hadith APPRIS
+  // Pool de questions filtré par hadith appris
   const pool = useMemo(() => {
-    if (learnedNumbers.length === 0) return [];
+    if (!learnedNumbers.length) return [];
 
+    let allowedNumbers;
     if (filterN === "all") {
-      // 🔹 tous les hadiths appris
-      return QUIZ_QUESTIONS_1_15.filter((q) =>
-        learnedNumbers.includes(q.n)
-      );
+      allowedNumbers = learnedNumbers;
+    } else {
+      const num = parseInt(filterN, 10);
+      allowedNumbers = learnedNumbers.includes(num) ? [num] : [];
     }
 
-    const num = parseInt(filterN, 10);
-    if (!learnedNumbers.includes(num)) return [];
-    return QUIZ_QUESTIONS_1_15.filter((q) => q.n === num);
+    const raw = QUIZ_QUESTIONS_1_15.filter((q) =>
+      allowedNumbers.includes(q.n)
+    );
+
+    return raw;
   }, [filterN, learnedNumbers]);
 
   const current = pool[index];
@@ -207,13 +217,13 @@ export function Quiz() {
       setShowHint(false);
       setShowFrenchRef(false);
     } else {
-      // fin de quiz → on remet à zéro ce quiz
-      setIndex(0);
-      setSelected(null);
+      // fin de quiz → reset
       setDone(false);
-      setScore(0);
+      setSelected(null);
       setShowHint(false);
       setShowFrenchRef(false);
+      setIndex(0);
+      setScore(0);
     }
   };
 
@@ -236,7 +246,7 @@ export function Quiz() {
     setShowFrenchRef(false);
   };
 
-  // Quand on change de question / filtre → on masque la traduction du rappel
+  // Quand on change de question, on masque la traduction du rappel
   useEffect(() => {
     setShowFrenchRef(false);
   }, [index, filterN]);
@@ -335,10 +345,6 @@ export function Quiz() {
       : { borderColor: "#cbd5f5", backgroundColor: "transparent", color: "#0f172a" };
   };
 
-  // ---------- Rendu ----------
-
-  const noLearned = !loadingLearned && learnedNumbers.length === 0;
-
   return (
     <div className="min-h-screen w-full overflow-x-clip bg-gradient-to-br from-slate-50 via-purple-50 to-pink-50 dark:from-slate-950 dark:via-purple-950 dark:to-pink-950 px-4 sm:px-6 py-6 transition-colors duration-300">
       <div className="max-w-4xl w-full mx-auto space-y-6">
@@ -362,23 +368,20 @@ export function Quiz() {
             <Select
               value={filterN}
               onValueChange={handleFilterChange}
-              disabled={learnedNumbers.length === 0}
+              disabled={loadingLearned || !learnedNumbers.length}
             >
-              <SelectTrigger className="w-full sm:w-52 bg-white dark:bg-slate-800">
+              <SelectTrigger className="w-full sm:w-56 bg-white dark:bg-slate-800">
                 <SelectValue
                   placeholder={
-                    learnedNumbers.length === 0
-                      ? "Aucun hadith appris"
-                      : "Tous mes hadiths appris"
+                    loadingLearned
+                      ? "Chargement..."
+                      : "Aucun hadith appris"
                   }
                 />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">
-                  Tous mes hadiths appris
-                  {learnedNumbers.length > 0
-                    ? ` (${learnedNumbers.length})`
-                    : ""}
+                  Tous mes hadiths appris ({learnedNumbers.length})
                 </SelectItem>
                 {learnedNumbers.map((n) => (
                   <SelectItem key={n} value={String(n)}>
@@ -399,6 +402,23 @@ export function Quiz() {
             </div>
           </div>
         </div>
+
+        {/* MESSAGE SI AUCUN HADITH APPRIS */}
+        {!loadingLearned && !learnedNumbers.length && (
+          <Card className="border-dashed border-2 border-slate-300 dark:border-slate-700">
+            <CardContent className="py-8 text-center space-y-2">
+              <Brain className="h-10 w-10 text-slate-400 mx-auto mb-2" />
+              <p className="text-slate-700 dark:text-slate-200 font-semibold">
+                Tu n&apos;as pas encore de hadith marqué comme appris.
+              </p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                Commence par apprendre un hadith dans la page{" "}
+                <span className="font-semibold">Apprendre</span> puis fais une
+                première auto-évaluation : il apparaîtra ici.
+              </p>
+            </CardContent>
+          </Card>
+        )}
 
         {/* STATS */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -454,46 +474,19 @@ export function Quiz() {
           </CardContent>
         </Card>
 
-        {/* CAS : aucun hadith appris */}
-        {loadingLearned && (
-          <Card className="border-slate-200 dark:border-slate-700 shadow-lg">
-            <CardContent className="py-10 text-center animate-pulse">
-              <p className="text-sm text-slate-500 dark:text-slate-400">
-                Chargement des hadiths appris...
-              </p>
-            </CardContent>
-          </Card>
-        )}
-
-        {noLearned && !loadingLearned && (
-          <Card className="border-dashed border-2 border-slate-300 dark:border-slate-700">
-            <CardContent className="py-10 text-center space-y-3">
-              <Brain className="h-10 w-10 text-slate-400 mx-auto" />
-              <p className="font-semibold text-slate-700 dark:text-slate-200">
-                Tu n&apos;as pas encore de hadith appris.
-              </p>
-              <p className="text-sm text-slate-500 dark:text-slate-400">
-                Commence par apprendre un hadith depuis la page
-                <span className="font-semibold"> Apprendre</span>, puis
-                reviens ici pour te tester.
-              </p>
-            </CardContent>
-          </Card>
-        )}
-
         {/* CARTE PRINCIPALE QUIZ */}
-        {(!pool.length || !current) && !noLearned && !loadingLearned ? (
+        {pool.length === 0 || !current ? (
           <Card className="border-dashed border-2 border-slate-300 dark:border-slate-700">
             <CardContent className="py-16 text-center">
               <Brain className="h-16 w-16 text-slate-400 mx-auto mb-4" />
               <p className="text-slate-600 dark:text-slate-400">
-                Sélectionne un hadith appris ci-dessus pour commencer le quiz.
+                {loadingLearned
+                  ? "Chargement de tes hadiths appris..."
+                  : "Sélectionne un hadith appris ci-dessus pour commencer"}
               </p>
             </CardContent>
           </Card>
-        ) : null}
-
-        {pool.length > 0 && current && (
+        ) : (
           <Card className="border-slate-200 dark:border-slate-700 shadow-xl bg-white dark:bg-slate-800 overflow-hidden relative">
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5" />
 
