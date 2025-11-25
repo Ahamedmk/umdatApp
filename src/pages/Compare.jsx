@@ -383,7 +383,7 @@ const MobileItem = ({ item, detailKey, isExpanded }) => {
             filteredData.map((category, catIdx) => (
               <Card
                 key={catIdx}
-                className="border-slate-200 dark:border-slate-700 shadow-lg bg-white dark:bg-slate-800 overflow-hidden"
+                className="border-slate-200 dark:border-slate-700 shadow-lg bg-white dark:bg-slate-800 overflow-auto"
               >
                 <CardHeader
                   className="cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700/40 transition-colors"

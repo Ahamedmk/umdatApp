@@ -350,118 +350,119 @@ export const HADITHS_1_15 = [
   },
 
   {
-    number: 12,
-    arabic_text:
-      "عن أبي أيوب الأنصاري رضي الله عنه قال: قال رسول الله ﷺ: «إذا أتيتم الغائطَ فلا تستقبلوا القبلةَ ولا تُدْبِروها ببولٍ ولا غائطٍ، ولكن شرِّقوا أو غرِّبوا».",
-    french_text:
-      "Abû Ayyûb (ra) : « Lorsque vous allez pour le besoin, ne faites pas face à la qibla et ne lui tournez pas le dos en urinant ou en déféquant ; orientez-vous plutôt vers l’est ou l’ouest. »",
-    source: "Dans le PDF",
-    tags: ["tahara","toilettes","qibla"],
-    opinions: {
-      Hanafi: {
-        ar: "في الصحراء: يحرمُ الاستقبالُ والاستدبار. وفي البنيان: الجوازُ هو المعتمد مع كراهةٍ عند بعضهم.",
-        fr: "En plein air : interdit de faire face/dos. En bâti : autorisé (certains parlent de réprobation)."
-      },
-      Maliki: {
-        ar: "المنعُ في الفضاء، والجوازُ في البنيان جمعًا بين الأحاديث.",
-        fr: "Interdit dehors ; permis dans les toilettes bâties (conciliation des textes)."
-      },
-      Shafi: {
-        ar: "يحرمُ في الفضاء، ويجوزُ في البنيان لِما ورد من الآثارِ في البيوت.",
-        fr: "Interdit en extérieur ; permis dans le bâti en raison des récits des maisons."
-      },
-      Hanbali: {
-        ar: "كالجمهور: المنعُ في الصحراء، والجوازُ في البنيان مع استحباب الانحراف إن أمكن.",
-        fr: "Comme la majorité : interdit dehors, permis dedans, tout en s’écartant si possible."
-      }
+  number: 12,
+  arabic_text:
+    "عَنْ أَبِي أَيُّوبَ الأَنْصَارِيِّ رَضِيَ اللَّهُ عَنْهُ قَالَ: قَالَ رَسُولُ اللَّهِ ﷺ: «إِذَا أَتَيْتُمُ الْغَائِطَ فَلَا تَسْتَقْبِلُوا الْقِبْلَةَ وَلَا تُدْبِرُوهَا بِبَوْلٍ وَلَا غَائِطٍ، وَلَكِنْ شَرِّقُوا أَوْ غَرِّبُوا»",
+  french_text:
+    "Abû Ayyûb (ra) : « Lorsque vous allez pour le besoin, ne faites pas face à la qibla et ne lui tournez pas le dos en urinant ou en déféquant ; orientez-vous plutôt vers l’est ou l’ouest. »",
+  source: "Dans le PDF",
+  tags: ["tahara", "toilettes", "qibla"],
+  opinions: {
+    Hanafi: {
+      ar: "فِي الصَّحْرَاءِ: يَحْرُمُ الاسْتِقْبَالُ وَالاسْتِدْبَارُ. وَفِي البُنْيَانِ: الجَوَازُ هُوَ المُعْتَمَدُ مَعَ كَرَاهَةٍ عِنْدَ بَعْضِهِمْ.",
+      fr: "En plein air : interdit de faire face/dos. En bâti : autorisé (certains parlent de réprobation)."
     },
-    audio_url: null
+    Maliki: {
+      ar: "المَنْعُ فِي الفَضَاءِ، وَالجَوَازُ فِي البُنْيَانِ جَمْعًا بَيْنَ الأَحَادِيثِ.",
+      fr: "Interdit dehors ; permis dans les toilettes bâties (conciliation des textes)."
+    },
+    Shafi: {
+      ar: "يَحْرُمُ فِي الفَضَاءِ، وَيَجُوزُ فِي البُنْيَانِ لِمَا وَرَدَ مِنَ الآثَارِ فِي البُيُوتِ.",
+      fr: "Interdit en extérieur ; permis dans le bâti en raison des récits concernant les maisons."
+    },
+    Hanbali: {
+      ar: "كَالجُمْهُورِ: المَنْعُ فِي الصَّحْرَاءِ، وَالجَوَازُ فِي البُنْيَانِ مَعَ اسْتِحْبَابِ الِانْحِرَافِ إِنْ أُمْكِنَ.",
+      fr: "Comme la majorité : interdit dehors, permis dedans, tout en s’écartant si possible."
+    }
   },
+  audio_url: null
+},
+
 
   {
-    number: 13,
-    arabic_text:
-      "عن عبدِ الله بنِ عمر رضي الله عنهما قال: رَقِيتُ على بيتٍ فرأيتُ النبيَّ ﷺ على لبنتين مستقبلَ الشامِ مستدبرَ الكعبةِ يقضي حاجته.",
-    french_text:
-      "Ibn ‘Umar (ra) : « Je suis monté sur une maison et j’ai vu le Prophète ﷺ, assis sur deux briques, tourné vers le Shâm et dos à la Ka‘ba, faire ses besoins. »",
-    source: "Dans le PDF",
-    tags: ["tahara","toilettes","qibla"],
-    opinions: {
-      Hanafi: {
-        ar: "هذا الحديثُ دليلُ الجوازِ في البنيان، مع بقاء المنعِ في الفضاء.",
-        fr: "Preuve de la permission en intérieur ; l’interdiction demeure en plein air."
-      },
-      Maliki: {
-        ar: "يُستدلُّ به على الرخصة في البنيان دفعًا للحرج.",
-        fr: "Indique une dispense en bâti pour lever la gêne."
-      },
-      Shafi: {
-        ar: "يجمعُ به بين النصوصِ: المنعُ في الصحراء، والجوازُ في البيوت.",
-        fr: "Conciliation : interdit dehors, permis dans les maisons."
-      },
-      Hanbali: {
-        ar: "عند الحنابلة: جوازُ البنيان مع كراهةِ الاستقبالِ إن أمكن الانحراف.",
-        fr: "Chez les hanbalites : permis dans le bâti, en évitant de faire face si l’on peut se détourner."
-      }
+  number: 13,
+  arabic_text:
+    "عَنْ عَبْدِ اللَّهِ بْنِ عُمَرَ بْنِ الْخَطَّابِ رَضِيَ اللَّهُ عَنْهُمَا قَالَ: «رَقِيتُ يَوْمًا عَلَى بَيْتِ حَفْصَةَ، فَرَأَيْتُ النَّبِيَّ ﷺ يَقْضِي حَاجَتَهُ مُسْتَقْبِلَ الشَّامِ، مُسْتَدْبِرَ الْكَعْبَةِ».",
+  french_text:
+    "Ibn ‘Umar (ra) : « Un jour, je suis monté sur le toit de la maison de Hafsa, et j’ai vu le Prophète ﷺ faire ses besoins, tourné vers la direction du Shâm et tournant le dos à la Ka‘ba. »",
+  source: "Dans le PDF",
+  tags: ["tahara", "toilettes", "qibla"],
+  opinions: {
+    Hanafi: {
+      ar: "هَذَا الحَدِيثُ دَلِيلُ الجَوَازِ فِي البُنْيَانِ، مَعَ بَقَاءِ المَنْعِ فِي الفَضَاءِ.",
+      fr: "Preuve de la permission en intérieur ; l’interdiction demeure en plein air."
     },
-    audio_url: null
+    Maliki: {
+      ar: "يُسْتَدَلُّ بِهِ عَلَى الرُّخْصَةِ فِي البُنْيَانِ دَفْعًا لِلْحَرَجِ.",
+      fr: "Indique une dispense en bâti pour lever la gêne."
+    },
+    Shafi: {
+      ar: "يُجْمَعُ بَيْنَ النُّصُوصِ: المَنْعُ فِي الصَّحْرَاءِ، وَالجَوَازُ فِي البُيُوتِ.",
+      fr: "Conciliation : interdit dehors, permis dans les maisons."
+    },
+    Hanbali: {
+      ar: "عِنْدَ الحَنَابِلَةِ: جَوَازُ البُنْيَانِ مَعَ كَرَاهَةِ الاسْتِقْبَالِ إِنْ أَمْكَنَ الِانْحِرَافُ.",
+      fr: "Chez les hanbalites : permis dans le bâti, en évitant de faire face si l’on peut se détourner."
+    }
   },
+  audio_url: null
+},
+
+ {
+  number: 14,
+  arabic_text:
+    "عَنْ أَنَسِ بْنِ مَالِكٍ رَضِيَ اللَّهُ عَنْهُ قَالَ: «كَانَ رَسُولُ اللَّهِ ﷺ يَدْخُلُ الْخَلَاءَ، فَأَحْمِلُ أَنَا وَغُلَامٌ نَحْوِي إِدَاوَةً مِنْ مَاءٍ وَعَنَزَةً، فَيَسْتَنْجِي بِالْمَاءِ».",
+  french_text:
+    "Anas (ra) : « Lorsque le Prophète ﷺ entrait aux latrines, je portais avec un jeune comme moi un petit récipient d’eau et un bâton ; il faisait l’istinjā’ avec l’eau. »",
+  source: "Dans le PDF",
+  tags: ["tahara", "istinja", "eau", "pierres"],
+  opinions: {
+    Hanafi: {
+      ar: "الِاسْتِنْجَاءُ بِالْمَاءِ أَوْ بِالأَحْجَارِ مَشْرُوعٌ، وَأَقَلُّهُ بِالأَحْجَارِ ثَلَاثُ مَسْحَاتٍ، وَالْجَمْعُ بَيْنَهُمَا أَفْضَلُ.",
+      fr: "Istinjā’ à l’eau ou aux pierres : permis ; minimum trois passages pour les pierres ; les combiner est meilleur."
+    },
+    Maliki: {
+      ar: "كِلَاهُمَا جَائِزٌ، وَالْمَاءُ أَبْلَغُ فِي الإِنْقَاءِ، وَتُجْزِئُ الأَحْجَارُ ثَلَاثًا مَا لَمْ تَتَعَدَّ النَّجَاسَةُ.",
+      fr: "Les deux sont permis ; l’eau nettoie mieux ; les pierres suffisent (trois) tant que l’impureté ne dépasse pas la zone."
+    },
+    Shafi: {
+      ar: "يَجُوزُ الِاسْتِنْجَاءُ بِالْمَاءِ وَبِالأَحْجَارِ، وَأَقَلُّهُ ثَلَاثُ مَسْحَاتٍ، وَالْجَمْعُ مُسْتَحَبٌّ.",
+      fr: "Permis à l’eau et aux pierres ; minimum trois passages ; les combiner est recommandé."
+    },
+    Hanbali: {
+      ar: "الِاسْتِنْجَاءُ بِالْمَاءِ سُنَّةٌ مُؤَكَّدَةٌ، وَتُجْزِئُ الأَحْجَارُ ثَلَاثًا، وَالْجَمْعُ بَيْنَهُمَا أَفْضَلُ.",
+      fr: "À l’eau : sunna confirmée ; les pierres suffisent (trois) ; les réunir est meilleur."
+    }
+  },
+  audio_url: null
+},
 
   {
-    number: 14,
-    arabic_text:
-      "عن أنسٍ رضي الله عنه قال: كان رسولُ الله ﷺ إذا دخل الخلاء حملتُ أنا وغلامٌ نحوي إداوةً من ماءٍ وعَنَزَةً، فيستنجي بالماء.",
-    french_text:
-      "Anas (ra) : « Quand le Prophète ﷺ entrait aux latrines, nous lui portions un petit récipient d’eau et un bâton ; il faisait l’istinjā’ avec l’eau. »",
-    source: "Dans le PDF",
-    tags: ["tahara","istinja","eau","pierres"],
-    opinions: {
-      Hanafi: {
-        ar: "الاستنجاءُ بالماءِ أو بالأحجارِ مشروعٌ، وأقلُّه بالأحجار ثلاثُ مسحات، والجمعُ بينهما أفضل.",
-        fr: "Istinjā’ à l’eau ou aux pierres : permis ; minimum trois passages pour les pierres ; les combiner est meilleur."
-      },
-      Maliki: {
-        ar: "كلاهما جائز، والماءُ أبلغُ في الإنقاء، وتُجزئُ الأحجارُ ثلاثًا ما لم تتعدَّ النجاسة.",
-        fr: "Les deux sont permis ; l’eau nettoie mieux ; les pierres suffisent (trois) tant qu’il n’y a pas propagation."
-      },
-      Shafi: {
-        ar: "يجوزُ بالماءِ وبالأحجار، وأقلُّه ثلاثُ مسحات، والجمعُ مستحب.",
-        fr: "Permis à l’eau et/ou aux pierres ; minimum trois passages ; les combiner est recommandé."
-      },
-      Hanbali: {
-        ar: "الاستنجاءُ بالماء سُنّةٌ مؤكدة، وتُجزئُ الأحجارُ ثلاثًا، والجمعُ أفضل.",
-        fr: "À l’eau : sunna confirmée ; les pierres suffisent (trois) ; les réunir : mieux."
-      }
+  number: 15,
+  arabic_text:
+    "عَنْ أَبِي قَتَادَةَ الْحَارِثِ بْنِ رِبْعِيٍّ الأَنْصَارِيِّ رَضِيَ اللَّهُ عَنْهُ أَنَّ النَّبِيَّ ﷺ قَالَ: «لَا يُمْسِكَنَّ أَحَدُكُمْ ذَكَرَهُ بِيَمِينِهِ وَهُوَ يَبُولُ، وَلَا يَتَمَسَّحْ مِنَ الْخَلَاءِ بِيَمِينِهِ، وَلَا يَتَنَفَّسْ فِي الْإِنَاءِ».",
+  french_text:
+    "Abû Qatâda (ra) : « Qu’aucun de vous ne tienne son sexe de la main droite en urinant, qu’il ne s’essuie pas de la droite aux latrines, et qu’il ne respire pas dans le récipient. »",
+  source: "Dans le PDF",
+  tags: ["adab", "toilettes", "droite", "étiquette"],
+  opinions: {
+    Hanafi: {
+      ar: "يُكْرَهُ مَسُّ الذَّكَرِ بِالْيَمِينِ حَالَ الْبَوْلِ، وَيُكْرَهُ الِاسْتِنْجَاءُ بِهَا؛ وَالنَّهْيُ لِلتَّأْدِيبِ.",
+      fr: "Makrûh : tenir le sexe de la droite et s’essuyer avec ; l’interdiction relève de l’étiquette."
     },
-    audio_url: null
+    Maliki: {
+      ar: "ثَابِتَةٌ الْكَرَاهَةُ، وَتُسْتَعْمَلُ الْيُسْرَى فِي هَذَا الْبَابِ.",
+      fr: "La réprobation est établie ; on utilise la main gauche pour ces gestes."
+    },
+    Shafi: {
+      ar: "يُكْرَهُ ذَلِكَ، وَتُقَدَّمُ الْيُسْرَى لِلِاسْتِنْجَاءِ، وَالنَّهْيُ عِنْدَهُمْ لِلتَّنْزِيهِ.",
+      fr: "C’est makrûh ; la gauche est privilégiée pour l’istinjā’ ; le hadith indique une réprobation non-haram."
+    },
+    Hanbali: {
+      ar: "الْجُمْهُورُ عَلَى الْكَرَاهَةِ، وَذَهَبَ بَعْضُ الْحَنَابِلَةِ إِلَى التَّحْرِيمِ فِي مَسِّ الذَّكَرِ بِالْيَمِينِ حَالَ الْبَوْلِ.",
+      fr: "La majorité parle de makrûh ; certains hanbalites penchent vers l’interdiction (haram) de tenir le sexe de la main droite en urinant."
+    }
   },
-
-  {
-    number: 15,
-    arabic_text:
-      "عن أبي قتادة رضي الله عنه أن النبي ﷺ قال: «لا يُمسِكَنَّ أحدُكم ذَكَرَه بيمينه وهو يبول، ولا يتمسَّحْ بيمينه في الخلاء، ولا يتنفَّسْ في الإناء».",
-    french_text:
-      "Abû Qatâda (ra) : « Qu’aucun de vous ne tienne son sexe de la main droite en urinant, qu’il ne s’essuie pas de la droite aux latrines, et qu’il ne respire pas dans le récipient. »",
-    source: "Dans le PDF",
-    tags: ["adab","toilettes","droite","étiquette"],
-    opinions: {
-      Hanafi: {
-        ar: "يُكرهُ مسُّ الذكرِ باليمين حال البول، ويُكرهُ الاستنجاءُ بها؛ والنهيُ للتأديب.",
-        fr: "Makrûh : tenir le sexe de la droite et s’essuyer avec ; interdiction d’étiquette."
-      },
-      Maliki: {
-        ar: "ثابتةٌ الكراهةُ، وتُستعملُ اليسرى في هذا الباب.",
-        fr: "Réprobation établie ; on utilise la gauche pour ces gestes."
-      },
-      Shafi: {
-        ar: "يُكرهُ ذلك، وتُقدَّمُ اليسرى للاستنجاء، والنهيُ عندهم للتنزيه.",
-        fr: "Makrûh ; la gauche pour l’istinjā’ ; réprobation (non-haram)."
-      },
-      Hanbali: {
-        ar: "الجمهورُ على الكراهة، وذهب بعضُ الحنابلة إلى التحريم في مسِّ الذكر باليمين حال البول.",
-        fr: "Majorité : makrûh ; certains hanbalites tendent à l’interdiction (haram) pour tenir la droite en urinant."
-      }
-    },
-    audio_url: null
-  }
+  audio_url: null
+}
 ];
