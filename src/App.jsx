@@ -8,6 +8,7 @@ import { Learn } from "./pages/Learn";
 import { Review } from "./pages/Review";
 import { Quiz } from "./pages/Quiz";
 import { Compare } from "./pages/Compare";
+import SiraTimeline from "./pages/SiraTimeline";
 import { Profile } from "./pages/Profile";
 import HadithDetail from "./pages/HadithDetail";
 import ProfileGuest from "./pages/ProfileGuest";
@@ -57,6 +58,16 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route path="/timeline"
+          element={
+            <ProtectedRoute>
+                <OnboardingGate>
+          <SiraTimeline />
+          </OnboardingGate>
+              </ProtectedRoute>
+            } 
+            />
 
           <Route
             path="/review"

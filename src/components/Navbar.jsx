@@ -39,6 +39,7 @@ import {
   Target,
   ClipboardCheck,
   X,
+  Map,            // 👈 ajouté pour le bouton Timeline Sîra
 } from "lucide-react";
 
 import { useAuth } from "../context/AuthContext";
@@ -88,12 +89,49 @@ export function Navbar() {
   const isActive = (path) => location.pathname === path;
 
   const navLinks = [
-    { to: "/learn", label: "Apprendre", icon: BookOpen, gradient: "from-emerald-500 to-teal-600" },
-    { to: "/review", label: "Réviser", icon: RotateCcw, gradient: "from-blue-500 to-indigo-600" },
-    { to: "/quiz", label: "Quiz", icon: Brain, gradient: "from-purple-500 to-pink-600" },
-    { to: "/compare", label: "Comparer", icon: Scale3d, gradient: "from-amber-500 to-orange-600" },
-    { to: "/exam", label: "Examen", icon: ClipboardCheck, gradient: "from-red-500 to-rose-600" },
-    { to: "/exam/targeted", label: "Ciblé", icon: Target, gradient: "from-cyan-500 to-blue-600" },
+    {
+      to: "/learn",
+      label: "Apprendre",
+      icon: BookOpen,
+      gradient: "from-emerald-500 to-teal-600",
+    },
+    {
+      to: "/review",
+      label: "Réviser",
+      icon: RotateCcw,
+      gradient: "from-blue-500 to-indigo-600",
+    },
+    {
+      to: "/quiz",
+      label: "Quiz",
+      icon: Brain,
+      gradient: "from-purple-500 to-pink-600",
+    },
+    {
+      to: "/compare",
+      label: "Comparer",
+      icon: Scale3d,
+      gradient: "from-amber-500 to-orange-600",
+    },
+    {
+      to: "/exam",
+      label: "Examen",
+      icon: ClipboardCheck,
+      gradient: "from-red-500 to-rose-600",
+    },
+    {
+      to: "/exam/targeted",
+      label: "Ciblé",
+      icon: Target,
+      gradient: "from-cyan-500 to-blue-600",
+    },
+    // 👇 Nouveau bouton Timeline Sîra
+    {
+      to: "/timeline",
+      label: "Timeline Sîra",
+      icon: Map,
+      gradient: "from-emerald-500 to-sky-500",
+    },
   ];
 
   const NavLink = ({ to, label, icon: Icon, gradient, mobile = false }) => {
@@ -187,7 +225,12 @@ export function Navbar() {
               placeholder="# Hadith"
               className="h-7 w-24 text-sm border-0 bg-transparent focus-visible:ring-0"
             />
-            <Button size="sm" variant="ghost" className="h-7 w-7 p-0 dark:bg-slate-800 " type="submit">
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-7 w-7 p-0 dark:bg-slate-800 "
+              type="submit"
+            >
               <Search className=" dark:text-slate-800  " />
             </Button>
           </form>
@@ -202,7 +245,11 @@ export function Navbar() {
           {/* User Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="gap-2 border-slate-200 dark:bg-slate-800 dark:border-slate-200">
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2 border-slate-200 dark:bg-slate-800 dark:border-slate-200"
+              >
                 <User2 className="h-4 w-4 dark:text-slate-800" />
                 <span className="hidden lg:inline dark:text-slate-800">
                   {user ? user.name?.split(" ")[0] || "Profil" : "Connexion"}
@@ -274,7 +321,10 @@ export function Navbar() {
                 <Menu className="h-5 w-5 text-slate-700 dark:text-slate-300" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-80 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+            <SheetContent
+              side="right"
+              className="w-80 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800"
+            >
               {/* Bouton de fermeture personnalisé */}
               <SheetClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
                 <X className="h-4 w-4 text-slate-700 dark:text-slate-300" />
