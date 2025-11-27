@@ -607,6 +607,7 @@ export function SiraTimeline() {
             <CardContent className="relative z-10 px-5 sm:px-6 pb-4 pt-3">
               <ScrollArea className="max-h-[55vh] pr-3">
                 <div className="space-y-4 text-sm sm:text-[15px] leading-relaxed">
+                  <div className="max-h-64 sm:max-h-80 pr-2 space-y-3">
                   {/* Hook */}
                   <div className="p-3 sm:p-4 rounded-2xl bg-emerald-500/10 border border-emerald-400/30 flex gap-3">
                     <div className="mt-0.5">
@@ -658,6 +659,7 @@ export function SiraTimeline() {
                       </div>
                     </div>
                   )}
+                </div>
                 </div>
               </ScrollArea>
             </CardContent>
