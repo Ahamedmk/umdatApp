@@ -132,6 +132,11 @@ export function Navbar() {
       icon: Map,
       gradient: "from-emerald-500 to-sky-500",
     },
+    { to: "/narrators",
+       label: "Rapporteurs",
+        icon: Sparkles,
+         gradient: "from-fuchsia-500 to-pink-600" },
+
   ];
 
   const NavLink = ({ to, label, icon: Icon, gradient, mobile = false }) => {

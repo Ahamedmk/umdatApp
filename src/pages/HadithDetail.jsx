@@ -269,6 +269,9 @@ export default function HadithDetail() {
   const [hasProgress, setHasProgress] = useState(false); // 👉 déjà planifié ?
   const [hideFR, setHideFR] = useState(false);
   const [dark, setDark] = useState(false);
+  const [unlockedNarrators, setUnlockedNarrators] = useState([]);
+const [showUnlockModal, setShowUnlockModal] = useState(false);
+
 
   const {
     isSupported: isRecSupported,
@@ -427,33 +430,36 @@ export default function HadithDetail() {
 
 const handleQuality = async (quality) => {
   if (!hadith) return;
-   if (progress?.next_review_date) {
-    console.warn("Ce hadith a déjà un planning de révision, passe par l’onglet Révision.");
-    return;
+  if (!user) {
+    // on peut garder ton fallback localStorage si tu veux
+    console.warn("Utilisateur non connecté → pas d’XP ni de déblocage narrateur.");
   }
 
   setSaving(true);
-  setSaving(true);
 
   try {
-    // Progression actuelle (valeurs par défaut si rien encore)
-    const base = progress || {
-      ease: 2.5,
-      interval_days: 0,
-      repetitions: 0,
-    };
+    const userId = user?.id || user?.user?.id || user?.uid || null;
 
+    // 1) Snapshot AVANT : quels narrateurs sont déjà débloqués ?
+    let beforeIds = new Set();
+    if (userId) {
+      const { data: beforeRows, error: beforeErr } = await supabase
+        .from("user_narrator_unlocks")
+        .select("narrator_id")
+        .eq("user_id", userId);
+
+      if (!beforeErr && beforeRows) {
+        beforeIds = new Set(beforeRows.map((r) => r.narrator_id));
+      }
+    }
+
+    // 2) Calcul SM-2 comme avant
+    const base = progress || { ease: 2.5, interval_days: 0, repetitions: 0 };
     const calc = nextReview(base, quality);
-
-    // 🟢 Règle de statut :
-    // - quality >= 4  → learned
-    // - sinon         → learning
-    const status = quality >= 4 ? "learned" : "learning";
-
     const payload = {
-      user_id: user ? user.id : null,
+      user_id: userId,
       hadith_number: hadith.number,
-      status,
+      status: quality >= 4 ? "learned" : "learning",
       ease_factor: calc.ease,
       interval_days: calc.interval_days,
       repetitions: calc.repetitions,
@@ -462,17 +468,15 @@ const handleQuality = async (quality) => {
       last_result: quality,
     };
 
-    // 👉 On utilise maintenant UNIQUEMENT user_hadith_progress
-    if (user) {
+    // 3) Sauvegarde dans user_hadith_progress (ce qui déclenche le trigger)
+    if (userId) {
       const { error } = await supabase
         .from("user_hadith_progress")
-        .upsert(payload, {
-          onConflict: "user_id,hadith_number",
-        });
+        .upsert(payload);
 
       if (error) throw error;
     } else {
-      // fallback local si non connecté
+      // fallback local si tu veux garder quelque chose hors connexion
       localStorage.setItem(
         `progress_${hadith.number}`,
         JSON.stringify(payload)
@@ -480,36 +484,40 @@ const handleQuality = async (quality) => {
     }
 
     setProgress(payload);
+
+    // 4) Snapshot APRÈS : quels narrateurs sont débloqués maintenant ?
+    if (userId) {
+      const { data: afterRows, error: afterErr } = await supabase
+        .from("user_narrator_unlocks")
+        .select("narrator_id")
+        .eq("user_id", userId);
+
+      if (!afterErr && afterRows) {
+        const afterIds = afterRows.map((r) => r.narrator_id);
+
+        // 5) Diff : narrateurs nouvellement débloqués
+        const newIds = afterIds.filter((id) => !beforeIds.has(id));
+
+        if (newIds.length > 0) {
+          const { data: narratorsData, error: narrErr } = await supabase
+            .from("narrators")
+            .select("id, name, kunya, short_bio, death_year, death_hijri")
+            .in("id", newIds);
+
+          if (!narrErr && narratorsData && narratorsData.length > 0) {
+            setUnlockedNarrators(narratorsData);
+            setShowUnlockModal(true);
+          }
+        }
+      }
+    }
   } catch (e) {
-    console.error("Erreur handleQuality:", e);
-    // fallback local si erreur Supabase
-    const base = progress || {
-      ease: 2.5,
-      interval_days: 0,
-      repetitions: 0,
-    };
-    const calc = nextReview(base, quality);
-    const status = quality >= 4 ? "learned" : "learning";
-
-    const payload = {
-      status,
-      ease_factor: calc.ease,
-      interval_days: calc.interval_days,
-      repetitions: calc.repetitions,
-      last_review_date: new Date().toISOString().slice(0, 10),
-      next_review_date: calc.next_review_date,
-      last_result: quality,
-    };
-
-    localStorage.setItem(
-      `progress_${hadith.number}`,
-      JSON.stringify(payload)
-    );
-    setProgress(payload);
+    console.error("Erreur handleQuality / déblocage narrateurs:", e);
   } finally {
     setSaving(false);
   }
 };
+
 
 
   if (loading || !hadith) {
@@ -985,6 +993,81 @@ const handleQuality = async (quality) => {
           </div>
         </div>
       </div>
+      {showUnlockModal && unlockedNarrators.length > 0 && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+    <Card className="max-w-md w-full shadow-2xl border-0 bg-gradient-to-br from-slate-900 to-slate-800 text-white relative">
+      <Button
+        size="icon"
+        variant="ghost"
+        className="absolute top-3 right-3 text-slate-300 hover:text-white hover:bg-white/10"
+        onClick={() => setShowUnlockModal(false)}
+      >
+        ×
+      </Button>
+
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Sparkles className="h-5 w-5 text-amber-400" />
+          <span>Nouveau rapporteur débloqué !</span>
+        </CardTitle>
+        <CardDescription className="text-slate-300">
+          Grâce à ce hadith, tu viens d’ajouter un maillon à ta chaîne de
+          transmission 📜
+        </CardDescription>
+      </CardHeader>
+
+      <CardContent className="space-y-4">
+        <div className="space-y-3 max-h-72 overflow-y-auto pr-2">
+          {unlockedNarrators.map((n) => (
+            <div
+              key={n.id}
+              className="rounded-xl border border-white/10 bg-white/5 p-3 space-y-1"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-semibold">
+                  {n.name}
+                </span>
+                {n.kunya && (
+                  <Badge
+                    variant="outline"
+                    className="border-amber-400 text-amber-200 text-xs"
+                  >
+                    {n.kunya}
+                  </Badge>
+                )}
+              </div>
+              {n.short_bio && (
+                <p className="text-xs text-slate-200 leading-relaxed">
+                  {n.short_bio}
+                </p>
+              )}
+              {(n.death_year || n.death_hijri) && (
+                <p className="text-[11px] text-slate-400 mt-1">
+                  Décès :{" "}
+                  {n.death_year
+                    ? `${n.death_year} EC`
+                    : ""}
+                  {n.death_year && n.death_hijri ? " • " : ""}
+                  {n.death_hijri
+                    ? `${n.death_hijri} H`
+                    : ""}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <Button
+          className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700"
+          onClick={() => setShowUnlockModal(false)}
+        >
+          Voir ma collection de rapporteurs
+        </Button>
+      </CardContent>
+    </Card>
+  </div>
+)}
+
     </TooltipProvider>
   );
 }

@@ -7,6 +7,7 @@ import { Home } from "./pages/Home";
 import { Learn } from "./pages/Learn";
 import { Review } from "./pages/Review";
 import { Quiz } from "./pages/Quiz";
+import NarratorsCollection from "./pages/NarratorsCollection";
 import { Compare } from "./pages/Compare";
 import SiraTimeline from "./pages/SiraTimeline";
 import { Profile } from "./pages/Profile";
@@ -156,7 +157,14 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-
+          <Route
+  path="/narrators"
+  element={
+    <ProtectedRoute>
+      <NarratorsCollection />
+    </ProtectedRoute>
+  }
+/>
           {/* 🔁 Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
