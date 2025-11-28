@@ -1,7 +1,6 @@
 // /src/pages/Review.jsx
 import React, { useMemo, useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
-import { saveReviewResult } from "../lib/hadithProgress";
 
 import {
   Card,
@@ -29,28 +28,11 @@ import {
   Trophy,
   Sparkles,
   Brain,
-  Clock,
 } from "lucide-react";
 
+import { saveReviewResult } from "../lib/hadithProgress";
 import { supabase } from "../lib/supabase";
 import { HADITHS_1_15 } from "../data/seed_hadiths_1_15";
-
-// Mini SM-2 côté client
-const nextReview = (current, quality) => {
-  const ease =
-    (current.ease ?? current.ease_factor ?? 2.5) +
-    (quality >= 4 ? 0.1 : -0.2);
-  const interval_days = quality >= 4 ? (current.interval_days ?? 0) + 1 : 0;
-  const repetitions = (current.repetitions ?? 0) + 1;
-
-  const next_review_date = new Date(
-    Date.now() + (quality >= 4 ? 86400000 : 3600000) // 1 jour ou 1h
-  )
-    .toISOString()
-    .slice(0, 10);
-
-  return { ease, interval_days, repetitions, next_review_date };
-};
 
 export function Review() {
   const { user } = useAuth();
@@ -61,16 +43,15 @@ export function Review() {
   const [idx, setIdx] = useState(0);
   const [showFr, setShowFr] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [sessionStats, setSessionStats] = useState({
     total: 0,
     perfect: 0,
     good: 0,
     needs_work: 0,
   });
-  const [reviewed, setReviewed] = useState({}); // { hadith_number: true }
-  const [sessionDone, setSessionDone] = useState(false);
 
-  // --- Thème (inchangé, mais simple) ---
+  // --- Thème (simple : on respecte le choix global) ---
   useEffect(() => {
     const pref = localStorage.getItem("theme");
     const prefersDark =
@@ -80,196 +61,138 @@ export function Review() {
     document.documentElement.classList.toggle("dark", enable);
   }, []);
 
-  // --- Chargement des hadiths à réviser ---
-  useEffect(() => {
-    let active = true;
-
-    async function load() {
-      setLoading(true);
-      try {
-        const today = new Date().toISOString().slice(0, 10);
-        let dueNumbers = [];
-        let progMap = {};
-
-        if (user) {
-          // On ne prend que les hadiths dont la prochaine révision est "due"
-          const { data: progress, error: progError } = await supabase
-            .from("user_hadith_progress")
-            .select(
-              "hadith_number, ease_factor, interval_days, repetitions, next_review_date, last_result"
-            )
-            .eq("user_id", user.id)
-            .lte("next_review_date", today);
-
-          if (progError) throw progError;
-
-          if (progress && progress.length > 0) {
-            dueNumbers = progress.map((p) => p.hadith_number);
-            progress.forEach((p) => {
-              progMap[p.hadith_number] = p;
-            });
-          }
-        } else {
-          // Pas connecté → pas de révisions pour l’instant (on pourrait un jour lire localStorage ici)
-          dueNumbers = [];
-          progMap = {};
-        }
-
-        // ✅ Si aucune révision due → aucun hadith à réviser
-        if (dueNumbers.length === 0) {
-          if (active) {
-            setHadiths([]);
-            setProgressByNumber(progMap);
-            setIdx(0);
-            setShowFr(false);
-            setShowFullArabic(false);
-            setSessionStats({ total: 0, perfect: 0, good: 0, needs_work: 0 });
-            setReviewed({});
-            setSessionDone(false);
-          }
-          return;
-        }
-
-        // Sinon on charge uniquement les hadiths concernés
-        let hadithQuery = supabase
-          .from("hadiths")
-          .select("number, arabic_text, french_text, source")
-          .in("number", dueNumbers)
-          .order("number", { ascending: true });
-
-        const { data: hadithData, error } = await hadithQuery;
-        if (error) throw error;
-
-        const dbMap = new Map((hadithData || []).map((h) => [h.number, h]));
-        const merged = [];
-
-        for (const n of dueNumbers) {
-          merged.push(
-            dbMap.get(n) || HADITHS_1_15.find((x) => x.number === n) || null
-          );
-        }
-
-        if (active) {
-          const filtered = merged.filter(Boolean);
-          setHadiths(filtered);
-          setProgressByNumber(progMap);
-          setIdx(0);
-          setShowFr(false);
-          setShowFullArabic(false);
-          setSessionStats({ total: 0, perfect: 0, good: 0, needs_work: 0 });
-          setReviewed({});
-          setSessionDone(false);
-        }
-      } catch (err) {
-        console.error("Erreur chargement révision:", err);
-        if (active) {
-          // En cas d'erreur, on affiche simplement "aucun hadith à réviser"
-          setHadiths([]);
-          setProgressByNumber({});
-          setIdx(0);
-          setReviewed({});
-          setSessionDone(false);
-        }
-      } finally {
-        if (active) setLoading(false);
-      }
+  /* ----------------------------------------------------
+   * Chargement des hadiths "dus" depuis Supabase
+   * -------------------------------------------------- */
+  async function loadDue(userId) {
+    if (!userId) {
+      // Pas d'utilisateur connecté → on vide proprement
+      setHadiths([]);
+      setProgressByNumber({});
+      setIdx(0);
+      setShowFr(false);
+      setShowFullArabic(false);
+      setSessionStats({ total: 0, perfect: 0, good: 0, needs_work: 0 });
+      return;
     }
 
-    load();
-    return () => {
-      active = false;
-    };
+    setLoading(true);
+    try {
+      const today = new Date().toISOString().slice(0, 10);
+
+      const { data: progress, error: progError } = await supabase
+        .from("user_hadith_progress")
+        .select(
+          "hadith_number, ease_factor, interval_days, repetitions, next_review_date, last_result, status"
+        )
+        .eq("user_id", userId)
+        .lte("next_review_date", today);
+
+      if (progError) throw progError;
+
+      if (!progress || progress.length === 0) {
+        setHadiths([]);
+        setProgressByNumber({});
+        setIdx(0);
+        setShowFr(false);
+        setShowFullArabic(false);
+        // On ne reset pas les stats de session ici, pour garder le bilan
+        return;
+      }
+
+      const progMap = {};
+      const dueNumbers = progress.map((p) => {
+        progMap[p.hadith_number] = p;
+        return p.hadith_number;
+      });
+
+      const { data: hadithData, error: hadithError } = await supabase
+        .from("hadiths")
+        .select("number, arabic_text, french_text, source")
+        .in("number", dueNumbers)
+        .order("number", { ascending: true });
+
+      if (hadithError) throw hadithError;
+
+      const dbMap = new Map((hadithData || []).map((h) => [h.number, h]));
+      const merged = [];
+
+      for (const n of dueNumbers) {
+        const fromDb = dbMap.get(n);
+        const fromSeed = HADITHS_1_15.find((x) => x.number === n);
+        if (fromDb) merged.push(fromDb);
+        else if (fromSeed) merged.push(fromSeed);
+      }
+
+      setHadiths(merged);
+      setProgressByNumber(progMap);
+      setIdx(0);
+      setShowFr(false);
+      setShowFullArabic(false);
+    } catch (err) {
+      console.error("Erreur chargement révision:", err);
+      setHadiths([]);
+      setProgressByNumber({});
+      setIdx(0);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // --- Chargement initial quand le user change ---
+  useEffect(() => {
+    if (user?.id) {
+      loadDue(user.id);
+    } else {
+      loadDue(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
+  /* ----------------------------------------------------
+   * Données du hadith courant
+   * -------------------------------------------------- */
   const h = useMemo(() => hadiths[idx], [hadiths, idx]);
   const arabicText = h?.arabic_text || "";
   const visibleChars = 35;
   const visiblePart = arabicText.slice(0, visibleChars);
   const hiddenPart = arabicText.slice(visibleChars);
 
-  const reviewedCount = hadiths.filter((x) => reviewed[x.number]).length;
   const progressPercent = hadiths.length
-    ? (reviewedCount / hadiths.length) * 100
+    ? Math.round(((idx + 1) / hadiths.length) * 100)
     : 0;
 
-  const answer = (quality) => {
-    if (!h) return;
+  /* ----------------------------------------------------
+   * Répondre (notation SM-2)
+   * -------------------------------------------------- */
+  const answer = async (quality) => {
+    if (!h || !user || saving) return;
 
-    const currentProg = progressByNumber[h.number] || {};
-    const current = {
-      ease: currentProg.ease_factor ?? 2.5,
-      interval_days: currentProg.interval_days ?? 0,
-      repetitions: currentProg.repetitions ?? 0,
-    };
+    setSaving(true);
 
-    const res = nextReview(current, quality);
-    const alreadyReviewed = !!reviewed[h.number];
+    // Stats de session (affichage en haut)
+    setSessionStats((prev) => ({
+      total: prev.total + 1,
+      perfect: prev.perfect + (quality === 5 ? 1 : 0),
+      good: prev.good + (quality === 4 ? 1 : 0),
+      needs_work: prev.needs_work + (quality < 3 ? 1 : 0),
+    }));
 
-    // Stats de session → on ne compte qu'une fois par hadith
-    if (!alreadyReviewed) {
-      setSessionStats((prev) => ({
-        total: prev.total + 1,
-        perfect: prev.perfect + (quality === 5 ? 1 : 0),
-        good: prev.good + (quality === 4 ? 1 : 0),
-        needs_work: prev.needs_work + (quality < 3 ? 1 : 0),
-      }));
+    try {
+      // On laisse le helper gérer SM-2 et les dates
+      await saveReviewResult(user.id, h.number, quality);
+
+      // 🔁 On recharge la liste à partir de la base
+      await loadDue(user.id);
+
+      // Reset affichage
+      setShowFr(false);
+      setShowFullArabic(false);
+    } catch (err) {
+      console.error("Erreur lors de la sauvegarde de la révision:", err);
+    } finally {
+      setSaving(false);
     }
-
-    const userId = user?.id || user?.user?.id || user?.uid;
-
-    if (userId) {
-      saveReviewResult(userId, h.number, quality, res);
-
-      setProgressByNumber((prev) => ({
-        ...prev,
-        [h.number]: {
-          ...currentProg,
-          hadith_number: h.number,
-          ease_factor: res.ease,
-          interval_days: res.interval_days,
-          repetitions: res.repetitions,
-          next_review_date: res.next_review_date,
-        },
-      }));
-    } else {
-      console.warn(
-        "Aucun userId détecté → progression non sauvegardée (es-tu bien connecté ?)"
-      );
-    }
-
-    // 🧠 On marque ce hadith comme "révisé" pour CETTE session
-    const updatedReviewed = {
-      ...reviewed,
-      [h.number]: true,
-    };
-    setReviewed(updatedReviewed);
-
-    const remaining = hadiths.filter((hh) => !updatedReviewed[hh.number]);
-
-    // Si plus aucun hadith à réviser → session terminée
-    if (remaining.length === 0) {
-      setSessionDone(true);
-    } else {
-      // Sinon, on passe au prochain hadith NON encore révisé
-      const length = hadiths.length;
-      if (length > 0) {
-        let nextIndex = idx;
-
-        for (let offset = 1; offset <= length; offset++) {
-          const candidateIndex = (idx + offset) % length;
-          const candidate = hadiths[candidateIndex];
-          if (!updatedReviewed[candidate.number]) {
-            nextIndex = candidateIndex;
-            break;
-          }
-        }
-
-        setIdx(nextIndex);
-      }
-    }
-
-    setShowFr(false);
-    setShowFullArabic(false);
   };
 
   const qualityLabels = [
@@ -307,9 +230,7 @@ export function Review() {
 
   const isLoadingInitial = loading && !hadiths.length;
   const noHadiths = !loading && !hadiths.length;
-
   const hCurrent = h || null;
-  const currentProg = hCurrent ? progressByNumber[hCurrent.number] : null;
 
   return (
     <TooltipProvider>
@@ -347,9 +268,7 @@ export function Review() {
                     Progression de la session
                   </span>
                   <span className="font-semibold text-slate-800 dark:text-slate-200">
-                    {hadiths.length
-                      ? `${reviewedCount} / ${hadiths.length}`
-                      : "–"}
+                    {hadiths.length ? `${idx + 1} / ${hadiths.length}` : "–"}
                   </span>
                 </div>
                 <Progress value={progressPercent} className="h-3" />
@@ -364,7 +283,7 @@ export function Review() {
                 <div className="text-2xl font-bold mb-1">
                   {sessionStats.total}
                 </div>
-                <div className="text-xs opacity-90">Total</div>
+                <div className="text-xs opacity-90">Total notés</div>
               </CardContent>
             </Card>
             <Card className="bg-gradient-to-br from-green-500 to-emerald-600 border-0 text-white shadow-lg">
@@ -404,42 +323,25 @@ export function Review() {
             </Card>
           )}
 
-          {/* Cas 2 : aucun hadith à réviser du tout */}
+          {/* Cas 2 : aucun hadith à réviser */}
           {noHadiths && !isLoadingInitial && (
             <Card className="border-dashed border-2 border-slate-300 dark:border-slate-700">
               <CardContent className="py-12 text-center space-y-3">
                 <RotateCcw className="h-10 w-10 text-slate-400 mx-auto mb-2" />
                 <p className="text-slate-700 dark:text-slate-200 font-semibold">
-                  Aucun hadith à réviser pour l’instant.
+                  Tu as terminé toutes tes révisions pour aujourd’hui ✅
                 </p>
                 <p className="text-sm text-slate-500 dark:text-slate-400">
-                  Commence par apprendre un hadith depuis la page{" "}
-                  <span className="font-semibold">Apprendre</span>. Dès que tu
-                  l’auras évalué, il apparaîtra ici automatiquement.
+                  Reviens demain in châ Allah pour la prochaine session, ou
+                  apprends un nouveau hadith depuis la page{" "}
+                  <span className="font-semibold">Apprendre</span>.
                 </p>
               </CardContent>
             </Card>
           )}
 
-          {/* Cas 3 : session terminée (tous les hadiths du jour ont été revus) */}
-          {sessionDone && hadiths.length > 0 && !isLoadingInitial && (
-            <Card className="border-2 border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950 shadow-xl">
-              <CardContent className="py-10 text-center space-y-4">
-                <Trophy className="h-10 w-10 text-emerald-600 dark:text-emerald-400 mx-auto" />
-                <p className="text-lg font-semibold text-emerald-800 dark:text-emerald-100">
-                  Session terminée 🎉
-                </p>
-                <p className="text-sm text-emerald-800/80 dark:text-emerald-100/80 max-w-md mx-auto">
-                  Tu as révisé tous les hadiths prévus pour aujourd’hui.
-                  Ils réapparaîtront automatiquement ici quand il sera temps
-                  de les revoir, selon le système SM-2.
-                </p>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Cas 4 : contenu normal (il reste au moins un hadith non révisé) */}
-          {hCurrent && !isLoadingInitial && !sessionDone && (
+          {/* Cas 3 : contenu normal */}
+          {hCurrent && !isLoadingInitial && (
             <>
               {/* Carte principale */}
               <Card className="border-slate-200 dark:border-slate-700 shadow-xl bg-white dark:bg-slate-800 overflow-hidden relative">
@@ -469,18 +371,8 @@ export function Review() {
                   </CardTitle>
                   <CardDescription>
                     Récite en arabe, puis révèle la traduction pour
-                    t’auto-évaluer.
+                    t’auto-évaluer
                   </CardDescription>
-
-                  {currentProg?.next_review_date && (
-                    <p className="mt-2 flex items-center gap-1 text-xs text-emerald-700 dark:text-emerald-300">
-                      <Clock className="h-3 w-3" />
-                      Prochaine révision programmée :{" "}
-                      <span className="font-semibold">
-                        {currentProg.next_review_date}
-                      </span>
-                    </p>
-                  )}
                 </CardHeader>
 
                 <Separator className="bg-slate-200 dark:bg-slate-700 relative z-10" />
@@ -589,6 +481,7 @@ export function Review() {
                             <TooltipTrigger asChild>
                               <Button
                                 onClick={() => answer(q.value)}
+                                disabled={saving}
                                 className="h-auto py-4 flex-col gap-1 rounded-lg"
                                 style={
                                   q.value >= 4
@@ -626,62 +519,52 @@ export function Review() {
                 </CardContent>
               </Card>
 
-              {/* Navigation */}
-              <div className="grid grid-cols-3 gap-2 sm:flex sm:items-center sm:justify-between sm:gap-3">
-                {/* Précédent */}
-                <Button
-                  onClick={() => {
-                    setIdx((i) =>
-                      hadiths.length ? (i - 1 + hadiths.length) % hadiths.length : 0
-                    );
-                    setShowFr(false);
-                    setShowFullArabic(false);
-                  }}
-                  className="w-full sm:w-auto flex items-center gap-2 min-w-0 whitespace-nowrap rounded-lg px-4 py-2"
-                  style={{
-                    backgroundColor: "#ffffff",
-                    color: "#0f172a",
-                    border: "1px solid #e2e8f0",
-                  }}
-                >
-                  <ChevronLeft className="h-4 w-4 shrink-0" />
-                  <span className="truncate">Précédent</span>
-                </Button>
+              {/* Navigation si plus d’un hadith dans la liste actuelle */}
+              {hadiths.length > 1 && (
+                <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center sm:justify-between sm:gap-3">
+                  {/* Précédent */}
+                  <Button
+                    onClick={() => {
+                      setIdx((i) =>
+                        hadiths.length
+                          ? (i - 1 + hadiths.length) % hadiths.length
+                          : 0
+                      );
+                      setShowFr(false);
+                      setShowFullArabic(false);
+                    }}
+                    className="w-full sm:w-auto flex items-center gap-2 min-w-0 whitespace-nowrap rounded-lg px-4 py-2"
+                    style={{
+                      backgroundColor: "#ffffff",
+                      color: "#0f172a",
+                      border: "1px solid #e2e8f0",
+                    }}
+                  >
+                    <ChevronLeft className="h-4 w-4 shrink-0" />
+                    <span className="truncate">Précédent</span>
+                  </Button>
 
-                {/* Retour à la liste */}
-                <Button
-                  asChild
-                  className="w-full sm:w-auto min-w-0 whitespace-nowrap rounded-lg px-4 py-2"
-                  style={{
-                    backgroundColor: "transparent",
-                    color: "#0f172a",
-                  }}
-                >
-                  <a href="/learn">
-                    <span className="truncate">Retour à la liste</span>
-                  </a>
-                </Button>
-
-                {/* Suivant */}
-                <Button
-                  onClick={() => {
-                    setIdx((i) =>
-                      hadiths.length ? (i + 1) % hadiths.length : 0
-                    );
-                    setShowFr(false);
-                    setShowFullArabic(false);
-                  }}
-                  className="w-full sm:w-auto flex items-center gap-2 min-w-0 whitespace-nowrap rounded-lg px-4 py-2"
-                  style={{
-                    backgroundColor: "#ffffff",
-                    color: "#0f172a",
-                    border: "1px solid #e2e8f0",
-                  }}
-                >
-                  <span className="truncate">Suivant</span>
-                  <ChevronRight className="h-4 w-4 shrink-0" />
-                </Button>
-              </div>
+                  {/* Suivant */}
+                  <Button
+                    onClick={() => {
+                      setIdx((i) =>
+                        hadiths.length ? (i + 1) % hadiths.length : 0
+                      );
+                      setShowFr(false);
+                      setShowFullArabic(false);
+                    }}
+                    className="w-full sm:w-auto flex items-center gap-2 min-w-0 whitespace-nowrap rounded-lg px-4 py-2"
+                    style={{
+                      backgroundColor: "#ffffff",
+                      color: "#0f172a",
+                      border: "1px solid #e2e8f0",
+                    }}
+                  >
+                    <span className="truncate">Suivant</span>
+                    <ChevronRight className="h-4 w-4 shrink-0" />
+                  </Button>
+                </div>
+              )}
             </>
           )}
         </div>
