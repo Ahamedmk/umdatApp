@@ -38,6 +38,7 @@ import {
   Sparkles,
   Target,
   BarChart3,
+  Map,
   ClipboardCheck,
   X,
   History, // 👈 pour le bouton Historique des révisions
@@ -132,6 +133,12 @@ export function Navbar() {
       icon: Target,
       gradient: "from-cyan-500 to-blue-600",
     },
+    {
+    to: "/timeline",
+    label: "Timeline Sîra",
+    icon: Map,
+    gradient: "from-emerald-500 to-sky-500",
+  },
     // 👇 Nouveau bouton : Historique des révisions
     {
       to: "/history",

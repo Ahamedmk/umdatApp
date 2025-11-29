@@ -275,10 +275,14 @@ export function SiraTimeline() {
         <div className="relative overflow-hidden rounded-3xl border border-emerald-100 dark:border-emerald-900 bg-gradient-to-br from-emerald-500 via-teal-600 to-sky-600 text-white shadow-2xl">
           <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_top,_#ffffff,_transparent_60%)]" />
           <div className="relative px-5 sm:px-8 py-6 sm:py-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex items-start gap-4">
-              <div className="mt-1 p-3 rounded-2xl bg-white/15 backdrop-blur-sm shadow-md">
-                <Map className="h-7 w-7" />
-              </div>
+            <div className="flex flex-col items-center text-center gap-4
+  sm:flex-row sm:items-start sm:text-left">
+              <div className="
+  mx-auto sm:mx-0
+  mt-1 p-3 rounded-2xl bg-white/15 backdrop-blur-sm shadow-md
+">
+  <Map className="h-7 w-7" />
+</div>
               <div className="space-y-3">
                 <div className="flex items-center gap-2 flex-wrap">
                   <Badge className="bg-white/15 backdrop-blur text-xs border border-white/20 rounded-full">
