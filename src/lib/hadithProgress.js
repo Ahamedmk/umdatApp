@@ -80,63 +80,110 @@ export function computeNextReview(existing = {}, quality) {
  *
  * Si nextArg n’est pas fourni, on recalcule tout ici avec computeNextReview().
  */
-export async function saveReviewResult(userId, hadithNumber, quality, nextArg) {
-  if (!userId || !hadithNumber) return;
+// /src/lib/hadithProgress.j
 
-  const q = Number(quality);
+// ... computeNextReview reste tel quel
 
-  // 1) On reconstruit / complète les données SM-2
-  let next = nextArg || {};
-
-  // Si l’appelant n’a pas donné next, on calcule nous-mêmes
-  if (!next || Object.keys(next).length === 0) {
-    next = computeNextReview({}, q);
-  }
-
-  // Accept both "ease" and "ease_factor" from caller
-  const ease_factor =
-    next.ease_factor ?? next.ease ?? 2.5;
-
-  const interval_days = next.interval_days ?? 0;
-  const repetitions = next.repetitions ?? 0;
-
-  const next_review_date =
-    next.next_review_date ||
-    new Date(Date.now() + 86400000).toISOString().slice(0, 10);
-
-  // 2) Statut garanti (jamais "", jamais null)
-  const status =
-    next.status && typeof next.status === "string"
-      ? next.status
-      : computeStatusFromQuality(q);
-
-  const payload = {
-    user_id: userId,
-    hadith_number: hadithNumber,
-    ease_factor,
-    interval_days,
-    repetitions,
-    last_result: q,
-    last_review_at: new Date().toISOString(),
-    next_review_date,
-    status,
-  };
-
-  // Debug utile pour voir ce qui part vers Supabase
+export async function saveReviewResult(userId, hadithNumber, quality) {
   console.log("DEBUG saveReviewResult input", {
     userId,
     hadithNumber,
-    quality: q,
-    next,
+    quality,
   });
+
+  const today = new Date();
+  const todayISODate = today.toISOString().slice(0, 10);
+
+  // 1️⃣ On récupère la progression existante pour ce hadith
+  const { data: existing, error: fetchError } = await supabase
+    .from("user_hadith_progress")
+    .select(
+      "hadith_number, ease_factor, interval_days, repetitions, next_review_date, last_result, status"
+    )
+    .eq("user_id", userId)
+    .eq("hadith_number", hadithNumber)
+    .maybeSingle();
+
+  if (fetchError) {
+    console.error("Erreur fetch progression :", fetchError);
+    throw fetchError;
+  }
+
+  const base = existing || {
+    ease_factor: 2.5,
+    interval_days: 0,
+    repetitions: 0,
+    status: "learning",
+  };
+
+  // 2️⃣ On calcule le prochain intervalle avec SM-2 simplifié
+  const next = computeNextReview({
+    quality,
+    ease_factor: base.ease_factor,
+    interval_days: base.interval_days,
+    repetitions: base.repetitions,
+  });
+
+  // 3️⃣ On prépare le payload pour user_hadith_progress
+  const payload = {
+    user_id: userId,
+    hadith_number: hadithNumber,
+    ease_factor: next.ease_factor,
+    interval_days: next.interval_days,
+    repetitions: next.repetitions,
+    last_result: quality,
+    last_review_at: today.toISOString(),
+    next_review_date: next.next_review_date || todayISODate,
+    status: next.repetitions >= 3 ? "learned" : "learning",
+  };
+
   console.log("DEBUG saveReviewResult payload", payload);
 
-  const { error } = await supabase
+  // 4️⃣ Upsert de la progression principale
+  const { error: upsertError } = await supabase
     .from("user_hadith_progress")
     .upsert(payload, { onConflict: "user_id,hadith_number" });
 
-  if (error) {
-    console.error("Erreur upsert user_hadith_progress :", error);
-    throw error;
+  if (upsertError) {
+    console.error("Erreur upsert user_hadith_progress :", upsertError);
+    throw upsertError;
+  }
+
+  // 5️⃣ 📌 Enregistrement dans l'historique (review_events)
+  const { error: historyError } = await supabase.from("review_events").insert({
+    user_id: userId,
+    hadith_number: hadithNumber,
+    quality,
+    event_type: "review",
+    // created_at est rempli automatiquement par default now()
+  });
+
+  if (historyError) {
+    console.error("Erreur insertion review_events :", historyError);
+    // on NE throw PAS ici pour ne pas casser le flux de l’appli
   }
 }
+
+
+
+// 🔎 Récupération de l'historique des révisions pour un utilisateur
+export async function getReviewHistory(userId) {
+  if (!userId) return [];
+
+  const { data, error } = await supabase
+    .from("review_events")
+    .select("id, hadith_number, quality, event_type, created_at")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Erreur récupération historique:", error);
+    throw error;
+  }
+
+  return data ?? [];
+}
+
+
+
+

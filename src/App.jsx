@@ -12,6 +12,8 @@ import { Compare } from "./pages/Compare";
 import SiraTimeline from "./pages/SiraTimeline";
 import { Profile } from "./pages/Profile";
 import HadithDetail from "./pages/HadithDetail";
+import HistoryPage from "./pages/History";
+import ProgressDashboard from "./pages/ProgressDashboard";
 import ProfileGuest from "./pages/ProfileGuest";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import Onboarding from "./pages/Onboarding";
@@ -48,7 +50,15 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-
+          
+          <Route path="/progress"
+           element={
+            <ProtectedRoute>
+              <OnboardingGate>
+           <ProgressDashboard />
+           </OnboardingGate>
+           </ProtectedRoute>
+           } />
           <Route
             path="/learn"
             element={
@@ -146,6 +156,15 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/history"
+           element={
+            <ProtectedRoute>
+              <OnboardingGate>
+           <HistoryPage />
+           </OnboardingGate>
+           </ProtectedRoute>
+           }
+            />
 
           <Route
             path="/exam/targeted"
@@ -161,7 +180,9 @@ export default function App() {
   path="/narrators"
   element={
     <ProtectedRoute>
+      <OnboardingGate>
       <NarratorsCollection />
+      </OnboardingGate>
     </ProtectedRoute>
   }
 />

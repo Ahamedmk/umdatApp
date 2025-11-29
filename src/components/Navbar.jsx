@@ -37,9 +37,10 @@ import {
   UserCircle,
   Sparkles,
   Target,
+  BarChart3,
   ClipboardCheck,
   X,
-  Map,            // 👈 ajouté pour le bouton Timeline Sîra
+  History, // 👈 pour le bouton Historique des révisions
 } from "lucide-react";
 
 import { useAuth } from "../context/AuthContext";
@@ -102,6 +103,12 @@ export function Navbar() {
       gradient: "from-blue-500 to-indigo-600",
     },
     {
+  to: "/progress",
+  label: "Progression",
+  icon: BarChart3,
+  gradient: "from-violet-500 to-purple-600",
+},
+    {
       to: "/quiz",
       label: "Quiz",
       icon: Brain,
@@ -125,18 +132,19 @@ export function Navbar() {
       icon: Target,
       gradient: "from-cyan-500 to-blue-600",
     },
-    // 👇 Nouveau bouton Timeline Sîra
+    // 👇 Nouveau bouton : Historique des révisions
     {
-      to: "/timeline",
-      label: "Timeline Sîra",
-      icon: Map,
-      gradient: "from-emerald-500 to-sky-500",
+      to: "/history",
+      label: "Historique",
+      icon: History,
+      gradient: "from-slate-500 to-slate-800",
     },
-    { to: "/narrators",
-       label: "Rapporteurs",
-        icon: Sparkles,
-         gradient: "from-fuchsia-500 to-pink-600" },
-
+    {
+      to: "/narrators",
+      label: "Rapporteurs",
+      icon: Sparkles,
+      gradient: "from-fuchsia-500 to-pink-600",
+    },
   ];
 
   const NavLink = ({ to, label, icon: Icon, gradient, mobile = false }) => {
