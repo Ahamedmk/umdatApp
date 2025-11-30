@@ -58,7 +58,7 @@ Tu peux imaginer Bilâl, ‘Ammâr, Khabbâb… Ils n’ont pas encore de statut
       action: `
 Application pour toi aujourd’hui :
 Avant d’apprendre un hadith, de prier, ou même d’ouvrir cette application, pose-toi deux secondes : « Pourquoi je le fais ? Qui est-ce que j’essaie vraiment de satisfaire ? »
-Même si ton apprentissage est encore “petit”, si ton intention est grande, tu es déjà dans la maison d’al-Arqam avec eux.`
+Même si ton apprentissage est encore “petit”, si ton intention est grande, tu es déjà dans la maison d’al-Arqam avec eux.`,
     },
   },
   {
@@ -82,7 +82,7 @@ Pourquoi ? Parce qu’une communauté qui veut se connecter à Allah doit être 
 Les hadiths sur la purification, l’eau qui coule, le lavage des membres, ce ne sont pas que des règles techniques. C’est comme si Allah te disait : « Avant de changer le monde, nettoie ce qui t’entoure. Avant de demander un haut niveau spirituel, commence par tes mains, ton visage, ton corps. »`,
       action: `
 Application pour toi aujourd’hui :
-La prochaine fois que tu fais tes ablutions, ralentis un peu. Imagine que tu te prépares à entrer dans la mosquée du Prophète ﷺ à Médine. Chaque goutte d’eau n’est pas juste de l’hygiène : c’est une préparation pour te tenir devant Allah.`
+La prochaine fois que tu fais tes ablutions, ralentis un peu. Imagine que tu te prépares à entrer dans la mosquée du Prophète ﷺ à Médine. Chaque goutte d’eau n’est pas juste de l’hygiène : c’est une préparation pour te tenir devant Allah.`,
     },
   },
   {
@@ -107,7 +107,7 @@ Les hadiths que tu apprends sur la prière sont les briques invisibles de cette 
       action: `
 Application pour toi aujourd’hui :
 Regarde comment ta journée est construite. Est-ce que la prière s’adapte à ton planning… ou est-ce que ton planning tourne autour de la prière ?
-Si tu commences juste par une seule prière que tu protèges vraiment à l’heure, avec concentration, tu t’installes symboliquement dans la mosquée de Médine avec eux.`
+Si tu commences juste par une seule prière que tu protèges vraiment à l’heure, avec concentration, tu t’installes symboliquement dans la mosquée de Médine avec eux.`,
     },
   },
   {
@@ -132,7 +132,7 @@ Les hadiths que tu apprends sur ces thèmes ne sont pas “moins spirituels” q
       action: `
 Application pour toi aujourd’hui :
 Choisis un seul comportement du quotidien — par exemple : ne pas élever la voix à la maison, dire “bismillah” avant de manger, ou respecter mieux la vie privée des autres — et décide d’en faire un acte d’adoration conscient.
-Tu deviendras un petit morceau de Médine dans ton propre salon.`
+Tu deviendras un petit morceau de Médine dans ton propre salon.`,
     },
   },
   {
@@ -157,7 +157,7 @@ Les compagnons ne voyaient pas ces règles comme des contraintes, mais comme un 
       action: `
 Application pour toi aujourd’hui :
 Observe une limite qu’Allah t’a donnée (dans le regard, dans les réseaux, dans la parole, dans l’intimité) et dis-toi : « Ce n’est pas juste un “haram/halal” abstrait. C’est Allah qui protège ma dignité. »
-Chaque fois que tu respectes cette limite, tu ressembles un peu plus aux habitants de Médine.`
+Chaque fois que tu respectes cette limite, tu ressembles un peu plus aux habitants de Médine.`,
     },
   },
 ];
@@ -173,6 +173,7 @@ export function SiraTimeline() {
   const { user } = useAuth();
   const [dark, setDark] = useState(false);
   const [learnedSet, setLearnedSet] = useState(new Set());
+  const [startedSet, setStartedSet] = useState(new Set());
   const [loading, setLoading] = useState(true);
 
   // Story overlay
@@ -195,7 +196,7 @@ export function SiraTimeline() {
     localStorage.setItem("theme", checked ? "dark" : "light");
   };
 
-  // Charger les hadiths appris
+  // Charger les hadiths appris / en cours
   useEffect(() => {
     let active = true;
 
@@ -204,22 +205,41 @@ export function SiraTimeline() {
       try {
         if (!user) {
           setLearnedSet(new Set());
+          setStartedSet(new Set());
           return;
         }
 
         const { data, error } = await supabase
           .from("user_hadith_progress")
           .select("hadith_number, status")
-          .eq("user_id", user.id)
-          .eq("status", "learned");
+          .eq("user_id", user.id);
 
         if (error) throw error;
 
-        const s = new Set((data || []).map((row) => row.hadith_number));
-        if (active) setLearnedSet(s);
+        // learned = vraiment terminés
+        const learned = new Set(
+          (data || [])
+            .filter((row) => row.status === "learned")
+            .map((row) => row.hadith_number)
+        );
+
+        // started = tout ce qui n'est pas "new" (donc learning + learned)
+        const started = new Set(
+          (data || [])
+            .filter((row) => row.status !== "new")
+            .map((row) => row.hadith_number)
+        );
+
+        if (active) {
+          setLearnedSet(learned);
+          setStartedSet(started);
+        }
       } catch (e) {
         console.error("Erreur chargement progression timeline:", e);
-        if (active) setLearnedSet(new Set());
+        if (active) {
+          setLearnedSet(new Set());
+          setStartedSet(new Set());
+        }
       } finally {
         if (active) setLoading(false);
       }
@@ -235,17 +255,21 @@ export function SiraTimeline() {
   const globalStats = useMemo(() => {
     const allNumbers = SIRA_TIMELINE.flatMap((b) => b.hadithNumbers);
     const unique = Array.from(new Set(allNumbers));
-    const learned = unique.filter((n) => learnedSet.has(n));
+
+    const progressed = unique.filter((n) => startedSet.has(n));
+    const fullyLearned = unique.filter((n) => learnedSet.has(n));
+
     const pct = unique.length
-      ? Math.round((learned.length / unique.length) * 100)
+      ? Math.round((progressed.length / unique.length) * 100)
       : 0;
 
     return {
       total: unique.length,
-      learned: learned.length,
+      progressed: progressed.length,
+      learned: fullyLearned.length,
       pct,
     };
-  }, [learnedSet]);
+  }, [startedSet, learnedSet]);
 
   // Étape actuelle (mini badge)
   const currentStep = useMemo(() => {
@@ -275,14 +299,10 @@ export function SiraTimeline() {
         <div className="relative overflow-hidden rounded-3xl border border-emerald-100 dark:border-emerald-900 bg-gradient-to-br from-emerald-500 via-teal-600 to-sky-600 text-white shadow-2xl">
           <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_top,_#ffffff,_transparent_60%)]" />
           <div className="relative px-5 sm:px-8 py-6 sm:py-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex flex-col items-center text-center gap-4
-  sm:flex-row sm:items-start sm:text-left">
-              <div className="
-  mx-auto sm:mx-0
-  mt-1 p-3 rounded-2xl bg-white/15 backdrop-blur-sm shadow-md
-">
-  <Map className="h-7 w-7" />
-</div>
+            <div className="flex flex-col items-center text-center gap-4 sm:flex-row sm:items-start sm:text-left">
+              <div className="mx-auto sm:mx-0 mt-1 p-3 rounded-2xl bg-white/15 backdrop-blur-sm shadow-md">
+                <Map className="h-7 w-7" />
+              </div>
               <div className="space-y-3">
                 <div className="flex items-center gap-2 flex-wrap">
                   <Badge className="bg-white/15 backdrop-blur text-xs border border-white/20 rounded-full">
@@ -323,9 +343,11 @@ export function SiraTimeline() {
               </div>
 
               <div className="hidden sm:flex flex-col items-end text-right text-sm">
-                <span className="text-emerald-50/80">Hadiths liés appris</span>
+                <span className="text-emerald-50/80">
+                  Hadiths liés commencés
+                </span>
                 <span className="text-lg font-semibold">
-                  {globalStats.learned} / {globalStats.total}
+                  {globalStats.progressed} / {globalStats.total}
                 </span>
               </div>
             </div>
@@ -337,10 +359,7 @@ export function SiraTimeline() {
               <span>Progression globale sur cette timeline</span>
               <span className="font-semibold">{globalStats.pct} %</span>
             </div>
-            <Progress
-              value={globalStats.pct}
-              className="h-2 bg-emerald-950/40"
-            />
+            <Progress value={globalStats.pct} className="h-2 bg-emerald-950/40" />
           </div>
         </div>
 
@@ -360,8 +379,8 @@ export function SiraTimeline() {
               Parcours chronologique
             </CardTitle>
             <CardDescription>
-              De la sincérité à La Mecque jusqu’aux règles de conduite à
-              Médine : suis le fil de la Sîra à travers tes hadiths.
+              De la sincérité à La Mecque jusqu’aux règles de conduite à Médine :
+              suis le fil de la Sîra à travers tes hadiths.
             </CardDescription>
           </CardHeader>
           <Separator className="bg-slate-200 dark:bg-slate-700" />
@@ -370,18 +389,22 @@ export function SiraTimeline() {
               <ol className="relative border-s border-slate-200 dark:border-slate-700 ml-3">
                 {SIRA_TIMELINE.map((step) => {
                   const totalH = step.hadithNumbers.length;
+
+                  const startedCount = step.hadithNumbers.filter((n) =>
+                    startedSet.has(n)
+                  ).length;
+
                   const learnedCount = step.hadithNumbers.filter((n) =>
                     learnedSet.has(n)
                   ).length;
+
                   const pct =
                     totalH > 0
-                      ? Math.round((learnedCount / totalH) * 100)
+                      ? Math.round((startedCount / totalH) * 100)
                       : 0;
 
                   const isCurrentBlock =
-                    !loading &&
-                    learnedCount > 0 &&
-                    learnedCount < totalH;
+                    !loading && startedCount > 0 && learnedCount < totalH;
                   const isCompleted = !loading && learnedCount === totalH;
 
                   return (
@@ -431,10 +454,10 @@ export function SiraTimeline() {
                               <Badge
                                 className={`bg-gradient-to-r ${step.color} text-white text-[11px] rounded-full`}
                               >
-                                {learnedCount}/{totalH} hadiths
+                                {startedCount}/{totalH} hadiths vus
                               </Badge>
                               <div className="text-[11px] text-slate-500 dark:text-slate-400">
-                                {pct}% maîtrisés sur cette étape
+                                {pct}% explorés sur cette étape
                               </div>
                             </div>
                           </div>
@@ -485,6 +508,8 @@ export function SiraTimeline() {
                               {step.hadithNumbers.map((n) => {
                                 const h = getHadithByNumber(n);
                                 const isLearned = learnedSet.has(n);
+                                const isStarted = startedSet.has(n);
+
                                 return (
                                   <Card
                                     key={n}
@@ -502,9 +527,16 @@ export function SiraTimeline() {
                                         >
                                           H{n}
                                         </Badge>
+
                                         {isLearned && (
                                           <Badge className="bg-emerald-500 text-white px-2 py-0.5 text-[11px] rounded-full">
                                             Appris
+                                          </Badge>
+                                        )}
+
+                                        {!isLearned && isStarted && (
+                                          <Badge className="bg-amber-500 text-white px-2 py-0.5 text-[11px] rounded-full">
+                                            En cours
                                           </Badge>
                                         )}
                                       </div>
@@ -612,58 +644,58 @@ export function SiraTimeline() {
               <ScrollArea className="max-h-[55vh] pr-3">
                 <div className="space-y-4 text-sm sm:text-[15px] leading-relaxed">
                   <div className="max-h-64 sm:max-h-80 pr-2 space-y-3">
-                  {/* Hook */}
-                  <div className="p-3 sm:p-4 rounded-2xl bg-emerald-500/10 border border-emerald-400/30 flex gap-3">
-                    <div className="mt-0.5">
-                      <Sparkles className="h-4 w-4 text-emerald-300" />
-                    </div>
-                    <p className="text-emerald-50/95 whitespace-pre-wrap">
-                      {storyStep.story.hook}
-                    </p>
-                  </div>
-
-                  {/* Corps */}
-                  <div className="space-y-3 text-slate-100/90 whitespace-pre-wrap">
-                    {storyStep.story.body}
-                  </div>
-
-                  {/* Action concrète */}
-                  {storyStep.story.action && (
-                    <div className="mt-3 p-3 sm:p-4 rounded-2xl bg-slate-900/80 border border-emerald-500/40">
-                      <p className="text-xs uppercase tracking-wide text-emerald-300 mb-1.5">
-                        Et toi, aujourd’hui
-                      </p>
-                      <p className="text-slate-50/95 whitespace-pre-wrap">
-                        {storyStep.story.action}
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Raccourci vers les hadiths liés */}
-                  {storyStep.hadithNumbers?.length > 0 && (
-                    <div className="pt-2 space-y-2">
-                      <p className="text-xs uppercase tracking-wide text-slate-400">
-                        Hadiths de cette étape
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {storyStep.hadithNumbers.map((n) => (
-                          <Button
-                            key={n}
-                            asChild
-                            size="xs"
-                            variant="outline"
-                            className="rounded-full border-slate-600 text-[11px] bg-slate-900/80 hover:bg-slate-800"
-                          >
-                            <a href={`/hadith/${n}`}>
-                              <BookOpen className="h-3 w-3 mr-1" />
-                              H{n}
-                            </a>
-                          </Button>
-                        ))}
+                    {/* Hook */}
+                    <div className="p-3 sm:p-4 rounded-2xl bg-emerald-500/10 border border-emerald-400/30 flex gap-3">
+                      <div className="mt-0.5">
+                        <Sparkles className="h-4 w-4 text-emerald-300" />
                       </div>
+                      <p className="text-emerald-50/95 whitespace-pre-wrap">
+                        {storyStep.story.hook}
+                      </p>
                     </div>
-                  )}
-                </div>
+
+                    {/* Corps */}
+                    <div className="space-y-3 text-slate-100/90 whitespace-pre-wrap">
+                      {storyStep.story.body}
+                    </div>
+
+                    {/* Action concrète */}
+                    {storyStep.story.action && (
+                      <div className="mt-3 p-3 sm:p-4 rounded-2xl bg-slate-900/80 border border-emerald-500/40">
+                        <p className="text-xs uppercase tracking-wide text-emerald-300 mb-1.5">
+                          Et toi, aujourd’hui
+                        </p>
+                        <p className="text-slate-50/95 whitespace-pre-wrap">
+                          {storyStep.story.action}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Raccourci vers les hadiths liés */}
+                    {storyStep.hadithNumbers?.length > 0 && (
+                      <div className="pt-2 space-y-2">
+                        <p className="text-xs uppercase tracking-wide text-slate-400">
+                          Hadiths de cette étape
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {storyStep.hadithNumbers.map((n) => (
+                            <Button
+                              key={n}
+                              asChild
+                              size="xs"
+                              variant="outline"
+                              className="rounded-full border-slate-600 text-[11px] bg-slate-900/80 hover:bg-slate-800"
+                            >
+                              <a href={`/hadith/${n}`}>
+                                <BookOpen className="h-3 w-3 mr-1" />
+                                H{n}
+                              </a>
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </ScrollArea>
             </CardContent>

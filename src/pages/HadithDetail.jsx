@@ -692,7 +692,7 @@ const handleQuality = async (quality) => {
                           size="sm"
                           variant="destructive"
                           onClick={stopRecording}
-                          className="gap-2 rounded-full"
+                          className="gap-2 rounded-full text-black"
                         >
                           <Square className="h-4 w-4" />
                           Arrêter
