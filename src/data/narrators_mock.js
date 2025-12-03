@@ -1,5 +1,3 @@
-// /src/data/narrators_mock.js
-
 export const NARRATORS_MOCK = [
   {
     id: 1,
@@ -11,16 +9,19 @@ export const NARRATORS_MOCK = [
     death_year_h: 59,
     region: "Médine",
     rarity: "legendary",
+    avatar: "https://cdn.jsdelivr.net/gh/IslamicAvatars/sahaba/abu_hurayra.png",
+    hadith_count: 5374,
     short_bio:
       "Compagnon célèbre du Prophète ﷺ, connu pour avoir rapporté le plus grand nombre de hadiths authentiques. Il a consacré sa vie à la mémorisation et à la transmission.",
     key_anecdote:
       "Il disait : « Rien ne m’a empêché d’écrire les hadiths du Messager d’Allah ﷺ, si ce n’est certains compagnons qui écrivaient peu par crainte de se mélanger avec le Coran. »",
-    isUnlocked: true, // 🔓 simulé : déjà débloqué
+    isUnlocked: true,
     stats: {
       learned: 3,
       total: 7,
     },
   },
+
   {
     id: 2,
     slug: "aisha",
@@ -31,6 +32,8 @@ export const NARRATORS_MOCK = [
     death_year_h: 58,
     region: "Médine",
     rarity: "legendary",
+    avatar: "https://cdn.jsdelivr.net/gh/IslamicAvatars/sahaba/aisha.png",
+    hadith_count: 2210,
     short_bio:
       "Épouse du Prophète ﷺ et grande savante de l’islam. Référence majeure en fiqh, en hadith et en comportement du Prophète ﷺ.",
     key_anecdote:
@@ -41,6 +44,7 @@ export const NARRATORS_MOCK = [
       total: 5,
     },
   },
+
   {
     id: 3,
     slug: "ibn-abbas",
@@ -51,16 +55,19 @@ export const NARRATORS_MOCK = [
     death_year_h: 68,
     region: "Ta’if / La Mecque",
     rarity: "rare",
+    avatar: "https://cdn.jsdelivr.net/gh/IslamicAvatars/sahaba/ibn_abbas.png",
+    hadith_count: 1660,
     short_bio:
       "Cousin du Prophète ﷺ, surnommé « le traducteur du Coran ». Référence en tafsîr et en compréhension des versets.",
     key_anecdote:
       "Le Prophète ﷺ a invoqué pour lui : « Ô Allah, enseigne-lui la sagesse et l’interprétation du Livre. »",
-    isUnlocked: false, // 🔒 simulé : pas encore débloqué
+    isUnlocked: false,
     stats: {
       learned: 0,
       total: 4,
     },
   },
+
   {
     id: 4,
     slug: "anas",
@@ -71,10 +78,12 @@ export const NARRATORS_MOCK = [
     death_year_h: 93,
     region: "Basra",
     rarity: "common",
+    avatar: "https://cdn.jsdelivr.net/gh/IslamicAvatars/sahaba/anas_bin_malik.png",
+    hadith_count: 2286,
     short_bio:
       "Serviteur du Prophète ﷺ durant une dizaine d’années. Il a transmis de nombreux détails sur sa douceur et son comportement.",
     key_anecdote:
-      "Il disait : « Je l’ai servi dix ans, jamais il ne m’a dit pour quelque chose que j’ai fait : ‘Pourquoi l’as-tu fait ?’ »",
+      "Il disait : « Je l’ai servi dix ans, jamais il ne m’a dit pour quelque chose que j’ai fait : “Pourquoi l’as-tu fait ?” »",
     isUnlocked: false,
     stats: {
       learned: 0,

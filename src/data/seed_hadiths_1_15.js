@@ -464,5 +464,34 @@ export const HADITHS_1_15 = [
     }
   },
   audio_url: null
+},
+{
+  number: 16,
+  arabic_text:
+    "عَنْ عَبْدِ اللَّهِ بْنِ عَبَّاسٍ رَضِيَ اللَّهُ عَنْهُمَا قَالَ: مَرَّ النَّبِيُّ ﷺ بِقَبْرَيْنِ فَقَالَ: «إِنَّهُمَا لَيُعَذَّبَانِ، وَمَا يُعَذَّبَانِ فِي كَبِيرٍ؛ أَمَّا أَحَدُهُمَا فَكَانَ لَا يَسْتَتِرُ مِنَ الْبَوْلِ، وَأَمَّا الآخَرُ فَكَانَ يَمْشِي بِالنَّمِيمَةِ». ثُمَّ أَخَذَ جَرِيدَةً رَطْبَةً، فَشَقَّهَا نِصْفَيْنِ، فَغَرَزَ فِي كُلِّ قَبْرٍ وَاحِدَةً، فَقِيلَ: يَا رَسُولَ اللَّهِ، لِمَ فَعَلْتَ هَذَا؟ قَالَ: «لَعَلَّهُ يُخَفَّفُ عَنْهُمَا مَا لَمْ يَيْبَسَا».",
+  french_text:
+    "Ibn ‘Abbâs (ra) : « Le Prophète ﷺ passa près de deux tombes et dit : “Ils subissent certes un châtiment, et ce n’est pas pour quelque chose de difficile à éviter : l’un ne se préservait pas de l’urine, et l’autre colportait la médisance (an-namîma).” Puis il prit une branche de palmier fraîche, la coupa en deux et planta une moitié sur chaque tombe. On lui demanda : “Ô Messager d’Allah, pourquoi as-tu fait cela ?” Il répondit : “Peut-être que leur châtiment sera allégé tant que ces branches ne seront pas sèches.” »",
+  source: "Al-Bukhârî & Muslim (cf. PDF)",
+  tags: ["tahara", "qabr", "istibra", "namima"],
+  opinions: {
+    Hanafi: {
+      ar: "يَدُلُّ الحَدِيثُ عَلَى وُجُوبِ الِاسْتِبْرَاءِ مِنَ الْبَوْلِ، وَأَنَّ النَّمِيمَةَ مِنَ الْكَبَائِرِ، وَأَمَّا وَضْعُ الجَرِيدَةِ الرَّطْبَةِ فَهُوَ فِعْلٌ خَاصٌّ بِالنَّبِيِّ ﷺ لَا يُسَنُّ لِغَيْرِهِ.",
+      fr: "Le hadith montre l’obligation de se préserver de l’urine et que la namîma est un péché majeur ; quant à la branche fraîche, c’est un geste spécifique au Prophète ﷺ et non une sunna à généraliser."
+    },
+    Maliki: {
+      ar: "يُفِيدُ وُجُوبَ التَّنَزُّهِ عَنِ الْبَوْلِ وَتَحْرِيمَ النَّمِيمَةِ، وَاسْتُحِبَّ الدُّعَاءُ لِلْأَمْوَاتِ وَلَمْ يُسْتَحَبَّ تَتَبُّعُ وَضْعِ الجَرَائِدِ عَلَى القُبُورِ؛ لِأَنَّهُ تَصَرُّفٌ نَبَوِيٌّ خَاصٌّ.",
+      fr: "Il implique l’obligation d’éviter l’urine et l’interdiction de la namîma ; on recommande l’invocation pour les morts, mais on ne recommande pas de poser des branches sur les tombes, car c’est un geste particulier du Prophète ﷺ."
+    },
+    Shafi: {
+      ar: "عِنْدَ الشَّافِعِيَّةِ: الِاسْتِبْرَاءُ مِنَ الْبَوْلِ وَاجِبٌ، وَالنَّمِيمَةُ كَبِيرَةٌ، وَوَضْعُ الجَرِيدَةِ يُعَدُّ جَائِزًا مِنْ فِعْلِ النَّبِيِّ ﷺ وَلَكِنْ لَا يُسْتَحَبُّ الِالْتِزَامُ بِهِ لِعَدَمِ مَعْرِفَةِ حَالِ الْمَوْتَى.",
+      fr: "Chez les shâfi‘ites : se préserver de l’urine est obligatoire, la namîma est un grand péché ; mettre une branche est admis comme un fait prophétique mais on ne recommande pas d’en faire une pratique régulière, car nous ne connaissons pas l’état des morts."
+    },
+    Hanbali: {
+      ar: "عِنْدَ الحَنَابِلَةِ: التَّهَاوُنُ بِأَمْرِ الْبَوْلِ مُوجِبٌ لِلْوَعِيدِ وَالنَّمِيمَةُ مِنْ أَكْبَرِ الذُّنُوبِ، وَالجُمْهُورُ مِنْهُمْ عَلَى أَنَّ غَرْزَ الجَرِيدَةِ لَيْسَ سُنَّةً مُطَّرِدَةً بَلْ خَاصٌّ بِقِصَّةِ هَذَيْنِ الْقَبْرَيْنِ.",
+      fr: "Chez les hanbalites : la négligence vis-à-vis de l’urine entraîne une lourde menace, et la namîma fait partie des grands péchés ; la majorité d’entre eux considère que le fait de planter une branche n’est pas une sunna générale, mais un cas particulier lié à ces deux tombes."
+    }
+  },
+  audio_url: null
 }
+
 ];

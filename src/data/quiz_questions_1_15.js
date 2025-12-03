@@ -597,6 +597,73 @@ export const QUIZ_QUESTIONS_1_15 = [
     explain:
       "En combinant les textes, on voit un schéma : droite pour l’honneur (manger, serrer la main, wuḍû’), gauche pour ce qui touche aux impuretés ou à leur nettoyage.",
   },
+    /* ----------------- HADITH 16 : Les deux tombes & la négligence ----------------- */
+  {
+    n: 16,
+    q: "Selon le hadith 16, pour quelles raisons les deux personnes dans les tombes étaient-elles punies ?",
+    options: [
+      "Pour avoir délaissé le jeûne de Ramadan et la zakât",
+      "Pour avoir mal parlé du Prophète ﷺ et abandonné la prière",
+      "Pour ne pas s’être protégées correctement des impuretés d’urine et pour avoir colporté les paroles (namîma)",
+      "Pour avoir mangé de la nourriture illicite et volé les biens des gens",
+    ],
+    correctIndex: 2,
+    explain:
+      "Le Prophète ﷺ a expliqué que l’un ne se préservait pas de l’urine (négligence dans la purification) et que l’autre colportait les paroles entre les gens (namîma). Deux fautes parfois jugées “petites”, mais lourdes auprès d’Allah.",
+  },
+  {
+    n: 16,
+    q: "Que signifie la parole du Prophète ﷺ dans ce hadith : « وما يعذبان في كبير » (ils ne sont pas punis pour quelque chose de grand) ?",
+    options: [
+      "Que leurs actes ne sont en réalité pas des péchés",
+      "Que ce sont des péchés graves, mais jugés “petits” dans leurs propres yeux",
+      "Que la punition du tombeau n’existe pas",
+      "Que ces fautes ne concernent que les anciens peuples",
+    ],
+    correctIndex: 1,
+    explain:
+      "Les savants expliquent que la phrase signifie : ce n’était pas “grand” à leurs yeux, ils le prenaient à la légère. En réalité, se négliger face à l’urine et colporter les paroles sont des péchés graves.",
+  },
+  {
+    n: 16,
+    q: "Quelle leçon principale les savants tirent-ils de la mention de l’urine dans ce hadith ?",
+    options: [
+      "Que seule l’impureté du sang est grave",
+      "Que les impuretés ne concernent que les vêtements et pas le corps",
+      "Qu’il faut être très attentif à se protéger des éclaboussures d’urine et à bien nettoyer avant la prière",
+      "Qu’il n’y a pas de lien entre pureté et validité de la prière",
+    ],
+    correctIndex: 2,
+    explain:
+      "Ce hadith montre l’importance de se protéger des impuretés d’urine (en particulier pour les hommes) et de bien se nettoyer (istinjâ’) avant la prière. Négliger cela peut entraîner un châtiment et invalider la salât.",
+  },
+  {
+    n: 16,
+    q: "Quel péché de la langue est mentionné dans ce hadith comme cause de châtiment dans la tombe ?",
+    options: [
+      "Le mensonge dans le commerce uniquement",
+      "Le fait de jurer par Allah",
+      "La namîma : colporter les paroles pour semer la discorde",
+      "Le simple fait de parler beaucoup",
+    ],
+    correctIndex: 2,
+    explain:
+      "La namîma consiste à rapporter les propos d’un groupe à un autre pour briser les liens entre les gens. C’est un grand péché, cité ici comme cause de châtiment dans la tombe.",
+  },
+  {
+    n: 16,
+    q: "Pourquoi le Prophète ﷺ a-t-il planté une branche verte sur chacune des deux tombes, selon l’explication donnée par lui-même ?",
+    options: [
+      "Pour marquer les tombes de manière décorative",
+      "Pour enseigner un rite obligatoire pour toutes les tombes",
+      "Parce qu’il espérait qu’aussi longtemps qu’elles resteraient fraîches, la punition serait allégée",
+      "Pour empêcher les gens de s’approcher de la tombe",
+    ],
+    correctIndex: 2,
+    explain:
+      "Le Prophète ﷺ a dit qu’il espérait que le châtiment soit allégé tant que les branches resteraient fraîches. Les savants en déduisent la miséricorde du Prophète ﷺ et l’importance d’intercéder par les bonnes œuvres et les invocations pour les morts.",
+  },
+
 ];
 
 /**

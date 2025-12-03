@@ -57,7 +57,7 @@ function getStatusMeta(row) {
 export function Learn() {
   const { user } = useAuth();
 
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState([]); // liste dynamique de tous les hadiths
   const [searchQuery, setSearchQuery] = useState("");
   const [filterSource, setFilterSource] = useState("all");
   const [loading, setLoading] = useState(true);
@@ -74,43 +74,45 @@ export function Learn() {
     document.documentElement.classList.toggle("dark", enable);
   }, []);
 
-  // Charger les hadiths (8 → 15) DB + fallback seed
+  // Charger tous les hadiths depuis la table `hadiths`
+  // + fallback sur HADITHS_1_15 si la DB plante
   useEffect(() => {
     let active = true;
-    async function load() {
+
+    async function loadHadiths() {
       setLoading(true);
       try {
         const { data, error } = await supabase
           .from("hadiths")
           .select("number, arabic_text, french_text, source")
-          .gte("number", 1)
-          .lte("number", 15)
           .order("number", { ascending: true });
 
         if (error) throw error;
 
-        const dbMap = new Map((data || []).map((h) => [h.number, h]));
-        const merged = [];
-        for (let n = 1; n <= 15; n++) {
-          const fromDb = dbMap.get(n);
-          const fromSeed = HADITHS_1_15.find((x) => x.number === n) || null;
-          if (fromDb) merged.push(fromDb);
-          else if (fromSeed) merged.push(fromSeed);
+        // Si la table est vide, on peut quand même fallback sur les seeds
+        if (!data || data.length === 0) {
+          if (active) setItems(HADITHS_1_15);
+          return;
         }
-        if (active) setItems(merged.filter(Boolean));
-      } catch {
+
+        // data = liste complète des hadiths en DB
+        if (active) setItems(data);
+      } catch (e) {
+        console.error("Erreur chargement hadiths, fallback seeds:", e);
         if (active) setItems(HADITHS_1_15);
       } finally {
         if (active) setLoading(false);
       }
     }
-    load();
+
+    loadHadiths();
     return () => {
       active = false;
     };
   }, []);
 
-  // Charger la progression de l'utilisateur (si connecté)
+  // Charger la progression de l'utilisateur (si connecté),
+  // en fonction des hadiths réellement présents (items)
   useEffect(() => {
     if (!user) {
       setProgressByHadith({});
@@ -118,14 +120,29 @@ export function Learn() {
     }
 
     let active = true;
+
     async function loadProgress() {
       try {
+        // si aucun hadith chargé, on ne fait pas d'appel inutile
+        if (!items || items.length === 0) {
+          if (active) setProgressByHadith({});
+          return;
+        }
+
+        const numbers = items
+          .map((h) => h.number)
+          .filter((n) => typeof n === "number");
+
+        if (numbers.length === 0) {
+          if (active) setProgressByHadith({});
+          return;
+        }
+
         const { data, error } = await supabase
           .from("user_hadith_progress")
           .select("hadith_number, status, next_review_date, last_result")
           .eq("user_id", user.id)
-          .gte("hadith_number", 1)
-          .lte("hadith_number", 15);
+          .in("hadith_number", numbers);
 
         if (error) {
           console.error("Erreur loadProgress:", error);
@@ -149,9 +166,9 @@ export function Learn() {
     return () => {
       active = false;
     };
-  }, [user]);
+  }, [user, items]);
 
-  // Liste des sources pour le filtre
+  // Liste des sources pour le filtre (dynamique)
   const sources = useMemo(() => {
     const set = new Set();
     items.forEach((h) => h.source && set.add(h.source));
@@ -208,7 +225,9 @@ export function Learn() {
                 Apprendre
               </h2>
               <p className="text-sm text-slate-600 dark:text-slate-400">
-                Hadiths 1 → 15
+                {stats.total > 0
+                  ? `Hadiths disponibles : ${stats.total}`
+                  : "Aucun hadith pour le moment"}
               </p>
               {!user && (
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
@@ -255,7 +274,7 @@ export function Learn() {
           <Card className="bg-gradient-to-br from-emerald-500 to-teal-600 border-0 text-white shadow-lg">
             <CardContent className="pt-6 text-center">
               <div className="text-3xl font-bold mb-1">{stats.total}</div>
-              <div className="text-sm opacity-90">Hadiths (1–15)</div>
+              <div className="text-sm opacity-90">Hadiths au total</div>
             </CardContent>
           </Card>
 

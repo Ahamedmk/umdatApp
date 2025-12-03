@@ -51,7 +51,7 @@ export function Review() {
     needs_work: 0,
   });
 
-  // --- Thème (simple : on respecte le choix global) ---
+  // --- Thème (on respecte le choix global) ---
   useEffect(() => {
     const pref = localStorage.getItem("theme");
     const prefersDark =
@@ -63,6 +63,7 @@ export function Review() {
 
   /* ----------------------------------------------------
    * Chargement des hadiths "dus" depuis Supabase
+   * → 100% dynamique : peu importe le numéro (1, 15, 50, 200...)
    * -------------------------------------------------- */
   async function loadDue(userId) {
     if (!userId) {
@@ -80,6 +81,7 @@ export function Review() {
     try {
       const today = new Date().toISOString().slice(0, 10);
 
+      // On récupère toutes les cartes "due" (next_review_date <= today)
       const { data: progress, error: progError } = await supabase
         .from("user_hadith_progress")
         .select(
@@ -96,7 +98,6 @@ export function Review() {
         setIdx(0);
         setShowFr(false);
         setShowFullArabic(false);
-        // On ne reset pas les stats de session ici, pour garder le bilan
         return;
       }
 
@@ -106,6 +107,7 @@ export function Review() {
         return p.hadith_number;
       });
 
+      // On va chercher les textes dans la table `hadiths`
       const { data: hadithData, error: hadithError } = await supabase
         .from("hadiths")
         .select("number, arabic_text, french_text, source")
@@ -121,7 +123,7 @@ export function Review() {
         const fromDb = dbMap.get(n);
         const fromSeed = HADITHS_1_15.find((x) => x.number === n);
         if (fromDb) merged.push(fromDb);
-        else if (fromSeed) merged.push(fromSeed);
+        else if (fromSeed) merged.push(fromSeed); // fallback pour les anciens 1–15
       }
 
       setHadiths(merged);
@@ -179,13 +181,14 @@ export function Review() {
     }));
 
     try {
-      // On laisse le helper gérer SM-2 et les dates
+      // Le helper gère SM-2 et met à jour next_review_date / status
       await saveReviewResult(user.id, h.number, quality);
 
-      // 🔁 On recharge la liste à partir de la base
+      // On recharge la liste à partir de la base → si ce hadith n'est plus "due",
+      // il disparaît de la session automatiquement
       await loadDue(user.id);
 
-      // Reset affichage
+      // Reset affichage du texte
       setShowFr(false);
       setShowFullArabic(false);
     } catch (err) {

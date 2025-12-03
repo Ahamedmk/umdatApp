@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Separator } from "@/components/ui/separator";
 import {
   BarChart3,
   Flame,
@@ -22,6 +21,16 @@ import {
   AlertTriangle,
   Sparkles,
 } from "lucide-react";
+
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip as RechartsTooltip,
+  CartesianGrid,
+} from "recharts";
 
 import { HADITHS_1_15 } from "../data/seed_hadiths_1_15";
 
@@ -40,7 +49,7 @@ function formatDate(dateStr) {
   }
 }
 
-// Calcule un streak de jours consécutifs à partir d'une liste de dates
+// Calcule un streak de jours consécutifs à partir d'une liste de dates complètes
 function computeStreak(dates) {
   if (!dates.length) return 0;
 
@@ -79,7 +88,7 @@ export default function ProgressDashboard() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [progressRows, setProgressRows] = useState([]);
-  const [reviewDates, setReviewDates] = useState([]);
+  const [reviewDates, setReviewDates] = useState([]); // array de timestamps des review_events
 
   useEffect(() => {
     if (!user?.id) {
@@ -90,8 +99,6 @@ export default function ProgressDashboard() {
     async function loadData() {
       setLoading(true);
       try {
-        const todayStr = new Date().toISOString().slice(0, 10);
-
         // 1) Progression par hadith
         const { data: prog, error: progError } = await supabase
           .from("user_hadith_progress")
@@ -102,13 +109,13 @@ export default function ProgressDashboard() {
 
         if (progError) throw progError;
 
-        // 2) Événements de révision pour le streak
+        // 2) Événements de révision pour le streak + graphique
         const { data: events, error: eventsError } = await supabase
           .from("review_events")
           .select("created_at")
           .eq("user_id", user.id)
           .order("created_at", { ascending: false })
-          .limit(365); // on se limite à 1 an, largement suffisant pour un streak
+          .limit(365); // 1 an max
 
         if (eventsError) throw eventsError;
 
@@ -131,7 +138,7 @@ export default function ProgressDashboard() {
     []
   );
 
-  // On construit une map { hadith_number: rowProgress }
+  // Map { hadith_number: rowProgress }
   const progressMap = useMemo(() => {
     const m = {};
     for (const row of progressRows) {
@@ -155,6 +162,39 @@ export default function ProgressDashboard() {
   const masteredPercent = totalHadiths
     ? Math.round((learnedCount / totalHadiths) * 100)
     : 0;
+
+  // ─────────────────────────────────────────────
+  // Données pour le graphique (14 derniers jours)
+  // ─────────────────────────────────────────────
+  const reviewActivityData = useMemo(() => {
+    if (!reviewDates.length) return [];
+
+    // 1) On compte les révisions par jour : { "YYYY-MM-DD": count }
+    const counts = {};
+    reviewDates.forEach((ts) => {
+      const d = new Date(ts);
+      const key = d.toISOString().slice(0, 10); // jour en UTC
+      counts[key] = (counts[key] || 0) + 1;
+    });
+
+    // 2) On génère les 14 derniers jours (du plus ancien au plus récent)
+    const days = [];
+    for (let i = 13; i >= 0; i--) {
+      const d = new Date();
+      d.setHours(0, 0, 0, 0);
+      d.setDate(d.getDate() - i);
+
+      const key = d.toISOString().slice(0, 10);
+      days.push({
+        date: key,
+        // label court pour l’axe X (jour du mois)
+        label: d.toLocaleDateString("fr-FR", { day: "2-digit" }),
+        count: counts[key] || 0,
+      });
+    }
+
+    return days;
+  }, [reviewDates]);
 
   // Prochaines révisions (les 5 plus proches dans le futur)
   const upcomingReviews = [...progressRows]
@@ -199,11 +239,11 @@ export default function ProgressDashboard() {
               </p>
             </div>
           </div>
-          
         </div>
+
         <Badge className="bg-slate-900 text-slate-50 dark:bg-slate-100 dark:text-slate-900">
-            {learnedCount}/{totalHadiths} hadiths mémorisés
-          </Badge>
+          {learnedCount}/{totalHadiths} hadiths mémorisés
+        </Badge>
 
         {/* Stats globales */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -267,6 +307,61 @@ export default function ProgressDashboard() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Graphique : rythme de révision (14 derniers jours) */}
+        <Card className="border-slate-200 dark:border-slate-800 shadow-md bg-white/90 dark:bg-slate-900/90">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-slate-100">
+              <BarChart3 className="h-5 w-5 text-emerald-500" />
+              Rythme de révision (14 derniers jours)
+            </CardTitle>
+            <CardDescription>
+              Nombre de hadiths révisés chaque jour. Idéal pour garder un œil sur ta constance.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {reviewActivityData.length === 0 ? (
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                Aucune révision enregistrée pour les derniers jours. Dès que tu
+                commenceras tes sessions, le graphique se remplira automatiquement.
+              </p>
+            ) : (
+              <div className="h-64 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={reviewActivityData}
+                    margin={{ top: 8, right: 16, left: 0, bottom: 4 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                    <XAxis
+                      dataKey="label"
+                      tick={{ fontSize: 11 }}
+                      tickLine={false}
+                    />
+                    <YAxis
+                      allowDecimals={false}
+                      tick={{ fontSize: 11 }}
+                      tickLine={false}
+                    />
+                    <RechartsTooltip
+                      formatter={(value) => [`${value} hadith(s)`, "Révisions"]}
+                      labelFormatter={(_, payload) => {
+                        const p = payload && payload[0];
+                        return p
+                          ? formatDate(p.payload.date)
+                          : "Jour";
+                      }}
+                    />
+                    <Bar
+                      dataKey="count"
+                      radius={[4, 4, 0, 0]}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         {/* Section progression détaillée */}
         <Card className="border-slate-200 dark:border-slate-800 shadow-md bg-white/90 dark:bg-slate-900/90">
@@ -361,7 +456,7 @@ export default function ProgressDashboard() {
         {/* Prochaines révisions */}
         <Card className="border-slate-200 dark:border-slate-800 shadow-md bg-white/90 dark:bg-slate-900/90">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-slate-100">
+            <CardTitle className="flex items_center gap-2 text-slate-900 dark:text-slate-100">
               <AlertTriangle className="h-5 w-5 text-amber-500" />
               Prochaines révisions à venir
             </CardTitle>
@@ -384,7 +479,7 @@ export default function ProgressDashboard() {
                 className="flex items-center justify-between px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/60"
               >
                 <div className="flex items-center gap-2">
-                  <div className="h-7 w-7 rounded-md bg-blue-600 text-white text-xs flex items-center justify-center">
+                  <div className="h-7 w-7 rounded-md bg-blue-600 text-white text-xs flex items-center justify_center">
                     #{p.hadith_number}
                   </div>
                   <div className="text-xs text-slate-700 dark:text-slate-200">
