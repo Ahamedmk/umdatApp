@@ -492,6 +492,182 @@ export const HADITHS_1_15 = [
     }
   },
   audio_url: null
+},
+
+/*********************** HADITH 17 ************************/
+
+{
+  number: 17,
+  arabic_text:
+    "عَنْ أَبِي هُرَيْرَةَ رَضِيَ اللهُ عَنْهُ، عَنِ النَّبِيِّ ﷺ قَالَ: «لَوْلَا أَنْ أَشُقَّ عَلَى أُمَّتِي لَأَمَرْتُهُمْ بِالسِّوَاكِ عِنْدَ كُلِّ صَلَاةٍ».",
+  french_text:
+    "Abû Hurayra (ra) rapporte que le Prophète ﷺ a dit : « Si je ne craignais pas de causer une difficulté à ma communauté, je leur aurais ordonné l’usage du siwâk à chaque prière. »",
+  source: "Al-Bukhârî & Muslim (cf. PDF)",
+  tags: ["siwak", "salat", "tahara"],
+  opinions: {
+    Hanafi: {
+      ar: null,
+      fr: "Aucun avis hanafite n’est mentionné dans le document fourni."
+    },
+    Maliki: {
+      ar: "السِّوَاكُ مُسْتَحَبٌّ عِنْدَ مَالِكٍ.",
+      fr: "Selon Mâlik, le siwâk est recommandé."
+    },
+    Shafi: {
+      ar: null,
+      fr: "Aucun avis shaféite n’est mentionné dans le document fourni."
+    },
+    Hanbali: {
+      ar: null,
+      fr: "Aucun avis hanbalite n’est mentionné dans le document fourni."
+    }
+  },
+  audio_url: null
+},
+
+/*********************** HADITH 18 ************************/
+
+{
+  number: 18,
+  arabic_text:
+    "عَنْ حُذَيْفَةَ بْنِ الْيَمَانِ رَضِيَ اللهُ عَنْهُ قَالَ: «كَانَ النَّبِيُّ ﷺ إِذَا قَامَ مِنَ اللَّيْلِ يَشُوصُ فَاهُ بِالسِّوَاكِ».",
+  french_text:
+    "Hudhayfa ibn al-Yamân (ra) a dit : « Lorsque le Prophète ﷺ se levait durant la nuit, il frottait sa bouche avec le siwâk. »",
+  source: "Al-Bukhârî & Muslim (cf. PDF)",
+  tags: ["siwak", "qiyam", "tahara"],
+  opinions: {
+    Hanafi: {
+      ar: null,
+      fr: "Aucun avis hanafite n’est présent dans le document."
+    },
+    Maliki: {
+      ar: null,
+      fr: "Aucun avis malikite n’est présent dans le document."
+    },
+    Shafi: {
+      ar: null,
+      fr: "Aucun avis shaféite n’est présent dans le document."
+    },
+    Hanbali: {
+      ar: null,
+      fr: "Aucun avis hanbalite n’est présent dans le document."
+    }
+  },
+  audio_url: null
+},
+
+/*********************** HADITH 19 ************************/
+
+{
+  number: 19,
+  arabic_text:
+    "عَنْ عَائِشَةَ رَضِيَ اللهُ عَنْهَا قَالَتْ: «دَخَلَ عَبْدُ الرَّحْمَنِ بْنُ أَبِي بَكْرٍ عَلَى رَسُولِ اللهِ ﷺ وَأَنَا مُسْنِدَتُهُ إِلَى صَدْرِي، وَمَعَهُ سِوَاكٌ رَطْبٌ، فَأَبْدَهُ رَسُولُ اللهِ ﷺ بَصَرَهُ ... ثُمَّ قَضَى، وَكَانَتْ تَقُولُ: مَاتَ بَيْنَ حَاقِنَتِي وَذَاقِنَتِي».",
+  french_text:
+    "‘Â’isha (ra) rapporte : « ‘Abd ar-Rahmân ibn Abî Bakr entra auprès du Messager d’Allah ﷺ alors que je le soutenais. Il avait un siwâk humide. Le Prophète ﷺ leva les yeux vers lui... Après avoir utilisé le siwâk, il leva la main — ou le doigt — puis rendit l’âme. Elle disait : “Il est mort entre ma poitrine et mon menton.” »",
+  source: "Al-Bukhârî (cf. PDF)",
+  tags: ["siwak", "akhir", "wafat", "sunna"],
+  opinions: {
+    Hanafi: {
+      ar: null,
+      fr: "Le document fourni ne mentionne aucun avis hanafite."
+    },
+    Maliki: {
+      ar: null,
+      fr: "Le document fourni ne mentionne aucun avis malikite."
+    },
+    Shafi: {
+      ar: null,
+      fr: "Le document fourni ne mentionne aucun avis shaféite."
+    },
+    Hanbali: {
+      ar: null,
+      fr: "Le document fourni ne mentionne aucun avis hanbalite."
+    }
+  },
+  audio_url: null
+},
+
+/*********************** HADITH 20 ************************/
+
+{
+  number: 20,
+  arabic_text:
+    "عَنْ أَبِي مُوسَى الأَشْعَرِيِّ رَضِيَ اللهُ عَنْهُ قَالَ: «أَتَيْتُ النَّبِيَّ ﷺ وَهُوَ يَسْتَنُّ بِسِوَاكٍ رَطْبٍ، وَطَرَفُ السِّوَاكِ عَلَى لِسَانِهِ، وَهُوَ يَقُولُ: أَعْ، أَعْ، وَالسِّوَاكُ فِي فِيهِ كَأَنَّهُ يَتَهَوَّعُ».",
+  french_text:
+    "Abû Mûsâ al-Ash‘arî (ra) rapporte : « Je vins auprès du Prophète ﷺ tandis qu’il utilisait un siwâk humide. L’extrémité du siwâk était sur sa langue, et il disait : “Aʿ… Aʿ…”, comme s’il avait un haut-le-cœur. »",
+  source: "Al-Bukhârî & Muslim (cf. PDF)",
+  tags: ["siwak", "langue", "tahara"],
+  opinions: {
+    Hanafi: {
+      ar: null,
+      fr: "Aucun avis hanafite n’est mentionné dans le document fourni."
+    },
+    Maliki: {
+      ar: null,
+      fr: "Aucun avis malikite n’est mentionné dans le document fourni."
+    },
+    Shafi: {
+      ar: null,
+      fr: "Aucun avis shaféite n’est mentionné dans le document fourni."
+    },
+    Hanbali: {
+      ar: null,
+      fr: "Aucun avis hanbalite n’est mentionné dans le document fourni."
+    }
+  },
+  audio_url: null
+},
+
+/*********************** HADITH 21 ************************/
+
+{
+  number: 21,
+  arabic_text:
+    "عَنْ المُغِيرَةِ بْنِ شُعْبَةَ رَضِيَ اللهُ عَنْهُ قَالَ: كُنْتُ مَعَ النَّبِيِّ ﷺ فِي سَفَرٍ، فَأَهْوَيْتُ لِأَنْزِعَ خُفَّيْهِ، فَقَالَ: «دَعْهُمَا، فَإِنِّي أَدْخَلْتُهُمَا طَاهِرَتَيْنِ»، فَمَسَحَ عَلَيْهِمَا.",
+  french_text:
+    "Al-Mughīra ibn Shuʿba (ra) rapporte : « J’étais avec le Prophète ﷺ en voyage et je voulus lui retirer ses khouffayn. Il dit : “Laisse-les, car je les ai enfilés en état de pureté.” Puis il les essuya. »",
+  source: "Al-Bukhârî & Muslim (Umdat al-Ahkâm, hadith 21)",
+  tags: ["tahara", "khouffayn", "ablutions", "voyage"],
+
+  opinions: {
+    Hanafi: {
+      ar:
+        "يَجُوزُ المَسْحُ عَلَى الخُفَّيْنِ عِنْدَ الحَنَفِيَّةِ بِشُرُوطٍ، مِنْهَا أَنْ يَكُونَا صُلْبَيْنِ وَسَاتِرَيْنِ لِلْكَعْبَيْنِ وَيُمْكِنَ المَشْيُ بِهِمَا. وَمُدَّةُ المَسْحِ: يَوْمٌ وَلَيْلَةٌ لِلْمُقِيمِ، وَثَلَاثَةُ أَيَّامٍ وَلَيَالِيهَا لِلْمُسَافِرِ.",
+      fr:
+        "Chez les hanafites : le masḥ sur les khouffayn est permis sous conditions (solides, couvrants). Durée : 1 jour/1 nuit pour le résident ; 3 jours/3 nuits pour le voyageur."
+    },
+
+    Maliki: {
+      ar:
+        "يَجُوزُ المَسْحُ عَلَى الخُفَّيْنِ عِنْدَ المَالِكِيَّةِ مَعَ كَرَاهَةٍ خَفِيفَةٍ، وَيُشْتَرَطُ أَنْ يَكُونَا سَمِيكَيْنِ وَسَاتِرَيْنِ لِلْقَدَمِ، وَأَلَّا يَنْفُذَ المَاءُ إِلَيْهِمَا بِسُهُولَةٍ. وَالمُدَّةُ عِنْدَهُمْ كَالْجُمْهُورِ: يَوْمٌ وَلَيْلَةٌ لِلْمُقِيمِ، وَثَلَاثَةُ أَيَّامٍ وَلَيَالٍ لِلْمُسَافِرِ.",
+      fr:
+        "Chez les malikites : permis mais légèrement déconseillé. Conditions : khouffayn épais et couvrants."
+    },
+
+    Shafi: {
+      ar:
+        "عِنْدَ الشَّافِعِيَّةِ: يَجُوزُ المَسْحُ عَلَى الخُفَّيْنِ إِذَا كَانَا طَاهِرَيْنِ، سَاتِرَيْنِ لِمَوْضِعِ الغَسْلِ، قَادِرَيْنِ عَلَى الثُّبُوتِ وَالمَشْيِ. وَمُدَّةُ المَسْحِ: يَوْمٌ وَلَيْلَةٌ لِلْمُقِيمِ، وَثَلَاثَةُ أَيَّامٍ وَلَيَالٍ لِلْمُسَافِرِ.",
+      fr:
+        "Chez les shaféites : permis si les khouffayn sont propres, couvrants et solides. Durée : 1 jour/1 nuit ; 3 jours/3 nuits."
+    },
+
+    Hanbali: {
+      ar:
+        "يُسَنُّ المَسْحُ عَلَى الخُفَّيْنِ عِنْدَ الحَنَابِلَةِ، وَهُوَ مِنْ رُخَصِ السَّفَرِ وَالحَضَرِ. وَيُشْتَرَطُ أَنْ يَكُونَا سَاتِرَيْنِ لِلْقَدَمِ وَمَثْبُوتَيْنِ. وَالمُدَّةُ: يَوْمٌ وَلَيْلَةٌ لِلْمُقِيمِ، وَثَلَاثَةُ أَيَّامٍ وَلَيَالٍ لِلْمُسَافِرِ.",
+      fr:
+        "Chez les hanbalites : recommandé et légiféré en résidence et en voyage. Même durée que la majorité."
+    },
+
+    Majority: {
+      ar:
+        "الجُمْهُورُ (الحَنَفِيَّةُ وَالشَّافِعِيَّةُ وَالحَنَابِلَةُ) عَلَى جَوَازِ المَسْحِ عَلَى الخُفَّيْنِ مَعَ الشُّرُوطِ المَعْرُوفَةِ، وَهُوَ مِنْ رُخَصِ الشَّرِيعَةِ الثَّابِتَةِ بِالأَحَادِيثِ الصَّحِيحَةِ.",
+      fr:
+        "La majorité considère le masḥ sur les khouffayn légiféré et permis sous conditions."
+    }
+  },
+
+  audio_url: null
 }
+
 
 ];

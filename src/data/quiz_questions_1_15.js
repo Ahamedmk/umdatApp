@@ -663,6 +663,294 @@ export const QUIZ_QUESTIONS_1_15 = [
     explain:
       "Le Prophète ﷺ a dit qu’il espérait que le châtiment soit allégé tant que les branches resteraient fraîches. Les savants en déduisent la miséricorde du Prophète ﷺ et l’importance d’intercéder par les bonnes œuvres et les invocations pour les morts.",
   },
+  /* ----------------- HADITH 17 : « Le siwâk à chaque prière » ----------------- */
+
+{
+  n: 17,
+  q: "Selon le hadith 17, pourquoi le Prophète ﷺ n’a-t-il pas ordonné l’usage obligatoire du siwâk ?",
+  options: [
+    "Parce que le siwâk était rare à Médine",
+    "Parce qu’il craignait que cela soit une difficulté pour sa communauté",
+    "Parce que le siwâk était réservé au Ramadan",
+    "Parce que le siwâk annule la prière",
+  ],
+  correctIndex: 1,
+  explain:
+    "Le Prophète ﷺ dit : « Lowlâ an ashuqqa ‘alâ ummatî… » : il n’a pas rendu le siwâk obligatoire par miséricorde, pour ne pas imposer une difficulté.",
+},
+
+{
+  n: 17,
+  q: "Quel moment est explicitement mentionné dans le hadith comme étant particulièrement recommandé pour le siwâk ?",
+  options: [
+    "Avant de dormir",
+    "Après avoir mangé",
+    "À chaque prière",
+    "Pendant le voyage",
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith mentionne clairement : « … à chaque prière ». C’est le moment le plus souligné ici.",
+},
+
+{
+  n: 17,
+  q: "Quel statut juridique du siwâk est indiqué dans le commentaire fourni dans le document ?",
+  options: [
+    "Obligatoire pour chaque prière",
+    "Déconseillé sauf en Ramadan",
+    "Sunna fortement recommandée selon la majorité",
+    "Interdit avant la salât",
+  ],
+  correctIndex: 2,
+  explain:
+    "Le texte précise : « سنة مؤكدة عند الجمهور » — une sunna fortement recommandée selon la majorité des savants.",
+},
+
+{
+  n: 17,
+  q: "Le commentaire indique cinq moments où le siwâk est particulièrement recommandé. Lequel parmi ces choix en fait partie ?",
+  options: [
+    "Avant de rompre le jeûne",
+    "Lors de la lecture du Coran",
+    "Après chaque repas sucré",
+    "Avant l’adhan",
+  ],
+  correctIndex: 1,
+  explain:
+    "An-Nawawî mentionne parmi les cinq moments : lors de la lecture du Coran, en plus de la prière, des ablutions, du réveil et du changement d’odeur de la bouche.",
+},
+
+{
+  n: 17,
+  q: "Quelle sagesse spirituelle les savants tirent de ce hadith ?",
+  options: [
+    "Le Prophète ﷺ voulait imposer plus d’efforts pour augmenter les mérites",
+    "Le siwâk n’a aucune valeur religieuse",
+    "Le hadith montre la miséricorde et la douceur du Prophète envers sa communauté",
+    "L’hygiène buccale n’a aucun lien avec la spiritualité",
+  ],
+  correctIndex: 2,
+  explain:
+    "An-Nawawî indique que ce texte montre le souci du Prophète ﷺ de ne pas rendre les choses difficiles, illustrant sa douceur et sa miséricorde.",
+},
+/* ----------------- HADITH 18 : « Le Prophète ﷺ se levait la nuit et utilisait le siwâk » ----------------- */
+
+{
+  n: 18,
+  q: "Selon le hadith 18, que faisait le Prophète ﷺ lorsqu’il se levait durant la nuit ?",
+  options: [
+    "Il buvait de l’eau",
+    "Il récitait immédiatement le Coran à voix haute",
+    "Il frottait sa bouche avec le siwâk",
+    "Il parlait avec ses compagnons"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le texte dit : « يَشُوصُ فَاهُ بِالسِّوَاكِ » : il frottait sa bouche avec le siwâk lorsqu’il se levait la nuit."
+},
+
+{
+  n: 18,
+  q: "D’après le commentaire cité, quelle est la sagesse principale de l’usage du siwâk au réveil ?",
+  options: [
+    "Remplacer complètement les ablutions",
+    "Donner plus de force au corps",
+    "Enlever la mauvaise odeur causée par le sommeil",
+    "Obtenir la récompense du jeûne"
+  ],
+  correctIndex: 2,
+  explain:
+    "Ibn Daqīق العيد explique que le sommeil provoque un changement de l’odeur de la bouche, et que le siwâk sert à la nettoyer."
+},
+
+{
+  n: 18,
+  q: "Quel statut juridique est indiqué dans le document pour le siwâk en se levant du sommeil ?",
+  options: [
+    "Obligatoire",
+    "Recommandé (mustahabb)",
+    "Interdit",
+    "Makrûh (déconseillé)"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le commentaire dit : « فيه استحباب السواك عند القيام من النوم » : il montre la recommandation (istihbâb) du siwâk au réveil."
+},
+
+{
+  n: 18,
+  q: "L’expression « إذا قام من الليل » peut être comprise de deux façons. Laquelle de ces propositions en fait partie ?",
+  options: [
+    "Se lever la nuit pour manger",
+    "Se lever la nuit pour la prière",
+    "Se lever la nuit pour voyager",
+    "Se lever la nuit pour discuter"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le commentaire précise qu’on peut comprendre « إذا قام من الليل » comme « lorsqu’il se levait pour la prière nocturne », ce qui rejoint le sens du hadith précédent sur le siwâk et la prière."
+},
+
+{
+  n: 18,
+  q: "Quelle leçon spirituelle générale peut-on tirer de ce hadith ?",
+  options: [
+    "La nuit est un moment où l’hygiène n’a pas d’importance",
+    "Se lever pour adorer Allah en état de propreté est recommandé",
+    "Le siwâk suffit sans aucune autre purification",
+    "Il est interdit de dormir sans siwâk"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le Prophète ﷺ se levait la nuit pour l’adoration en commençant par purifier sa bouche, montrant l’importance de la propreté avant de se tenir devant Allah."
+},
+
+/* ----------------- HADITH 19 : « Le siwāk dans les derniers instants du Prophète ﷺ » ----------------- */
+
+{
+  n: 19,
+  q: "Que faisait ʿAbd ar-Raḥmān ibn Abī Bakr en entrant auprès du Prophète ﷺ ?",
+  options: [
+    "Il récitait le Coran",
+    "Il utilisait un siwāk",
+    "Il apportait de l’eau",
+    "Il appelait les compagnons"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le hadith précise : « ومع عبد الرحمن سواك رطب يستن به » — il avait un siwāk humide et se nettoyait avec."
+},
+
+{
+  n: 19,
+  q: "Comment ʿĀʾisha a-t-elle préparé le siwāk pour le Prophète ﷺ ?",
+  options: [
+    "Elle l’a taillé au couteau",
+    "Elle l’a lavé longuement",
+    "Elle l’a mordillé et assoupli",
+    "Elle l’a cassé en deux"
+  ],
+  correctIndex: 2,
+  explain:
+    "Elle dit : « فقضمته فطيّبته » — je l’ai mordillé afin de l’assouplir et de le préparer."
+},
+
+{
+  n: 19,
+  q: "Quelle indication ce hadith donne-t-il concernant l’usage du siwāk ?",
+  options: [
+    "Il doit être obligatoirement sec",
+    "Il n’est pas permis d’utiliser le siwāk de quelqu’un d’autre",
+    "Il est permis d’utiliser le siwāk de quelqu’un d’autre après l’avoir préparé",
+    "Il est interdit de mâcher l’extrémité du siwāk"
+  ],
+  correctIndex: 2,
+  explain:
+    "Les commentaires indiquent : « الاستياك بسواك الغير » — la possibilité d’utiliser le siwāk d’un autre lorsqu’il est préparé."
+},
+
+{
+  n: 19,
+  q: "Que disait ʿĀʾisha à propos de la mort du Prophète ﷺ ?",
+  options: [
+    "Qu’il est mort dans la mosquée",
+    "Qu’il est mort entre ses bras",
+    "Qu’il est mort seul",
+    "Qu’il est mort pendant un voyage"
+  ],
+  correctIndex: 1,
+  explain:
+    "Elle dit : « مات بين حاقنتي وذاقنتي » — il est mort entre ma poitrine et mon menton."
+},
+
+{
+  n: 19,
+  q: "Quel enseignement spirituel ressort de ce hadith ?",
+  options: [
+    "Le croyant doit éviter l’usage du siwāk en présence des gens",
+    "Le Prophète ﷺ n’accordait pas d’importance à la propreté",
+    "Même dans ses derniers instants, le Prophète ﷺ aimait la pureté et la propreté",
+    "Le siwāk remplace toutes les ablutions"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le Prophète ﷺ a demandé le siwāk dans ses derniers instants, montrant son amour constant pour la purification."
+},
+/* ----------------- HADITH 20 : « Le siwāk sur la langue » ----------------- */
+
+{
+  n: 20,
+  q: "Dans quelle situation Abū Mūsā trouva-t-il le Prophète ﷺ ?",
+  options: [
+    "En train de prier",
+    "En train de rompre le jeûne",
+    "En train d'utiliser un siwāk humide",
+    "En train de parler avec les compagnons"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith dit : « وهو يستاك بسواك رطب » — il utilisait un siwāk humide."
+},
+
+{
+  n: 20,
+  q: "Où se trouvait l’extrémité du siwāk lorsque le Prophète ﷺ l’utilisait ?",
+  options: [
+    "Sur ses dents uniquement",
+    "Sur ses gencives",
+    "Sur sa langue",
+    "Sur l'intérieur de sa joue"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le texte précise explicitement : « وطرف السواك على لسانه » — l’extrémité du siwāk était sur sa langue."
+},
+
+{
+  n: 20,
+  q: "Quelle expression le Prophète ﷺ prononçait-il pendant l’usage du siwāk ?",
+  options: [
+    "Ah… Ah…",
+    "Aʿ… Aʿ…",
+    "Oh… Oh…",
+    "Uh… Uh…"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le hadith rapporte : « وهو يقول: أع، أع » — une expression indiquant un réflexe de haut-le-cœur."
+},
+
+{
+  n: 20,
+  q: "Quelle règle le commentaire tire-t-il de ce hadith ?",
+  options: [
+    "Il est interdit de passer le siwāk sur la langue",
+    "Le siwāk ne doit être utilisé qu'à sec",
+    "Le siwāk peut être utilisé sur la langue, et c’est recommandé",
+    "Le siwāk remplace toutes les ablutions"
+  ],
+  correctIndex: 2,
+  explain:
+    "Ibn Daqīق العيد explique : « الاستياك على اللسان » — le siwāk sur la langue est établi et efficace pour enlever les mauvaises odeurs."
+},
+
+{
+  n: 20,
+  q: "Comment les fuqahā’ recommandent-ils l’utilisation du siwāk selon le commentaire ?",
+  options: [
+    "Horizontalement pour la langue et verticalement pour les dents",
+    "Verticalement pour les dents et horizontalement pour la langue",
+    "Horizontalement pour les dents et verticalement pour la langue",
+    "Toujours de manière circulaire"
+  ],
+  correctIndex: 2,
+  explain:
+    "Il est dit : « يستحب الاستياك عرضًا في الأسنان، وأما في اللسان فطولًا » — horizontal pour les dents, vertical pour la langue."
+},
+
+
+
 
 ];
 
