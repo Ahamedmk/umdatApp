@@ -75,7 +75,7 @@ export function Navbar() {
 
   // Aller à un hadith par numéro
   const goToHadith = (n) => {
-    const num = Math.max(1, Math.min(15, Number(n)));
+    const num = Math.max(1, Math.min(21, Number(n)));
     navigate(`/hadith/${num}`);
     setOpen(false);
   };
@@ -316,7 +316,7 @@ export function Navbar() {
         </div>
 
         {/* Mobile Menu */}
-        <div className="md:hidden flex items-center gap-2">
+        <div className="md:hidden flex items-center gap-2 ">
           {/* Theme Toggle Mobile */}
           <Button
             variant="ghost"

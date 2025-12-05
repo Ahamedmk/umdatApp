@@ -47,12 +47,11 @@ import {
   Square,
 } from "lucide-react";
 
-// === dépendances app (réelles) ===
 import { supabase } from "../lib/supabase";
 import { nextReview } from "../lib/spaced";
 import { HADITHS_1_15 } from "../data/seed_hadiths_1_15";
+import { NARRATORS_MOCK } from "@/data/narrators_mock";
 import { useAuth } from "../context/AuthContext";
-import { saveReviewResult } from "../lib/hadithProgress";
 
 // --- util: récupérer le numéro depuis /hadith/:n ou ?n= ---
 function useHadithNumberFromRouter() {
@@ -63,25 +62,6 @@ function useHadithNumberFromRouter() {
   const num = parseInt(raw, 10);
   return Number.isNaN(num) ? 8 : num;
 }
-
-// --- petit helper SM-2 (même logique que Review) ---
-const computeNextReview = (current, quality) => {
-  const easeBase = current.ease ?? current.ease_factor ?? 2.5;
-  const intervalBase = current.interval_days ?? 0;
-  const repetitionsBase = current.repetitions ?? 0;
-
-  const ease = easeBase + (quality >= 4 ? 0.1 : -0.2);
-  const interval_days = quality >= 4 ? intervalBase + 1 : 0;
-  const repetitions = repetitionsBase + 1;
-
-  const next_review_date = new Date(
-    Date.now() + (quality >= 4 ? 86400000 : 3600000) // 1 jour ou 1h
-  )
-    .toISOString()
-    .slice(0, 10);
-
-  return { ease, interval_days, repetitions, next_review_date };
-};
 
 // --- lecteur audio inline (récitation modèle) ---
 function InlineAudio({ url }) {
@@ -266,12 +246,12 @@ export default function HadithDetail() {
   const [progress, setProgress] = useState(null);
   const hasReviewPlan = !!progress?.next_review_date;
 
-  const [hasProgress, setHasProgress] = useState(false); // 👉 déjà planifié ?
+  const [hasProgress, setHasProgress] = useState(false);
   const [hideFR, setHideFR] = useState(false);
   const [dark, setDark] = useState(false);
-  const [unlockedNarrators, setUnlockedNarrators] = useState([]);
-const [showUnlockModal, setShowUnlockModal] = useState(false);
 
+  const [unlockedNarrators, setUnlockedNarrators] = useState([]);
+  const [showUnlockModal, setShowUnlockModal] = useState(false);
 
   const {
     isSupported: isRecSupported,
@@ -314,111 +294,113 @@ const [showUnlockModal, setShowUnlockModal] = useState(false);
     let active = true;
 
     async function load() {
-      setLoading(true);
-      setHadith(null);
-      setProgress(null);
-      setHasProgress(false);
+  setLoading(true);
+  setHadith(null);
+  setProgress(null);
+  setHasProgress(false);
 
-      try {
-        // 1) hadith
-        const { data: rows, error } = await supabase
-          .from("hadiths")
-          .select("id, number, arabic_text, french_text, source, audio_url")
-          .eq("number", hadithNumber)
-          .limit(1);
+  try {
+    // 1) hadith depuis la DB (sans narrator_id)
+    const { data: rows, error } = await supabase
+      .from("hadiths")
+      .select("id, number, arabic_text, french_text, source, audio_url")
+      .eq("number", hadithNumber)
+      .limit(1);
 
-        if (error) throw error;
+    if (error) throw error;
 
-        let full = null;
+    let full = null;
 
-        if (rows && rows.length) {
-          const row = rows[0];
+    if (rows && rows.length) {
+      const row = rows[0];
 
-          // 2) avis des écoles
-          const { data: ops, error: e2 } = await supabase
-            .from("schools_opinions")
-            .select("school, arabic_text, french_text")
-            .eq("hadith_id", row.id);
+      // 2) avis des écoles
+      const { data: ops, error: e2 } = await supabase
+        .from("schools_opinions")
+        .select("school, arabic_text, french_text")
+        .eq("hadith_id", row.id);
 
-          if (e2) throw e2;
+      if (e2) throw e2;
 
-          const opinions = { Hanafi: {}, Maliki: {}, Shafi: {}, Hanbali: {} };
-          (ops || []).forEach((o) => {
-            if (o.school === "Hanafi")
-              opinions.Hanafi = { ar: o.arabic_text, fr: o.french_text };
-            if (o.school === "Maliki")
-              opinions.Maliki = { ar: o.arabic_text, fr: o.french_text };
-            if (o.school === "Shafi")
-              opinions.Shafi = { ar: o.arabic_text, fr: o.french_text };
-            if (o.school === "Hanbali")
-              opinions.Hanbali = { ar: o.arabic_text, fr: o.french_text };
-          });
+      const opinions = { Hanafi: {}, Maliki: {}, Shafi: {}, Hanbali: {} };
+      (ops || []).forEach((o) => {
+        if (o.school === "Hanafi")
+          opinions.Hanafi = { ar: o.arabic_text, fr: o.french_text };
+        if (o.school === "Maliki")
+          opinions.Maliki = { ar: o.arabic_text, fr: o.french_text };
+        if (o.school === "Shafi")
+          opinions.Shafi = { ar: o.arabic_text, fr: o.french_text };
+        if (o.school === "Hanbali")
+          opinions.Hanbali = { ar: o.arabic_text, fr: o.french_text };
+      });
 
-          full = {
-            id: row.id,
-            number: row.number,
-            arabic_text: row.arabic_text,
-            french_text: row.french_text,
-            source: row.source,
-            audio_url: row.audio_url || null,
-            opinions,
-          };
-        } else {
-          full = localSeed;
+      full = {
+        id: row.id,
+        number: row.number,
+        arabic_text: row.arabic_text,
+        french_text: row.french_text,
+        source: row.source,
+        audio_url: row.audio_url || null,
+        opinions,
+        // 🔑 on s'appuie sur le seed pour le lien hadith → narrateur
+        narratorId: localSeed?.narratorId ?? null,
+      };
+    } else if (localSeed) {
+      // fallback complet seed si pas de ligne DB
+      full = localSeed;
+    }
+
+    if (!full) {
+      if (active) setHadith(null);
+      return;
+    }
+
+    // 3) progression existante ?
+    let progRow = null;
+    const hadithNum = full.number;
+
+    if (user?.id) {
+      const { data: p, error: pErr } = await supabase
+        .from("user_hadith_progress")
+        .select(
+          "hadith_number, ease_factor, interval_days, repetitions, next_review_date, last_result, status"
+        )
+        .eq("user_id", user.id)
+        .eq("hadith_number", hadithNum)
+        .maybeSingle();
+
+      if (!pErr && p) {
+        progRow = p;
+      }
+    } else {
+      const raw = localStorage.getItem(`progress_${hadithNum}`);
+      if (raw) {
+        try {
+          progRow = JSON.parse(raw);
+        } catch {
+          progRow = null;
         }
-
-        if (!full) {
-          if (active) setHadith(null);
-          return;
-        }
-
-        // 3) progression existante ?
-        let progRow = null;
-
-        const hadithNum = full.number;
-
-        if (user?.id) {
-          const { data: p, error: pErr } = await supabase
-            .from("user_hadith_progress")
-            .select(
-              "hadith_number, ease_factor, interval_days, repetitions, next_review_date, last_result"
-            )
-            .eq("user_id", user.id)
-            .eq("hadith_number", hadithNum)
-            .maybeSingle();
-
-          if (!pErr && p) {
-            progRow = p;
-          }
-        } else {
-          // petit fallback local éventuel
-          const raw = localStorage.getItem(`progress_${hadithNum}`);
-          if (raw) {
-            try {
-              progRow = JSON.parse(raw);
-            } catch {
-              progRow = null;
-            }
-          }
-        }
-
-        if (active) {
-          setHadith(full);
-          setProgress(progRow);
-          setHasProgress(!!progRow);
-        }
-      } catch (e) {
-        console.error(e);
-        if (active) {
-          setHadith(localSeed);
-          setProgress(null);
-          setHasProgress(false);
-        }
-      } finally {
-        if (active) setLoading(false);
-        window.scrollTo({ top: 0, behavior: "smooth" });
       }
     }
+
+    if (active) {
+      setHadith(full);
+      setProgress(progRow);
+      setHasProgress(!!progRow);
+    }
+  } catch (e) {
+    console.error(e);
+    if (active) {
+      setHadith(localSeed);
+      setProgress(null);
+      setHasProgress(false);
+    }
+  } finally {
+    if (active) setLoading(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+}
+
 
     load();
     return () => {
@@ -426,99 +408,107 @@ const [showUnlockModal, setShowUnlockModal] = useState(false);
     };
   }, [hadithNumber, localSeed, user?.id]);
 
-  // HadithDetail.jsx
+  // 🟢 handleHadithMastered : déblocage automatique de narrateur
+  const handleHadithMastered = (hadithNum) => {
+    // 1) retrouver le hadith dans le seed (au cas où)
+    const seedHadith =
+      HADITHS_1_15.find((h) => h.number === hadithNum) || hadith;
 
-const handleQuality = async (quality) => {
-  if (!hadith) return;
-  if (!user) {
-    // on peut garder ton fallback localStorage si tu veux
-    console.warn("Utilisateur non connecté → pas d’XP ni de déblocage narrateur.");
-  }
+    if (!seedHadith) return;
 
-  setSaving(true);
+    const narratorId =
+      seedHadith.narratorId ??
+      seedHadith.narrator_id ??
+      hadith?.narratorId ??
+      null;
 
-  try {
-    const userId = user?.id || user?.user?.id || user?.uid || null;
+    if (!narratorId) return;
 
-    // 1) Snapshot AVANT : quels narrateurs sont déjà débloqués ?
-    let beforeIds = new Set();
-    if (userId) {
-      const { data: beforeRows, error: beforeErr } = await supabase
-        .from("user_narrator_unlocks")
-        .select("narrator_id")
-        .eq("user_id", userId);
-
-      if (!beforeErr && beforeRows) {
-        beforeIds = new Set(beforeRows.map((r) => r.narrator_id));
-      }
+    // 2) lire les narrateurs déjà débloqués depuis localStorage
+    const raw = localStorage.getItem("unlocked_narrators");
+    let ids = [];
+    try {
+      ids = raw ? JSON.parse(raw) : [];
+    } catch {
+      ids = [];
     }
 
-    // 2) Calcul SM-2 comme avant
-    const base = progress || { ease: 2.5, interval_days: 0, repetitions: 0 };
-    const calc = nextReview(base, quality);
-    const payload = {
-      user_id: userId,
-      hadith_number: hadith.number,
-      status: quality >= 4 ? "learned" : "learning",
-      ease_factor: calc.ease,
-      interval_days: calc.interval_days,
-      repetitions: calc.repetitions,
-      last_review_date: new Date().toISOString().slice(0, 10),
-      next_review_date: calc.next_review_date,
-      last_result: quality,
-    };
+    // déjà débloqué ? on ne fait rien
+    if (ids.includes(narratorId)) return;
 
-    // 3) Sauvegarde dans user_hadith_progress (ce qui déclenche le trigger)
-    if (userId) {
-      const { error } = await supabase
-        .from("user_hadith_progress")
-        .upsert(payload);
+    // 3) on enregistre le nouveau narrateur débloqué
+    const newIds = [...ids, narratorId];
+    localStorage.setItem("unlocked_narrators", JSON.stringify(newIds));
 
-      if (error) throw error;
-    } else {
-      // fallback local si tu veux garder quelque chose hors connexion
-      localStorage.setItem(
-        `progress_${hadith.number}`,
-        JSON.stringify(payload)
+    // 4) on trouve le narrateur dans NARRATORS_MOCK pour le popup
+    const narrator = NARRATORS_MOCK.find((n) => n.id === narratorId);
+    if (!narrator) return;
+
+    setUnlockedNarrators([narrator]);
+    setShowUnlockModal(true);
+  };
+
+  // 🧠 Auto-évaluation + SM-2 + déclenchement du déblocage
+  const handleQuality = async (quality) => {
+    if (!hadith) return;
+
+    setSaving(true);
+
+    try {
+      const userId = user?.id || user?.user?.id || user?.uid || null;
+      const base = progress || {
+        ease_factor: 2.5,
+        interval_days: 0,
+        repetitions: 0,
+      };
+
+      const calc = nextReview(
+        {
+          ease_factor: base.ease_factor,
+          interval_days: base.interval_days,
+          repetitions: base.repetitions,
+        },
+        quality
       );
-    }
 
-    setProgress(payload);
+      const payload = {
+        user_id: userId,
+        hadith_number: hadith.number,
+        status: quality >= 4 ? "learned" : "learning",
+        ease_factor: calc.ease_factor,
+        interval_days: calc.interval_days,
+        repetitions: calc.repetitions,
+        last_review_date: new Date().toISOString().slice(0, 10),
+        next_review_date: calc.next_review_date,
+        last_result: quality,
+      };
 
-    // 4) Snapshot APRÈS : quels narrateurs sont débloqués maintenant ?
-    if (userId) {
-      const { data: afterRows, error: afterErr } = await supabase
-        .from("user_narrator_unlocks")
-        .select("narrator_id")
-        .eq("user_id", userId);
+      if (userId) {
+        const { error } = await supabase
+          .from("user_hadith_progress")
+          .upsert(payload);
 
-      if (!afterErr && afterRows) {
-        const afterIds = afterRows.map((r) => r.narrator_id);
-
-        // 5) Diff : narrateurs nouvellement débloqués
-        const newIds = afterIds.filter((id) => !beforeIds.has(id));
-
-        if (newIds.length > 0) {
-          const { data: narratorsData, error: narrErr } = await supabase
-            .from("narrators")
-            .select("id, name, kunya, short_bio, death_year, death_hijri")
-            .in("id", newIds);
-
-          if (!narrErr && narratorsData && narratorsData.length > 0) {
-            setUnlockedNarrators(narratorsData);
-            setShowUnlockModal(true);
-          }
-        }
+        if (error) throw error;
+      } else {
+        localStorage.setItem(
+          `progress_${hadith.number}`,
+          JSON.stringify(payload)
+        );
       }
+
+      setProgress(payload);
+      setHasProgress(true);
+
+      // 🟢 si la qualité est bonne → on considère le hadith comme appris
+      if (quality >= 4) {
+        handleHadithMastered(hadith.number);
+      }
+    } catch (e) {
+      console.error("Erreur handleQuality:", e);
+    } finally {
+      setSaving(false);
     }
-  } catch (e) {
-    console.error("Erreur handleQuality / déblocage narrateurs:", e);
-  } finally {
-    setSaving(false);
-  }
-};
-
-
+  };
 
   if (loading || !hadith) {
     return (
@@ -595,7 +585,7 @@ const handleQuality = async (quality) => {
             </CardHeader>
             <Separator className="bg-slate-200 dark:bg-slate-700" />
             <CardContent className="space-y-6 pt-6 relative z-10">
-              {/* Texte arabe (flouté pendant l'enregistrement) */}
+              {/* Texte arabe */}
               <div className="p-6 rounded-xl bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900 border border-slate-200 dark:border-slate-700">
                 <div
                   dir="rtl"
@@ -612,7 +602,7 @@ const handleQuality = async (quality) => {
                 )}
               </div>
 
-              {/* Bandeau audio modèle + bouton traduction */}
+              {/* Bandeau audio + traduction */}
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <InlineAudio url={hadith.audio_url} />
@@ -848,90 +838,91 @@ const handleQuality = async (quality) => {
           {/* Auto-évaluation : UNIQUEMENT si pas encore de progression */}
           {!hasProgress && (
             <Card className="border-slate-200 dark:border-slate-700 shadow-xl bg-white dark:bg-slate-800">
-  <CardHeader>
-    <CardTitle className="text-lg flex items-center gap-2">
-      <CheckCircle2 className="h-5 w-5 text-emerald-500" />
-      Auto-évaluation (SM-2)
-    </CardTitle>
-    <CardDescription>
-      1) Répète le hadith de mémoire. 2) Choisis une note : cela crée ton
-      planning de révision. Ensuite, tu continueras dans l’onglet Révision.
-    </CardDescription>
-  </CardHeader>
-  <Separator className="bg-slate-200 dark:bg-slate-700" />
-  <CardContent className="space-y-6 pt-6">
-    {/* 🟢 Si pas encore de planning → on affiche les boutons */}
-    {!hasReviewPlan && (
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-        {qualityLabels.map((q) => (
-          <Tooltip key={q.value}>
-            <TooltipTrigger asChild>
-              <Button
-                variant={q.value >= 4 ? "default" : "outline"}
-                onClick={() => handleQuality(q.value)}
-                disabled={saving}
-                className={`h-auto py-4 flex-col gap-2 ${
-                  q.value >= 4
-                    ? "bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white"
-                    : "hover:border-slate-400 dark:hover:border-slate-500"
-                }`}
-              >
-                <span className="text-3xl">{q.emoji}</span>
-                <span className="text-lg font-bold">{q.value}</span>
-                <span className="text-xs">{q.label}</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p className="text-xs">{q.label}</p>
-            </TooltipContent>
-          </Tooltip>
-        ))}
-      </div>
-    )}
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                  Auto-évaluation (SM-2)
+                </CardTitle>
+                <CardDescription>
+                  1) Répète le hadith de mémoire. 2) Choisis une note : cela
+                  crée ton planning de révision. Ensuite, tu continueras dans
+                  l’onglet Révision.
+                </CardDescription>
+              </CardHeader>
+              <Separator className="bg-slate-200 dark:bg-slate-700" />
+              <CardContent className="space-y-6 pt-6">
+                {!hasReviewPlan && (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                    {qualityLabels.map((q) => (
+                      <Tooltip key={q.value}>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant={q.value >= 4 ? "default" : "outline"}
+                            onClick={() => handleQuality(q.value)}
+                            disabled={saving}
+                            className={`h-auto py-4 flex-col gap-2 ${
+                              q.value >= 4
+                                ? "bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white"
+                                : "hover:border-slate-400 dark:hover:border-slate-500"
+                            }`}
+                          >
+                            <span className="text-3xl">{q.emoji}</span>
+                            <span className="text-lg font-bold">
+                              {q.value}
+                            </span>
+                            <span className="text-xs">{q.label}</span>
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p className="text-xs">{q.label}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    ))}
+                  </div>
+                )}
 
-    {/* 🟡 Si un planning existe déjà → petit message explicatif */}
-    {hasReviewPlan && (
-      <div className="p-4 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm">
-        <p className="font-semibold mb-1">
-          Ce hadith a déjà été évalué une première fois ✅
-        </p>
-        <p className="text-slate-700 dark:text-slate-300">
-          Tu retrouveras désormais ce hadith dans l’onglet{" "}
-          <span className="font-semibold">Révision</span> à la date prévue
-          ci-dessous. Pas besoin de re-noter ici.
-        </p>
-      </div>
-    )}
+                {hasReviewPlan && (
+                  <div className="p-4 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm">
+                    <p className="font-semibold mb-1">
+                      Ce hadith a déjà été évalué une première fois ✅
+                    </p>
+                    <p className="text-slate-700 dark:text-slate-300">
+                      Tu retrouveras désormais ce hadith dans l’onglet{" "}
+                      <span className="font-semibold">Révision</span> à la date
+                      prévue ci-dessous. Pas besoin de re-noter ici.
+                    </p>
+                  </div>
+                )}
 
-    {/* 📝 Bloc "prochaine révision programmée" que tu avais déjà */}
-    {progress?.next_review_date && (
-      <div className="p-4 rounded-lg bg-emerald-50 dark:bg-emerald-950 border border-emerald-200 dark:border-emerald-800">
-        <div className="flex items-start gap-3">
-          <Clock className="h-5 w-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
-          <div className="text-sm text-emerald-800 dark:text-emerald-200">
-            <div className="font-semibold mb-1">
-              Prochaine révision programmée
-            </div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <span>{progress.next_review_date}</span>
-              <Badge
-                variant="outline"
-                className="bg-white dark:bg-slate-800"
-              >
-                {progress.status === "learned" ? "✅ Appris" : "📚 En cours"}
-              </Badge>
-              <span className="text-xs">
-                • {progress.repetitions} révision
-                {progress.repetitions > 1 ? "s" : ""}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    )}
-  </CardContent>
-</Card>
-
+                {progress?.next_review_date && (
+                  <div className="p-4 rounded-lg bg-emerald-50 dark:bg-emerald-950 border border-emerald-200 dark:border-emerald-800">
+                    <div className="flex items-start gap-3">
+                      <Clock className="h-5 w-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
+                      <div className="text-sm text-emerald-800 dark:text-emerald-200">
+                        <div className="font-semibold mb-1">
+                          Prochaine révision programmée
+                        </div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span>{progress.next_review_date}</span>
+                          <Badge
+                            variant="outline"
+                            className="bg-white dark:bg-slate-800"
+                          >
+                            {progress.status === "learned"
+                              ? "✅ Appris"
+                              : "📚 En cours"}
+                          </Badge>
+                          <span className="text-xs">
+                            • {progress.repetitions} révision
+                            {progress.repetitions > 1 ? "s" : ""}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           )}
 
           {/* Si progression existe déjà → petit rappel vers Révision */}
@@ -993,81 +984,82 @@ const handleQuality = async (quality) => {
           </div>
         </div>
       </div>
+
+      {/* 🔔 Modal de déblocage de narrateur */}
       {showUnlockModal && unlockedNarrators.length > 0 && (
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-    <Card className="max-w-md w-full shadow-2xl border-0 bg-gradient-to-br from-slate-900 to-slate-800 text-white relative">
-      <Button
-        size="icon"
-        variant="ghost"
-        className="absolute top-3 right-3 text-slate-300 hover:text-white hover:bg-white/10"
-        onClick={() => setShowUnlockModal(false)}
-      >
-        ×
-      </Button>
-
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Sparkles className="h-5 w-5 text-amber-400" />
-          <span>Nouveau rapporteur débloqué !</span>
-        </CardTitle>
-        <CardDescription className="text-slate-300">
-          Grâce à ce hadith, tu viens d’ajouter un maillon à ta chaîne de
-          transmission 📜
-        </CardDescription>
-      </CardHeader>
-
-      <CardContent className="space-y-4">
-        <div className="space-y-3 max-h-72 overflow-y-auto pr-2">
-          {unlockedNarrators.map((n) => (
-            <div
-              key={n.id}
-              className="rounded-xl border border-white/10 bg-white/5 p-3 space-y-1"
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+          <Card className="max-w-md w-full shadow-2xl border-0 bg-gradient-to-br from-slate-900 to-slate-800 text-white relative">
+            <Button
+              size="icon"
+              variant="ghost"
+              className="absolute top-3 right-3 text-slate-300 hover:text-white hover:bg-white/10"
+              onClick={() => setShowUnlockModal(false)}
             >
-              <div className="flex items-center justify-between gap-2">
-                <span className="font-semibold">
-                  {n.name}
-                </span>
-                {n.kunya && (
-                  <Badge
-                    variant="outline"
-                    className="border-amber-400 text-amber-200 text-xs"
+              ×
+            </Button>
+
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-amber-400" />
+                <span>Nouveau rapporteur débloqué !</span>
+              </CardTitle>
+              <CardDescription className="text-slate-300">
+                Grâce à ce hadith, tu viens d’ajouter un maillon à ta chaîne de
+                transmission 📜
+              </CardDescription>
+            </CardHeader>
+
+            <CardContent className="space-y-4">
+              <div className="space-y-3 max-h-72 overflow-y-auto pr-2">
+                {unlockedNarrators.map((n) => (
+                  <div
+                    key={n.id}
+                    className="rounded-xl border border-white/10 bg-white/5 p-3 space-y-1"
                   >
-                    {n.kunya}
-                  </Badge>
-                )}
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-semibold">{n.name_fr || n.name}</span>
+                      {n.kunya && (
+                        <Badge
+                          variant="outline"
+                          className="border-amber-400 text-amber-200 text-xs"
+                        >
+                          {n.kunya}
+                        </Badge>
+                      )}
+                    </div>
+                    {n.short_bio && (
+                      <p className="text-xs text-slate-200 leading-relaxed">
+                        {n.short_bio}
+                      </p>
+                    )}
+                    {(n.death_year || n.death_year_h || n.death_hijri) && (
+                      <p className="text-[11px] text-slate-400 mt-1">
+                        Décès :{" "}
+                        {n.death_year
+                          ? `${n.death_year} EC`
+                          : ""}
+                        {n.death_year && (n.death_year_h || n.death_hijri)
+                          ? " • "
+                          : ""}
+                        {n.death_year_h || n.death_hijri
+                          ? `${n.death_year_h || n.death_hijri} H`
+                          : ""}
+                      </p>
+                    )}
+                  </div>
+                ))}
               </div>
-              {n.short_bio && (
-                <p className="text-xs text-slate-200 leading-relaxed">
-                  {n.short_bio}
-                </p>
-              )}
-              {(n.death_year || n.death_hijri) && (
-                <p className="text-[11px] text-slate-400 mt-1">
-                  Décès :{" "}
-                  {n.death_year
-                    ? `${n.death_year} EC`
-                    : ""}
-                  {n.death_year && n.death_hijri ? " • " : ""}
-                  {n.death_hijri
-                    ? `${n.death_hijri} H`
-                    : ""}
-                </p>
-              )}
-            </div>
-          ))}
+
+              <Button
+                className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700"
+                onClick={() => setShowUnlockModal(false)}
+              >
+                Voir ma collection de rapporteurs
+              </Button>
+            </CardContent>
+          </Card>
         </div>
-
-        <Button
-          className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700"
-          onClick={() => setShowUnlockModal(false)}
-        >
-          Voir ma collection de rapporteurs
-        </Button>
-      </CardContent>
-    </Card>
-  </div>
-)}
-
+      )}
     </TooltipProvider>
   );
 }

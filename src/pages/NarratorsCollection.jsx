@@ -1,6 +1,6 @@
-// /src/pages/NarratorsCollection.jsx (par exemple)
+// /src/pages/NarratorsCollection.jsx
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import {
   Card,
   CardHeader,
@@ -22,9 +22,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 
-// ➜ On utilise maintenant le vrai fichier de données
 import { NARRATORS_MOCK } from "@/data/narrators_mock";
-import { NarratorAvatar } from "@/components/NarratorAvatar";
 
 const rarityConfig = {
   common: {
@@ -47,9 +45,12 @@ const rarityConfig = {
   },
 };
 
-function NarratorCard({ narrator, index }) {
+function NarratorCard({ narrator, index, isUnlocked: forcedUnlocked }) {
   const [isHovered, setIsHovered] = useState(false);
-  const isUnlocked = narrator.isUnlocked;
+
+  // 🔓 priorité à l’état calculé, sinon fallback sur le mock
+  const isUnlocked =
+    typeof forcedUnlocked === "boolean" ? forcedUnlocked : narrator.isUnlocked;
   const rarity = rarityConfig[narrator.rarity || "common"];
 
   const initials = useMemo(() => {
@@ -58,10 +59,6 @@ function NarratorCard({ narrator, index }) {
     const second = parts[1]?.[0] || "";
     return (first + second).toUpperCase();
   }, [narrator.name_fr]);
-
-  const completionRate = narrator.stats
-    ? Math.round((narrator.stats.learned / narrator.stats.total) * 100)
-    : 0;
 
   return (
     <div
@@ -104,32 +101,23 @@ function NarratorCard({ narrator, index }) {
         <CardHeader className="relative z-10 pb-3">
           <div className="flex items-start justify-between gap-2">
             <div className="flex items-center gap-3">
-              {/* Avatar amélioré + hadiths */}
+              {/* Avatar simplifié avec initiales (tu peux remplacer par une image plus tard) */}
               <div className="relative">
-  <div
-    className={`h-14 w-14 rounded-xl overflow-hidden shadow-lg border-2 bg-slate-800/80 border-slate-200/60 dark:border-slate-700/80 flex items-center justify-center text-lg font-bold text-white`}
-  >
-    <div
-      className={`h-full w-full flex items-center justify-center bg-gradient-to-br ${rarity.gradient} ${
-        isHovered && isUnlocked ? "scale-110 rotate-3" : ""
-      }`}
-    >
-      {isUnlocked ? narrator.name_fr
-          .split(" ")
-          .map((w) => w[0])
-          .join("")
-          .toUpperCase()
-        : "?"}
-    </div>
-  </div>
+                <div className="h-14 w-14 rounded-xl overflow-hidden shadow-lg border-2 bg-slate-800/80 border-slate-200/60 dark:border-slate-700/80 flex items-center justify-center text-lg font-bold text-white">
+                  <div
+                    className={`h-full w-full flex items-center justify-center bg-gradient-to-br ${rarity.gradient} ${
+                      isHovered && isUnlocked ? "scale-110 rotate-3" : ""
+                    }`}
+                  >
+                    {isUnlocked ? initials : "?"}
+                  </div>
+                </div>
 
-  {isUnlocked && completionRate === 100 && (
-    <div className="absolute -top-1 -right-1 bg-amber-500 rounded-full p-1 shadow-md">
-      <Trophy className="h-3 w-3 text-white" />
-    </div>
-  )}
-</div>
-
+                {/* Si un jour tu veux un trophée "100% hadiths de ce narrateur" */}
+                {/* <div className="absolute -top-1 -right-1 bg-amber-500 rounded-full p-1 shadow-md">
+                  <Trophy className="h-3 w-3 text-white" />
+                </div> */}
+              </div>
 
               <div className="flex-1 min-w-0">
                 <CardTitle className="text-base flex items-center gap-1.5 mb-0.5">
@@ -198,7 +186,7 @@ function NarratorCard({ narrator, index }) {
             )}
           </div>
 
-          {/* Bio */}
+          {/* Bio / locked message */}
           <div
             className={`transition-all duration-300 ${
               isHovered ? "max-h-40" : "max-h-28"
@@ -227,31 +215,7 @@ function NarratorCard({ narrator, index }) {
             )}
           </div>
 
-          {/* Progression */}
-          {isUnlocked && narrator.stats && (
-            <div className="pt-2 space-y-2 border-t border-slate-200 dark:border-slate-700">
-              <div className="flex justify-between items-center text-[11px]">
-                <span className="text-slate-600 dark:text-slate-400 flex items-center gap-1">
-                  <TrendingUp className="h-3 w-3" />
-                  Progression
-                </span>
-                <span className="font-semibold text-slate-700 dark:text-slate-300">
-                  {narrator.stats.learned}/{narrator.stats.total} hadiths
-                </span>
-              </div>
-              <div className="relative">
-                <Progress
-                  value={completionRate}
-                  className="h-2 bg-slate-200 dark:bg-slate-700"
-                />
-                {completionRate > 0 && (
-                  <span className=" right-0 -top-5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                    {completionRate}%
-                  </span>
-                )}
-              </div>
-            </div>
-          )}
+          {/* (Plus de stats ici, puisque `stats` a été retiré du mock) */}
         </CardContent>
       </Card>
 
@@ -297,6 +261,19 @@ function NarratorCard({ narrator, index }) {
 export function NarratorsCollection() {
   const [filterRarity, setFilterRarity] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [unlockedIds, setUnlockedIds] = useState([]);
+
+  // 🔓 Récupérer les cartes débloquées depuis localStorage
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const raw = localStorage.getItem("unlocked_narrators");
+    try {
+      const parsed = raw ? JSON.parse(raw) : [];
+      setUnlockedIds(Array.isArray(parsed) ? parsed : []);
+    } catch {
+      setUnlockedIds([]);
+    }
+  }, []);
 
   const filteredNarrators = useMemo(() => {
     return NARRATORS_MOCK.filter((n) => {
@@ -311,7 +288,12 @@ export function NarratorsCollection() {
   }, [filterRarity, searchQuery]);
 
   const total = NARRATORS_MOCK.length;
-  const unlocked = NARRATORS_MOCK.filter((n) => n.isUnlocked).length;
+
+  // 🧮 Progression basée sur localStorage + mock (Abû Hurayra, Aïcha déjà ouverts)
+  const unlocked = NARRATORS_MOCK.filter(
+    (n) => unlockedIds.includes(n.id) || n.isUnlocked
+  ).length;
+
   const progress = total ? Math.round((unlocked / total) * 100) : 0;
 
   return (
@@ -407,7 +389,12 @@ export function NarratorsCollection() {
         {filteredNarrators.length > 0 ? (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filteredNarrators.map((narrator, index) => (
-              <NarratorCard key={narrator.id} narrator={narrator} index={index} />
+              <NarratorCard
+                key={narrator.id}
+                narrator={narrator}
+                index={index}
+                isUnlocked={unlockedIds.includes(narrator.id) || narrator.isUnlocked}
+              />
             ))}
           </div>
         ) : (
