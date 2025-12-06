@@ -12,6 +12,7 @@ import { Compare } from "./pages/Compare";
 import SiraTimeline from "./pages/SiraTimeline";
 import { Profile } from "./pages/Profile";
 import HadithDetail from "./pages/HadithDetail";
+import { NarratorBio } from "./pages/NarratorBio";
 import HistoryPage from "./pages/History";
 import ProgressDashboard from "./pages/ProgressDashboard";
 import ProfileGuest from "./pages/ProfileGuest";
@@ -145,6 +146,16 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route path="/narrators/:slug"
+                 element={
+                  <ProtectedRoute>
+                    <OnboardingGate>
+                 <NarratorBio />
+                 </OnboardingGate>
+                 </ProtectedRoute>
+                } 
+                />
 
           <Route
             path="/exam"

@@ -8,6 +8,7 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
+import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import {
@@ -215,12 +216,26 @@ function NarratorCard({ narrator, index, isUnlocked: forcedUnlocked }) {
             )}
           </div>
 
+          {isUnlocked && (
+  <div className="pt-2">
+    <button
+      size="sm"
+      variant="outline"
+      className="w-full text-xs mt-1"
+    >
+      <Link to={`/narrators/${narrator.slug}`}>
+        En savoir plus sur ce rapporteur
+      </Link>
+    </button>
+  </div>
+)}
+
           {/* (Plus de stats ici, puisque `stats` a été retiré du mock) */}
         </CardContent>
       </Card>
 
       {/* Styles locaux (animations + scrollbar) */}
-      <style jsx>{`
+      <style>{`
         @keyframes fadeInUp {
           from {
             opacity: 0;
