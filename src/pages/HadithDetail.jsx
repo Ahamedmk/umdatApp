@@ -252,6 +252,24 @@ export default function HadithDetail() {
 
   const [unlockedNarrators, setUnlockedNarrators] = useState([]);
   const [showUnlockModal, setShowUnlockModal] = useState(false);
+    const [visibleArabic, hiddenArabic] = useMemo(() => {
+    const full = hadith?.arabic_text || "";
+    if (!full) return ["", ""];
+
+    // 🔢 nombre de mots qu'on laisse visibles (à ajuster si tu veux)
+    const VISIBLE_WORD_COUNT = 8;
+
+    const words = full.split(" ");
+    if (words.length <= VISIBLE_WORD_COUNT) {
+      return [full, ""];
+    }
+
+    const visible = words.slice(0, VISIBLE_WORD_COUNT).join(" ");
+    const hidden = words.slice(VISIBLE_WORD_COUNT).join(" ");
+
+    return [visible, hidden];
+  }, [hadith?.arabic_text]);
+
 
   const {
     isSupported: isRecSupported,
@@ -586,21 +604,36 @@ export default function HadithDetail() {
             <Separator className="bg-slate-200 dark:bg-slate-700" />
             <CardContent className="space-y-6 pt-6 relative z-10">
               {/* Texte arabe */}
-              <div className="p-6 rounded-xl bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900 border border-slate-200 dark:border-slate-700">
+                            <div className="p-6 rounded-xl bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900 border border-slate-200 dark:border-slate-700">
                 <div
                   dir="rtl"
-                  className={`text-2xl md:text-3xl leading-[2.5rem] font-serif tracking-wide text-slate-900 dark:text-slate-100 text-center transition-all ${
-                    isRecording ? "blur-md select-none" : ""
-                  }`}
+                  className="text-2xl md:text-3xl leading-[2.5rem] font-serif tracking-wide text-slate-900 dark:text-slate-100 text-center transition-all"
                 >
-                  {hadith.arabic_text}
+                  {/* 🧠 Quand on n'enregistre pas : afficher tout normalement */}
+                  {!isRecording && hadith.arabic_text}
+
+                  {/* 🎙 Pendant l'enregistrement : début visible + reste flouté */}
+                  {isRecording && (
+                    <span>
+                      {/* Début visible */}
+                      <span>{visibleArabic}</span>
+                      {/* Reste masqué */}
+                      {hiddenArabic && (
+                        <span className="blur-md select-none inline-block">
+                          {" "}{hiddenArabic}
+                        </span>
+                      )}
+                    </span>
+                  )}
                 </div>
+
                 {isRecording && (
                   <p className="mt-3 text-xs text-center text-amber-600 dark:text-amber-300">
-                    Le texte est flouté pour t’aider à réciter de mémoire.
+                    Seul le début reste visible, le reste est flouté pour t’aider à réciter de mémoire.
                   </p>
                 )}
               </div>
+
 
               {/* Bandeau audio + traduction */}
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">

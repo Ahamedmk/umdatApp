@@ -49,39 +49,23 @@ function formatDate(dateStr) {
   }
 }
 
-// Calcule un streak de jours consécutifs à partir d'une liste de dates complètes
+/**
+ * Nouveau calcul de "streak" :
+ * 👉 nombre de jours distincts où l'utilisateur a révisé au moins un hadith
+ * sur la période chargée (ici jusqu'à 365 jours).
+ * 
+ * On NE casse plus le streak les jours où il n'y a pas eu de révision,
+ * ce qui évite de pénaliser l'utilisateur quand le système n'avait rien
+ * à lui proposer en répétition espacée.
+ */
 function computeStreak(dates) {
   if (!dates.length) return 0;
 
-  // On garde uniquement les "YYYY-MM-DD", triés décroissants
-  const uniqueDays = Array.from(
-    new Set(
-      dates.map((d) => new Date(d).toISOString().slice(0, 10)) // string
-    )
-  ).sort((a, b) => (a < b ? 1 : -1)); // desc
+  const uniqueDays = new Set(
+    dates.map((d) => new Date(d).toISOString().slice(0, 10))
+  );
 
-  let streak = 1;
-  let current = uniqueDays[0]; // dernier jour avec révision
-
-  for (let i = 1; i < uniqueDays.length; i++) {
-    const prev = uniqueDays[i];
-    const curDate = new Date(current);
-    const prevDate = new Date(prev);
-
-    const diffDays =
-      (curDate.setHours(0, 0, 0, 0) - prevDate.setHours(0, 0, 0, 0)) /
-      (1000 * 60 * 60 * 24);
-
-    if (diffDays === 1) {
-      // jour précédent
-      streak += 1;
-      current = prev;
-    } else {
-      break;
-    }
-  }
-
-  return streak;
+  return uniqueDays.size;
 }
 
 export default function ProgressDashboard() {
@@ -157,6 +141,7 @@ export default function ProgressDashboard() {
     return p.next_review_date <= todayStr;
   }).length;
 
+  // Nouveau streak (jours distincts avec révision)
   const streak = computeStreak(reviewDates);
 
   const masteredPercent = totalHadiths
@@ -297,12 +282,12 @@ export default function ProgressDashboard() {
               <div className="flex items-center justify-center gap-2">
                 <Flame className="h-4 w-4" />
                 <span className="text-xs uppercase tracking-wide opacity-80">
-                  Streak
+                  Streak de révision
                 </span>
               </div>
               <div className="text-2xl font-bold">{streak}</div>
               <div className="text-[11px] opacity-80">
-                jour(s) de révision d&apos;affilée
+                jour(s) où tu as révisé au moins un hadith
               </div>
             </CardContent>
           </Card>

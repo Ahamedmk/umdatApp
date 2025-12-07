@@ -6,7 +6,7 @@ export const HADITHS_1_15 = [
       "عن عمرَ بنِ الخطابِ رضي الله عنه قال: سمعتُ رسولَ الله ﷺ يقول: «إنما الأعمالُ بالنيات، وإنما لكل امرئٍ ما نوى، فمن كانت هجرته إلى الله ورسوله فهجرته إلى الله ورسوله، ومن كانت هجرته لدنيا يصيبها أو امرأةٍ يتزوجها فهجرته إلى ما هاجر إليه».",
     french_text:
       "D’après ‘Umar b. al-Khattâb (ra) : J’ai entendu le Messager d’Allah ﷺ dire : « Les actions ne valent que par leurs intentions, et chacun n’aura que ce qu’il a eu comme intention. Celui dont l’émigration est pour Allah et Son Messager, alors son émigration est pour Allah et Son Messager. Et celui dont l’émigration est pour obtenir un bien de ce bas-monde ou pour épouser une femme, son émigration est pour cela même vers quoi il a émigré. »",
-    source: "Al-Bukhârî, Muslim (cf. PDF, début Kitâb at-Tahâra).",
+    source: "Al-Bukhârî, Muslim",
     tags: ["usul", "intention", "ikhlas"],
     opinions: {
       Hanafi: {
@@ -40,7 +40,7 @@ export const HADITHS_1_15 = [
       "عن أبي هريرة رضي الله عنه قال: قال رسولُ الله ﷺ: «لا يقبلُ الله صلاةَ أحدِكم إذا أحدثَ حتى يتوضأ».",
     french_text:
       "D’après Abû Hurayra (ra), le Prophète ﷺ a dit : « Allah n’accepte pas la prière de l’un d’entre vous s’il est en état de hadath, jusqu’à ce qu’il fasse les ablutions. »",
-    source: "Al-Bukhârî, Muslim (cf. PDF, Bâb: لا تقبل صلاة بغير طهور).",
+    source: "Al-Bukhârî, Muslim",
     tags: ["tahara", "salat", "wudu_condition"],
     opinions: {
       Hanafi: {
@@ -73,7 +73,7 @@ export const HADITHS_1_15 = [
       "عن عبدِ الله بنِ عمرو بن العاص، وأبي هريرة، وعائشةَ رضي الله عنهم، قالوا: قال رسولُ الله ﷺ: «ويلٌ للأعقابِ من النار».",
     french_text:
       "D’après ‘Abd Allâh b. ‘Amr b. al-‘Âs, Abû Hurayra et ‘Â’isha (ra), le Messager d’Allah ﷺ a dit : « Malheur aux talons (secs) à cause du Feu ! »",
-    source: "Al-Bukhârî, Muslim, et d’autres chaînes citées dans le PDF. :contentReference[oaicite:3]{index=3}",
+    source: "Al-Bukhârî, Muslim, et d’autres chaînes citées dans le PDF.",
     tags: ["tahara", "wudu", "pieds"],
     opinions: {
       Hanafi: {
@@ -107,7 +107,7 @@ export const HADITHS_1_15 = [
       "عن أبي هريرة رضي الله عنه أن رسولَ الله ﷺ قال: «إذا توضأ أحدُكم فليجعل في أنفه ماءً ثم لينثر، ومن استجمر فليوتر، وإذا استيقظ أحدُكم من نومه فلا يغمس يده في الإناء حتى يغسلها ثلاثًا، فإنه لا يدري أين باتت يده».",
     french_text:
       "D’après Abû Hurayra (ra), le Messager d’Allah ﷺ a dit : « Lorsque l’un de vous fait ses ablutions, qu’il aspire de l’eau dans son nez puis qu’il la rejette ; et celui qui se nettoie avec des pierres qu’il le fasse en nombre impair. Et lorsque l’un de vous se réveille de son sommeil, qu’il ne plonge pas sa main dans le récipient avant de l’avoir lavée trois fois, car il ne sait pas où sa main a passé la nuit. »",
-    source: "Al-Bukhârî, Muslim (cf. PDF). :contentReference[oaicite:6]{index=6}",
+    source: "Al-Bukhârî, Muslim (cf. PDF)",
     tags: ["tahara", "wudu", "istinja", "istijmar", "sunna"],
     opinions: {
       Hanafi: {
@@ -175,7 +175,7 @@ export const HADITHS_1_15 = [
   french_text:
     "Le Messager d’Allah ﷺ a dit : « Si le chien boit dans le récipient de l’un d’entre vous, qu’il le lave sept fois. » Et dans une autre version : « la première avec de la terre. »",
   source:
-    "an-Nuzha fî Sharh al-'Umda, Kitâb at-Tahâra — hadith du lavage du récipient souillé par le chien. :contentReference[oaicite:0]{index=0}",
+    "an-Nuzha fî Sharh al-'Umda, Kitâb at-Tahâra — hadith du lavage du récipient souillé par le chien.",
   tags: ["tahara", "najasa", "chien", "purification"],
   opinions: {
     Hanafi: {
@@ -210,7 +210,7 @@ export const HADITHS_1_15 = [
   french_text:
     "‘Uthmân (ra) a dit : « J’ai vu le Prophète ﷺ faire ses ablutions comme je viens de le faire. Puis il dit : “Quiconque fait ses ablutions comme les miennes puis accomplit deux unités de prière sans y être distrait, ses péchés passés lui seront pardonnés.” »",
   source:
-    "an-Nuzha fî Sharh al-'Umda, Kitâb at-Tahâra — hadith d’Uthmân sur les 2 unités après le wudû’. :contentReference[oaicite:2]{index=2}",
+    "an-Nuzha fî Sharh al-'Umda, Kitâb at-Tahâra — hadith d’Uthmân sur les 2 unités après le wudû’",
   tags: ["tahara", "wudu", "salat", "vertus"],
   opinions: {
     Hanafi: {

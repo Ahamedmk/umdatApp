@@ -53,7 +53,7 @@ export const NARRATORS_MOCK = [
     id: 2,
     slug: "aisha",
     name_ar: "عائشة أم المؤمنين رضي الله عنها",
-    name_fr: "Aisha (Mère des croyants)",
+    name_fr: "Aisha Mère des croyants",
     kunya: "Umm al-Mu'minîn",
     generation: "Compagnon",
     death_year_h: 58,
