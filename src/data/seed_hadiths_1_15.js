@@ -1,7 +1,9 @@
 export const HADITHS_1_15 = [
-   {
+  {
     number: 1,
-    narratorId:1,
+    narratorId: 1,
+    chapter: "tahara",
+    siraBlockId: "foundations-makkah",
     arabic_text:
       "عن عمرَ بنِ الخطابِ رضي الله عنه قال: سمعتُ رسولَ الله ﷺ يقول: «إنما الأعمالُ بالنيات، وإنما لكل امرئٍ ما نوى، فمن كانت هجرته إلى الله ورسوله فهجرته إلى الله ورسوله، ومن كانت هجرته لدنيا يصيبها أو امرأةٍ يتزوجها فهجرته إلى ما هاجر إليه».",
     french_text:
@@ -35,7 +37,9 @@ export const HADITHS_1_15 = [
 
   {
     number: 2,
-    narratorId:1,
+    narratorId: 1,
+    chapter: "tahara",
+    siraBlockId: "arrival-medina",
     arabic_text:
       "عن أبي هريرة رضي الله عنه قال: قال رسولُ الله ﷺ: «لا يقبلُ الله صلاةَ أحدِكم إذا أحدثَ حتى يتوضأ».",
     french_text:
@@ -60,8 +64,8 @@ export const HADITHS_1_15 = [
         fr: "Le commentaire ne distingue pas ici un avis hanbalite particulier ; il affirme, avec l’ensemble des savants, que « la purification est une condition de validité de la prière »."
       },
       Majority: {
-        ar: "نصَّ الشارح ناقلًا عن النووي: «أجمعتِ الأمةُ على أن الطهارةَ شرطٌ في صحة الصلاة، وعلى تحريم الصلاة بغير طهارة، ولا فرق بين الفرض والنفل وصلاة الجنازة وسجود التلاوة والشكر» :contentReference[oaicite:1]{index=1}.",
-        fr: "Le commentateur rapporte d’après an-Nawawî : « La communauté est unanime sur le fait que la purification est une condition de validité de la prière, et qu’il est interdit de prier sans purification, sans distinction entre prière obligatoire, surérogatoire, prière funéraire, prosternation de récitation ou de gratitude. » :contentReference[oaicite:2]{index=2}"
+        ar: "نصَّ الشارح ناقلًا عن النووي: «أجمعتِ الأمةُ على أن الطهارةَ شرطٌ في صحة الصلاة، وعلى تحريم الصلاة بغير طهارة، ولا فرق بين الفرض والنفل وصلاة الجنازة وسجود التلاوة والشكر».",
+        fr: "Le commentateur rapporte d’après an-Nawawî : « La communauté est unanime sur le fait que la purification est une condition de validité de la prière, et qu’il est interdit de prier sans purification, sans distinction entre prière obligatoire, surérogatoire, prière funéraire, prosternation de récitation ou de gratitude. »"
       }
     },
     audio_url: null
@@ -69,6 +73,8 @@ export const HADITHS_1_15 = [
 
   {
     number: 3,
+    chapter: "tahara",
+    siraBlockId: "arrival-medina",
     arabic_text:
       "عن عبدِ الله بنِ عمرو بن العاص، وأبي هريرة، وعائشةَ رضي الله عنهم، قالوا: قال رسولُ الله ﷺ: «ويلٌ للأعقابِ من النار».",
     french_text:
@@ -93,8 +99,8 @@ export const HADITHS_1_15 = [
         fr: "Le commentaire montre que ce hadith contient une grande menace pour celui qui laisse ses talons secs, et que les savants l’ont compris comme une obligation de lavage complet, ce qui inclut les hanbalites, sans précision supplémentaire."
       },
       Majority: {
-        ar: "يقرر الشرح أن العلماء على أن في الحديث دلالةً على وجوب غسل الرِّجلين في الوضوء، وأن ترك العقب غير المغسول سببٌ لاستحقاق الوعيد، وأن هذا مما أُجمع عليه بين الصحابة كما نُقِل في الكتاب. ",
-        fr: "Le PDF indique que ce hadith prouve l’obligation de laver les pieds dans le wudû’ et que négliger les talons au point de les laisser secs expose à la menace évoquée ; il mentionne un accord des compagnons sur ce point. "
+        ar: "يقرر الشرح أن العلماء على أن في الحديث دلالةً على وجوب غسل الرِّجلين في الوضوء، وأن ترك العقب غير المغسول سببٌ لاستحقاق الوعيد، وأن هذا مما أُجمع عليه بين الصحابة كما نُقِل في الكتاب.",
+        fr: "Le PDF indique que ce hadith prouve l’obligation de laver les pieds dans le wudû’ et que négliger les talons au point de les laisser secs expose à la menace évoquée ; il mentionne un accord des compagnons sur ce point."
       }
     },
     audio_url: null
@@ -102,7 +108,9 @@ export const HADITHS_1_15 = [
 
   {
     number: 4,
-    narratorId:1,
+    narratorId: 1,
+    chapter: "tahara",
+    siraBlockId: "arrival-medina",
     arabic_text:
       "عن أبي هريرة رضي الله عنه أن رسولَ الله ﷺ قال: «إذا توضأ أحدُكم فليجعل في أنفه ماءً ثم لينثر، ومن استجمر فليوتر، وإذا استيقظ أحدُكم من نومه فلا يغمس يده في الإناء حتى يغسلها ثلاثًا، فإنه لا يدري أين باتت يده».",
     french_text:
@@ -111,24 +119,24 @@ export const HADITHS_1_15 = [
     tags: ["tahara", "wudu", "istinja", "istijmar", "sunna"],
     opinions: {
       Hanafi: {
-        ar: "قال شيخا المصنف في الشرح: الأمر بالاستنشاق والاستنثار من سننِ الوضوء عند أبي حنيفة ومالك والشافعي، وليسا من فرائضه. كما ذكر أن الاستنجاء بأقل من ثلاثة أحجار يجوز عند أبي حنيفة ومالك إذا حصل الإنقاء، والوتر مستحب. ",
-        fr: "Le PDF rapporte, via « nos deux shaykhs », que l’ordre d’aspirer l’eau dans le nez et de la rejeter fait partie des sunan du wudû’ selon Abû Hanîfa, Mâlik et ash-Shâfi‘î, et non de ses obligations. Il mentionne aussi qu’auprès d’Abû Hanîfa et de Mâlik, il est permis de se limiter à moins de trois pierres pour l’istinjâ si la zone est nettoyée, tout en recommandant le nombre impair. "
+        ar: "قال شيخا المصنف في الشرح: الأمر بالاستنشاق والاستنثار من سننِ الوضوء عند أبي حنيفة ومالك والشافعي، وليسا من فرائضه. كما ذكر أن الاستنجاء بأقل من ثلاثة أحجار يجوز عند أبي حنيفة ومالك إذا حصل الإنقاء، والوتر مستحب.",
+        fr: "Le PDF rapporte, via « nos deux shaykhs », que l’ordre d’aspirer l’eau dans le nez et de la rejeter fait partie des sunan du wudû’ selon Abû Hanîfa, Mâlik et ash-Shâfi‘î, et non de ses obligations. Il mentionne aussi qu’auprès d’Abû Hanîfa et de Mâlik, il est permis de se limiter à moins de trois pierres pour l’istinjâ si la zone est nettoyée, tout en recommandant le nombre impair."
       },
       Maliki: {
-        ar: "مذهبُ المالكية في هذا الموضع موافقٌ لما نُقل عن أبي حنيفة: الاستنشاق والاستنثار من سنن الوضوء، والوترُ في الاستجمار مستحب، ويجوز الاقتصار على أقل من ثلاثة أحجار عند حصول الإنقاء كما نص الشرح. :contentReference[oaicite:9]{index=9}",
-        fr: "Pour les mâlikites, tel que présenté dans le PDF, l’aspiration et le rejet de l’eau par le nez sont des sunan du wudû’ ; le nombre impair de pierres est recommandé, et il est permis de se contenter de moins de trois pierres si le nettoyage est complet. :contentReference[oaicite:10]{index=10}"
+        ar: "مذهبُ المالكية في هذا الموضع موافقٌ لما نُقل عن أبي حنيفة: الاستنشاق والاستنثار من سنن الوضوء، والوترُ في الاستجمار مستحب، ويجوز الاقتصار على أقل من ثلاثة أحجار عند حصول الإنقاء كما نص الشرح.",
+        fr: "Pour les mâlikites, tel que présenté dans le PDF, l’aspiration et le rejet de l’eau par le nez sont des sunan du wudû’ ; le nombre impair de pierres est recommandé, et il est permis de se contenter de moins de trois pierres si le nettoyage est complet."
       },
       Shafi: {
-        ar: "ينقل الشرح أن الاستنشاق والاستنثار من سنن الوضوء عند الشافعي، لكنه يخالف الحنفية والمالكية في الاستجمار؛ فلا يجوِّز الاكتفاء بأقلَّ من ثلاثة أحجار، بل يجعل الثلاثة حدًّا أدنى، والجمع بين الماء والأحجار أفضل. ",
-        fr: "Le commentaire indique que, pour ash-Shâfi‘î, l’aspiration et le rejet de l’eau par le nez relèvent des sunan du wudû’. En revanche, il diverge sur l’istijmâr : il ne permet pas de se limiter à moins de trois pierres, considérant ce nombre comme un minimum, le mieux étant de combiner eau et pierres. "
+        ar: "ينقل الشرح أن الاستنشاق والاستنثار من سنن الوضوء عند الشافعي، لكنه يخالف الحنفية والمالكية في الاستجمار؛ فلا يجوِّز الاكتفاء بأقلَّ من ثلاثة أحجار، بل يجعل الثلاثة حدًّا أدنى، والجمع بين الماء والأحجار أفضل.",
+        fr: "Le commentaire indique que, pour ash-Shâfi‘î, l’aspiration et le rejet de l’eau par le nez relèvent des sunan du wudû’. En revanche, il diverge sur l’istijmâr : il ne permet pas de se limiter à moins de trois pierres, considérant ce nombre comme un minimum, le mieux étant de combiner eau et pierres."
       },
       Hanbali: {
-        ar: "ذكر الشارح أن المشهور عن أحمد أن الاستنشاق والاستنثار من واجبات الوضوء، لا من سننه، مستدلًا بأحاديث الأمر بهما، وأنه يرى وجوب الاستجمار بثلاثة أحجار فأكثر. ",
-        fr: "Le PDF rapporte que, selon l’avis bien connu d’Ahmad, l’aspiration et le rejet de l’eau dans le nez sont au rang des obligations du wudû’ et non de ses simples sunan, en se basant sur les hadiths d’ordre. Il considère également l’istijmâr avec au moins trois pierres comme obligatoire. "
+        ar: "ذكر الشارح أن المشهور عن أحمد أن الاستنشاق والاستنثار من واجبات الوضوء، لا من سننه، مستدلًا بأحاديث الأمر بهما، وأنه يرى وجوب الاستجمار بثلاثة أحجار فأكثر.",
+        fr: "Le PDF rapporte que, selon l’avis bien connu d’Ahmad, l’aspiration et le rejet de l’eau dans le nez sont au rang des obligations du wudû’ et non de ses simples sunan, en se basant sur les hadiths d’ordre. Il considère également l’istijmâr avec au moins trois pierres comme obligatoire."
       },
       Majority: {
-        ar: "يستفاد من مجموع كلام الشرح أن جمهور الفقهاء على استحباب الاستنشاق والاستنثار، واستحباب الوتر في الاستجمار، مع وجوب أصل إزالة النجاسة، وأن غسل اليدين بعد الاستيقاظ من النوم مشروعٌ على أقل تقدير، وفي وجوبه تفصيلٌ بين الأئمة كما ذُكر عن أحمد والجمهور. ",
-        fr: "D’après la synthèse du commentateur, la majorité des juristes considèrent l’aspiration et le rejet de l’eau comme recommandés (sunna), de même que le nombre impair dans l’istijmâr, tout en imposant l’obligation d’enlever la souillure elle-même. Le lavage des mains au réveil est au minimum légiféré, et son caractère obligatoire fait l’objet d’une divergence entre Ahmad et la majorité, telle que mentionnée dans le PDF. "
+        ar: "يستفاد من مجموع كلام الشرح أن جمهور الفقهاء على استحباب الاستنشاق والاستنثار، واستحباب الوتر في الاستجمار، مع وجوب أصل إزالة النجاسة، وأن غسل اليدين بعد الاستيقاظ من النوم مشروعٌ على أقل تقدير، وفي وجوبه تفصيلٌ بين الأئمة كما ذُكر عن أحمد والجمهور.",
+        fr: "D’après la synthèse du commentateur, la majorité des juristes considèrent l’aspiration et le rejet de l’eau comme recommandés (sunna), de même que le nombre impair dans l’istijmâr, tout en imposant l’obligation d’enlever la souillure elle-même. Le lavage des mains au réveil est au minimum légiféré, et son caractère obligatoire fait l’objet d’une divergence entre Ahmad et la majorité, telle que mentionnée dans le PDF."
       }
     },
     audio_url: null
@@ -136,7 +144,9 @@ export const HADITHS_1_15 = [
 
   {
     number: 5,
-    narratorId:1,
+    narratorId: 1,
+    chapter: "tahara",
+    siraBlockId: "arrival-medina",
     arabic_text:
       "عن أبي هريرة رضي الله عنه قال: قال رسولُ الله ﷺ: «لا يبولنَّ أحدُكم في الماء الدائم الذي لا يجري، ثم يغتسلُ فيه». وفي رواية: «لا يغتسل أحدُكم في الماء الدائم وهو جنب».",
     french_text:
@@ -161,150 +171,159 @@ export const HADITHS_1_15 = [
         fr: "Le commentaire ne met pas à part un avis hanbalite technique ; il indique plutôt que l’urine dans l’eau stagnante peut la rendre inutilisable pour la purification si elle devient impure, en cohérence avec les textes généraux sur la préservation de la pureté."
       },
       Majority: {
-        ar: "يقرِّر الشارح – ضمن بحثه في أنواع الماء – أن الأصل: الماء المطلق طهور، وأن وقوع النجاسة فيه سببٌ لتنجيسه إذا غيَّرت أوصافه، وأن هذا الحديث من باب سدِّ الذريعة إلى التنجيس، خاصة في الماء القليل الدائم. ",
-        fr: "Dans le cadre de sa discussion des types d’eau, le PDF rappelle que l’eau ‘absolue’ est purificatrice, et que la chute d’une impureté en elle la rend impure si ses caractéristiques changent. Ce hadith est compris comme une barrière pour éviter ce résultat, en particulier dans une eau stagnante et peu abondante. "
+        ar: "يقرِّر الشارح – ضمن بحثه في أنواع الماء – أن الأصل: الماء المطلق طهور، وأن وقوع النجاسة فيه سببٌ لتنجيسه إذا غيَّرت أوصافه، وأن هذا الحديث من باب سدِّ الذريعة إلى التنجيس، خاصة في الماء القليل الدائم.",
+        fr: "Dans le cadre de sa discussion des types d’eau, le PDF rappelle que l’eau ‘absolue’ est purificatrice, et que la chute d’une impureté en elle la rend impure si ses caractéristiques changent. Ce hadith est compris comme une barrière pour éviter ce résultat, en particulier dans une eau stagnante et peu abondante."
       }
     },
     audio_url: null
   },
 
   {
-  number: 6,
-  arabic_text:
-    "قال رسول الله ﷺ: «إذا شرب الكلب في إناء أحدكم فليغسله سبع مرات» وفي رواية: «أولاهن بالتراب».",
-  french_text:
-    "Le Messager d’Allah ﷺ a dit : « Si le chien boit dans le récipient de l’un d’entre vous, qu’il le lave sept fois. » Et dans une autre version : « la première avec de la terre. »",
-  source:
-    "an-Nuzha fî Sharh al-'Umda, Kitâb at-Tahâra — hadith du lavage du récipient souillé par le chien.",
-  tags: ["tahara", "najasa", "chien", "purification"],
-  opinions: {
-    Hanafi: {
-      ar: "لم يخصّ الشارح هنا مذهب الحنفية بتفصيل مستقل في حكم ولوغ الكلب، وإنما ذكر عموم أحكام النجاسات.",
-      fr: "Le commentateur ne donne pas ici un avis spécifique hanafite sur le chien, mais cite les règles générales des impuretés."
+    number: 6,
+    chapter: "tahara",
+    siraBlockId: "prayer-structure",
+    arabic_text:
+      "قال رسول الله ﷺ: «إذا شرب الكلب في إناء أحدكم فليغسله سبع مرات» وفي رواية: «أولاهن بالتراب».",
+    french_text:
+      "Le Messager d’Allah ﷺ a dit : « Si le chien boit dans le récipient de l’un d’entre vous, qu’il le lave sept fois. » Et dans une autre version : « la première avec de la terre. »",
+    source:
+      "an-Nuzha fî Sharh al-'Umda, Kitâb at-Tahâra — hadith du lavage du récipient souillé par le chien.",
+    tags: ["tahara", "najasa", "chien", "purification"],
+    opinions: {
+      Hanafi: {
+        ar: "لم يخصّ الشارح هنا مذهب الحنفية بتفصيل مستقل في حكم ولوغ الكلب، وإنما ذكر عموم أحكام النجاسات.",
+        fr: "Le commentateur ne donne pas ici un avis spécifique hanafite sur le chien, mais cite les règles générales des impuretés."
+      },
+      Maliki: {
+        ar: "لم يرد في الشرح تفصيل خاص بالمالكية في هذا الموضع حول ولوغ الكلب.",
+        fr: "Aucun détail mâlikite spécifique n’est donné dans le commentaire à cet endroit."
+      },
+      Shafi: {
+        ar: "أشار الشارح إلى قول الشافعية بوجوب الغسل سبع مرات إحداهن بالتراب، استنادًا للرواية الصريحة.",
+        fr: "Le commentateur indique que les shaféites considèrent le lavage sept fois dont une avec la terre comme obligatoire, conformément au hadith explicite."
+      },
+      Hanbali: {
+        ar: "ذكر الشارح أن ظاهر مذهب أحمد العمل بالروايتين، وأن الغسل سبعًا أولاهن بالتراب هو الأحوط والأخذ به أولى.",
+        fr: "Le commentaire mentionne que, selon le madhhab hanbalite, on applique les deux versions, sept lavages dont le premier avec la terre, ce qui est préférable."
+      },
+      Majority: {
+        ar: "بيَّن الشارح أن الجمهور على أن نجاسة ولوغ الكلب مغلّظة، ويُعمل بالغسل سبعًا مع التتريب.",
+        fr: "Le commentateur indique que la majorité considère la salive du chien comme une impureté aggravée, nécessitant sept lavages avec terre."
+      }
     },
-    Maliki: {
-      ar: "لم يرد في الشرح تفصيل خاص بالمالكية في هذا الموضع حول ولوغ الكلب.",
-      fr: "Aucun détail mâlikite spécifique n’est donné dans le commentaire à cet endroit."
-    },
-    Shafi: {
-      ar: "أشار الشارح إلى قول الشافعية بوجوب الغسل سبع مرات إحداهن بالتراب، استنادًا للرواية الصريحة.",
-      fr: "Le commentateur indique que les shaféites considèrent le lavage sept fois dont une avec la terre comme obligatoire, conformément au hadith explicite."
-    },
-    Hanbali: {
-      ar: "ذكر الشارح أن ظاهر مذهب أحمد العمل بالروايتين، وأن الغسل سبعًا أولاهن بالتراب هو الأحوط والأخذ به أولى.",
-      fr: "Le commentaire mentionne que, selon le madhhab hanbalite, on applique les deux versions, sept lavages dont le premier avec la terre, ce qui est préférable."
-    },
-    Majority: {
-      ar: "بيَّن الشارح أن الجمهور على أن نجاسة ولوغ الكلب مغلّظة، ويُعمل بالغسل سبعًا مع التتريب.",
-      fr: "Le commentateur indique que la majorité considère la salive du chien comme une impureté aggravée, nécessitant sept lavages avec terre."
-    }
+    audio_url: null
   },
-  audio_url: null
-},
 
   {
-  number: 7,
-  narratorId:6,
-  arabic_text:
-    "قال عثمان رضي الله عنه: «رأيت النبي ﷺ توضأ نحو وضوئي هذا، ثم قال: من توضأ نحو وضوئي هذا ثم صلى ركعتين لا يحدث فيهما نفسه غفر له ما تقدم من ذنبه».",
-  french_text:
-    "‘Uthmân (ra) a dit : « J’ai vu le Prophète ﷺ faire ses ablutions comme je viens de le faire. Puis il dit : “Quiconque fait ses ablutions comme les miennes puis accomplit deux unités de prière sans y être distrait, ses péchés passés lui seront pardonnés.” »",
-  source:
-    "an-Nuzha fî Sharh al-'Umda, Kitâb at-Tahâra — hadith d’Uthmân sur les 2 unités après le wudû’",
-  tags: ["tahara", "wudu", "salat", "vertus"],
-  opinions: {
-    Hanafi: {
-      ar: "أثبت الشارح أن هذا الحديث يدل على فضل الوضوء وإتباعه بركعتين، ولم يميز قولًا خاصًا للحنفية.",
-      fr: "Le commentateur affirme que ce hadith prouve le mérite du wudû’ suivi de deux rak‘a, sans mentionner un avis hanafite particulier."
+    number: 7,
+    narratorId: 6,
+    chapter: "tahara",
+    siraBlockId: "prayer-structure",
+    arabic_text:
+      "قال عثمان رضي الله عنه: «رأيت النبي ﷺ توضأ نحو وضوئي هذا، ثم قال: من توضأ نحو وضوئي هذا ثم صلى ركعتين لا يحدث فيهما نفسه غفر له ما تقدم من ذنبه».",
+    french_text:
+      "‘Uthmân (ra) a dit : « J’ai vu le Prophète ﷺ faire ses ablutions comme je viens de le faire. Puis il dit : “Quiconque fait ses ablutions comme les miennes puis accomplit deux unités de prière sans y être distrait, ses péchés passés lui seront pardonnés.” »",
+    source:
+      "an-Nuzha fî Sharh al-'Umda, Kitâb at-Tahâra — hadith d’Uthmân sur les 2 unités après le wudû’",
+    tags: ["tahara", "wudu", "salat", "vertus"],
+    opinions: {
+      Hanafi: {
+        ar: "أثبت الشارح أن هذا الحديث يدل على فضل الوضوء وإتباعه بركعتين، ولم يميز قولًا خاصًا للحنفية.",
+        fr: "Le commentateur affirme que ce hadith prouve le mérite du wudû’ suivi de deux rak‘a, sans mentionner un avis hanafite particulier."
+      },
+      Maliki: {
+        ar: "لم يذكر الشارح تفصيلًا خاصًا بالمالكية، بل ذكر عموم فضل الصلاة بعد الوضوء.",
+        fr: "Le texte ne détaille pas un avis mâlikite spécifique, mais évoque seulement le mérite de prier deux unités après l’ablution."
+      },
+      Shafi: {
+        ar: "أشار الشارح إلى أن الشافعية يعدّون هذه الصلاة من النوافل المرغّب فيها، ويستحبّونها بعد الوضوء.",
+        fr: "Le commentateur indique que les shaféites considèrent cette prière comme une sunna fortement recommandée après le wudû’."
+      },
+      Hanbali: {
+        ar: "نقل الشارح أن الحنابلة يعدّون هذه الركعتين من السنن المؤكدة لمن تطهر.",
+        fr: "Selon le commentaire, les hanbalites voient dans ces deux rak‘a une sunna confirmée après l’accomplissement de l’ablution."
+      },
+      Majority: {
+        ar: "أثبت الشارح أن الجمهور على استحباب ركعتي الوضوء، لظاهر الحديث.",
+        fr: "Le commentateur indique que la majorité recommande les deux rak‘a après le wudû’, conformément au hadith."
+      }
     },
-    Maliki: {
-      ar: "لم يذكر الشارح تفصيلًا خاصًا بالمالكية، بل ذكر عموم فضل الصلاة بعد الوضوء.",
-      fr: "Le texte ne détaille pas un avis mâlikite spécifique, mais évoque seulement le mérite de prier deux unités après l’ablution."
-    },
-    Shafi: {
-      ar: "أشار الشارح إلى أن الشافعية يعدّون هذه الصلاة من النوافل المرغّب فيها، ويستحبّونها بعد الوضوء.",
-      fr: "Le commentateur indique que les shaféites considèrent cette prière comme une sunna fortement recommandée après le wudû’."
-    },
-    Hanbali: {
-      ar: "نقل الشارح أن الحنابلة يعدّون هذه الركعتين من السنن المؤكدة لمن تطهر.",
-      fr: "Selon le commentaire, les hanbalites voient dans ces deux rak‘a une sunna confirmée après l’accomplissement de l’ablution."
-    },
-    Majority: {
-      ar: "أثبت الشارح أن الجمهور على استحباب ركعتي الوضوء، لظاهر الحديث.",
-      fr: "Le commentateur indique que la majorité recommande les deux rak‘a après le wudû’, conformément au hadith."
-    }
+    audio_url: null
   },
-  audio_url: null
-}
-,
-  
-  {
-  number: 8,
-  narratorId:7,
-  arabic_text:
-    "عَنْ عَمْرِو بْنِ يَحْيَى الْمَازِنِيِّ عَنْ أَبِيهِ قَالَ: «شَهِدْتُ عَمْرَو بْنَ أَبِي حَسَنٍ سَأَلَ عَبْدَ اللَّهِ بْنَ زَيْدٍ عَنْ وُضُوءِ النَّبِيِّ ﷺ، فَدَعَا بِتَوْرٍ مِنْ مَاءٍ، فَتَوَضَّأَ لَهُمْ وُضُوءَ النَّبِيِّ ﷺ، فَأَكْفَأَ عَلَى يَدَيْهِ مِنَ التَّوْرِ، فَغَسَلَ يَدَيْهِ ثَلَاثًا، ثُمَّ أَدْخَلَ يَدَهُ فِي التَّوْرِ، فَمَضْمَضَ وَاسْتَنْشَقَ وَاسْتَنْثَرَ ثَلَاثًا بِثَلَاثِ غَرَفَاتٍ، ثُمَّ أَدْخَلَ يَدَهُ فَغَسَلَ وَجْهَهُ ثَلَاثًا، ثُمَّ أَدْخَلَ يَدَهُ فَغَسَلَ يَدَيْهِ إِلَى الْمِرْفَقَيْنِ مَرَّتَيْنِ، ثُمَّ أَدْخَلَ يَدَهُ فَمَسَحَ رَأْسَهُ فَأَقْبَلَ بِهِمَا وَأَدْبَرَ مَرَّةً وَاحِدَةً، ثُمَّ غَسَلَ رِجْلَيْهِ. وَفِي رِوَايَةٍ: «بَدَأَ بِمُقَدَّمِ رَأْسِهِ حَتَّى ذَهَبَ بِهِمَا إِلَى قَفَاهُ، ثُمَّ رَدَّهُمَا حَتَّى رَجَعَ إِلَى الْمَكَانِ الَّذِي بَدَأَ مِنْهُ.» وَفِي رِوَايَةٍ: «أَنَّ رَسُولَ اللَّهِ ﷺ أُتِيَ لَهُ بِمَاءٍ فِي تَوْرٍ مِنْ صُفْرٍ.»",
-  french_text:
-    "‘Amr b. Yahyâ al-Mâzinî rapporte de son père : « J’ai assisté à la scène où ‘Amr b. Abî Hasan interrogea ‘Abd Allâh b. Zayd au sujet des ablutions du Prophète ﷺ. Il demanda qu’on lui apporte un récipient d’eau et réalisa pour eux les ablutions du Prophète ﷺ : il versa de l’eau sur ses mains et les lava trois fois, se rinça la bouche et le nez trois fois avec trois poignées d’eau, lava son visage trois fois, lava ses mains jusqu’aux coudes deux fois, passa ses mains mouillées sur sa tête en allant vers l’avant puis vers l’arrière une fois, puis lava ses pieds. » Dans une autre version : « Il commença par l’avant de sa tête jusqu’à la nuque, puis revint au point de départ. » Et dans une autre version : « On apporta au Messager d’Allah ﷺ de l’eau dans un récipient en cuivre jaune. »",
-  source: "Abû Dâwûd, at-Tirmidhî (cf. PDF)",
-  tags: ["tahara", "wudu"],
-  opinions: {
-    Hanafi: {
-      ar: "التَّسْمِيَةُ فِي الوُضوءِ سُنَّةٌ عِنْدَ الحَنَفِيَّةِ، وَالسِّوَاكُ سُنَّةٌ، وَتَخْلِيلُ أَصَابِعِ الْيَدَيْنِ وَالرِّجْلَيْنِ مُسْتَحَبٌّ، وَتَثْلِيثُ الْغَسْلِ سُنَّةٌ وَالْمَرَّةُ مُجْزِئَةٌ، وَمَسْحُ الرَّأْسِ مَرَّةً يَكْفِي، وَيُكْرَهُ الإِسْرَافُ فِي المَاءِ.",
-      fr: "Basmala : sunna ; siwâk : sunna ; entrelacer les doigts et orteils : recommandé ; laver trois fois : sunna (une fois suffit) ; essuyage de la tête une fois ; gaspillage d’eau réprouvé."
-    },
-    Maliki: {
-      ar: "التَّسْمِيَةُ مُسْتَحَبَّةٌ، وَالسِّوَاكُ سُنَّةٌ، وَتَثْلِيثُ الْغَسْلِ سُنَّةٌ مَعَ الإِجْزَاءِ بِالْمَرَّةِ، وَتَخْلِيلُ الأَصَابِعِ مُسْتَحَبٌّ، وَمَسْحُ الرَّأْسِ مَرَّةً، وَيُكْرَهُ الغُلُوُّ وَالإِسْرَافُ فِي المَاءِ.",
-      fr: "Basmala : recommandée ; siwâk : sunna ; trois lavages : sunna (une fois valide) ; entrelacement des doigts : recommandé ; essuyage de la tête une fois ; excès d’eau blâmé."
-    },
-    Shafi: {
-      ar: "التَّسْمِيَةُ سُنَّةٌ، وَالسِّوَاكُ سُنَّةٌ، وَتَخْلِيلُ اللِّحْيَةِ الْكَثِيفَةِ وَالأَصَابِعِ سُنَّةٌ، وَتَثْلِيثُ الْغَسْلِ سُنَّةٌ مَعَ كِفَايَةِ الْمَرَّةِ، وَمَسْحُ الرَّأْسِ مَرَّةً.",
-      fr: "Basmala : sunna ; siwâk : sunna ; takhlîl de la barbe épaisse et des doigts : sunna ; trois lavages : sunna (une fois suffit) ; essuyage de la tête une fois."
-    },
-    Hanbali: {
-      ar: "ذَهَبَ أَحْمَدُ وَإِسْحَاقُ وَأَهْلُ الظَّاهِرِ إِلَى وُجُوبِ التَّسْمِيَةِ، وَالرَّاجِحُ عِنْدَ الْمُتَأَخِّرِينَ أَنَّهَا وَاجِبَةٌ وَتَسْقُطُ بِالنِّسْيَانِ؛ وَالسِّوَاكُ سُنَّةٌ، وَتَثْلِيثُ الْغَسْلِ سُنَّةٌ، وَتَخْلِيلُ الأَصَابِعِ سُنَّةٌ، وَيُنْهَى عَنِ الإِسْرَافِ.",
-      fr: "Basmala : obligation (qui tombe par oubli selon l’avis retenu) ; siwâk : sunna ; trois lavages : sunna ; entrelacement des doigts : sunna ; gaspillage d’eau blâmé."
-    }
-  },
-  audio_url: null
-},
 
   {
-  number: 9,
-  arabic_text:
-    "عَنْ عَائِشَةَ رَضِيَ اللَّهُ عَنْهَا قَالَتْ: « كَانَ رَسُولُ اللَّهِ ﷺ يُعْجِبُهُ التَّيَمُّنُ فِي تَنَعُّلِهِ، وَتَرَجُّلِهِ، وَطُهُورِهِ، وَفِي شَأْنِهِ كُلِّهِ. »",
-  french_text:
-    "‘Â’isha (ra) : « Le Messager d’Allah ﷺ aimait commencer par la droite dans ses sandales, sa coiffure, sa purification et dans toutes ses affaires. »",
-  source: "Al-Bukhârî & Muslim",
-  tags: ["adab", "tahara", "droite"],
-  opinions: {
-    Hanafi: {
-      ar: "التيمنُ مُسْتَحَبٌّ فِيما كانَ مِن بابِ الإِكْرامِ كالوُضوءِ واللِّباسِ والدُّخولِ، وتُقَدَّمُ اليُسْرَى فِيمَا لَيْسَ مِن ذَلِكَ.",
-      fr: "Commencer par la droite est recommandé pour les actes d’honneur (wudû’, habillement, entrée). La gauche est prioritaire pour l’inverse."
+    number: 8,
+    narratorId: 7,
+    chapter: "tahara",
+    siraBlockId: "prayer-structure",
+    arabic_text:
+      "عَنْ عَمْرِو بْنِ يَحْيَى الْمَازِنِيِّ عَنْ أَبِيهِ قَالَ: «شَهِدْتُ عَمْرَو بْنَ أَبِي حَسَنٍ سَأَلَ عَبْدَ اللَّهِ بْنَ زَيْدٍ عَنْ وُضُوءِ النَّبِيِّ ﷺ، فَدَعَا بِتَوْرٍ مِنْ مَاءٍ، فَتَوَضَّأَ لَهُمْ وُضُوءَ النَّبِيِّ ﷺ، فَأَكْفَأَ عَلَى يَدَيْهِ مِنَ التَّوْرِ، فَغَسَلَ يَدَيْهِ ثَلَاثًا، ثُمَّ أَدْخَلَ يَدَهُ فِي التَّوْرِ، فَمَضْمَضَ وَاسْتَنْشَقَ وَاسْتَنْثَرَ ثَلَاثًا بِثَلَاثِ غَرَفَاتٍ، ثُمَّ أَدْخَلَ يَدَهُ فَغَسَلَ وَجْهَهُ ثَلَاثًا، ثُمَّ أَدْخَلَ يَدَهُ فَغَسَلَ يَدَيْهِ إِلَى الْمِرْفَقَيْنِ مَرَّتَيْنِ، ثُمَّ أَدْخَلَ يَدَهُ فَمَسَحَ رَأْسَهُ فَأَقْبَلَ بِهِمَا وَأَدْبَرَ مَرَّةً وَاحِدَةً، ثُمَّ غَسَلَ رِجْلَيْهِ. وَفِي رِوَايَةٍ: «بَدَأَ بِمُقَدَّمِ رَأْسِهِ حَتَّى ذَهَبَ بِهِمَا إِلَى قَفَاهُ، ثُمَّ رَدَّهُمَا حَتَّى رَجَعَ إِلَى الْمَكَانِ الَّذِي بَدَأَ مِنْهُ.» وَفِي رِوَايَةٍ: «أَنَّ رَسُولَ اللَّهِ ﷺ أُتِيَ لَهُ بِمَاءٍ فِي تَوْرٍ مِنْ صُفْرٍ.»",
+    french_text:
+      "‘Amr b. Yahyâ al-Mâzinî rapporte de son père : « J’ai assisté à la scène où ‘Amr b. Abî Hasan interrogea ‘Abd Allâh b. Zayd au sujet des ablutions du Prophète ﷺ. Il demanda qu’on lui apporte un récipient d’eau et réalisa pour eux les ablutions du Prophète ﷺ : il versa de l’eau sur ses mains et les lava trois fois, se rinça la bouche et le nez trois fois avec trois poignées d’eau, lava son visage trois fois, lava ses mains jusqu’aux coudes deux fois, passa ses mains mouillées sur sa tête en allant vers l’avant puis vers l’arrière une fois, puis lava ses pieds. » Dans une autre version : « Il commença par l’avant de sa tête jusqu’à la nuque, puis revint au point de départ. » Et dans une autre version : « On apporta au Messager d’Allah ﷺ de l’eau dans un récipient en cuivre jaune. »",
+    source: "Abû Dâwûd, at-Tirmidhî (cf. PDF)",
+    tags: ["tahara", "wudu"],
+    opinions: {
+      Hanafi: {
+        ar: "التَّسْمِيَةُ فِي الوُضوءِ سُنَّةٌ عِنْدَ الحَنَفِيَّةِ، وَالسِّوَاكُ سُنَّةٌ، وَتَخْلِيلُ أَصَابِعِ الْيَدَيْنِ وَالرِّجْلَيْنِ مُسْتَحَبٌّ، وَتَثْلِيثُ الْغَسْلِ سُنَّةٌ وَالْمَرَّةُ مُجْزِئَةٌ، وَمَسْحُ الرَّأْسِ مَرَّةً يَكْفِي، وَيُكْرَهُ الإِسْرَافُ فِي المَاءِ.",
+        fr: "Basmala : sunna ; siwâk : sunna ; entrelacer les doigts et orteils : recommandé ; laver trois fois : sunna (une fois suffit) ; essuyage de la tête une fois ; gaspillage d’eau réprouvé."
+      },
+      Maliki: {
+        ar: "التَّسْمِيَةُ مُسْتَحَبَّةٌ، وَالسِّوَاكُ سُنَّةٌ، وَتَثْلِيثُ الْغَسْلِ سُنَّةٌ مَعَ الإِجْزَاءِ بِالْمَرَّةِ، وَتَخْلِيلُ الأَصَابِعِ مُسْتَحَبٌّ، وَمَسْحُ الرَّأْسِ مَرَّةً، وَيُكْرَهُ الغُلُوُّ وَالإِسْرَافُ فِي المَاءِ.",
+        fr: "Basmala : recommandée ; siwâk : sunna ; trois lavages : sunna (une fois valide) ; entrelacement des doigts : recommandé ; essuyage de la tête une fois ; excès d’eau blâmé."
+      },
+      Shafi: {
+        ar: "التَّسْمِيَةُ سُنَّةٌ، وَالسِّوَاكُ سُنَّةٌ، وَتَخْلِيلُ اللِّحْيَةِ الْكَثِيفَةِ وَالأَصَابِعِ سُنَّةٌ، وَتَثْلِيثُ الْغَسْلِ سُنَّةٌ مَعَ كِفَايَةِ الْمَرَّةِ، وَمَسْحُ الرَّأْسِ مَرَّةً.",
+        fr: "Basmala : sunna ; siwâk : sunna ; takhlîl de la barbe épaisse et des doigts : sunna ; trois lavages : sunna (une fois suffit) ; essuyage de la tête une fois."
+      },
+      Hanbali: {
+        ar: "ذَهَبَ أَحْمَدُ وَإِسْحَاقُ وَأَهْلُ الظَّاهِرِ إِلَى وُجُوبِ التَّسْمِيَةِ، وَالرَّاجِحُ عِنْدَ الْمُتَأَخِّرِينَ أَنَّهَا وَاجِبَةٌ وَتَسْقُطُ بِالنِّسْيَانِ؛ وَالسِّوَاكُ سُنَّةٌ، وَتَثْلِيثُ الْغَسْلِ سُنَّةٌ، وَتَخْلِيلُ الأَصَابِعِ سُنَّةٌ، وَيُنْهَى عَنِ الإِسْرَافِ.",
+        fr: "Basmala : obligation (qui tombe par oubli selon l’avis retenu) ; siwâk : sunna ; trois lavages : sunna ; entrelacement des doigts : sunna ; gaspillage d’eau blâmé."
+      }
     },
-    Maliki: {
-      ar: "التيمنُ سُنَّةٌ فِي أَبْوابِ الإِكْرامِ، ولا يُتَشَدَّدُ فِيمَا لَا دَلِيلَ عَلَيْهِ، وتُقَدَّمُ اليُسْرَى فِي ضِدِّهِ.",
-      fr: "La droite est une sunna dans les actes honorifiques ; pas d’exagération ; la gauche est prioritaire pour ce qui est à l’inverse."
-    },
-    Shafi: {
-      ar: "التيمنُ سُنَّةٌ مُؤَكَّدَةٌ فِي الطَّهارَةِ واللِّباسِ ونحوِهِمَا، مَعَ اسْتِثْناءِ ما وَرَدَ بِتَقْدِيمِ اليُسْرَى.",
-      fr: "La droite est une sunna confirmée (ablution, habillement) avec des exceptions où la gauche est prioritaire."
-    },
-    Hanbali: {
-      ar: "التيمنُ سُنَّةٌ فِي كُلِّ ما شُرِّفَ، واليُسْرَى فِيمَا سِوَى ذَلِكَ كَالْخَلْعِ والخُرُوجِ.",
-      fr: "La droite est sunna pour tout acte noble ; la gauche est prioritaire pour enlever ou sortir."
-    }
+    audio_url: null
   },
-  audio_url: null
-},
+
+  {
+    number: 9,
+    chapter: "tahara",
+    siraBlockId: "prayer-structure",
+    arabic_text:
+      "عَنْ عَائِشَةَ رَضِيَ اللَّهُ عَنْهَا قَالَتْ: « كَانَ رَسُولُ اللَّهِ ﷺ يُعْجِبُهُ التَّيَمُّنُ فِي تَنَعُّلِهِ، وَتَرَجُّلِهِ، وَطُهُورِهِ، وَفِي شَأْنِهِ كُلِّهِ. »",
+    french_text:
+      "‘Â’isha (ra) : « Le Messager d’Allah ﷺ aimait commencer par la droite dans ses sandales, sa coiffure, sa purification et dans toutes ses affaires. »",
+    source: "Al-Bukhârî & Muslim",
+    tags: ["adab", "tahara", "droite"],
+    opinions: {
+      Hanafi: {
+        ar: "التيمنُ مُسْتَحَبٌّ فِيما كانَ مِن بابِ الإِكْرامِ كالوُضوءِ واللِّباسِ والدُّخولِ، وتُقَدَّمُ اليُسْرَى فِيمَا لَيْسَ مِن ذَلِكَ.",
+        fr: "Commencer par la droite est recommandé pour les actes d’honneur (wudû’, habillement, entrée). La gauche est prioritaire pour l’inverse."
+      },
+      Maliki: {
+        ar: "التيمنُ سُنَّةٌ فِي أَبْوابِ الإِكْرامِ، ولا يُتَشَدَّدُ فِيمَا لَا دَلِيلَ عَلَيْهِ، وتُقَدَّمُ اليُسْرَى فِي ضِدِّهِ.",
+        fr: "La droite est une sunna dans les actes honorifiques ; pas d’exagération ; la gauche est prioritaire pour ce qui est à l’inverse."
+      },
+      Shafi: {
+        ar: "التيمنُ سُنَّةٌ مُؤَكَّدَةٌ فِي الطَّهارَةِ واللِّباسِ ونحوِهِمَا، مَعَ اسْتِثْناءِ ما وَرَدَ بِتَقْدِيمِ اليُسْرَى.",
+        fr: "La droite est une sunna confirmée (ablution, habillement) avec des exceptions où la gauche est prioritaire."
+      },
+      Hanbali: {
+        ar: "التيمنُ سُنَّةٌ فِي كُلِّ ما شُرِّفَ، واليُسْرَى فِيمَا سِوَى ذَلِكَ كَالْخَلْعِ والخُرُوجِ.",
+        fr: "La droite est sunna pour tout acte noble ; la gauche est prioritaire pour enlever ou sortir."
+      }
+    },
+    audio_url: null
+  },
 
   {
     number: 10,
+    chapter: "tahara",
+    siraBlockId: "daily-life-medina",
     arabic_text:
       "عن أبي هريرة رضي الله عنه قال: قال النبي ﷺ: «إنَّ أمتي يُدعون يوم القيامة غُرًّا مُحَجَّلين من آثار الوضوء، فمن استطاع منكم أن يُطيلَ غرته فليفعل».",
     french_text:
       "Abû Hurayra (ra) : « Ma communauté sera appelée au Jour de la Résurrection avec des marques lumineuses dues au wudû’. Que celui qui peut allonger sa ‘blancheur’ le fasse. »",
     source: "Dans le PDF (discussion sur « فليفعَل » et le sens de الغُرّة والتحجيل)",
-    tags: ["tahara","wudu","ghurra","tahjil"],
+    tags: ["tahara", "wudu", "ghurra", "tahjil"],
     opinions: {
       Hanafi: {
         ar: "عند الحنفية: إطالةُ الغُرّةِ والتحجيلِ تكونُ بغسلٍ زائدٍ على محلِّ الفرض، وهي من آداب الوضوء، ولا يُتجاوزُ بها الحدَّ المشروع.",
@@ -328,13 +347,15 @@ export const HADITHS_1_15 = [
 
   {
     number: 11,
-    narratorId:4,
+    narratorId: 4,
+    chapter: "tahara",
+    siraBlockId: "daily-life-medina",
     arabic_text:
       "عن أنسٍ رضي الله عنه قال: كان رسولُ الله ﷺ إذا دخل الخلاء قال: «اللهم إني أعوذ بك من الخُبثِ والخبائث».",
     french_text:
       "Anas (ra) : « Quand il entrait aux latrines, le Prophète ﷺ disait : “Ô Allah, je cherche refuge auprès de Toi contre les mâles et femelles des démons.” »",
     source: "Dans le PDF",
-    tags: ["tahara","istiaadha","toilettes"],
+    tags: ["tahara", "istiaadha", "toilettes"],
     opinions: {
       Hanafi: {
         ar: "تُشرَعُ هذه الاستعاذةُ عند إرادةِ الدخول، ويُجتنبُ ذكرُ الله داخل الخلاء إلا لحاجة.",
@@ -357,331 +378,335 @@ export const HADITHS_1_15 = [
   },
 
   {
-  number: 12,
-  narratorId:8,
-  arabic_text:
-    "عَنْ أَبِي أَيُّوبَ الأَنْصَارِيِّ رَضِيَ اللَّهُ عَنْهُ قَالَ: قَالَ رَسُولُ اللَّهِ ﷺ: «إِذَا أَتَيْتُمُ الْغَائِطَ فَلَا تَسْتَقْبِلُوا الْقِبْلَةَ وَلَا تُدْبِرُوهَا بِبَوْلٍ وَلَا غَائِطٍ، وَلَكِنْ شَرِّقُوا أَوْ غَرِّبُوا»",
-  french_text:
-    "Abû Ayyûb (ra) : « Lorsque vous allez pour le besoin, ne faites pas face à la qibla et ne lui tournez pas le dos en urinant ou en déféquant ; orientez-vous plutôt vers l’est ou l’ouest. »",
-  source: "Dans le PDF",
-  tags: ["tahara", "toilettes", "qibla"],
-  opinions: {
-    Hanafi: {
-      ar: "فِي الصَّحْرَاءِ: يَحْرُمُ الاسْتِقْبَالُ وَالاسْتِدْبَارُ. وَفِي البُنْيَانِ: الجَوَازُ هُوَ المُعْتَمَدُ مَعَ كَرَاهَةٍ عِنْدَ بَعْضِهِمْ.",
-      fr: "En plein air : interdit de faire face/dos. En bâti : autorisé (certains parlent de réprobation)."
+    number: 12,
+    narratorId: 8,
+    chapter: "tahara",
+    siraBlockId: "daily-life-medina",
+    arabic_text:
+      "عَنْ أَبِي أَيُّوبَ الأَنْصَارِيِّ رَضِيَ اللَّهُ عَنْهُ قَالَ: قَالَ رَسُولُ اللَّهِ ﷺ: «إِذَا أَتَيْتُمُ الْغَائِطَ فَلَا تَسْتَقْبِلُوا الْقِبْلَةَ وَلَا تُدْبِرُوهَا بِبَوْلٍ وَلَا غَائِطٍ، وَلَكِنْ شَرِّقُوا أَوْ غَرِّبُوا»",
+    french_text:
+      "Abû Ayyûb (ra) : « Lorsque vous allez pour le besoin, ne faites pas face à la qibla et ne lui tournez pas le dos en urinant ou en déféquant ; orientez-vous plutôt vers l’est ou l’ouest. »",
+    source: "Dans le PDF",
+    tags: ["tahara", "toilettes", "qibla"],
+    opinions: {
+      Hanafi: {
+        ar: "فِي الصَّحْرَاءِ: يَحْرُمُ الاسْتِقْبَالُ وَالاسْتِدْبَارُ. وَفِي البُنْيَانِ: الجَوَازُ هُوَ المُعْتَمَدُ مَعَ كَرَاهَةٍ عِنْدَ بَعْضِهِمْ.",
+        fr: "En plein air : interdit de faire face/dos. En bâti : autorisé (certains parlent de réprobation)."
+      },
+      Maliki: {
+        ar: "المَنْعُ فِي الفَضَاءِ، وَالجَوَازُ فِي البُنْيَانِ جَمْعًا بَيْنَ الأَحَادِيثِ.",
+        fr: "Interdit dehors ; permis dans les toilettes bâties (conciliation des textes)."
+      },
+      Shafi: {
+        ar: "يَحْرُمُ فِي الفَضَاءِ، وَيَجُوزُ فِي البُنْيَانِ لِمَا وَرَدَ مِنَ الآثَارِ فِي البُيُوتِ.",
+        fr: "Interdit en extérieur ; permis dans le bâti en raison des récits concernant les maisons."
+      },
+      Hanbali: {
+        ar: "كَالجُمْهُورِ: المَنْعُ فِي الصَّحْرَاءِ، وَالجَوَازُ فِي البُنْيَانِ مَعَ اسْتِحْبَابِ الِانْحِرَافِ إِنْ أُمْكِنَ.",
+        fr: "Comme la majorité : interdit dehors, permis dedans, tout en s’écartant si possible."
+      }
     },
-    Maliki: {
-      ar: "المَنْعُ فِي الفَضَاءِ، وَالجَوَازُ فِي البُنْيَانِ جَمْعًا بَيْنَ الأَحَادِيثِ.",
-      fr: "Interdit dehors ; permis dans les toilettes bâties (conciliation des textes)."
-    },
-    Shafi: {
-      ar: "يَحْرُمُ فِي الفَضَاءِ، وَيَجُوزُ فِي البُنْيَانِ لِمَا وَرَدَ مِنَ الآثَارِ فِي البُيُوتِ.",
-      fr: "Interdit en extérieur ; permis dans le bâti en raison des récits concernant les maisons."
-    },
-    Hanbali: {
-      ar: "كَالجُمْهُورِ: المَنْعُ فِي الصَّحْرَاءِ، وَالجَوَازُ فِي البُنْيَانِ مَعَ اسْتِحْبَابِ الِانْحِرَافِ إِنْ أُمْكِنَ.",
-      fr: "Comme la majorité : interdit dehors, permis dedans, tout en s’écartant si possible."
-    }
+    audio_url: null
   },
-  audio_url: null
-},
-
 
   {
-  number: 13,
-  narratorId:1,
-  arabic_text:
-    "عَنْ عَبْدِ اللَّهِ بْنِ عُمَرَ بْنِ الْخَطَّابِ رَضِيَ اللَّهُ عَنْهُمَا قَالَ: «رَقِيتُ يَوْمًا عَلَى بَيْتِ حَفْصَةَ، فَرَأَيْتُ النَّبِيَّ ﷺ يَقْضِي حَاجَتَهُ مُسْتَقْبِلَ الشَّامِ، مُسْتَدْبِرَ الْكَعْبَةِ».",
-  french_text:
-    "Ibn ‘Umar (ra) : « Un jour, je suis monté sur le toit de la maison de Hafsa, et j’ai vu le Prophète ﷺ faire ses besoins, tourné vers la direction du Shâm et tournant le dos à la Ka‘ba. »",
-  source: "Dans le PDF",
-  tags: ["tahara", "toilettes", "qibla"],
-  opinions: {
-    Hanafi: {
-      ar: "هَذَا الحَدِيثُ دَلِيلُ الجَوَازِ فِي البُنْيَانِ، مَعَ بَقَاءِ المَنْعِ فِي الفَضَاءِ.",
-      fr: "Preuve de la permission en intérieur ; l’interdiction demeure en plein air."
+    number: 13,
+    narratorId: 1,
+    chapter: "tahara",
+    siraBlockId: "ethics-protection",
+    arabic_text:
+      "عَنْ عَبْدِ اللَّهِ بْنِ عُمَرَ بْنِ الْخَطَّابِ رَضِيَ اللَّهُ عَنْهُمَا قَالَ: «رَقِيتُ يَوْمًا عَلَى بَيْتِ حَفْصَةَ، فَرَأَيْتُ النَّبِيَّ ﷺ يَقْضِي حَاجَتَهُ مُسْتَقْبِلَ الشَّامِ، مُسْتَدْبِرَ الْكَعْبَةِ».",
+    french_text:
+      "Ibn ‘Umar (ra) : « Un jour, je suis monté sur le toit de la maison de Hafsa, et j’ai vu le Prophète ﷺ faire ses besoins, tourné vers la direction du Shâm et tournant le dos à la Ka‘ba. »",
+    source: "Dans le PDF",
+    tags: ["tahara", "toilettes", "qibla"],
+    opinions: {
+      Hanafi: {
+        ar: "هَذَا الحَدِيثُ دَلِيلُ الجَوَازِ فِي البُنْيَانِ، مَعَ بَقَاءِ المَنْعِ فِي الفَضَاءِ.",
+        fr: "Preuve de la permission en intérieur ; l’interdiction demeure en plein air."
+      },
+      Maliki: {
+        ar: "يُسْتَدَلُّ بِهِ عَلَى الرُّخْصَةِ فِي البُنْيَانِ دَفْعًا لِلْحَرَجِ.",
+        fr: "Indique une dispense en bâti pour lever la gêne."
+      },
+      Shafi: {
+        ar: "يُجْمَعُ بَيْنَ النُّصُوصِ: المَنْعُ فِي الصَّحْرَاءِ، وَالجَوَازُ فِي البُيُوتِ.",
+        fr: "Conciliation : interdit dehors, permis dans les maisons."
+      },
+      Hanbali: {
+        ar: "عِنْدَ الحَنَابِلَةِ: جَوَازُ البُنْيَانِ مَعَ كَرَاهَةِ الاسْتِقْبَالِ إِنْ أَمْكَنَ الِانْحِرَافُ.",
+        fr: "Chez les hanbalites : permis dans le bâti, en évitant de faire face si l’on peut se détourner."
+      }
     },
-    Maliki: {
-      ar: "يُسْتَدَلُّ بِهِ عَلَى الرُّخْصَةِ فِي البُنْيَانِ دَفْعًا لِلْحَرَجِ.",
-      fr: "Indique une dispense en bâti pour lever la gêne."
-    },
-    Shafi: {
-      ar: "يُجْمَعُ بَيْنَ النُّصُوصِ: المَنْعُ فِي الصَّحْرَاءِ، وَالجَوَازُ فِي البُيُوتِ.",
-      fr: "Conciliation : interdit dehors, permis dans les maisons."
-    },
-    Hanbali: {
-      ar: "عِنْدَ الحَنَابِلَةِ: جَوَازُ البُنْيَانِ مَعَ كَرَاهَةِ الاسْتِقْبَالِ إِنْ أَمْكَنَ الِانْحِرَافُ.",
-      fr: "Chez les hanbalites : permis dans le bâti, en évitant de faire face si l’on peut se détourner."
-    }
+    audio_url: null
   },
-  audio_url: null
-},
-
- {
-  number: 14,
-  arabic_text:
-    "عَنْ أَنَسِ بْنِ مَالِكٍ رَضِيَ اللَّهُ عَنْهُ قَالَ: «كَانَ رَسُولُ اللَّهِ ﷺ يَدْخُلُ الْخَلَاءَ، فَأَحْمِلُ أَنَا وَغُلَامٌ نَحْوِي إِدَاوَةً مِنْ مَاءٍ وَعَنَزَةً، فَيَسْتَنْجِي بِالْمَاءِ».",
-  french_text:
-    "Anas (ra) : « Lorsque le Prophète ﷺ entrait aux latrines, je portais avec un jeune comme moi un petit récipient d’eau et un bâton ; il faisait l’istinjā’ avec l’eau. »",
-  source: "Dans le PDF",
-  tags: ["tahara", "istinja", "eau", "pierres"],
-  opinions: {
-    Hanafi: {
-      ar: "الِاسْتِنْجَاءُ بِالْمَاءِ أَوْ بِالأَحْجَارِ مَشْرُوعٌ، وَأَقَلُّهُ بِالأَحْجَارِ ثَلَاثُ مَسْحَاتٍ، وَالْجَمْعُ بَيْنَهُمَا أَفْضَلُ.",
-      fr: "Istinjā’ à l’eau ou aux pierres : permis ; minimum trois passages pour les pierres ; les combiner est meilleur."
-    },
-    Maliki: {
-      ar: "كِلَاهُمَا جَائِزٌ، وَالْمَاءُ أَبْلَغُ فِي الإِنْقَاءِ، وَتُجْزِئُ الأَحْجَارُ ثَلَاثًا مَا لَمْ تَتَعَدَّ النَّجَاسَةُ.",
-      fr: "Les deux sont permis ; l’eau nettoie mieux ; les pierres suffisent (trois) tant que l’impureté ne dépasse pas la zone."
-    },
-    Shafi: {
-      ar: "يَجُوزُ الِاسْتِنْجَاءُ بِالْمَاءِ وَبِالأَحْجَارِ، وَأَقَلُّهُ ثَلَاثُ مَسْحَاتٍ، وَالْجَمْعُ مُسْتَحَبٌّ.",
-      fr: "Permis à l’eau et aux pierres ; minimum trois passages ; les combiner est recommandé."
-    },
-    Hanbali: {
-      ar: "الِاسْتِنْجَاءُ بِالْمَاءِ سُنَّةٌ مُؤَكَّدَةٌ، وَتُجْزِئُ الأَحْجَارُ ثَلَاثًا، وَالْجَمْعُ بَيْنَهُمَا أَفْضَلُ.",
-      fr: "À l’eau : sunna confirmée ; les pierres suffisent (trois) ; les réunir est meilleur."
-    }
-  },
-  audio_url: null
-},
 
   {
-  number: 15,
-  narratorId:9,
-  arabic_text:
-    "عَنْ أَبِي قَتَادَةَ الْحَارِثِ بْنِ رِبْعِيٍّ الأَنْصَارِيِّ رَضِيَ اللَّهُ عَنْهُ أَنَّ النَّبِيَّ ﷺ قَالَ: «لَا يُمْسِكَنَّ أَحَدُكُمْ ذَكَرَهُ بِيَمِينِهِ وَهُوَ يَبُولُ، وَلَا يَتَمَسَّحْ مِنَ الْخَلَاءِ بِيَمِينِهِ، وَلَا يَتَنَفَّسْ فِي الْإِنَاءِ».",
-  french_text:
-    "Abû Qatâda (ra) : « Qu’aucun de vous ne tienne son sexe de la main droite en urinant, qu’il ne s’essuie pas de la droite aux latrines, et qu’il ne respire pas dans le récipient. »",
-  source: "Dans le PDF",
-  tags: ["adab", "toilettes", "droite", "étiquette"],
-  opinions: {
-    Hanafi: {
-      ar: "يُكْرَهُ مَسُّ الذَّكَرِ بِالْيَمِينِ حَالَ الْبَوْلِ، وَيُكْرَهُ الِاسْتِنْجَاءُ بِهَا؛ وَالنَّهْيُ لِلتَّأْدِيبِ.",
-      fr: "Makrûh : tenir le sexe de la droite et s’essuyer avec ; l’interdiction relève de l’étiquette."
+    number: 14,
+    chapter: "tahara",
+    siraBlockId: "ethics-protection",
+    arabic_text:
+      "عَنْ أَنَسِ بْنِ مَالِكٍ رَضِيَ اللَّهُ عَنْهُ قَالَ: «كَانَ رَسُولُ اللَّهِ ﷺ يَدْخُلُ الْخَلَاءَ، فَأَحْمِلُ أَنَا وَغُلَامٌ نَحْوِي إِدَاوَةً مِنْ مَاءٍ وَعَنَزَةً، فَيَسْتَنْجِي بِالْمَاءِ».",
+    french_text:
+      "Anas (ra) : « Lorsque le Prophète ﷺ entrait aux latrines, je portais avec un jeune comme moi un petit récipient d’eau et un bâton ; il faisait l’istinjā’ avec l’eau. »",
+    source: "Dans le PDF",
+    tags: ["tahara", "istinja", "eau", "pierres"],
+    opinions: {
+      Hanafi: {
+        ar: "الِاسْتِنْجَاءُ بِالْمَاءِ أَوْ بِالأَحْجَارِ مَشْرُوعٌ، وَأَقَلُّهُ بِالأَحْجَارِ ثَلَاثُ مَسْحَاتٍ، وَالْجَمْعُ بَيْنَهُمَا أَفْضَلُ.",
+        fr: "Istinjā’ à l’eau ou aux pierres : permis ; minimum trois passages pour les pierres ; les combiner est meilleur."
+      },
+      Maliki: {
+        ar: "كِلَاهُمَا جَائِزٌ، وَالْمَاءُ أَبْلَغُ فِي الإِنْقَاءِ، وَتُجْزِئُ الأَحْجَارُ ثَلَاثًا مَا لَمْ تَتَعَدَّ النَّجَاسَةُ.",
+        fr: "Les deux sont permis ; l’eau nettoie mieux ; les pierres suffisent (trois) tant que l’impureté ne dépasse pas la zone."
+      },
+      Shafi: {
+        ar: "يَجُوزُ الِاسْتِنْجَاءُ بِالْمَاءِ وَبِالأَحْجَارِ، وَأَقَلُّهُ ثَلَاثُ مَسْحَاتٍ، وَالْجَمْعُ مُسْتَحَبٌّ.",
+        fr: "Permis à l’eau et aux pierres ; minimum trois passages ; les combiner est recommandé."
+      },
+      Hanbali: {
+        ar: "الِاسْتِنْجَاءُ بِالْمَاءِ سُنَّةٌ مُؤَكَّدَةٌ، وَتُجْزِئُ الأَحْجَارُ ثَلَاثًا، وَالْجَمْعُ بَيْنَهُمَا أَفْضَلُ.",
+        fr: "À l’eau : sunna confirmée ; les pierres suffisent (trois) ; les réunir est meilleur."
+      }
     },
-    Maliki: {
-      ar: "ثَابِتَةٌ الْكَرَاهَةُ، وَتُسْتَعْمَلُ الْيُسْرَى فِي هَذَا الْبَابِ.",
-      fr: "La réprobation est établie ; on utilise la main gauche pour ces gestes."
-    },
-    Shafi: {
-      ar: "يُكْرَهُ ذَلِكَ، وَتُقَدَّمُ الْيُسْرَى لِلِاسْتِنْجَاءِ، وَالنَّهْيُ عِنْدَهُمْ لِلتَّنْزِيهِ.",
-      fr: "C’est makrûh ; la gauche est privilégiée pour l’istinjā’ ; le hadith indique une réprobation non-haram."
-    },
-    Hanbali: {
-      ar: "الْجُمْهُورُ عَلَى الْكَرَاهَةِ، وَذَهَبَ بَعْضُ الْحَنَابِلَةِ إِلَى التَّحْرِيمِ فِي مَسِّ الذَّكَرِ بِالْيَمِينِ حَالَ الْبَوْلِ.",
-      fr: "La majorité parle de makrûh ; certains hanbalites penchent vers l’interdiction (haram) de tenir le sexe de la main droite en urinant."
-    }
-  },
-  audio_url: null
-},
-{
-  number: 16,
-  narratorId:3,
-  arabic_text:
-    "عَنْ عَبْدِ اللَّهِ بْنِ عَبَّاسٍ رَضِيَ اللَّهُ عَنْهُمَا قَالَ: مَرَّ النَّبِيُّ ﷺ بِقَبْرَيْنِ فَقَالَ: «إِنَّهُمَا لَيُعَذَّبَانِ، وَمَا يُعَذَّبَانِ فِي كَبِيرٍ؛ أَمَّا أَحَدُهُمَا فَكَانَ لَا يَسْتَتِرُ مِنَ الْبَوْلِ، وَأَمَّا الآخَرُ فَكَانَ يَمْشِي بِالنَّمِيمَةِ». ثُمَّ أَخَذَ جَرِيدَةً رَطْبَةً، فَشَقَّهَا نِصْفَيْنِ، فَغَرَزَ فِي كُلِّ قَبْرٍ وَاحِدَةً، فَقِيلَ: يَا رَسُولَ اللَّهِ، لِمَ فَعَلْتَ هَذَا؟ قَالَ: «لَعَلَّهُ يُخَفَّفُ عَنْهُمَا مَا لَمْ يَيْبَسَا».",
-  french_text:
-    "Ibn ‘Abbâs (ra) : « Le Prophète ﷺ passa près de deux tombes et dit : “Ils subissent certes un châtiment, et ce n’est pas pour quelque chose de difficile à éviter : l’un ne se préservait pas de l’urine, et l’autre colportait la médisance (an-namîma).” Puis il prit une branche de palmier fraîche, la coupa en deux et planta une moitié sur chaque tombe. On lui demanda : “Ô Messager d’Allah, pourquoi as-tu fait cela ?” Il répondit : “Peut-être que leur châtiment sera allégé tant que ces branches ne seront pas sèches.” »",
-  source: "Al-Bukhârî & Muslim (cf. PDF)",
-  tags: ["tahara", "qabr", "istibra", "namima"],
-  opinions: {
-    Hanafi: {
-      ar: "يَدُلُّ الحَدِيثُ عَلَى وُجُوبِ الِاسْتِبْرَاءِ مِنَ الْبَوْلِ، وَأَنَّ النَّمِيمَةَ مِنَ الْكَبَائِرِ، وَأَمَّا وَضْعُ الجَرِيدَةِ الرَّطْبَةِ فَهُوَ فِعْلٌ خَاصٌّ بِالنَّبِيِّ ﷺ لَا يُسَنُّ لِغَيْرِهِ.",
-      fr: "Le hadith montre l’obligation de se préserver de l’urine et que la namîma est un péché majeur ; quant à la branche fraîche, c’est un geste spécifique au Prophète ﷺ et non une sunna à généraliser."
-    },
-    Maliki: {
-      ar: "يُفِيدُ وُجُوبَ التَّنَزُّهِ عَنِ الْبَوْلِ وَتَحْرِيمَ النَّمِيمَةِ، وَاسْتُحِبَّ الدُّعَاءُ لِلْأَمْوَاتِ وَلَمْ يُسْتَحَبَّ تَتَبُّعُ وَضْعِ الجَرَائِدِ عَلَى القُبُورِ؛ لِأَنَّهُ تَصَرُّفٌ نَبَوِيٌّ خَاصٌّ.",
-      fr: "Il implique l’obligation d’éviter l’urine et l’interdiction de la namîma ; on recommande l’invocation pour les morts, mais on ne recommande pas de poser des branches sur les tombes, car c’est un geste particulier du Prophète ﷺ."
-    },
-    Shafi: {
-      ar: "عِنْدَ الشَّافِعِيَّةِ: الِاسْتِبْرَاءُ مِنَ الْبَوْلِ وَاجِبٌ، وَالنَّمِيمَةُ كَبِيرَةٌ، وَوَضْعُ الجَرِيدَةِ يُعَدُّ جَائِزًا مِنْ فِعْلِ النَّبِيِّ ﷺ وَلَكِنْ لَا يُسْتَحَبُّ الِالْتِزَامُ بِهِ لِعَدَمِ مَعْرِفَةِ حَالِ الْمَوْتَى.",
-      fr: "Chez les shâfi‘ites : se préserver de l’urine est obligatoire, la namîma est un grand péché ; mettre une branche est admis comme un fait prophétique mais on ne recommande pas d’en faire une pratique régulière, car nous ne connaissons pas l’état des morts."
-    },
-    Hanbali: {
-      ar: "عِنْدَ الحَنَابِلَةِ: التَّهَاوُنُ بِأَمْرِ الْبَوْلِ مُوجِبٌ لِلْوَعِيدِ وَالنَّمِيمَةُ مِنْ أَكْبَرِ الذُّنُوبِ، وَالجُمْهُورُ مِنْهُمْ عَلَى أَنَّ غَرْزَ الجَرِيدَةِ لَيْسَ سُنَّةً مُطَّرِدَةً بَلْ خَاصٌّ بِقِصَّةِ هَذَيْنِ الْقَبْرَيْنِ.",
-      fr: "Chez les hanbalites : la négligence vis-à-vis de l’urine entraîne une lourde menace, et la namîma fait partie des grands péchés ; la majorité d’entre eux considère que le fait de planter une branche n’est pas une sunna générale, mais un cas particulier lié à ces deux tombes."
-    }
-  },
-  audio_url: null
-},
-
-/*********************** HADITH 17 ************************/
-
-{
-  number: 17,
-  arabic_text:
-    "عَنْ أَبِي هُرَيْرَةَ رَضِيَ اللهُ عَنْهُ، عَنِ النَّبِيِّ ﷺ قَالَ: «لَوْلَا أَنْ أَشُقَّ عَلَى أُمَّتِي لَأَمَرْتُهُمْ بِالسِّوَاكِ عِنْدَ كُلِّ صَلَاةٍ».",
-  french_text:
-    "Abû Hurayra (ra) rapporte que le Prophète ﷺ a dit : « Si je ne craignais pas de causer une difficulté à ma communauté, je leur aurais ordonné l’usage du siwâk à chaque prière. »",
-  source: "Al-Bukhârî & Muslim (cf. PDF)",
-  tags: ["siwak", "salat", "tahara"],
-  opinions: {
-    Hanafi: {
-      ar: null,
-      fr: "Aucun avis hanafite n’est mentionné dans le document fourni."
-    },
-    Maliki: {
-      ar: "السِّوَاكُ مُسْتَحَبٌّ عِنْدَ مَالِكٍ.",
-      fr: "Selon Mâlik, le siwâk est recommandé."
-    },
-    Shafi: {
-      ar: null,
-      fr: "Aucun avis shaféite n’est mentionné dans le document fourni."
-    },
-    Hanbali: {
-      ar: null,
-      fr: "Aucun avis hanbalite n’est mentionné dans le document fourni."
-    }
-  },
-  audio_url: null
-},
-
-/*********************** HADITH 18 ************************/
-
-{
-  number: 18,
-  narratorId:10,
-  arabic_text:
-    "عَنْ حُذَيْفَةَ بْنِ الْيَمَانِ رَضِيَ اللهُ عَنْهُ قَالَ: «كَانَ النَّبِيُّ ﷺ إِذَا قَامَ مِنَ اللَّيْلِ يَشُوصُ فَاهُ بِالسِّوَاكِ».",
-  french_text:
-    "Hudhayfa ibn al-Yamân (ra) a dit : « Lorsque le Prophète ﷺ se levait durant la nuit, il frottait sa bouche avec le siwâk. »",
-  source: "Al-Bukhârî & Muslim (cf. PDF)",
-  tags: ["siwak", "qiyam", "tahara"],
-  opinions: {
-    Hanafi: {
-      ar: null,
-      fr: "Aucun avis hanafite n’est présent dans le document."
-    },
-    Maliki: {
-      ar: null,
-      fr: "Aucun avis malikite n’est présent dans le document."
-    },
-    Shafi: {
-      ar: null,
-      fr: "Aucun avis shaféite n’est présent dans le document."
-    },
-    Hanbali: {
-      ar: null,
-      fr: "Aucun avis hanbalite n’est présent dans le document."
-    }
-  },
-  audio_url: null
-},
-
-/*********************** HADITH 19 ************************/
-
-{
-  number: 19,
-  arabic_text:
-    "عَنْ عَائِشَةَ رَضِيَ اللهُ عَنْهَا قَالَتْ: «دَخَلَ عَبْدُ الرَّحْمَنِ بْنُ أَبِي بَكْرٍ عَلَى رَسُولِ اللهِ ﷺ وَأَنَا مُسْنِدَتُهُ إِلَى صَدْرِي، وَمَعَهُ سِوَاكٌ رَطْبٌ، فَأَبْدَهُ رَسُولُ اللهِ ﷺ بَصَرَهُ ... ثُمَّ قَضَى، وَكَانَتْ تَقُولُ: مَاتَ بَيْنَ حَاقِنَتِي وَذَاقِنَتِي».",
-  french_text:
-    "‘Â’isha (ra) rapporte : « ‘Abd ar-Rahmân ibn Abî Bakr entra auprès du Messager d’Allah ﷺ alors que je le soutenais. Il avait un siwâk humide. Le Prophète ﷺ leva les yeux vers lui... Après avoir utilisé le siwâk, il leva la main — ou le doigt — puis rendit l’âme. Elle disait : “Il est mort entre ma poitrine et mon menton.” »",
-  source: "Al-Bukhârî (cf. PDF)",
-  tags: ["siwak", "akhir", "wafat", "sunna"],
-  opinions: {
-    Hanafi: {
-      ar: null,
-      fr: "Le document fourni ne mentionne aucun avis hanafite."
-    },
-    Maliki: {
-      ar: null,
-      fr: "Le document fourni ne mentionne aucun avis malikite."
-    },
-    Shafi: {
-      ar: null,
-      fr: "Le document fourni ne mentionne aucun avis shaféite."
-    },
-    Hanbali: {
-      ar: null,
-      fr: "Le document fourni ne mentionne aucun avis hanbalite."
-    }
-  },
-  audio_url: null
-},
-
-/*********************** HADITH 20 ************************/
-
-{
-  number: 20,
-  narratorId:11,
-  arabic_text:
-    "عَنْ أَبِي مُوسَى الأَشْعَرِيِّ رَضِيَ اللهُ عَنْهُ قَالَ: «أَتَيْتُ النَّبِيَّ ﷺ وَهُوَ يَسْتَنُّ بِسِوَاكٍ رَطْبٍ، وَطَرَفُ السِّوَاكِ عَلَى لِسَانِهِ، وَهُوَ يَقُولُ: أَعْ، أَعْ، وَالسِّوَاكُ فِي فِيهِ كَأَنَّهُ يَتَهَوَّعُ».",
-  french_text:
-    "Abû Mûsâ al-Ash‘arî (ra) rapporte : « Je vins auprès du Prophète ﷺ tandis qu’il utilisait un siwâk humide. L’extrémité du siwâk était sur sa langue, et il disait : “Aʿ… Aʿ…”, comme s’il avait un haut-le-cœur. »",
-  source: "Al-Bukhârî & Muslim (cf. PDF)",
-  tags: ["siwak", "langue", "tahara"],
-  opinions: {
-    Hanafi: {
-      ar: null,
-      fr: "Aucun avis hanafite n’est mentionné dans le document fourni."
-    },
-    Maliki: {
-      ar: null,
-      fr: "Aucun avis malikite n’est mentionné dans le document fourni."
-    },
-    Shafi: {
-      ar: null,
-      fr: "Aucun avis shaféite n’est mentionné dans le document fourni."
-    },
-    Hanbali: {
-      ar: null,
-      fr: "Aucun avis hanbalite n’est mentionné dans le document fourni."
-    }
-  },
-  audio_url: null
-},
-
-/*********************** HADITH 21 ************************/
-
-{
-  number: 21,
-  narratorId:12,
-  arabic_text:
-    "عَنْ المُغِيرَةِ بْنِ شُعْبَةَ رَضِيَ اللهُ عَنْهُ قَالَ: كُنْتُ مَعَ النَّبِيِّ ﷺ فِي سَفَرٍ، فَأَهْوَيْتُ لِأَنْزِعَ خُفَّيْهِ، فَقَالَ: «دَعْهُمَا، فَإِنِّي أَدْخَلْتُهُمَا طَاهِرَتَيْنِ»، فَمَسَحَ عَلَيْهِمَا.",
-  french_text:
-    "Al-Mughīra ibn Shuʿba (ra) rapporte : « J’étais avec le Prophète ﷺ en voyage et je voulus lui retirer ses khouffayn. Il dit : “Laisse-les, car je les ai enfilés en état de pureté.” Puis il les essuya. »",
-  source: "Al-Bukhârî & Muslim (Umdat al-Ahkâm, hadith 21)",
-  tags: ["tahara", "khouffayn", "ablutions", "voyage"],
-
-  opinions: {
-    Hanafi: {
-      ar:
-        "يَجُوزُ المَسْحُ عَلَى الخُفَّيْنِ عِنْدَ الحَنَفِيَّةِ بِشُرُوطٍ، مِنْهَا أَنْ يَكُونَا صُلْبَيْنِ وَسَاتِرَيْنِ لِلْكَعْبَيْنِ وَيُمْكِنَ المَشْيُ بِهِمَا. وَمُدَّةُ المَسْحِ: يَوْمٌ وَلَيْلَةٌ لِلْمُقِيمِ، وَثَلَاثَةُ أَيَّامٍ وَلَيَالِيهَا لِلْمُسَافِرِ.",
-      fr:
-        "Chez les hanafites : le masḥ sur les khouffayn est permis sous conditions (solides, couvrants). Durée : 1 jour/1 nuit pour le résident ; 3 jours/3 nuits pour le voyageur."
-    },
-
-    Maliki: {
-      ar:
-        "يَجُوزُ المَسْحُ عَلَى الخُفَّيْنِ عِنْدَ المَالِكِيَّةِ مَعَ كَرَاهَةٍ خَفِيفَةٍ، وَيُشْتَرَطُ أَنْ يَكُونَا سَمِيكَيْنِ وَسَاتِرَيْنِ لِلْقَدَمِ، وَأَلَّا يَنْفُذَ المَاءُ إِلَيْهِمَا بِسُهُولَةٍ. وَالمُدَّةُ عِنْدَهُمْ كَالْجُمْهُورِ: يَوْمٌ وَلَيْلَةٌ لِلْمُقِيمِ، وَثَلَاثَةُ أَيَّامٍ وَلَيَالٍ لِلْمُسَافِرِ.",
-      fr:
-        "Chez les malikites : permis mais légèrement déconseillé. Conditions : khouffayn épais et couvrants."
-    },
-
-    Shafi: {
-      ar:
-        "عِنْدَ الشَّافِعِيَّةِ: يَجُوزُ المَسْحُ عَلَى الخُفَّيْنِ إِذَا كَانَا طَاهِرَيْنِ، سَاتِرَيْنِ لِمَوْضِعِ الغَسْلِ، قَادِرَيْنِ عَلَى الثُّبُوتِ وَالمَشْيِ. وَمُدَّةُ المَسْحِ: يَوْمٌ وَلَيْلَةٌ لِلْمُقِيمِ، وَثَلَاثَةُ أَيَّامٍ وَلَيَالٍ لِلْمُسَافِرِ.",
-      fr:
-        "Chez les shaféites : permis si les khouffayn sont propres, couvrants et solides. Durée : 1 jour/1 nuit ; 3 jours/3 nuits."
-    },
-
-    Hanbali: {
-      ar:
-        "يُسَنُّ المَسْحُ عَلَى الخُفَّيْنِ عِنْدَ الحَنَابِلَةِ، وَهُوَ مِنْ رُخَصِ السَّفَرِ وَالحَضَرِ. وَيُشْتَرَطُ أَنْ يَكُونَا سَاتِرَيْنِ لِلْقَدَمِ وَمَثْبُوتَيْنِ. وَالمُدَّةُ: يَوْمٌ وَلَيْلَةٌ لِلْمُقِيمِ، وَثَلَاثَةُ أَيَّامٍ وَلَيَالٍ لِلْمُسَافِرِ.",
-      fr:
-        "Chez les hanbalites : recommandé et légiféré en résidence et en voyage. Même durée que la majorité."
-    },
-
-    Majority: {
-      ar:
-        "الجُمْهُورُ (الحَنَفِيَّةُ وَالشَّافِعِيَّةُ وَالحَنَابِلَةُ) عَلَى جَوَازِ المَسْحِ عَلَى الخُفَّيْنِ مَعَ الشُّرُوطِ المَعْرُوفَةِ، وَهُوَ مِنْ رُخَصِ الشَّرِيعَةِ الثَّابِتَةِ بِالأَحَادِيثِ الصَّحِيحَةِ.",
-      fr:
-        "La majorité considère le masḥ sur les khouffayn légiféré et permis sous conditions."
-    }
+    audio_url: null
   },
 
-  audio_url: null
-}
+  {
+    number: 15,
+    narratorId: 9,
+    chapter: "tahara",
+    siraBlockId: "ethics-protection",
+    arabic_text:
+      "عَنْ أَبِي قَتَادَةَ الْحَارِثِ بْنِ رِبْعِيٍّ الأَنْصَارِيِّ رَضِيَ اللَّهُ عَنْهُ أَنَّ النَّبِيَّ ﷺ قَالَ: «لَا يُمْسِكَنَّ أَحَدُكُمْ ذَكَرَهُ بِيَمِينِهِ وَهُوَ يَبُولُ، وَلَا يَتَمَسَّحْ مِنَ الْخَلَاءِ بِيَمِينِهِ، وَلَا يَتَنَفَّسْ فِي الْإِنَاءِ».",
+    french_text:
+      "Abû Qatâda (ra) : « Qu’aucun de vous ne tienne son sexe de la main droite en urinant, qu’il ne s’essuie pas de la droite aux latrines, et qu’il ne respire pas dans le récipient. »",
+    source: "Dans le PDF",
+    tags: ["adab", "toilettes", "droite", "étiquette"],
+    opinions: {
+      Hanafi: {
+        ar: "يُكْرَهُ مَسُّ الذَّكَرِ بِالْيَمِينِ حَالَ الْبَوْلِ، وَيُكْرَهُ الِاسْتِنْجَاءُ بِهَا؛ وَالنَّهْيُ لِلتَّأْدِيبِ.",
+        fr: "Makrûh : tenir le sexe de la droite et s’essuyer avec ; l’interdiction relève de l’étiquette."
+      },
+      Maliki: {
+        ar: "ثَابِتَةٌ الْكَرَاهَةُ، وَتُسْتَعْمَلُ الْيُسْرَى فِي هَذَا الْبَابِ.",
+        fr: "La réprobation est établie ; on utilise la main gauche pour ces gestes."
+      },
+      Shafi: {
+        ar: "يُكْرَهُ ذَلِكَ، وَتُقَدَّمُ الْيُسْرَى لِلِاسْتِنْجَاءِ، وَالنَّهْيُ عِنْدَهُمْ لِلتَّنْزِيهِ.",
+        fr: "C’est makrûh ; la gauche est privilégiée pour l’istinjā’ ; le hadith indique une réprobation non-haram."
+      },
+      Hanbali: {
+        ar: "الْجُمْهُورُ عَلَى الْكَرَاهَةِ، وَذَهَبَ بَعْضُ الْحَنَابِلَةِ إِلَى التَّحْرِيمِ فِي مَسِّ الذَّكَرِ بِالْيَمِينِ حَالَ الْبَوْلِ.",
+        fr: "La majorité parle de makrûh ; certains hanbalites penchent vers l’interdiction (haram) de tenir le sexe de la main droite en urinant."
+      }
+    },
+    audio_url: null
+  },
 
+  // HADITH 16–21 : toujours Kitâb at-Tahâra, on ajoute aussi chapter & siraBlockId
 
+  {
+    number: 16,
+    narratorId: 3,
+    chapter: "tahara",
+    siraBlockId: "ethics-protection",
+    arabic_text:
+      "عَنْ عَبْدِ اللَّهِ بْنِ عَبَّاسٍ رَضِيَ اللَّهُ عَنْهُمَا قَالَ: مَرَّ النَّبِيُّ ﷺ بِقَبْرَيْنِ فَقَالَ: «إِنَّهُمَا لَيُعَذَّبَانِ، وَمَا يُعَذَّبَانِ فِي كَبِيرٍ؛ أَمَّا أَحَدُهُمَا فَكَانَ لَا يَسْتَتِرُ مِنَ الْبَوْلِ، وَأَمَّا الآخَرُ فَكَانَ يَمْشِي بِالنَّمِيمَةِ». ثُمَّ أَخَذَ جَرِيدَةً رَطْبَةً، فَشَقَّهَا نِصْفَيْنِ، فَغَرَزَ فِي كُلِّ قَبْرٍ وَاحِدَةً، فَقِيلَ: يَا رَسُولَ اللَّهِ، لِمَ فَعَلْتَ هَذَا؟ قَالَ: «لَعَلَّهُ يُخَفَّفُ عَنْهُمَا مَا لَمْ يَيْبَسَا».",
+    french_text:
+      "Ibn ‘Abbâs (ra) : « Le Prophète ﷺ passa près de deux tombes et dit : “Ils subissent certes un châtiment, et ce n’est pas pour quelque chose de difficile à éviter : l’un ne se préservait pas de l’urine, et l’autre colportait la médisance (an-namîma).” Puis il prit une branche de palmier fraîche, la coupa en deux et planta une moitié sur chaque tombe. On lui demanda : “Ô Messager d’Allah, pourquoi as-tu fait cela ?” Il répondit : “Peut-être que leur châtiment sera allégé tant que ces branches ne seront pas sèches.” »",
+    source: "Al-Bukhârî & Muslim (cf. PDF)",
+    tags: ["tahara", "qabr", "istibra", "namima"],
+    opinions: {
+      Hanafi: {
+        ar: "يَدُلُّ الحَدِيثُ عَلَى وُجُوبِ الِاسْتِبْرَاءِ مِنَ الْبَوْلِ، وَأَنَّ النَّمِيمَةَ مِنَ الْكَبَائِرِ، وَأَمَّا وَضْعُ الجَرِيدَةِ الرَّطْبَةِ فَهُوَ فِعْلٌ خَاصٌّ بِالنَّبِيِّ ﷺ لَا يُسَنُّ لِغَيْرِهِ.",
+        fr: "Le hadith montre l’obligation de se préserver de l’urine et que la namîma est un péché majeur ; quant à la branche fraîche, c’est un geste spécifique au Prophète ﷺ et non une sunna à généraliser."
+      },
+      Maliki: {
+        ar: "يُفِيدُ وُجُوبَ التَّنَزُّهِ عَنِ الْبَوْلِ وَتَحْرِيمَ النَّمِيمَةِ، وَاسْتُحِبَّ الدُّعَاءُ لِلْأَمْوَاتِ وَلَمْ يُسْتَحَبَّ تَتَبُّعُ وَضْعِ الجَرَائِدِ عَلَى القُبُورِ؛ لِأَنَّهُ تَصَرُّفٌ نَبَوِيٌّ خَاصٌّ.",
+        fr: "Il implique l’obligation d’éviter l’urine et l’interdiction de la namîma ; on recommande l’invocation pour les morts, mais on ne recommande pas de poser des branches sur les tombes, car c’est un geste particulier du Prophète ﷺ."
+      },
+      Shafi: {
+        ar: "عِنْدَ الشَّافِعِيَّةِ: الِاسْتِبْرَاءُ مِنَ الْبَوْلِ وَاجِبٌ، وَالنَّمِيمَةُ كَبِيرَةٌ، وَوَضْعُ الجَرِيدَةِ يُعَدُّ جَائِزًا مِنْ فِعْلِ النَّبِيِّ ﷺ وَلَكِنْ لَا يُسْتَحَبُّ الِالْتِزَامُ بِهِ لِعَدَمِ مَعْرِفَةِ حَالِ الْمَوْتَى.",
+        fr: "Chez les shâfi‘ites : se préserver de l’urine est obligatoire, la namîma est un grand péché ; mettre une branche est admis comme un fait prophétique mais on ne recommande pas d’en faire une pratique régulière, car nous ne connaissons pas l’état des morts."
+      },
+      Hanbali: {
+        ar: "عِنْدَ الحَنَابِلَةِ: التَّهَاوُنُ بِأَمْرِ الْبَوْلِ مُوجِبٌ لِلْوَعِيدِ وَالنَّمِيمَةُ مِنْ أَكْبَرِ الذُّنُوبِ، وَالجُمْهُورُ مِنْهُمْ عَلَى أَنَّ غَرْزَ الجَرِيدَةِ لَيْسَ سُنَّةً مُطَّرِدَةً بَلْ خَاصٌّ بِقِصَّةِ هَذَيْنِ الْقَبْرَيْنِ.",
+        fr: "Chez les hanbalites : la négligence vis-à-vis de l’urine entraîne une lourde menace, et la namîma fait partie des grands péchés ; la majorité d’entre eux considère que le fait de planter une branche n’est pas une sunna générale, mais un cas particulier lié à ces deux tombes."
+      }
+    },
+    audio_url: null
+  },
+
+  {
+    number: 17,
+    chapter: "tahara",
+    siraBlockId: "daily-life-medina",
+    arabic_text:
+      "عَنْ أَبِي هُرَيْرَةَ رَضِيَ اللهُ عَنْهُ، عَنِ النَّبِيِّ ﷺ قَالَ: «لَوْلَا أَنْ أَشُقَّ عَلَى أُمَّتِي لَأَمَرْتُهُمْ بِالسِّوَاكِ عِنْدَ كُلِّ صَلَاةٍ».",
+    french_text:
+      "Abû Hurayra (ra) rapporte que le Prophète ﷺ a dit : « Si je ne craignais pas de causer une difficulté à ma communauté, je leur aurais ordonné l’usage du siwâk à chaque prière. »",
+    source: "Al-Bukhârî & Muslim (cf. PDF)",
+    tags: ["siwak", "salat", "tahara"],
+    opinions: {
+      Hanafi: {
+        ar: null,
+        fr: "Aucun avis hanafite n’est mentionné dans le document fourni."
+      },
+      Maliki: {
+        ar: "السِّوَاكُ مُسْتَحَبٌّ عِنْدَ مَالِكٍ.",
+        fr: "Selon Mâlik, le siwâk est recommandé."
+      },
+      Shafi: {
+        ar: null,
+        fr: "Aucun avis shaféite n’est mentionné dans le document fourni."
+      },
+      Hanbali: {
+        ar: null,
+        fr: "Aucun avis hanbalite n’est mentionné dans le document fourni."
+      }
+    },
+    audio_url: null
+  },
+
+  {
+    number: 18,
+    narratorId: 10,
+    chapter: "tahara",
+    siraBlockId: "daily-life-medina",
+    arabic_text:
+      "عَنْ حُذَيْفَةَ بْنِ الْيَمَانِ رَضِيَ اللهُ عَنْهُ قَالَ: «كَانَ النَّبِيُّ ﷺ إِذَا قَامَ مِنَ اللَّيْلِ يَشُوصُ فَاهُ بِالسِّوَاكِ».",
+    french_text:
+      "Hudhayfa ibn al-Yamân (ra) a dit : « Lorsque le Prophète ﷺ se levait durant la nuit, il frottait sa bouche avec le siwâk. »",
+    source: "Al-Bukhârî & Muslim (cf. PDF)",
+    tags: ["siwak", "qiyam", "tahara"],
+    opinions: {
+      Hanafi: {
+        ar: null,
+        fr: "Aucun avis hanafite n’est présent dans le document."
+      },
+      Maliki: {
+        ar: null,
+        fr: "Aucun avis malikite n’est présent dans le document."
+      },
+      Shafi: {
+        ar: null,
+        fr: "Aucun avis shaféite n’est présent dans le document."
+      },
+      Hanbali: {
+        ar: null,
+        fr: "Aucun avis hanbalite n’est présent dans le document."
+      }
+    },
+    audio_url: null
+  },
+
+  {
+    number: 19,
+    chapter: "tahara",
+    siraBlockId: "daily-life-medina",
+    arabic_text:
+      "عَنْ عَائِشَةَ رَضِيَ اللهُ عَنْهَا قَالَتْ: «دَخَلَ عَبْدُ الرَّحْمَنِ بْنُ أَبِي بَكْرٍ عَلَى رَسُولِ اللهِ ﷺ وَأَنَا مُسْنِدَتُهُ إِلَى صَدْرِي، وَمَعَهُ سِوَاكٌ رَطْبٌ، فَأَبْدَهُ رَسُولُ اللهِ ﷺ بَصَرَهُ ... ثُمَّ قَضَى، وَكَانَتْ تَقُولُ: مَاتَ بَيْنَ حَاقِنَتِي وَذَاقِنَتِي».",
+    french_text:
+      "‘Â’isha (ra) rapporte : « ‘Abd ar-Rahmân ibn Abî Bakr entra auprès du Messager d’Allah ﷺ alors que je le soutenais. Il avait un siwâk humide. Le Prophète ﷺ leva les yeux vers lui... Après avoir utilisé le siwâk, il leva la main — ou le doigt — puis rendit l’âme. Elle disait : “Il est mort entre ma poitrine et mon menton.” »",
+    source: "Al-Bukhârî (cf. PDF)",
+    tags: ["siwak", "akhir", "wafat", "sunna"],
+    opinions: {
+      Hanafi: {
+        ar: null,
+        fr: "Le document fourni ne mentionne aucun avis hanafite."
+      },
+      Maliki: {
+        ar: null,
+        fr: "Le document fourni ne mentionne aucun avis malikite."
+      },
+      Shafi: {
+        ar: null,
+        fr: "Le document fourni ne mentionne aucun avis shaféite."
+      },
+      Hanbali: {
+        ar: null,
+        fr: "Le document fourni ne mentionne aucun avis hanbalite."
+      }
+    },
+    audio_url: null
+  },
+
+  {
+    number: 20,
+    narratorId: 11,
+    chapter: "tahara",
+    siraBlockId: "daily-life-medina",
+    arabic_text:
+      "عَنْ أَبِي مُوسَى الأَشْعَرِيِّ رَضِيَ اللهُ عَنْهُ قَالَ: «أَتَيْتُ النَّبِيَّ ﷺ وَهُوَ يَسْتَنُّ بِسِوَاكٍ رَطْبٍ، وَطَرَفُ السِّوَاكِ عَلَى لِسَانِهِ، وَهُوَ يَقُولُ: أَعْ، أَعْ، وَالسِّوَاكُ فِي فِيهِ كَأَنَّهُ يَتَهَوَّعُ».",
+    french_text:
+      "Abû Mûsâ al-Ash‘arî (ra) rapporte : « Je vins auprès du Prophète ﷺ tandis qu’il utilisait un siwâk humide. L’extrémité du siwâk était sur sa langue, et il disait : “Aʿ… Aʿ…”, comme s’il avait un haut-le-cœur. »",
+    source: "Al-Bukhârî & Muslim (cf. PDF)",
+    tags: ["siwak", "langue", "tahara"],
+    opinions: {
+      Hanafi: {
+        ar: null,
+        fr: "Aucun avis hanafite n’est mentionné dans le document fourni."
+      },
+      Maliki: {
+        ar: null,
+        fr: "Aucun avis malikite n’est mentionné dans le document fourni."
+      },
+      Shafi: {
+        ar: null,
+        fr: "Aucun avis shaféite n’est mentionné dans le document fourni."
+      },
+      Hanbali: {
+        ar: null,
+        fr: "Aucun avis hanbalite n’est mentionné dans le document fourni."
+      }
+    },
+    audio_url: null
+  },
+
+  {
+    number: 21,
+    narratorId: 12,
+    chapter: "tahara",
+    siraBlockId: "daily-life-medina",
+    arabic_text:
+      "عَنْ المُغِيرَةِ بْنِ شُعْبَةَ رَضِيَ اللهُ عَنْهُ قَالَ: كُنْتُ مَعَ النَّبِيِّ ﷺ فِي سَفَرٍ، فَأَهْوَيْتُ لِأَنْزِعَ خُفَّيْهِ، فَقَالَ: «دَعْهُمَا، فَإِنِّي أَدْخَلْتُهُمَا طَاهِرَتَيْنِ»، فَمَسَحَ عَلَيْهِمَا.",
+    french_text:
+      "Al-Mughīra ibn Shuʿba (ra) rapporte : « J’étais avec le Prophète ﷺ en voyage et je voulus lui retirer ses khouffayn. Il dit : “Laisse-les, car je les ai enfilés en état de pureté.” Puis il les essuya. »",
+    source: "Al-Bukhârî & Muslim (Umdat al-Ahkâm, hadith 21)",
+    tags: ["tahara", "khouffayn", "ablutions", "voyage"],
+    opinions: {
+      Hanafi: {
+        ar:
+          "يَجُوزُ المَسْحُ عَلَى الخُفَّيْنِ عِنْدَ الحَنَفِيَّةِ بِشُرُوطٍ، مِنْهَا أَنْ يَكُونَا صُلْبَيْنِ وَسَاتِرَيْنِ لِلْكَعْبَيْنِ وَيُمْكِنَ المَشْيُ بِهِمَا. وَمُدَّةُ المَسْحِ: يَوْمٌ وَلَيْلَةٌ لِلْمُقِيمِ، وَثَلَاثَةُ أَيَّامٍ وَلَيَالِيهَا لِلْمُسَافِرِ.",
+        fr:
+          "Chez les hanafites : le masḥ sur les khouffayn est permis sous conditions (solides, couvrants). Durée : 1 jour/1 nuit pour le résident ; 3 jours/3 nuits pour le voyageur."
+      },
+      Maliki: {
+        ar:
+          "يَجُوزُ المَسْحُ عَلَى الخُفَّيْنِ عِنْدَ المَالِكِيَّةِ مَعَ كَرَاهَةٍ خَفِيفَةٍ، وَيُشْتَرَطُ أَنْ يَكُونَا سَمِيكَيْنِ وَسَاتِرَيْنِ لِلْقَدَمِ، وَأَلَّا يَنْفُذَ المَاءُ إِلَيْهِمَا بِسُهُولَةٍ. وَالمُدَّةُ عِنْدَهُمْ كَالْجُمْهُورِ: يَوْمٌ وَلَيْلَةٌ لِلْمُقِيمِ، وَثَلَاثَةُ أَيَّامٍ وَلَيَالٍ لِلْمُسَافِرِ.",
+        fr:
+          "Chez les malikites : permis mais légèrement déconseillé. Conditions : khouffayn épais et couvrants."
+      },
+      Shafi: {
+        ar:
+          "عِنْدَ الشَّافِعِيَّةِ: يَجُوزُ المَسْحُ عَلَى الخُفَّيْنِ إِذَا كَانَا طَاهِرَيْنِ، سَاتِرَيْنِ لِمَوْضِعِ الغَسْلِ، قَادِرَيْنِ عَلَى الثُّبُوتِ وَالمَشْيِ. وَمُدَّةُ المَسْحِ: يَوْمٌ وَلَيْلَةٌ لِلْمُقِيمِ، وَثَلَاثَةُ أَيَّامٍ وَلَيَالٍ لِلْمُسَافِرِ.",
+        fr:
+          "Chez les shaféites : permis si les khouffayn sont propres, couvrants et solides. Durée : 1 jour/1 nuit ; 3 jours/3 nuits."
+      },
+      Hanbali: {
+        ar:
+          "يُسَنُّ المَسْحُ عَلَى الخُفَّيْنِ عِنْدَ الحَنَابِلَةِ، وَهُوَ مِنْ رُخَصِ السَّفَرِ وَالحَضَرِ. وَيُشْتَرَطُ أَنْ يَكُونَا سَاتِرَيْنِ لِلْقَدَمِ وَمَثْبُوتَيْنِ. وَالمُدَّةُ: يَوْمٌ وَلَيْلَةٌ لِلْمُقِيمِ، وَثَلَاثَةُ أَيَّامٍ وَلَيَالٍ لِلْمُسَافِرِ.",
+        fr:
+          "Chez les hanbalites : recommandé et légiféré en résidence et en voyage. Même durée que la majorité."
+      },
+      Majority: {
+        ar:
+          "الجُمْهُورُ (الحَنَفِيَّةُ وَالشَّافِعِيَّةُ وَالحَنَابِلَةُ) عَلَى جَوَازِ المَسْحِ عَلَى الخُفَّيْنِ مَعَ الشُّرُوطِ المَعْرُوفَةِ، وَهُوَ مِنْ رُخَصِ الشَّرِيعَةِ الثَّابِتَةِ بِالأَحَادِيثِ الصَّحِيحَةِ.",
+        fr:
+          "La majorité considère le masḥ sur les khouffayn légiféré et permis sous conditions."
+      }
+    },
+    audio_url: null
+  }
 ];

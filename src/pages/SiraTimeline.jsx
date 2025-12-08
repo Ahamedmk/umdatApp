@@ -35,6 +35,11 @@ import { HADITHS_1_15 } from "@/data/seed_hadiths_1_15";
 //    + stories immersives
 // ──────────────────────────────────────
 
+// ──────────────────────────────────────
+// 1. TIMELINE : mapping Sîra + hadiths 1–21
+//    + stories immersives
+// ──────────────────────────────────────
+
 const SIRA_TIMELINE = [
   {
     id: "foundations-makkah",
@@ -160,7 +165,84 @@ Observe une limite qu’Allah t’a donnée (dans le regard, dans les réseaux, 
 Chaque fois que tu respectes cette limite, tu ressembles un peu plus aux habitants de Médine.`,
     },
   },
+
+  // ─────────── 16 : tombes & invisibles ───────────
+  {
+    id: "warning-graves",
+    label: "Les avertissements invisibles dans les tombes",
+    approxYear: "Médine – Période de structuration",
+    place: "Médine",
+    theme: "Purification intérieure, médisance, responsabilité",
+    color: "from-red-500 to-rose-600",
+    vibes: ["Grands péchés", "Namîma", "Respect des règles cachées"],
+    hadithNumbers: [16],
+    story: {
+      hook:
+        "Deux tombes, pas de noms, pas de dates… et pourtant le Prophète ﷺ s’arrête, parle de leur châtiment, et plante une branche pour eux.",
+      body: `
+À ce moment de la Sîra, la communauté est déjà bien installée à Médine. Les règles de purification sont connues, la prière est constante, mais Allah attire l’attention sur autre chose : ce qui se passe après la mort.
+
+Le Prophète ﷺ passe près de deux tombes et révèle ce que personne ne peut voir à l’œil nu : ils sont châtiés. Pas pour des choses “techniques” compliquées, mais pour deux comportements qu’on banalise vite : ne pas faire attention à l’urine, et colporter la médisance.
+
+Ce hadith relie directement deux univers : tes gestes très concrets (comment tu te purifies) et ton monde invisible (ce qui t’attend dans la tombe).`,
+      action: `
+Application pour toi aujourd’hui :
+1) Fais plus attention à ta façon de te purifier après avoir uriné.
+2) Surveille tes discussions : dès que ça glisse vers la namîma, coupe court ou change de sujet.`,
+    },
+  },
+
+  // ─────────── 17–20 : siwâk & fin de vie ───────────
+  {
+    id: "siwak-legacy",
+    label: "Le siwâk : purifier la bouche, purifier la fin de vie",
+    approxYear: "Fin de la vie à Médine",
+    place: "Médine",
+    theme: "Purification, nuit, dernière période de la Sîra",
+    color: "from-lime-500 to-emerald-600",
+    vibes: ["Qiyâm", "Derniers instants", "Attention aux détails"],
+    hadithNumbers: [17, 18, 19, 20],
+    story: {
+      hook:
+        "Si tu devais résumer la fin de la vie du Prophète ﷺ en un geste symbolique… tu serais surpris de voir à quel point le siwâk revient souvent.",
+      body: `
+Les hadiths 17 à 20 tournent autour du même objet très simple : un petit morceau de bois, le siwâk.
+
+On le voit lié à la prière, au qiyâm de la nuit, au réveil, et même à la toute fin de la vie du Prophète ﷺ, lorsqu’il utilise un siwâk humide alors qu’il est appuyé contre la poitrine de ‘Â’isha.
+
+Ça envoie un message fort : l’Islam ne sépare jamais le “spirituel” du “détail concret”. La bouche qui récite le Coran, qui invoque Allah, qui conseille les gens… doit être purifiée physiquement. Et ce geste, extrêmement simple, accompagne le Prophète ﷺ jusqu’à ses derniers instants.`,
+      action: `
+Application pour toi aujourd’hui :
+Garde un siwâk (ou au minimum une brosse à dents) lié à ta prière et à ton Qur’ân. Dis-toi : « Je veux que la bouche qui parle d’Allah soit respectée et purifiée. » Même un petit geste comme ça peut changer la façon dont tu perçois ton ‘ibâda.`,
+    },
+  },
+
+  // ─────────── 21 : rukhsa du voyage ───────────
+  {
+    id: "rukhsa-travel",
+    label: "Les facilités d’Allah pour le voyageur",
+    approxYear: "Conquêtes et déplacements",
+    place: "Entre Médine et les routes du voyage",
+    theme: "Rukhsa, khuffayn, facilité de la loi",
+    color: "from-sky-500 to-cyan-600",
+    vibes: ["Voyage", "Facilités", "Fiqh vivant"],
+    hadithNumbers: [21],
+    story: {
+      hook:
+        "Tu imagines peut-être que plus on est pieux, plus tout devient difficile. Mais regarde ce que fait le Prophète ﷺ sur la route.",
+      body: `
+Al-Mughîra ibn Shuʿba raconte une scène très simple : il enlève les khuffayn du Prophète ﷺ pour l’aider à se purifier, et le Prophète lui dit de les laisser : « Je les ai enfilés en état de pureté », puis il passe simplement la main humide dessus.
+
+Cette scène résume une philosophie entière du fiqh : Allah aime qu’on prenne Ses permissions, pas qu’on se complique la vie pour rien. L’essuyage sur les khuffayn est une rukhsa, une facilité, pour le résident comme pour le voyageur, dans des limites claires (durée, conditions).
+
+L’Islam n’est pas une religion qui te casse dès que tu bouges ou que tu voyages. Au contraire, la loi se plie pour te permettre de rester connecté à Allah dans des situations réelles : routes, fatigue, froid, contraintes.`,
+      action: `
+Application pour toi aujourd’hui :
+Apprends au moins une rukhsa de fiqh correctement (comme le masḥ sur les chaussettes/khouffayn) et utilise-la quand tu en as besoin. Ne cherche pas toujours “le plus compliqué” : cherche ce qu’Allah a rendu facile pour toi.`,
+    },
+  },
 ];
+
 
 const getHadithByNumber = (n) =>
   HADITHS_1_15.find((h) => h.number === n) || null;
