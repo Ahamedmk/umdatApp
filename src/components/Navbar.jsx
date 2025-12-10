@@ -1,7 +1,7 @@
 // /src/components/Navbar.jsx
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-
+import { HADITHS_1_15 } from "../data/seed_hadiths_1_15";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
@@ -50,6 +50,7 @@ export function Navbar() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const totalHadiths = HADITHS_1_15.length;
 
   const [open, setOpen] = useState(false);
   const [goto, setGoto] = useState("");
@@ -75,7 +76,7 @@ export function Navbar() {
 
   // Aller à un hadith par numéro
   const goToHadith = (n) => {
-    const num = Math.max(1, Math.min(21, Number(n)));
+    const num = Math.max(1, Math.min(totalHadiths, Number(n)));
     navigate(`/hadith/${num}`);
     setOpen(false);
   };

@@ -220,7 +220,7 @@ export default function ProgressDashboard() {
                 Tableau de progression
               </h1>
               <p className="text-sm text-slate-600 dark:text-slate-400">
-                Visualise où tu en es dans la mémorisation des 15 hadiths.
+                Visualise où tu en es dans la mémorisation des {totalHadiths} hadiths.
               </p>
             </div>
           </div>
@@ -242,7 +242,7 @@ export default function ProgressDashboard() {
               </div>
               <div className="text-2xl font-bold">{learnedCount}</div>
               <div className="text-[11px] opacity-80">
-                {masteredPercent}% des 15 hadiths
+                {masteredPercent}% des {totalHadiths} hadiths
               </div>
             </CardContent>
           </Card>

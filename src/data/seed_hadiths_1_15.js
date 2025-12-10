@@ -708,5 +708,57 @@ export const HADITHS_1_15 = [
       }
     },
     audio_url: null
-  }
+  },
+
+  /*********************** HADITH 22 ************************/
+
+{
+  number: 22,
+  arabic_text:
+    "عَنْ حُذَيْفَةَ بْنِ اليَمَانِ رَضِيَ اللهُ عَنْهُ قَالَ: « كُنْتُ مَعَ النَّبِيِّ ﷺ، فَبَالَ، ثُمَّ تَوَضَّأَ، وَمَسَحَ عَلَى خُفَّيْهِ ». ",
+  french_text:
+    "Hudhayfa ibn al-Yamân (ra) rapporte : « J’étais avec le Prophète ﷺ. Il urina, puis fit ses ablutions, et passa la main sur ses khouffayn. »",
+  source: "Al-Bukhârî & Muslim — ʿUmdat al-Aḥkâm (Hadith 22)",
+  tags: ["tahara", "khouffayn", "masah", "wudu"],
+
+  opinions: {
+    Hanafi: {
+      ar:
+        "يُجِيزُ الحَنَفِيَّةُ المَسْحَ عَلَى الخُفَّيْنِ بِاتِّفَاقٍ، وَيَشْتَرِطُونَ أَنْ يَكُونَا سَلِيمَيْنِ مِنَ الخَرْقِ الكَثِيرِ، وَأَنْ يُمْكِنَ المَشْيُ بِهِمَا، وَمُدَّةُ المَسْحِ يَوْمٌ وَلَيْلَةٌ لِلْمُقِيمِ وَثَلَاثَةُ أَيَّامٍ وَلَيَالِيهَا لِلْمُسَافِرِ.",
+      fr:
+        "Les hanafites autorisent le masḥ sur les khouffayn sous condition qu’ils ne soient pas troués et qu’on puisse marcher avec."
+    },
+
+    Maliki: {
+      ar:
+        "يُجِيزُ المَالِكِيَّةُ المَسْحَ عَلَى الخُفَّيْنِ، وَيَمْنَعُونَ المَسْحَ عَلَى الجَوْرَبِ الرَّقِيقِ، وَيَشْتَرِطُونَ أَنْ يَكُونَ الخُفُّ غَلِيظًا مَتِينًا يُمْكِنُ المَشْيُ عَلَيْهِ.",
+      fr:
+        "Les malikites autorisent le masḥ sur les khouffayn, mais pas sur les chaussettes fines."
+    },
+
+    Shafi: {
+      ar:
+        "يُجِيزُ الشَّافِعِيَّةُ المَسْحَ عَلَى الخُفَّيْنِ، وَيَشْتَرِطُونَ أَنْ يَكُونَ الخُفُّ أَوِ الجَوْرَبُ ثَخِينًا مُمَكَّنًا لِلمَشْيِ عَلَيْهِ، مَعَ لُبْسِهِ عَلَى طَهَارَةٍ كَامِلَةٍ.",
+      fr:
+        "Les shaféites l’autorisent à condition que la chaussure/chaussette soit épaisse et permettant de marcher."
+    },
+
+    Hanbali: {
+      ar:
+        "يُجِيزُ الحَنَابِلَةُ المَسْحَ عَلَى الخُفَّيْنِ وَالجَوْرَبَيْنِ إِذَا كَانَا سَمِيكَيْنِ يُمْكِنُ المَشْيُ بِهِمَا، وَمُدَّةُ المَسْحِ كَالْجُمْهُورِ.",
+      fr:
+        "Les hanbalites autorisent le masḥ sur les khouffayn et les chaussettes épaisses, avec la durée classique."
+    },
+
+    Majority: {
+      ar:
+        "الجُمْهُورُ عَلَى جَوَازِ المَسْحِ عَلَى الخُفَّيْنِ، وَالمُدَّةُ: يَوْمٌ وَلَيْلَةٌ لِلْمُقِيمِ، وَثَلَاثَةُ أَيَّامٍ وَلَيَالٍ لِلْمُسَافِرِ.",
+      fr:
+        "La majorité autorise le masḥ avec la durée d’un jour/une nuit pour le résident et trois jours/trois nuits pour le voyageur."
+    }
+  },
+
+  audio_url: null
+}
+
 ];

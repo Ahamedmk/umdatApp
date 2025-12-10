@@ -949,8 +949,329 @@ export const QUIZ_QUESTIONS_1_15 = [
     "Il est dit : « يستحب الاستياك عرضًا في الأسنان، وأما في اللسان فطولًا » — horizontal pour les dents, vertical pour la langue."
 },
 
+  {
+    n: 21,
+    q: "Pourquoi le Prophète ﷺ a-t-il dit à al-Mughīra : « دَعْهُمَا » (Laisse-les) ?",
+    options: [
+      "Parce qu'il était fatigué",
+      "Parce qu'il les avait enfilés en état de pureté",
+      "Parce qu'il allait les retirer lui-même",
+      "Parce qu'ils étaient mouillés"
+    ],
+    correctIndex: 1,
+    explain:
+      "Le Prophète ﷺ a dit : « فَإِنِّي أَدْخَلْتُهُمَا طَاهِرَتَيْنِ » — il les avait enfilés en état de pureté."
+  },
 
+  {
+    n: 21,
+    q: "Quelle action le Prophète ﷺ effectua après avoir dit : « Laisse-les » ?",
+    options: [
+      "Il retira les khouffayn",
+      "Il lava ses pieds",
+      "Il essuya sur les khouffayn",
+      "Il refit complètement les ablutions"
+    ],
+    correctIndex: 2,
+    explain: "Le texte dit : « فَمَسَحَ عَلَيْهِمَا » — puis il essuya dessus."
+  },
 
+  {
+    n: 21,
+    q: "Dans quelle situation ce hadith a-t-il été rapporté ?",
+    options: [
+      "Pendant une bataille",
+      "Pendant un voyage",
+      "Pendant le pèlerinage",
+      "Dans la mosquée de Médine"
+    ],
+    correctIndex: 1,
+    explain: "Al-Mughīra dit : « كُنْتُ مَعَ النَّبِيِّ ﷺ فِي سَفَرٍ »."
+  },
+
+  {
+    n: 21,
+    q: "Quelle condition essentielle ce hadith établit-il pour pouvoir essuyer sur les khouffayn ?",
+    options: [
+      "Que les khouffayn soient noirs",
+      "Qu’ils soient en cuir uniquement",
+      "Qu’ils aient été enfilés en état de pureté",
+      "Qu’on soit obligatoirement en voyage"
+    ],
+    correctIndex: 2,
+    explain:
+      "Condition fondamentale : « أَدْخَلْتُهُمَا طَاهِرَتَيْنِ » — les enfilés en état de pureté."
+  },
+
+  {
+    n: 21,
+    q: "Quelle école juridique considère le masḥ sur les khouffayn comme recommandé (sunnah) ?",
+    options: [
+      "Les Malikites",
+      "Les Hanafites",
+      "Les Hanbalites",
+      "Les Muʿtazilites"
+    ],
+    correctIndex: 2,
+    explain:
+      "Les Hanbalites (الحنابلة) considèrent le masḥ comme une sunnah confirmée."
+  },
+
+  {
+    n: 21,
+    q: "Quelle est la durée maximale du masḥ pour un voyageur selon la majorité des savants ?",
+    options: [
+      "12 heures",
+      "24 heures",
+      "48 heures",
+      "72 heures"
+    ],
+    correctIndex: 3,
+    explain:
+      "La majorité permet au voyageur 3 jours et 3 nuits (72 h)."
+  },
+
+  {
+    n: 21,
+    q: "Que montre ce hadith à propos de la facilité (taysīr) dans la religion ?",
+    options: [
+      "Qu'il faut toujours enlever ses chaussures",
+      "Que le islam impose la difficulté pour purifier le corps",
+      "Qu’Allah a facilité les actes en permettant l’essuyage",
+      "Que le voyage annule les règles d’ablution"
+    ],
+    correctIndex: 2,
+    explain:
+      "Le masḥ est une concession (رخصة) facilitée par la sharia, surtout en voyage."
+  },
+
+  {
+    n: 21,
+    q: "Quel est le rapporteur (sahābī) de ce hadith ?",
+    options: [
+      "Abū Hurayra",
+      "ʿUmar ibn al-Khaṭṭāb",
+      "al-Mughīra ibn Shuʿba",
+      "ʿAbdullāh ibn Masʿūd"
+    ],
+    correctIndex: 2,
+    explain:
+      "Le hadith est rapporté par al-Mughīra ibn Shuʿba رضي الله عنه."
+  },
+
+  {
+    n: 21,
+    q: "Que signifie le terme « الخُفَّيْنِ » dans le hadith ?",
+    options: [
+      "Les sandales ouvertes",
+      "Les chaussons en cuir couvrant les chevilles",
+      "Les chaussettes fines",
+      "Les bottes de voyage"
+    ],
+    correctIndex: 1,
+    explain:
+      "Al-khouffayn désigne deux chaussons en cuir couvrant les chevilles."
+  },
+
+  {
+    n: 21,
+    q: "Quel est le jugement (ḥukm) général du masḥ selon le Prophète ﷺ et la majorité ?",
+    options: [
+      "Interdit sauf en cas de nécessité extrême",
+      "Non légiféré",
+      "Permis et légiféré sous conditions",
+      "Obligatoire dans le voyage"
+    ],
+    correctIndex: 2,
+    explain:
+      "La majorité (jumhūr) considère le masḥ comme permis et établi par de nombreux hadiths."
+  },
+
+  {
+    n: 21,
+    q: "Explique brièvement la condition essentielle qui permet de faire le masḥ sur les khouffayn selon ce hadith.",
+    answer:
+      "La condition principale est de les avoir enfilés en état de pureté : « أَدْخَلْتُهُمَا طَاهِرَتَيْنِ ».",
+    explain:
+      "Sans cette condition, le masḥ ne serait pas valable selon le hadith et les savants."
+  },
+
+  {
+    n: 21,
+    q: "Pourquoi ce hadith est-il particulièrement important pour les voyageurs ?",
+    answer:
+      "Parce qu’il montre la facilité accordée par la sharia en voyage : essuyer plutôt que laver les pieds.",
+    explain:
+      "Le masḥ évite la gêne du déchaussement et permet de conserver la pureté plus facilement."
+  },
+
+  {
+    n: 22,
+    q: "Quel acte le Prophète ﷺ a-t-il accompli avant de faire ses ablutions dans ce hadith ?",
+    options: [
+      "Il a prié",
+      "Il a mangé",
+      "Il a uriné",
+      "Il a dormi"
+    ],
+    correctIndex: 2,
+    explain:
+      "Hudhayfa dit : « فَبَالَ ثُمَّ تَوَضَّأَ » — il urina puis fit ses ablutions."
+  },
+
+  {
+    n: 22,
+    q: "Que fit le Prophète ﷺ après avoir réalisé son wudu ?",
+    options: [
+      "Il retira ses khouffayn",
+      "Il lava ses pieds",
+      "Il essuya sur ses khouffayn",
+      "Il refit le wudu"
+    ],
+    correctIndex: 2,
+    explain:
+      "Le hadith conclut : « وَمَسَحَ عَلَى خُفَّيْهِ » — il passa la main sur ses khouffayn."
+  },
+
+  {
+    n: 22,
+    q: "Quel compagnon rapporte ce hadith ?",
+    options: [
+      "Abû Hurayra",
+      "Hudhayfa ibn al-Yamân",
+      "Abdullah ibn Masʿûd",
+      "Anas ibn Mâlik"
+    ],
+    correctIndex: 1,
+    explain:
+      "Le narrateur mentionné est : حذيفة بن اليمان رضي الله عنه."
+  },
+
+  {
+    n: 22,
+    q: "Ce hadith prouve principalement :",
+    options: [
+      "L’interdiction d'essuyer sur les khouffayn",
+      "La permission d'essuyer sur les khouffayn",
+      "L’obligation de retirer les chaussures avant le wudu",
+      "La nullité du wudu après avoir uriné"
+    ],
+    correctIndex: 1,
+    explain:
+      "Le Prophète ﷺ a essuyé sur ses khouffayn, ce qui prouve la permission du masḥ."
+  },
+
+  {
+    n: 22,
+    q: "Selon le consensus rapporté dans le texte, qui autorise le masḥ sur les khouffayn ?",
+    options: [
+      "Uniquement Abû Hanîfa",
+      "Tous les imams reconnus (ijmâʿ)",
+      "Uniquement les shaféites",
+      "Uniquement les savants du hadith"
+    ],
+    correctIndex: 1,
+    explain:
+      "An-Nawawî dit : « أجمع من يُعتدّ به على جواز المسح على الخفين »."
+  },
+
+  {
+    n: 22,
+    q: "Quelle durée le jumhūr (majorité) donne-t-il pour le masḥ du voyageur ?",
+    options: [
+      "Un jour et une nuit",
+      "Deux jours",
+      "Trois jours et trois nuits",
+      "Sept jours"
+    ],
+    correctIndex: 2,
+    explain:
+      "La majorité : « للمسافر ثلاثة أيام بلياليها »."
+  },
+
+  {
+    n: 22,
+    q: "Quelle condition est indispensable pour que le masḥ soit valide ?",
+    options: [
+      "Porter des khouffayn noirs",
+      "Enfiler les khouffayn sur une purification complète",
+      "Être obligatoirement en voyage",
+      "Porter un turban"
+    ],
+    correctIndex: 1,
+    explain:
+      "Condition fondamentale : les enfiler sur une « طهارة كاملة »."
+  },
+
+  {
+    n: 22,
+    q: "Quelle école n’accepte PAS l’essuyage sur les chaussettes fines (جورب رقيق) ?",
+    options: [
+      "Les Hanafites",
+      "Les Malikites",
+      "Les Hanbalites",
+      "Les Shaféites"
+    ],
+    correctIndex: 1,
+    explain:
+      "Dans le texte : « لا يجوز عند مالك المسح على الجورب الرقيق »."
+  },
+
+  {
+    n: 22,
+    q: "Selon les shaféites et hanbalites, la chaussette doit être :",
+    options: [
+      "Froide",
+      "Colorée",
+      "Épaisse et permettant de marcher",
+      "Mince et transparente"
+    ],
+    correctIndex: 2,
+    explain:
+      "Le texte dit : « يشترط أن يكون الجورب ثخينًا مُمَكِّنًا للمشي عليه »."
+  },
+
+  {
+    n: 22,
+    q: "Quel est l’intérêt principal de la règle du masḥ ?",
+    options: [
+      "Rendre le wudu plus difficile",
+      "Faciliter la vie du croyant",
+      "Supprimer le lavage des pieds définitivement",
+      "Annuler les ablutions"
+    ],
+    correctIndex: 1,
+    explain:
+      "C’est une facilité légiférée (رخصة) pour éviter la gêne et la difficulté."
+  },
+
+  /* --- QUESTION OUVERTE 1 --- */
+  {
+    n: 22,
+    q: "Explique en quelques mots pourquoi ce hadith est une preuve forte pour la légalité de l'essuyage sur les khouffayn.",
+    answer:
+      "Parce que le Prophète ﷺ l’a fait lui-même après le wudu, et l’action prophétique établit la Sunna.",
+    explain:
+      "Le hadith montre une pratique directe du Prophète ﷺ, ce qui constitue une preuve juridique solide."
+  },
+
+  {
+    n: 22,
+    q: "Quelle est la durée maximale du masḥ pour un résident et un voyageur ?",
+    answer:
+      "Résident : un jour et une nuit. Voyageur : trois jours et trois nuits.",
+    explain:
+      "C’est l’avis du jumhūr, clairement mentionné dans le texte explicatif."
+  },
+
+  {
+    n: 22,
+    q: "Pourquoi la chaussette doit-elle être épaisse selon plusieurs écoles ?",
+    answer:
+      "Parce qu’elle doit permettre de marcher avec et tenir le pied comme un vêtement solide.",
+    explain:
+      "La condition de solidité vise à assimiler la chaussette au khouff traditionnel."
+  },
 
 ];
 
