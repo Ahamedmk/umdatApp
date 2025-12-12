@@ -120,6 +120,41 @@ export const NARRATORS_MOCK = [
     key_anecdote:
       "Le Prophète ﷺ invoqua pour lui : « Ô Allah, donne-lui la compréhension de la religion et enseigne-lui l’interprétation. »",
     isUnlocked: false,
+    bio: {
+  approx_birth_year_h: 3,
+  birth_place: "La Mecque – Banû Hâshim",
+
+  conversion_story:
+    "‘Abd Allāh ibn ‘Abbās embrassa l’islam dans son enfance. Il était le fils d’al-‘Abbās ibn ‘Abd al-Muttalib, l’oncle du Prophète ﷺ. Très jeune, il accompagna le Messager d’Allah ﷺ, le servit et observa avec attention chacun de ses gestes, paroles et comportements.",
+
+  key_roles: [
+    "Il fut l’un des plus grands savants parmi les compagnons malgré son jeune âge.",
+    "Le Prophète ﷺ invoqua spécialement pour lui afin qu’Allah lui accorde la compréhension profonde du Coran.",
+    "Il devint la référence absolue en tafsîr parmi les compagnons et les Tâbi‘în.",
+    "De nombreux grands savants venaient s’asseoir à ses pieds pour apprendre l’interprétation du Livre d’Allah.",
+    "Il joua un rôle de conseiller religieux et juridique sous les califats de ‘Umar et ‘Alî.",
+  ],
+
+  anecdotes: [
+    "Le Prophète ﷺ posa sa main sur sa tête et invoqua : « Ô Allah, donne-lui la compréhension de la religion et enseigne-lui l’interprétation du Coran. »",
+    "Bien qu’il fût très jeune, les compagnons âgés l’invitaient à leurs assemblées en raison de son intelligence exceptionnelle.",
+    "Il patientait des heures devant la porte des compagnons plus âgés pour apprendre d’eux, refusant de les réveiller par respect.",
+    "On le surnommait « le savant de la communauté » et « le traducteur du Coran ».",
+  ],
+
+  death_year_h: 68,
+  death_place: "Ta’if",
+  approx_age_at_death: 71,
+
+  sources: [
+    "Ibn Hajar – Al-Isâba fî Tamyîz as-Sahâba",
+    "Adh-Dhahabî – Siyar A‘lâm an-Nubalâ’",
+    "Ibn Kathîr – Al-Bidâya wa an-Nihâya",
+    "Tabaqât Ibn Sa‘d",
+    "Musnad Ahmad, Sahîh al-Bukhârî, Sahîh Muslim"
+  ],
+}
+
   },
 
   {
@@ -139,6 +174,41 @@ export const NARRATORS_MOCK = [
     key_anecdote:
       "Il disait : « Il ne m’a jamais dit : pourquoi as-tu fait ceci ou cela ? »",
     isUnlocked: false,
+    bio: {
+  approx_birth_year_h: 10, 
+  birth_place: "Médine – Banû Najjâr (Ansâr)",
+
+  conversion_story:
+    "Anas ibn Mâlik embrassa l’islam très jeune à Médine. Sa mère, Umm Sulaym رضي الله عنها, était parmi les premières croyantes des Ansâr. Lors de l’arrivée du Prophète ﷺ à Médine, elle confia son fils Anas au Messager d’Allah ﷺ afin qu’il le serve et apprenne directement auprès de lui.",
+
+  key_roles: [
+    "Il servit le Prophète ﷺ pendant environ dix années, jour et nuit.",
+    "Il fut l’un des principaux témoins du comportement quotidien, de la douceur et de la miséricorde du Prophète ﷺ.",
+    "Il rapporta plus de 2 200 hadiths authentiques.",
+    "Il transmit la Sunna aux Tâbi‘în à Médine puis à Bassora.",
+    "Il vécut très longtemps, ce qui lui permit de devenir une référence majeure pour les générations suivantes.",
+  ],
+
+  anecdotes: [
+    "Anas disait : « J’ai servi le Prophète ﷺ pendant dix ans. Jamais il ne m’a dit : ‘Pourquoi as-tu fait cela ?’ ni ‘Pourquoi ne l’as-tu pas fait ?’ »",
+    "Il rapporta que le Prophète ﷺ avait la plus belle odeur qu’il n’ait jamais sentie.",
+    "Il témoigna que le Prophète ﷺ plaisantait avec les enfants et les saluait toujours en premier.",
+    "Il affirma que jamais une main n’avait été plus douce que celle du Messager d’Allah ﷺ.",
+  ],
+
+  death_year_h: 93,
+  death_place: "Bassora",
+  approx_age_at_death: 102,
+
+  sources: [
+    "Ibn Hajar – Al-Isâba fî Tamyîz as-Sahâba",
+    "Adh-Dhahabî – Siyar A‘lâm an-Nubalâ’",
+    "Ibn Kathîr – Al-Bidâya wa an-Nihâya",
+    "Tabaqât Ibn Sa‘d",
+    "Sahîh al-Bukhârî, Sahîh Muslim"
+  ],
+}
+
   },
 
   /* -----------------------------------------------------------
@@ -162,6 +232,41 @@ export const NARRATORS_MOCK = [
     key_anecdote:
       "Le Prophète ﷺ dit : « Si un prophète venait après moi, ce serait ‘Umar. »",
     isUnlocked: false,
+    bio: {
+  approx_birth_year_h: 40, 
+  birth_place: "La Mecque – Banû ‘Adî (Quraysh)",
+
+  conversion_story:
+    "‘Umar ibn al-Khattâb embrassa l’islam vers la sixième année de la mission prophétique. Initialement farouche opposant à l’islam, il sortit un jour avec l’intention de tuer le Prophète ﷺ. En chemin, il apprit la conversion de sa sœur Fâtima et, après avoir entendu la récitation de versets de la sourate Tâ-Hâ, son cœur fut bouleversé. Il se rendit alors auprès du Messager d’Allah ﷺ et embrassa l’islam ouvertement.",
+
+  key_roles: [
+    "Il fut l’un des compagnons les plus fermes et les plus justes.",
+    "Le Prophète ﷺ lui donna le surnom d’Al-Fârûq, car Allah fit triompher la vérité par lui.",
+    "Il devint le deuxième calife bien guidé après Abû Bakr رضي الله عنه.",
+    "Sous son califat, l’islam connut une expansion sans précédent et une organisation administrative exemplaire.",
+    "Il institua de nombreuses bases de gouvernance encore étudiées aujourd’hui.",
+  ],
+
+  anecdotes: [
+    "Le Prophète ﷺ invoqua : « Ô Allah, renforce l’islam par ‘Umar ibn al-Khattâb. »",
+    "Après sa conversion, les musulmans purent prier ouvertement à la Ka‘ba.",
+    "Il marchait de nuit pour vérifier l’état de son peuple, portant parfois lui-même des sacs de nourriture.",
+    "Plusieurs versets du Coran furent révélés en accord avec ses avis.",
+  ],
+
+  death_year_h: 23,
+  death_place: "Médine – enterré aux côtés du Prophète ﷺ",
+  approx_age_at_death: 63,
+
+  sources: [
+    "Ibn Hajar – Al-Isâba fî Tamyîz as-Sahâba",
+    "Adh-Dhahabî – Siyar A‘lâm an-Nubalâ’",
+    "Ibn Kathîr – Al-Bidâya wa an-Nihâya",
+    "Tabaqât Ibn Sa‘d",
+    "Sahîh al-Bukhârî, Sahîh Muslim"
+  ],
+}
+
   },
 
   {
@@ -181,6 +286,41 @@ export const NARRATORS_MOCK = [
     key_anecdote:
       "Le Prophète ﷺ dit : « Ne serai-je pas pudique envers un homme dont même les anges ont honte ? »",
     isUnlocked: false,
+    bio: {
+  approx_birth_year_h: 47,
+  birth_place: "La Mecque – Banû Umayya (Quraysh)",
+
+  conversion_story:
+    "‘Uthmân ibn ‘Affân embrassa l’islam très tôt, à l’appel d’Abû Bakr رضي الله عنه. Issu d’une famille noble et respectée de Quraysh, il accepta la vérité sans hésitation. Malgré son rang social élevé, il endura les persécutions pour sa foi et émigra à deux reprises pour Allah et Son Messager ﷺ.",
+
+  key_roles: [
+    "Il fut l’un des tout premiers convertis à l’islam.",
+    "Il épousa successivement deux filles du Prophète ﷺ, ce qui lui valut le surnom de Dhû an-Nûrayn (l’homme aux deux lumières).",
+    "Il fut le troisième calife bien guidé après Abû Bakr et ‘Umar رضي الله عنهما.",
+    "Il joua un rôle central dans la compilation et l’unification du Coran sous une version officielle.",
+    "Il était connu pour sa grande pudeur, sa générosité et sa douceur.",
+  ],
+
+  anecdotes: [
+    "Le Prophète ﷺ dit : « Ne devrais-je pas éprouver de la pudeur devant un homme devant qui les anges eux-mêmes éprouvent de la pudeur ? »",
+    "Il finança entièrement l’équipement de l’armée de Tabûk lors d’une période de grande difficulté.",
+    "Il acheta le puits de Rûma pour le mettre gratuitement à disposition des musulmans.",
+    "Malgré les troubles à la fin de son califat, il refusa de faire couler le sang des musulmans pour se défendre.",
+  ],
+
+  death_year_h: 35,
+  death_place: "Médine – enterré à al-Baqî‘",
+  approx_age_at_death: 82,
+
+  sources: [
+    "Ibn Hajar – Al-Isâba fî Tamyîz as-Sahâba",
+    "Adh-Dhahabî – Siyar A‘lâm an-Nubalâ’",
+    "Ibn Kathîr – Al-Bidâya wa an-Nihâya",
+    "Tabaqât Ibn Sa‘d",
+    "Sahîh al-Bukhârî, Sahîh Muslim"
+  ],
+}
+
   },
 
   {
@@ -200,6 +340,39 @@ export const NARRATORS_MOCK = [
     key_anecdote:
       "Il transmit la description détaillée des ablutions du Prophète ﷺ d’après son grand-père.",
     isUnlocked: false,
+    bio: {
+  approx_birth_year_h: null,
+  birth_place: "Médine",
+
+  conversion_story:
+    "‘Amr ibn Yaḥyā al-Māzinī faisait partie des Tābi‘īn de Médine. Il naquit et grandit dans un environnement profondément marqué par la Sunna, au sein d’une famille attachée à la transmission du savoir. Son père, Yaḥyā al-Māzinī, fut lui-même rapporteur de hadiths.",
+
+  key_roles: [
+    "Il fut un rapporteur fiable parmi les Tābi‘īn de Médine.",
+    "Il transmit plusieurs hadiths concernant les actes d’adoration et les pratiques prophétiques.",
+    "Il rapporta principalement de son père Yaḥyā al-Māzinī, lui-même compagnon ou proche des compagnons.",
+    "Ses hadiths sont présents dans les recueils authentiques, notamment chez al-Bukhārī et Muslim.",
+    "Il contribua à préserver des pratiques concrètes de la Sunna, comme les règles liées aux ablutions.",
+  ],
+
+  anecdotes: [
+    "L’un de ses hadiths les plus connus concerne la description précise des ablutions du Prophète ﷺ, transmise avec une grande exactitude.",
+    "Les savants du hadith le considéraient comme thiqa (digne de confiance).",
+    "Il est un exemple de transmission familiale de la science : un fils rapportant fidèlement de son père.",
+  ],
+
+  death_year_h: null,
+  death_place: "Médine",
+
+  sources: [
+    "Al-Bukhārī – Sahîh (chapitres sur les ablutions)",
+    "Muslim – Sahîh",
+    "Ibn Ḥajar – Tahdhīb at-Tahdhīb",
+    "Al-Mizzī – Tahdhīb al-Kamāl",
+    "Ibn Sa‘d – aṭ-Ṭabaqāt al-Kubrā"
+  ],
+}
+
   },
 
   {
@@ -219,6 +392,41 @@ export const NARRATORS_MOCK = [
     key_anecdote:
       "Le Prophète ﷺ logea chez lui pendant plusieurs mois après l’Hégire.",
     isUnlocked: false,
+    bio: {
+  approx_birth_year_h: null,
+  birth_place: "Médine – Banû Najjâr (Ansâr)",
+
+  conversion_story:
+    "Abû Ayyûb al-Anṣārī faisait partie des Ansâr de Médine. Il embrassa l’islam avant l’Hégire et accueillit le Prophète ﷺ lors de son arrivée à Médine. Sa maison fut choisie par Allah pour être la première demeure du Messager d’Allah ﷺ dans la cité prophétique.",
+
+  key_roles: [
+    "Il eut l’honneur d’héberger le Prophète ﷺ lors de son arrivée à Médine.",
+    "Il participa à presque toutes les grandes batailles aux côtés du Prophète ﷺ.",
+    "Il fut un exemple de pudeur, de respect et de service envers le Messager d’Allah ﷺ.",
+    "Il poursuivit le jihād et la diffusion de l’islam même à un âge très avancé.",
+    "Il transmit plusieurs hadiths liés au comportement et à l’éthique prophétique.",
+  ],
+
+  anecdotes: [
+    "Lorsque le Prophète ﷺ s’installa dans sa maison, Abû Ayyûb refusa de dormir à l’étage par respect, craignant de se trouver au-dessus du Messager d’Allah ﷺ.",
+    "Il veillait à ce que la nourriture du Prophète ﷺ soit pure et intacte, observant même ce qu’il laissait dans son assiette.",
+    "Il continua de participer aux expéditions militaires jusqu’à un âge très avancé.",
+    "Il demanda à être enterré aussi loin que possible en territoire ennemi, afin que sa tombe soit un témoignage de son engagement pour l’islam.",
+  ],
+
+  death_year_h: 52,
+  death_place: "Aux portes de Constantinople",
+  approx_age_at_death: 80,
+
+  sources: [
+    "Ibn Hajar – Al-Isâba fî Tamyîz as-Sahâba",
+    "Adh-Dhahabî – Siyar A‘lâm an-Nubalâ’",
+    "Ibn Kathîr – Al-Bidâya wa an-Nihâya",
+    "Ibn Sa‘d – aṭ-Ṭabaqāt al-Kubrā",
+    "Sahîh al-Bukhârî, Sahîh Muslim"
+  ],
+}
+
   },
 
   {
@@ -238,6 +446,41 @@ export const NARRATORS_MOCK = [
     key_anecdote:
       "Il était l'un des meilleurs cavaliers parmi les compagnons.",
     isUnlocked: false,
+    bio: {
+  approx_birth_year_h: null,
+  birth_place: "Médine – Ansâr (Banû Salima)",
+
+  conversion_story:
+    "Abû Qatāda al-Anṣārī embrassa l’islam à Médine avant l’Hégire. Il fut parmi les Ansâr qui soutinrent le Prophète ﷺ dès son arrivée et se distingua très tôt par son courage, sa loyauté et sa maîtrise du combat.",
+
+  key_roles: [
+    "Il fut l’un des compagnons les plus courageux et habiles au combat.",
+    "Le Prophète ﷺ le surnomma « le chevalier du Messager d’Allah ﷺ ».",
+    "Il participa à de nombreuses expéditions militaires et missions de reconnaissance.",
+    "Il rapporta plusieurs hadiths liés au jihād, à la prière, au comportement et aux règles de purification.",
+    "Il joua un rôle actif après la mort du Prophète ﷺ, notamment sous les califats de ‘Umar et ‘Alî.",
+  ],
+
+  anecdotes: [
+    "Lors d’une expédition, Abû Qatāda affronta seul plusieurs ennemis et revint victorieux ; le Prophète ﷺ loua publiquement son courage.",
+    "Le Prophète ﷺ dit à son sujet : « Le meilleur de nos cavaliers est Abû Qatāda. »",
+    "Il rapporta le célèbre hadith concernant la prière surérogatoire du Prophète ﷺ pendant les voyages.",
+    "Il faisait preuve d’une grande obéissance aux ordres et d’un sens aigu de la discipline.",
+  ],
+
+  death_year_h: 54,
+  death_place: "Médine",
+  approx_age_at_death: null,
+
+  sources: [
+    "Ibn Hajar – Al-Isâba fî Tamyîz as-Sahâba",
+    "Adh-Dhahabî – Siyar A‘lâm an-Nubalâ’",
+    "Ibn Kathîr – Al-Bidâya wa an-Nihâya",
+    "Ibn Sa‘d – aṭ-Ṭabaqāt al-Kubrā",
+    "Sahîh al-Bukhârî, Sahîh Muslim"
+  ],
+}
+
   },
 
   {
@@ -257,6 +500,41 @@ export const NARRATORS_MOCK = [
     key_anecdote:
       "Il était le seul compagnon à connaître les noms des hypocrites révélés par le Prophète ﷺ.",
     isUnlocked: false,
+    bio: {
+  approx_birth_year_h: null,
+  birth_place: "La Mecque (origine) – installation à Médine",
+
+  conversion_story:
+    "Hudhayfa ibn al-Yamân embrassa l’islam avant l’Hégire. Bien qu’originaire de La Mecque, il s’installa à Médine et fut compté parmi les Ansâr par alliance. Il se distingua par sa lucidité, sa discrétion et sa profonde compréhension des réalités humaines.",
+
+  key_roles: [
+    "Il fut le seul compagnon à qui le Prophète ﷺ confia les noms des hypocrites de Médine.",
+    "Il participa aux grandes batailles aux côtés du Prophète ﷺ, notamment Uhud et la bataille du Fossé.",
+    "Il fut reconnu pour sa clairvoyance face aux troubles (fitan).",
+    "Il transmit des hadiths majeurs concernant la fin des temps et les épreuves de la communauté.",
+    "Il occupa des fonctions administratives sous le califat de ‘Umar ibn al-Khattâb.",
+  ],
+
+  anecdotes: [
+    "Le Prophète ﷺ lui confia les noms des hypocrites, un secret qu’il ne révéla jamais.",
+    "‘Umar ibn al-Khattâb surveillait si Hudhayfa priait sur un défunt, par crainte que ce dernier ne fasse partie des hypocrites.",
+    "Il disait : « Les gens interrogeaient le Prophète ﷺ sur le bien, et moi je l’interrogeais sur le mal, de peur qu’il ne m’atteigne. »",
+    "Il fut chargé d’une mission nocturne extrêmement dangereuse lors de la bataille du Fossé.",
+  ],
+
+  death_year_h: 36,
+  death_place: "Al-Madâ’in (Ctesiphon)",
+  approx_age_at_death: null,
+
+  sources: [
+    "Ibn Hajar – Al-Isâba fî Tamyîz as-Sahâba",
+    "Adh-Dhahabî – Siyar A‘lâm an-Nubalâ’",
+    "Ibn Kathîr – Al-Bidâya wa an-Nihâya",
+    "Ibn Sa‘d – aṭ-Ṭabaqāt al-Kubrā",
+    "Sahîh al-Bukhârî, Sahîh Muslim"
+  ],
+}
+
   },
 
   {
@@ -276,6 +554,41 @@ export const NARRATORS_MOCK = [
     key_anecdote:
       "Le Prophète ﷺ lui dit : « Tu as été doté d’une voix parmi les flûtes de la famille de Dâwûd. »",
     isUnlocked: false,
+    bio: {
+  approx_birth_year_h: null,
+  birth_place: "Yémen – tribu des Ash‘arites",
+
+  conversion_story:
+    "Abû Mûsâ al-Ash‘arî embrassa l’islam très tôt au Yémen. Il quitta sa terre natale avec un groupe de sa tribu pour rejoindre le Prophète ﷺ. Après une épreuve en mer qui le mena en Abyssinie, il rejoignit finalement le Messager d’Allah ﷺ à Médine.",
+
+  key_roles: [
+    "Il fut reconnu pour la beauté exceptionnelle de sa récitation du Coran.",
+    "Le Prophète ﷺ loua publiquement sa voix et son humilité.",
+    "Il fut gouverneur de Bassora puis de Koufa sous les califats de ‘Umar et ‘Uthmân رضي الله عنهما.",
+    "Il transmit de nombreux hadiths liés à la récitation, à la prière et au comportement.",
+    "Il fut un enseignant majeur du Coran auprès des Tâbi‘în.",
+  ],
+
+  anecdotes: [
+    "Le Prophète ﷺ lui dit : « Ô Abû Mûsâ, tu as reçu l’une des flûtes de la famille de Dâwûd. »",
+    "‘Umar ibn al-Khattâb aimait écouter sa récitation et lui demandait parfois de réciter pour lui.",
+    "Il récitait le Coran avec humilité, sans chercher à impressionner.",
+    "Il insistait sur le fait que la beauté de la récitation devait toujours rester au service du sens.",
+  ],
+
+  death_year_h: 44,
+  death_place: "Koufa",
+  approx_age_at_death: null,
+
+  sources: [
+    "Ibn Hajar – Al-Isâba fî Tamyîz as-Sahâba",
+    "Adh-Dhahabî – Siyar A‘lâm an-Nubalâ’",
+    "Ibn Kathîr – Al-Bidâya wa an-Nihâya",
+    "Ibn Sa‘d – aṭ-Ṭabaqāt al-Kubrā",
+    "Sahîh al-Bukhârî, Sahîh Muslim"
+  ],
+}
+
   },
 
   {
@@ -295,5 +608,40 @@ export const NARRATORS_MOCK = [
     key_anecdote:
       "Il rapporta plusieurs hadiths fondamentaux comme celui du mash (essuyage) sur les chaussons.",
     isUnlocked: false,
+    bio: {
+  approx_birth_year_h: null,
+  birth_place: "Ṭā’if – tribu de Thaqīf",
+
+  conversion_story:
+    "Al-Mughīra ibn Shuʿba embrassa l’islam après une période de recherche et d’observation. Originaire de Ṭā’if et issu de la tribu de Thaqīf, il se distingua rapidement par son intelligence vive, sa lucidité et sa capacité à gérer des situations complexes. Sa conversion fut suivie d’un engagement actif au service du Prophète ﷺ.",
+
+  key_roles: [
+    "Il fut l’un des compagnons connus pour leur intelligence stratégique et leur habileté diplomatique.",
+    "Il participa à plusieurs événements majeurs après sa conversion.",
+    "Il rapporta des hadiths importants concernant la purification, la prière et le comportement.",
+    "Il occupa des postes administratifs sous les califats de ‘Umar, ‘Uthmān et Mu‘āwiya رضي الله عنهم.",
+    "Il joua un rôle clé dans la stabilité politique de certaines régions.",
+  ],
+
+  anecdotes: [
+    "Il est le rapporteur du célèbre hadith autorisant l’essuyage sur les chaussons (khuffayn) lors des ablutions.",
+    "Il était réputé pour sa capacité à désamorcer les conflits par la parole et la sagesse.",
+    "‘Umar ibn al-Khaṭṭāb reconnaissait son intelligence et faisait appel à lui dans les affaires délicates.",
+    "Il disait que la ruse licite, lorsqu’elle évite l’injustice et le sang versé, est parfois une nécessité pour préserver l’ordre.",
+  ],
+
+  death_year_h: 50,
+  death_place: "Koufa",
+  approx_age_at_death: 70,
+
+  sources: [
+    "Ibn Ḥajar – Al-Isâba fî Tamyîz as-Ṣaḥâba",
+    "Adh-Dhahabī – Siyar A‘lâm an-Nubalâ’",
+    "Ibn Kathīr – Al-Bidâya wa an-Nihâya",
+    "Ibn Sa‘d – aṭ-Ṭabaqāt al-Kubrā",
+    "Sahîh al-Bukhârî, Sahîh Muslim"
+  ],
+}
+
   },
 ];

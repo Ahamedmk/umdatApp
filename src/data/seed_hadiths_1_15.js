@@ -285,6 +285,7 @@ export const HADITHS_1_15 = [
 
   {
     number: 9,
+    narratorId: 2,
     chapter: "tahara",
     siraBlockId: "prayer-structure",
     arabic_text:
@@ -316,6 +317,7 @@ export const HADITHS_1_15 = [
 
   {
     number: 10,
+    narratorId: 1,
     chapter: "tahara",
     siraBlockId: "daily-life-medina",
     arabic_text:
@@ -443,6 +445,7 @@ export const HADITHS_1_15 = [
 
   {
     number: 14,
+    narratorId: 4,
     chapter: "tahara",
     siraBlockId: "ethics-protection",
     arabic_text:
@@ -540,6 +543,7 @@ export const HADITHS_1_15 = [
 
   {
     number: 17,
+    narratorId: 1,
     chapter: "tahara",
     siraBlockId: "daily-life-medina",
     arabic_text:
@@ -603,6 +607,7 @@ export const HADITHS_1_15 = [
 
   {
     number: 19,
+    narratorId:2,
     chapter: "tahara",
     siraBlockId: "daily-life-medina",
     arabic_text:
@@ -714,6 +719,7 @@ export const HADITHS_1_15 = [
 
 {
   number: 22,
+  narratorId: 10,
   arabic_text:
     "عَنْ حُذَيْفَةَ بْنِ اليَمَانِ رَضِيَ اللهُ عَنْهُ قَالَ: « كُنْتُ مَعَ النَّبِيِّ ﷺ، فَبَالَ، ثُمَّ تَوَضَّأَ، وَمَسَحَ عَلَى خُفَّيْهِ ». ",
   french_text:
