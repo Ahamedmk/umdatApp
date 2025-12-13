@@ -357,7 +357,7 @@ export function Navbar() {
                   <Sparkles className="h-5 w-5 text-emerald-500" />
                   Navigation
                 </SheetTitle>
-                <SheetDescription className="text-slate-600 dark:text-slate-400">
+                <SheetDescription className="text-slate-600 dark:text-slate-400 pt-4">
                   Accède rapidement aux différentes sections
                 </SheetDescription>
               </SheetHeader>

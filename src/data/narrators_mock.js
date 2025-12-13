@@ -753,58 +753,5 @@ export const NARRATORS_MOCK = [
   },
 },
 
-{
-  id: 15,
-  slug: "abbad-ibn-tamim-ibn-ghaziyya",
-  name_ar: "عَبَّاد بن تميم بن غزيَّة",
-  name_fr: "ʿAbbād ibn Tamīm ibn Ghaziyya",
-  kunya: null,
-  generation: "Tābiʿī",
-  death_year_h: null,
-  region: "Médine",
-  rarity: "common",
-  avatar: "https://cdn.jsdelivr.net/gh/IslamicAvatars/tabiin/abbad_ibn_tamim.png",
-  hadith_count: null,
-  short_bio:
-    "Successeur médinois (Tābiʿī) fiable, connu pour avoir transmis des hadiths précis sur la purification et la prière.",
-  key_anecdote:
-    "Il rapporta de son oncle ‘Abd Allāh ibn Zayd des descriptions détaillées des ablutions du Prophète ﷺ.",
-  isUnlocked: false,
-
-  bio: {
-    approx_birth_year_h: null,
-    birth_place: "Médine – Ansâr",
-
-    conversion_story:
-      "ʿAbbād ibn Tamīm ibn Ghaziyya naquit et grandit à Médine dans une famille profondément ancrée dans l’islam. Il appartenait à la génération des Tābiʿīn et apprit directement des compagnons du Prophète ﷺ, en particulier de son oncle ‘Abd Allāh ibn Zayd al-Anṣārī رضي الله عنه.",
-
-    key_roles: [
-      "Il fut un Tābiʿī fiable reconnu par les savants du hadith.",
-      "Il transmit des hadiths décrivant avec précision les ablutions du Prophète ﷺ.",
-      "Il rapporta principalement de son oncle, compagnon direct du Prophète ﷺ.",
-      "Ses narrations figurent dans les recueils authentiques.",
-      "Il contribua à la transmission fidèle des pratiques concrètes de la Sunna.",
-    ],
-
-    anecdotes: [
-      "Ses hadiths sont souvent cités dans les chapitres de ṭahāra (purification).",
-      "Il décrivait les gestes des ablutions avec une grande précision.",
-      "Les savants le considéraient comme thiqa (digne de confiance).",
-      "Il illustre l’importance de la transmission familiale de la Sunna.",
-    ],
-
-    death_year_h: null,
-    death_place: "Médine",
-
-    sources: [
-      "Al-Bukhārī – Ṣaḥīḥ (chapitres sur les ablutions)",
-      "Muslim – Ṣaḥīḥ",
-      "Ibn Ḥajar – Tahdhīb at-Tahdhīb",
-      "Al-Mizzī – Tahdhīb al-Kamāl",
-      "Ibn Saʿd – aṭ-Ṭabaqāt al-Kubrā"
-    ],
-  },
-}
-
 
 ];
