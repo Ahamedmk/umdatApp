@@ -121,25 +121,25 @@ export function Navbar() {
       label: "Comparer",
       icon: Scale3d,
       gradient: "from-amber-500 to-orange-600",
-    },
-    {
-      to: "/exam",
-      label: "Examen",
-      icon: ClipboardCheck,
-      gradient: "from-red-500 to-rose-600",
-    },
-    {
-      to: "/exam/targeted",
-      label: "Ciblé",
-      icon: Target,
-      gradient: "from-cyan-500 to-blue-600",
-    },
-    {
-    to: "/timeline",
-    label: "Timeline Sîra",
-    icon: Map,
-    gradient: "from-emerald-500 to-sky-500",
-  },
+     },
+    // {
+    //   to: "/exam",
+    //   label: "Examen",
+    //   icon: ClipboardCheck,
+    //   gradient: "from-red-500 to-rose-600",
+    // },
+    // {
+    //   to: "/exam/targeted",
+    //   label: "Ciblé",
+    //   icon: Target,
+    //   gradient: "from-cyan-500 to-blue-600",
+    // },
+  //   {
+  //   to: "/timeline",
+  //   label: "Timeline Sîra",
+  //   icon: Map,
+  //   gradient: "from-emerald-500 to-sky-500",
+  // },
     // 👇 Nouveau bouton : Historique des révisions
     {
       to: "/history",

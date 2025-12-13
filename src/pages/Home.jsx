@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { BookOpen, RotateCcw, Brain, Scale } from "lucide-react";
+import logo from "@/assets/umdat-memorize-logo.png";
 
 export function Home() {
   const navigate = useNavigate();
@@ -49,18 +50,41 @@ export function Home() {
                     dark:from-slate-950 dark:via-blue-950 dark:to-indigo-950 p-6 transition-colors">
       <div className="max-w-6xl mx-auto">
         {/* Header Section */}
-        <header className="text-center mb-12 mt-8">
-          <div className="inline-block mb-4 px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-full">
-            <span className="text-white text-sm font-semibold">عمدة الأحكام</span>
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-800 dark:text-slate-100 mb-4 leading-tight">
-            Umdat al-Ahkam
-          </h1>
-          <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
-            Apprends et mémorise les hadiths en arabe et français, compare les avis des 4 écoles, 
-            et progresse avec un système de répétition espacée.
-          </p>
-        </header>
+        {/* Header Section */}
+<header className="text-center mb-12 mt-8">
+  {/* Logo */}
+  <div className="flex justify-center mb-6">
+    <img
+      src={logo}
+      alt="Umdat Memorize"
+      className="h-32 w-auto drop-shadow-md dark:drop-shadow-[0_10px_25px_rgba(0,0,0,0.4)]"
+    />
+  </div>
+
+  {/* Badge arabe */}
+  <div className="inline-block mb-4 px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-full">
+    <span className="text-white text-sm font-semibold">
+      عمدة الأحكام
+    </span>
+  </div>
+
+  {/* Titre */}
+  <h1 className="text-4xl md:text-5xl font-bold text-slate-800 dark:text-slate-100 mb-3 leading-tight">
+    Umdat Memorize
+  </h1>
+
+  {/* Slogan */}
+  <p className="text-base md:text-lg font-medium text-slate-500 dark:text-slate-400 mb-4">
+    Mémorisez. Comprenez. Maîtrisez.
+  </p>
+
+  {/* Description */}
+  <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
+    Apprends et mémorise les hadiths en arabe et en français, compare les avis des
+    4 écoles, et progresse grâce à un système de répétition espacée intelligent.
+  </p>
+</header>
+
 
         {/* Features Grid */}
         <div className="grid sm:grid-cols-2 gap-6 mb-8 ">
