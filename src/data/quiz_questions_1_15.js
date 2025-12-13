@@ -1273,6 +1273,376 @@ export const QUIZ_QUESTIONS_1_15 = [
       "La condition de solidité vise à assimiler la chaussette au khouff traditionnel."
   },
 
+  /* ------------------------------------------------------
+   HADITH 23 – QUIZ COMPLET
+   ------------------------------------------------------ */
+  /* --- QCM 1 --- */
+  {
+    n: 23,
+    q: "Quel compagnon rapporte le hadith concernant le madhī ?",
+    options: [
+      "ʿAbd Allāh ibn Masʿūd",
+      "ʿAlī ibn Abī Ṭālib",
+      "Abū Hurayra",
+      "Hudhayfa ibn al-Yamān"
+    ],
+    correctIndex: 1,
+    explain:
+      "Le hadith est rapporté par ʿAlī ibn Abī Ṭālib رضي الله عنه."
+  },
+
+  /* --- QCM 2 --- */
+  {
+    n: 23,
+    q: "Pourquoi ʿAlī رضي الله عنه n’a-t-il pas interrogé directement le Prophète ﷺ ?",
+    options: [
+      "Par peur de se tromper",
+      "Par manque de temps",
+      "Par pudeur en raison de sa fille",
+      "Parce qu’il était en voyage"
+    ],
+    correctIndex: 2,
+    explain:
+      "Il dit : « فاستحييت أن أسأل رسول الله ﷺ لمكان ابنته » — par pudeur à cause de sa fille."
+  },
+
+  /* --- QCM 3 --- */
+  {
+    n: 23,
+    q: "Qui ʿAlī رضي الله عنه a-t-il chargé de poser la question au Prophète ﷺ ?",
+    options: [
+      "Abū Ayyūb al-Anṣārī",
+      "al-Miqdād ibn al-Aswad",
+      "ʿAmmār ibn Yāsir",
+      "Zayd ibn Thābit"
+    ],
+    correctIndex: 1,
+    explain:
+      "Il demanda à al-Miqdād ibn al-Aswad رضي الله عنه de questionner le Prophète ﷺ."
+  },
+
+  /* --- QCM 4 --- */
+  {
+    n: 23,
+    q: "Que doit faire celui chez qui sort du madhī selon le hadith ?",
+    options: [
+      "Faire le ghusl complet",
+      "Laver ses vêtements seulement",
+      "Laver son sexe et faire le wudūʾ",
+      "Refaire uniquement la prière"
+    ],
+    correctIndex: 2,
+    explain:
+      "Le Prophète ﷺ a dit : « يَغْسِلُ ذَكَرَهُ وَيَتَوَضَّأُ »."
+  },
+
+  /* --- QCM 5 --- */
+  {
+    n: 23,
+    q: "Quel est le jugement du madhī selon les quatre écoles ?",
+    options: [
+      "Il est pur",
+      "Il est impur (najis)",
+      "Il est douteux",
+      "Il est assimilé au maniّ"
+    ],
+    correctIndex: 1,
+    explain:
+      "Les quatre écoles s’accordent sur la نجاسة (impureté) du madhī."
+  },
+
+  /* --- QCM 6 --- */
+  {
+    n: 23,
+    q: "Le madhī impose-t-il le ghusl (grande ablution) ?",
+    options: [
+      "Oui, selon toutes les écoles",
+      "Oui, selon les malikites",
+      "Non, selon les quatre écoles",
+      "Seulement chez les hanafites"
+    ],
+    correctIndex: 2,
+    explain:
+      "Consensus des quatre écoles : le madhī n’impose pas le ghusl."
+  },
+
+  /* --- QCM 7 --- */
+  {
+    n: 23,
+    q: "Selon la majorité des savants (jumhūr), que faut-il laver lorsque le madhī sort ?",
+    options: [
+      "Tout le corps",
+      "Tout le sexe",
+      "Uniquement l’endroit touché",
+      "Seulement les vêtements"
+    ],
+    correctIndex: 2,
+    explain:
+      "Le jumhūr considère qu’il suffit de laver l’endroit touché par le madhī."
+  },
+
+  /* --- QCM 8 --- */
+  {
+    n: 23,
+    q: "Quelle école impose le lavage complet du sexe en cas de madhī ?",
+    options: [
+      "Ḥanafite",
+      "Shāfiʿite",
+      "Ḥanbalite",
+      "Mālikite"
+    ],
+    correctIndex: 3,
+    explain:
+      "Chez les malikites, l’avis retenu est le lavage complet du sexe."
+  },
+
+  /* --- QCM 9 --- */
+  {
+    n: 23,
+    q: "Le madhī annule-t-il les ablutions (wudūʾ) ?",
+    options: [
+      "Non, jamais",
+      "Oui, selon consensus",
+      "Seulement en grande quantité",
+      "Uniquement chez les shaféites"
+    ],
+    correctIndex: 1,
+    explain:
+      "Les quatre écoles s’accordent sur le fait que le madhī annule le wudūʾ."
+  },
+
+  /* --- QCM 10 --- */
+  {
+    n: 23,
+    q: "Que montre le comportement de ʿAlī رضي الله عنه dans ce hadith ?",
+    options: [
+      "La crainte du jugement",
+      "La négligence",
+      "La pudeur et le respect",
+      "Le refus de poser des questions"
+    ],
+    correctIndex: 2,
+    explain:
+      "Le hadith illustre la grande pudeur (الحياء) de ʿAlī رضي الله عنه."
+  },
+
+  /* --- QUESTION OUVERTE 1 --- */
+  {
+    n: 23,
+    q: "Quelle est la différence principale entre le madhī et le maniّ ?",
+    answer:
+      "Le madhī est un liquide fin qui sort lors de l’excitation sans éjaculation et n’impose que le wudūʾ, tandis que le maniّ sort avec plaisir et impose le ghusl.",
+    explain:
+      "Cette distinction est essentielle en fiqh de la purification."
+  },
+
+  /* --- QUESTION OUVERTE 2 --- */
+  {
+    n: 23,
+    q: "Pourquoi ce hadith est-il important dans le chapitre de la ṭahāra ?",
+    answer:
+      "Parce qu’il clarifie le jugement du madhī, son impureté, et ce qu’il impose comme purification.",
+    explain:
+      "Il évite la confusion entre madhī et maniّ et facilite la pratique correcte."
+  },
+
+  /* --- QUESTION OUVERTE 3 --- */
+  {
+    n: 23,
+    q: "Quelle leçon morale peut-on tirer de l’attitude de ʿAlī رضي الله عنه ?",
+    answer:
+      "La pudeur n’empêche pas d’apprendre sa religion ; on peut poser ses questions par des moyens respectueux.",
+    explain:
+      "ʿAlī a délégué la question tout en cherchant la vérité religieuse."
+  },
+
+  /* ------------------------------------------------------
+   HADITH 24 – QUIZ COMPLET
+   ------------------------------------------------------ */
+  /* --- QCM 1 --- */
+  {
+    n: 24,
+    q: "Quel est le sujet principal du hadith 24 ?",
+    options: [
+      "La manière correcte de faire le wudūʾ",
+      "Les causes certaines d’annulation du wudūʾ",
+      "Le doute concernant l’annulation des ablutions",
+      "Les conditions de validité de la prière"
+    ],
+    correctIndex: 2,
+    explain:
+      "Le hadith traite du doute (الشك) concernant la sortie d’un événement annulant le wudūʾ."
+  },
+
+  /* --- QCM 2 --- */
+  {
+    n: 24,
+    q: "Qui est le compagnon à propos duquel ce hadith est rapporté ?",
+    options: [
+      "ʿAbd Allāh ibn ʿUmar",
+      "ʿAbd Allāh ibn Zayd ibn ʿĀṣim",
+      "Abū Hurayra",
+      "Anas ibn Mālik"
+    ],
+    correctIndex: 1,
+    explain:
+      "Le hadith est rapporté par ʿAbd Allāh ibn Zayd ibn ʿĀṣim al-Māzinī رضي الله عنه."
+  },
+
+  /* --- QCM 3 --- */
+  {
+    n: 24,
+    q: "Que ressentait l’homme pendant la prière selon le hadith ?",
+    options: [
+      "Une douleur",
+      "Une fatigue intense",
+      "L’impression qu’il avait annulé ses ablutions",
+      "Une distraction extérieure"
+    ],
+    correctIndex: 2,
+    explain:
+      "Le texte dit : « يُخَيَّلُ إِلَيْهِ أَنَّهُ يَجِدُ الشَّيْءَ فِي الصَّلَاةِ »."
+  },
+
+  /* --- QCM 4 --- */
+  {
+    n: 24,
+    q: "Quelle est la réponse du Prophète ﷺ face à ce doute ?",
+    options: [
+      "Qu’il refasse immédiatement ses ablutions",
+      "Qu’il interrompe la prière par précaution",
+      "Qu’il ne quitte pas la prière sans certitude",
+      "Qu’il demande l’avis d’un savant"
+    ],
+    correctIndex: 2,
+    explain:
+      "Le Prophète ﷺ a dit : « لا ينصرف حتى يسمع صوتًا أو يجد ريحًا »."
+  },
+
+  /* --- QCM 5 --- */
+  {
+    n: 24,
+    q: "Quelle preuve rend l’annulation du wudūʾ certaine selon le hadith ?",
+    options: [
+      "Une simple sensation",
+      "Une pensée insistante",
+      "Entendre un son ou sentir une odeur",
+      "Le doute prolongé"
+    ],
+    correctIndex: 2,
+    explain:
+      "Le hadith exige une preuve sensorielle claire : son ou odeur."
+  },
+
+  /* --- QCM 6 --- */
+  {
+    n: 24,
+    q: "Quelle grande règle juridique (qāʿida fiqhiyya) découle de ce hadith ?",
+    options: [
+      "La difficulté appelle la facilité",
+      "Le préjudice doit être écarté",
+      "La certitude ne disparaît pas par le doute",
+      "Les actes valent par leurs intentions"
+    ],
+    correctIndex: 2,
+    explain:
+      "Cette règle est formulée ainsi : « اليقين لا يزول بالشك »."
+  },
+
+  /* --- QCM 7 --- */
+  {
+    n: 24,
+    q: "Quel est l’avis de la majorité des savants concernant le doute après le wudūʾ ?",
+    options: [
+      "Le wudūʾ est annulé",
+      "Le wudūʾ est valide tant qu’il n’y a pas certitude",
+      "Il faut toujours refaire le wudūʾ",
+      "La prière est invalide"
+    ],
+    correctIndex: 1,
+    explain:
+      "Le jumhūr affirme que le doute n’annule pas la purification."
+  },
+
+  /* --- QCM 8 --- */
+  {
+    n: 24,
+    q: "Pourquoi ce hadith est-il important contre les waswās (obsessions) ?",
+    options: [
+      "Il impose plus de précautions",
+      "Il oblige à répéter la prière",
+      "Il empêche de céder aux doutes infondés",
+      "Il annule les sensations corporelles"
+    ],
+    correctIndex: 2,
+    explain:
+      "Le hadith ferme la porte aux doutes répétitifs et injustifiés."
+  },
+
+  /* --- QCM 9 --- */
+  {
+    n: 24,
+    q: "Que doit faire une personne qui doute souvent pendant la prière ?",
+    options: [
+      "Quitter la prière à chaque doute",
+      "Ignorer le doute et continuer",
+      "Refaire le wudūʾ systématiquement",
+      "S’asseoir et attendre"
+    ],
+    correctIndex: 1,
+    explain:
+      "La Sunna ordonne de rester sur la certitude et d’ignorer le doute."
+  },
+
+  /* --- QCM 10 --- */
+  {
+    n: 24,
+    q: "Ce hadith montre surtout que la religion islamique est :",
+    options: [
+      "Rigide",
+      "Complexe",
+      "Basée sur la facilité et la sagesse",
+      "Difficile à appliquer"
+    ],
+    correctIndex: 2,
+    explain:
+      "La règle protège le croyant contre la gêne et l’excès de scrupules."
+  },
+
+  /* --- QUESTION OUVERTE 1 --- */
+  {
+    n: 24,
+    q: "Explique en une phrase la règle « اليقين لا يزول بالشك ».",
+    answer:
+      "Une chose établie avec certitude ne peut être annulée par un simple doute.",
+    explain:
+      "C’est l’un des fondements majeurs du fiqh."
+  },
+
+  /* --- QUESTION OUVERTE 2 --- */
+  {
+    n: 24,
+    q: "Pourquoi le Prophète ﷺ a-t-il exigé un son ou une odeur ?",
+    answer:
+      "Parce qu’il faut une preuve claire et certaine pour annuler les ablutions.",
+    explain:
+      "Les sensations vagues ne sont pas juridiquement fiables."
+  },
+
+  /* --- QUESTION OUVERTE 3 --- */
+  {
+    n: 24,
+    q: "Quelle leçon spirituelle peut-on tirer de ce hadith ?",
+    answer:
+      "L’islam combat l’excès de doute et invite à la tranquillité du cœur.",
+    explain:
+      "La religion vise la sérénité, pas l’angoisse."
+  }
+
+
+
+
+
 ];
 
 /**

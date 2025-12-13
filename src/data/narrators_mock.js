@@ -644,4 +644,167 @@ export const NARRATORS_MOCK = [
 }
 
   },
+
+  {
+  id: 13,
+  slug: "ali-ibn-abi-talib",
+  name_ar: "علي بن أبي طالب رضي الله عنه",
+  name_fr: "ʿAlī ibn Abī Ṭālib",
+  kunya: "Abû al-Ḥasan",
+  generation: "Compagnon",
+  death_year_h: 40,
+  region: "Kûfa",
+  rarity: "legendary",
+  avatar: "https://cdn.jsdelivr.net/gh/IslamicAvatars/sahaba/ali_ibn_abi_talib.png",
+  hadith_count: 586,
+  short_bio:
+    "Cousin et gendre du Prophète ﷺ, quatrième calife bien guidé, connu pour sa science, son courage et sa justice.",
+  key_anecdote:
+    "Il dormit dans le lit du Prophète ﷺ la nuit de l’Hégire, risquant sa vie pour permettre sa sortie de La Mecque.",
+  isUnlocked: false,
+
+  bio: {
+    approx_birth_year_h: 23,
+    birth_place: "La Mecque – Banû Hâshim (Quraysh)",
+
+    conversion_story:
+      "ʿAlī ibn Abī Ṭālib fut le premier enfant à embrasser l’islam. Élevé dans la maison du Prophète ﷺ, il accepta la foi dès son plus jeune âge et demeura fidèle à l’islam toute sa vie. Il accompagna le Messager d’Allah ﷺ dans toutes les étapes de la mission.",
+
+    key_roles: [
+      "Il fut parmi les tout premiers croyants de l’islam.",
+      "Il fut le cousin et le gendre du Prophète ﷺ, époux de Fâṭima رضي الله عنها.",
+      "Il participa à toutes les grandes batailles, sauf Tabûk où il fut laissé à Médine.",
+      "Il fut reconnu pour sa science profonde, notamment en jurisprudence et en jugement.",
+      "Il devint le quatrième calife bien guidé après ‘Uthmân رضي الله عنه.",
+    ],
+
+    anecdotes: [
+      "Il dormit dans le lit du Prophète ﷺ la nuit de l’Hégire pour tromper Quraysh.",
+      "Le Prophète ﷺ dit à son sujet : « Tu es pour moi comme Hârûn était pour Mûsâ, sauf qu’il n’y a pas de prophète après moi. »",
+      "Il fut connu pour ses jugements d’une grande sagesse, même parmi les compagnons.",
+      "Son courage sur le champ de bataille était légendaire, notamment à Badr, Uhud et Khaybar.",
+    ],
+
+    death_year_h: 40,
+    death_place: "Kûfa",
+    approx_age_at_death: 63,
+
+    sources: [
+      "Ibn Ḥajar – Al-Isâba fî Tamyîz as-Ṣaḥâba",
+      "Adh-Dhahabī – Siyar A‘lâm an-Nubalâ’",
+      "Ibn Kathīr – Al-Bidâya wa an-Nihâya",
+      "Ibn Sa‘d – aṭ-Ṭabaqāt al-Kubrā",
+      "Sahîh al-Bukhârî, Sahîh Muslim"
+    ],
+  },
+},
+
+{
+  id: 14,
+  slug: "al-miqdad-ibn-amr",
+  name_ar: "المقداد بن عمرو رضي الله عنه",
+  name_fr: "Al-Miqdād ibn ʿAmr",
+  kunya: "Abû Maʿbad",
+  generation: "Compagnon",
+  death_year_h: 33,
+  region: "Médine",
+  rarity: "legendary",
+  avatar: "https://cdn.jsdelivr.net/gh/IslamicAvatars/sahaba/al_miqdad.png",
+  hadith_count: 42,
+  short_bio:
+    "Parmi les tout premiers croyants et l’un des plus courageux compagnons, célèbre pour sa parole décisive à la bataille de Badr.",
+  key_anecdote:
+    "À Badr, il déclara : « Nous ne dirons pas comme le peuple de Mûsâ : va, toi et ton Seigneur, combattez. Nous combattrons à ta droite, à ta gauche, devant toi et derrière toi. »",
+  isUnlocked: false,
+
+  bio: {
+    approx_birth_year_h: 24,
+    birth_place: "La Mecque",
+
+    conversion_story:
+      "Al-Miqdād ibn ʿAmr fut parmi les tout premiers à embrasser l’islam à La Mecque. Il subit les persécutions de Quraysh pour sa foi et dut cacher son islam durant un temps. Il fut également l’un des rares cavaliers musulmans lors de la bataille de Badr.",
+
+    key_roles: [
+      "Il fut l’un des premiers convertis à l’islam.",
+      "Il participa à toutes les grandes batailles aux côtés du Prophète ﷺ.",
+      "Il fut l’un des deux seuls cavaliers musulmans à la bataille de Badr.",
+      "Il se distingua par son courage, sa loyauté et sa franchise.",
+      "Il fut connu pour sa fermeté sur la vérité et son refus de la complaisance.",
+    ],
+
+    anecdotes: [
+      "Lors de Badr, sa déclaration pleine de foi réjouit le Prophète ﷺ et renforça le moral des musulmans.",
+      "Il fut l’un des compagnons les plus courageux au combat.",
+      "Il était connu pour sa droiture et sa parole franche, même face aux puissants.",
+      "Il soutint fermement la Sunna et les principes de justice après la mort du Prophète ﷺ.",
+    ],
+
+    death_year_h: 33,
+    death_place: "Médine",
+    approx_age_at_death: 59,
+
+    sources: [
+      "Ibn Ḥajar – Al-Isâba fî Tamyîz as-Ṣaḥâba",
+      "Adh-Dhahabī – Siyar A‘lâm an-Nubalâ’",
+      "Ibn Kathīr – Al-Bidâya wa an-Nihâya",
+      "Ibn Sa‘d – aṭ-Ṭabaqāt al-Kubrā",
+      "Sahîh al-Bukhârî, Sahîh Muslim"
+    ],
+  },
+},
+
+{
+  id: 15,
+  slug: "abbad-ibn-tamim-ibn-ghaziyya",
+  name_ar: "عَبَّاد بن تميم بن غزيَّة",
+  name_fr: "ʿAbbād ibn Tamīm ibn Ghaziyya",
+  kunya: null,
+  generation: "Tābiʿī",
+  death_year_h: null,
+  region: "Médine",
+  rarity: "common",
+  avatar: "https://cdn.jsdelivr.net/gh/IslamicAvatars/tabiin/abbad_ibn_tamim.png",
+  hadith_count: null,
+  short_bio:
+    "Successeur médinois (Tābiʿī) fiable, connu pour avoir transmis des hadiths précis sur la purification et la prière.",
+  key_anecdote:
+    "Il rapporta de son oncle ‘Abd Allāh ibn Zayd des descriptions détaillées des ablutions du Prophète ﷺ.",
+  isUnlocked: false,
+
+  bio: {
+    approx_birth_year_h: null,
+    birth_place: "Médine – Ansâr",
+
+    conversion_story:
+      "ʿAbbād ibn Tamīm ibn Ghaziyya naquit et grandit à Médine dans une famille profondément ancrée dans l’islam. Il appartenait à la génération des Tābiʿīn et apprit directement des compagnons du Prophète ﷺ, en particulier de son oncle ‘Abd Allāh ibn Zayd al-Anṣārī رضي الله عنه.",
+
+    key_roles: [
+      "Il fut un Tābiʿī fiable reconnu par les savants du hadith.",
+      "Il transmit des hadiths décrivant avec précision les ablutions du Prophète ﷺ.",
+      "Il rapporta principalement de son oncle, compagnon direct du Prophète ﷺ.",
+      "Ses narrations figurent dans les recueils authentiques.",
+      "Il contribua à la transmission fidèle des pratiques concrètes de la Sunna.",
+    ],
+
+    anecdotes: [
+      "Ses hadiths sont souvent cités dans les chapitres de ṭahāra (purification).",
+      "Il décrivait les gestes des ablutions avec une grande précision.",
+      "Les savants le considéraient comme thiqa (digne de confiance).",
+      "Il illustre l’importance de la transmission familiale de la Sunna.",
+    ],
+
+    death_year_h: null,
+    death_place: "Médine",
+
+    sources: [
+      "Al-Bukhārī – Ṣaḥīḥ (chapitres sur les ablutions)",
+      "Muslim – Ṣaḥīḥ",
+      "Ibn Ḥajar – Tahdhīb at-Tahdhīb",
+      "Al-Mizzī – Tahdhīb al-Kamāl",
+      "Ibn Saʿd – aṭ-Ṭabaqāt al-Kubrā"
+    ],
+  },
+}
+
+
 ];

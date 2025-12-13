@@ -715,8 +715,6 @@ export const HADITHS_1_15 = [
     audio_url: null
   },
 
-  /*********************** HADITH 22 ************************/
-
 {
   number: 22,
   narratorId: 10,
@@ -765,6 +763,96 @@ export const HADITHS_1_15 = [
   },
 
   audio_url: null
+},
+
+/*********************** HADITH 23 ************************/
+
+{
+  number: 23,
+  narratorId: 13,
+  arabic_text:
+    "عَنْ عَلِيِّ بْنِ أَبِي طَالِبٍ رَضِيَ اللهُ عَنْهُ قَالَ: كُنْتُ رَجُلًا مَذَّاءً، فَاسْتَحْيَيْتُ أَنْ أَسْأَلَ رَسُولَ اللهِ ﷺ لِمَكَانِ ابْنَتِهِ، فَأَمَرْتُ المِقْدَادَ بْنَ الأَسْوَدِ فَسَأَلَهُ، فَقَالَ: «يَغْسِلُ ذَكَرَهُ، وَيَتَوَضَّأُ».",
+  french_text:
+    "ʿAlī ibn Abī Ṭālib (ra) rapporte : « J’étais sujet à l’écoulement de madhī. Par pudeur, je demandai à al-Miqdād d’interroger le Prophète ﷺ. Il répondit : “Qu’il lave son sexe et qu’il fasse ses ablutions.” »",
+  source: "Al-Bukhârî & Muslim — ʿUmdat al-Aḥkām (Hadith 23)",
+  tags: ["tahara", "madhiy", "wudu", "impurete"],
+
+  opinions: {
+    Hanafi: {
+      ar:
+        "يَرَى الحَنَفِيَّةُ أَنَّ المَذْيَ نَجِسٌ، وَأَنَّهُ يُوجِبُ الوُضُوءَ دُونَ الغُسْلِ، وَيَكْفِي غَسْلُ مَوْضِعِ النَّجَاسَةِ.",
+      fr:
+        "Chez les hanafites, le madhī est impur, annule le wudūʾ, et seul l’endroit touché doit être lavé."
+    },
+
+    Maliki: {
+      ar:
+        "يَرَى المَالِكِيَّةُ نَجَاسَةَ المَذْيِ وَوُجُوبَ الوُضُوءَ مِنْهُ، وَيَجِبُ عِنْدَهُمْ غَسْلُ الذَّكَرِ كُلِّهِ.",
+      fr:
+        "Chez les malikites, le madhī est impur et impose le lavage complet du sexe."
+    },
+
+    Shafi: {
+      ar:
+        "يَقُولُ الشَّافِعِيَّةُ إِنَّ المَذْيَ نَجِسٌ، وَيُوجِبُ الوُضُوءَ دُونَ الغُسْلِ، وَيَكْفِي غَسْلُ مَا أَصَابَهُ.",
+      fr:
+        "Pour les shaféites, le madhī est impur, annule le wudūʾ, sans nécessiter le ghusl."
+    },
+
+    Hanbali: {
+      ar:
+        "عِنْدَ الحَنَابِلَةِ: المَذْيُ نَجِسٌ، وَيُوجِبُ الوُضُوءَ دُونَ الغُسْلِ، وَيَكْفِي غَسْلُ مَوْضِعِهِ.",
+      fr:
+        "Les hanbalites rejoignent la majorité sur l’impureté du madhī et l’obligation du wudūʾ."
+    }
+  },
+
+  audio_url: null
+},
+/*********************** HADITH 24 ************************/
+
+{
+  number: 24,
+  narratorId: 15,
+  arabic_text:
+    "عَنْ عَبَّادِ بْنِ تَمِيمٍ، عَنْ عَمِّهِ عَبْدِ اللَّهِ بْنِ زَيْدِ بْنِ عَاصِمٍ الْمَازِنِيِّ رَضِيَ اللَّهُ عَنْهُ، قَالَ: شُكِيَ إِلَى النَّبِيِّ ﷺ الرَّجُلُ الَّذِي يُخَيَّلُ إِلَيْهِ أَنَّهُ يَجِدُ الشَّيْءَ فِي الصَّلَاةِ، فَقَالَ: «لَا يَنْصَرِفْ حَتَّى يَسْمَعَ صَوْتًا، أَوْ يَجِدَ رِيحًا».",
+  french_text:
+    "ʿAbd Allāh ibn Zayd (ra) rapporte : « On se plaignit au Prophète ﷺ d’un homme qui croyait ressentir quelque chose pendant la prière. Il répondit : “Qu’il ne quitte pas la prière tant qu’il n’entend pas un son ou ne sent pas une odeur.” »",
+  source: "Al-Bukhârî & Muslim — ʿUmdat al-Aḥkām (Hadith 24)",
+  tags: ["tahara", "doute", "wudu", "priere"],
+
+  opinions: {
+    Hanafi: {
+      ar:
+        "يَرَى الحَنَفِيَّةُ أَنَّ الشَّكَّ فِي الحَدَثِ بَعْدَ الطَّهَارَةِ لَا يُؤَثِّرُ، وَالأَصْلُ بَقَاءُ الطَّهَارَةِ حَتَّى يَتَيَقَّنَ الحَدَثَ.",
+      fr:
+        "Chez les hanafites, le doute après la purification n’annule pas le wudūʾ."
+    },
+
+    Maliki: {
+      ar:
+        "المَشْهُورُ عِنْدَ المَالِكِيَّةِ أَنَّ الشَّكَّ لَا يُنْقِضُ الوُضُوءَ، وَإِنْ نُقِلَ قَوْلٌ بِالنَّقْضِ عَلَى سَبِيلِ الاِحْتِيَاطِ.",
+      fr:
+        "L’avis connu chez les malikites est que le doute n’annule pas le wudūʾ."
+    },
+
+    Shafi: {
+      ar:
+        "يَعْتَمِدُ الشَّافِعِيَّةُ هَذَا الحَدِيثَ أَصْلًا فِي أَنَّ اليَقِينَ لَا يَزُولُ بِالشَّكِّ، فَلَا يَنْتَقِضُ الوُضُوءُ بِمُجَرَّدِ الشَّكِّ.",
+      fr:
+        "Chez les shaféites, ce hadith fonde la règle : la certitude n’est pas annulée par le doute."
+    },
+
+    Hanbali: {
+      ar:
+        "يَقُولُ الحَنَابِلَةُ إِنَّ الشَّكَّ فِي خُرُوجِ الحَدَثِ لَا يُؤَثِّرُ، وَلَا يَجُوزُ قَطْعُ الصَّلَاةِ إِلَّا بِيَقِينٍ.",
+      fr:
+        "Pour les hanbalites, le doute ne permet pas de rompre la prière ni le wudūʾ."
+    }
+  },
+
+  audio_url: null
 }
+
 
 ];
