@@ -784,7 +784,7 @@ export default function HadithDetail() {
               <Separator className="bg-slate-200 dark:bg-slate-700" />
               <CardContent className="pt-6">
                 <Tabs defaultValue="Hanafi" className="w-full">
-                  <TabsList className="grid grid-cols-4 w-full gap-3">
+                  <TabsList className="grid grid-cols-4 w-full gap-3 bg-muted-none">
                     {["Hanafi", "Maliki", "Shafi", "Hanbali"].map((school) => (
                       <TabsTrigger
                         key={school}
