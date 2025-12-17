@@ -184,6 +184,27 @@ export async function getReviewHistory(userId) {
   return data ?? [];
 }
 
+export async function getDueCount(userId) {
+  if (!userId) return 0;
+
+  const todayISO = new Date().toISOString().slice(0, 10);
+
+  // On veut tous les hadiths dont la prochaine révision est aujourd'hui ou avant
+  const { count, error } = await supabase
+    .from("user_hadith_progress")
+    .select("hadith_number", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .lte("next_review_date", todayISO);
+
+  if (error) {
+    console.error("Erreur getDueCount:", error);
+    return 0;
+  }
+
+  return count ?? 0;
+}
+
+
 
 
 

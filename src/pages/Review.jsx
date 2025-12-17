@@ -1,6 +1,7 @@
 // /src/pages/Review.jsx
 import React, { useMemo, useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
+import { setHadithDueBadge } from "@/lib/appBadge";
 
 import {
   Card,
@@ -69,6 +70,7 @@ export function Review() {
     if (!userId) {
       // Pas d'utilisateur connecté → on vide proprement
       setHadiths([]);
+      setHadithDueBadge(0);
       setProgressByNumber({});
       setIdx(0);
       setShowFr(false);
@@ -94,6 +96,7 @@ export function Review() {
 
       if (!progress || progress.length === 0) {
         setHadiths([]);
+        setHadithDueBadge(0);
         setProgressByNumber({});
         setIdx(0);
         setShowFr(false);
@@ -127,6 +130,7 @@ export function Review() {
       }
 
       setHadiths(merged);
+      setHadithDueBadge(merged.length);
       setProgressByNumber(progMap);
       setIdx(0);
       setShowFr(false);
@@ -134,6 +138,7 @@ export function Review() {
     } catch (err) {
       console.error("Erreur chargement révision:", err);
       setHadiths([]);
+      setHadithDueBadge(0);
       setProgressByNumber({});
       setIdx(0);
     } finally {

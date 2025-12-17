@@ -1,5 +1,5 @@
 // /src/App.jsx
-import React from "react";
+import {React, useEffect} from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Navbar } from "./components/Navbar";
 import { OnboardingGate } from "./components/OnboardingGate";
@@ -20,8 +20,31 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import Onboarding from "./pages/Onboarding";
 import ExamQuiz from "./pages/ExamQuiz";
 import ExamQuizTargeted from "./pages/ExamQuizTargeted";
+import { useAuth } from "@/context/AuthContext";
+import { getDueCount } from "@/lib/hadithProgress";
+import { setHadithDueBadge } from "@/lib/appBadge";
 
 export default function App() {
+ const { user } = useAuth();
+  const [dueCount, setDueCount] = useState(0);
+
+  useEffect(() => {
+    if (!user?.id) return;
+
+    let alive = true;
+
+    (async () => {
+      const c = await getDueCount(user.id);
+      if (!alive) return;
+      setDueCount(c);
+      setHadithDueBadge(c);
+    })();
+
+    return () => {
+      alive = false;
+    };
+  }, [user?.id]);
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />

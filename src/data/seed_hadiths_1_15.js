@@ -32,7 +32,7 @@ export const HADITHS_1_15 = [
         fr: "Le commentateur indique que les savants sont unanimes sur le fait que la niyya est une condition de validité pour les adorations pures (prière, jeûne, zakât, hajj) et un critère d’acceptation : un acte sans intention valable n’a pas de récompense, même s’il est correct extérieurement."
       }
     },
-    audio_url: null
+    audio_url: "/audio/hadiths/001.mp3"
   },
 
   {
