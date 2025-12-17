@@ -1,5 +1,5 @@
 // /src/App.jsx
-import {React, useEffect} from "react";
+import {React, useEffect,useState} from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Navbar } from "./components/Navbar";
 import { OnboardingGate } from "./components/OnboardingGate";
