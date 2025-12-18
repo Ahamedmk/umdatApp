@@ -753,5 +753,111 @@ export const NARRATORS_MOCK = [
   },
 },
 
+{
+  id: 15,
+  slug: "abbad-ibn-tamim-ibn-ghaziyya",
+  name_ar: "عَبَّاد بن تميم بن غزيَّة",
+  name_fr: "ʿAbbād ibn Tamīm ibn Ghaziyya",
+  kunya: null,
+  generation: "Tābiʿī",
+  death_year_h: null,
+  region: "Médine",
+  rarity: "common",
+  avatar: "https://cdn.jsdelivr.net/gh/IslamicAvatars/tabiin/abbad_ibn_tamim.png",
+  hadith_count: null,
+  short_bio:
+    "Successeur médinois (Tābiʿī) fiable, connu pour avoir transmis des hadiths précis sur la purification et la prière.",
+  key_anecdote:
+    "Il rapporta de son oncle ‘Abd Allāh ibn Zayd des descriptions détaillées des ablutions du Prophète ﷺ.",
+  isUnlocked: false,
+
+  bio: {
+    approx_birth_year_h: null,
+    birth_place: "Médine – Ansâr",
+
+    conversion_story:
+      "ʿAbbād ibn Tamīm ibn Ghaziyya naquit et grandit à Médine dans une famille profondément ancrée dans l’islam. Il appartenait à la génération des Tābiʿīn et apprit directement des compagnons du Prophète ﷺ, en particulier de son oncle ‘Abd Allāh ibn Zayd al-Anṣārī رضي الله عنه.",
+
+    key_roles: [
+      "Il fut un Tābiʿī fiable reconnu par les savants du hadith.",
+      "Il transmit des hadiths décrivant avec précision les ablutions du Prophète ﷺ.",
+      "Il rapporta principalement de son oncle, compagnon direct du Prophète ﷺ.",
+      "Ses narrations figurent dans les recueils authentiques.",
+      "Il contribua à la transmission fidèle des pratiques concrètes de la Sunna.",
+    ],
+
+    anecdotes: [
+      "Ses hadiths sont souvent cités dans les chapitres de ṭahāra (purification).",
+      "Il décrivait les gestes des ablutions avec une grande précision.",
+      "Les savants le considéraient comme thiqa (digne de confiance).",
+      "Il illustre l’importance de la transmission familiale de la Sunna.",
+    ],
+
+    death_year_h: null,
+    death_place: "Médine",
+
+    sources: [
+      "Al-Bukhārī – Ṣaḥīḥ (chapitres sur les ablutions)",
+      "Muslim – Ṣaḥīḥ",
+      "Ibn Ḥajar – Tahdhīb at-Tahdhīb",
+      "Al-Mizzī – Tahdhīb al-Kamāl",
+      "Ibn Saʿd – aṭ-Ṭabaqāt al-Kubrā"
+    ],
+  },
+},
+
+
+{
+  id: 16,
+  slug: "umm-qays-bint-mihsan",
+  name_ar: "أمُّ قَيْسٍ بِنْتُ مِحْصَنٍ رضي الله عنها",
+  name_fr: "Umm Qays bint Miḥṣan",
+  kunya: "Umm Qays",
+  generation: "Compagnon",
+  death_year_h: null,
+  region: "Médine",
+  rarity: "rare",
+  avatar: "https://cdn.jsdelivr.net/gh/IslamicAvatars/sahabiyat/umm_qays_bint_mihsan.png",
+  hadith_count: 4,
+  short_bio:
+    "Compagne du Prophète ﷺ, connue pour avoir rapporté des hadiths pratiques liés à la purification et à la vie quotidienne.",
+  key_anecdote:
+    "Elle rapporta la règle concernant le nettoyage de l’urine du nourrisson garçon (avant alimentation solide) : l’aspersion d’eau suffit.",
+  isUnlocked: false,
+
+  bio: {
+    approx_birth_year_h: null,
+    birth_place: "Arabie (installation à Médine)",
+
+    conversion_story:
+      "Umm Qays bint Miḥṣan رضي الله عنها comptait parmi les femmes compagnonnes qui embrassèrent l’islam et vécurent à l’époque prophétique. Elle transmit des enseignements concrets du Prophète ﷺ, particulièrement dans les sujets du quotidien, qui aident la communauté à pratiquer l’islam avec clarté et facilité.",
+
+    key_roles: [
+      "Elle fut une compagne (Ṣaḥābiya) ayant rapporté des hadiths authentiques.",
+      "Elle transmit des règles pratiques liées à la purification, notamment concernant les nourrissons.",
+      "Ses narrations figurent dans les recueils authentiques.",
+      "Elle illustre la place centrale des femmes dans la transmission de la Sunna.",
+    ],
+
+    anecdotes: [
+      "Elle rapporta le hadith distinguant le nettoyage de l’urine du nourrisson garçon (aspersion) et celui de la petite fille (lavage), dans le cadre décrit par la Sunna.",
+      "Ses hadiths sont courts mais très influents en fiqh, car ils posent des règles concrètes appliquées par les juristes.",
+      "Elle fait partie des femmes compagnonnes dont les narrations sont utilisées dans les chapitres de ṭahāra (purification).",
+    ],
+
+    death_year_h: null,
+    death_place: "Médine",
+
+    sources: [
+      "Sahîh al-Bukhârî",
+      "Sahîh Muslim",
+      "Ibn Ḥajar – Al-Isâba fî Tamyîz as-Ṣaḥâba",
+      "Adh-Dhahabī – Siyar A‘lâm an-Nubalâ’",
+      "Ibn Sa‘d – aṭ-Ṭabaqāt al-Kubrā"
+    ],
+  },
+}
+
+
 
 ];

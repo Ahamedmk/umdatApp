@@ -852,7 +852,157 @@ export const HADITHS_1_15 = [
   },
 
   audio_url: null
-}
+},
 
+/*********************** HADITH 25 ************************/
+
+{
+  number: 25,
+  narratorId: 16,
+  arabic_text:
+    "عَنْ أُمِّ قَيْسٍ بِنْتِ مِحْصَنٍ الأَسَدِيَّةِ رَضِيَ اللهُ عَنْهَا، أَنَّهَا أَتَتْ بِابْنٍ لَهَا صَغِيرٍ لَمْ يَأْكُلِ الطَّعَامَ إِلَى رَسُولِ اللهِ ﷺ، فَأَجْلَسَهُ فِي حِجْرِهِ، فَبَالَ عَلَى ثَوْبِهِ، فَدَعَا بِمَاءٍ فَنَضَحَهُ، وَلَمْ يَغْسِلْهُ.",
+  french_text:
+    "Umm Qays bint Miḥṣan (ra) rapporte qu’elle amena au Prophète ﷺ un nourrisson qui n’avait pas encore mangé. Il urina sur son vêtement, alors il versa de l’eau dessus sans le laver.",
+  source: "Al-Bukhârî & Muslim — ʿUmdat al-Aḥkām (Hadith 25)",
+  tags: ["tahara", "urine", "nourrisson", "nadh"],
+
+  opinions: {
+    Hanafi: {
+      ar:
+        "يَرَى الحَنَفِيَّةُ أَنَّ بَوْلَ الصَّبِيِّ نَجِسٌ، وَيَجِبُ غَسْلُهُ كَسَائِرِ النَّجَاسَاتِ.",
+      fr:
+        "Chez les hanafites, l’urine du nourrisson est impure et doit être lavée."
+    },
+
+    Maliki: {
+      ar:
+        "المَشْهُورُ عِنْدَ المَالِكِيَّةِ وُجُوبُ غَسْلِ بَوْلِ الصَّبِيِّ، وَلَا يَكْتَفُونَ بِالنَّضْحِ.",
+      fr:
+        "Chez les malikites, l’avis connu est l’obligation du lavage."
+    },
+
+    Shafi: {
+      ar:
+        "يَرَى الشَّافِعِيَّةُ أَنَّهُ يَكْفِي نَضْحُ بَوْلِ الصَّبِيِّ الَّذِي لَمْ يَأْكُلِ الطَّعَامَ.",
+      fr:
+        "Pour les shaféites, l’aspersion suffit tant que l’enfant ne mange pas."
+    },
+
+    Hanbali: {
+      ar:
+        "يَقُولُ الحَنَابِلَةُ بِالاِكْتِفَاءِ بِالنَّضْحِ فِي بَوْلِ الصَّبِيِّ غَيْرِ المُتَغَذِّي.",
+      fr:
+        "Les hanbalites estiment que l’aspersion suffit pour le nourrisson non sevré."
+    }
+  },
+
+  audio_url: null
+}, 
+
+/*********************** HADITH 26 ************************/
+
+{
+  number: 26,
+  arabic_text:
+    "عَنْ عَائِشَةَ أُمِّ الْمُؤْمِنِينَ رَضِيَ اللهُ عَنْهَا، أَنَّ النَّبِيَّ ﷺ أُتِيَ بِصَبِيَّةٍ، فَبَالَتْ عَلَى ثَوْبِهِ، فَدَعَا بِمَاءٍ فَأَتْبَعَهُ بَوْلَهَا، وَلَمْ يَغْسِلْهُ.",
+  french_text:
+    "ʿĀʾisha (ra) rapporte que le Prophète ﷺ reçut une petite fille qui urina sur son vêtement. Il versa de l’eau sur l’urine en la suivant, sans frotter le vêtement.",
+  source: "Al-Bukhârî & Muslim — ʿUmdat al-Aḥkām (Hadith 26)",
+  tags: ["tahara", "urine", "nourrisson", "fille"],
+
+  opinions: {
+    Hanafi: {
+      ar:
+        "يَرَى الحَنَفِيَّةُ أَنَّ بَوْلَ الجَارِيَةِ نَجِسٌ، وَيَجِبُ غَسْلُهُ كَسَائِرِ النَّجَاسَاتِ.",
+      fr:
+        "Chez les hanafites, l’urine de la fille est impure et doit être lavée."
+    },
+
+    Maliki: {
+      ar:
+        "يَقُولُ المَالِكِيَّةُ بِنَجَاسَةِ بَوْلِ الجَارِيَةِ، وَأَنَّهُ لَا يُجْزِئُ فِيهِ إِلَّا الغُسْلُ.",
+      fr:
+        "Chez les malikites, seul le lavage est valable pour l’urine de la fille."
+    },
+
+    Shafi: {
+      ar:
+        "يُفَرِّقُ الشَّافِعِيَّةُ بَيْنَ بَوْلِ الصَّبِيِّ وَالجَارِيَةِ، فَيَجِبُ غَسْلُ بَوْلِ الجَارِيَةِ.",
+      fr:
+        "Les shaféites distinguent entre garçon et fille et imposent le lavage pour la fille."
+    },
+
+    Hanbali: {
+      ar:
+        "عِنْدَ الحَنَابِلَةِ يَجِبُ غَسْلُ بَوْلِ الجَارِيَةِ، وَلَا يَكْفِي النَّضْحُ.",
+      fr:
+        "Les hanbalites estiment que l’aspersion ne suffit pas pour l’urine de la fille."
+    }
+  },
+
+  audio_url: null
+},
+
+/*********************** HADITH 27 ************************/
+
+{
+  number: 27,
+  arabic_text:
+    "عَنْ أَنَسِ بْنِ مَالِكٍ رَضِيَ اللهُ عَنْهُ قَالَ: «جَاءَ أَعْرَابِيٌّ فَبَالَ فِي طَائِفَةِ الْمَسْجِدِ، فَزَجَرَهُ النَّاسُ، فَنَهَاهُمُ النَّبِيُّ ﷺ، فَلَمَّا قَضَى بَوْلَهُ أَمَرَ النَّبِيُّ ﷺ بِذَنُوبٍ مِنْ مَاءٍ فَأُهْرِيقَ عَلَيْهِ».",
+  french_text:
+    "Anas ibn Mālik (ra) rapporte qu’un bédouin urina dans un coin de la mosquée. Les gens voulurent le réprimander, mais le Prophète ﷺ les en empêcha, puis fit verser un seau d’eau sur l’endroit.",
+  source: "Al-Bukhârî & Muslim — ʿUmdat al-Aḥkām",
+  tags: ["tahara", "mosquee", "urine", "pédagogie"],
+  opinions: {
+    Hanafi: {
+      ar: "تُطَهَّرُ الأَرْضُ بِالمَاءِ أَوْ بِذَهَابِ أَثَرِ النَّجَاسَةِ.",
+      fr: "Chez les hanafites, la terre est purifiée par l’eau ou la disparition de la trace."
+    },
+    Maliki: {
+      ar: "تُطَهَّرُ الأَرْضُ بِصَبِّ المَاءِ عَلَيْهَا.",
+      fr: "Les malikites imposent le versement d’eau."
+    },
+    Shafi: {
+      ar: "يَجِبُ صَبُّ المَاءِ عَلَى بَوْلِ الإِنْسَانِ فِي الأَرْضِ.",
+      fr: "Les shaféites considèrent ce hadith comme une preuve claire."
+    },
+    Hanbali: {
+      ar: "يَكْفِي صَبُّ المَاءِ وَلَا يُشْتَرَطُ الحَفْرُ.",
+      fr: "Les hanbalites jugent que l’eau suffit sans autre action."
+    }
+  },
+  audio_url: null
+},
+
+/*********************** HADITH 28 ************************/
+
+{
+  number: 28,
+  arabic_text:
+    "عَنْ أَبِي هُرَيْرَةَ رَضِيَ اللهُ عَنْهُ قَالَ: سَمِعْتُ رَسُولَ اللهِ ﷺ يَقُولُ: «الفِطْرَةُ خَمْسٌ: الخِتَانُ، وَالِاسْتِحْدَادُ، وَقَصُّ الشَّارِبِ، وَتَقْلِيمُ الأَظْفَارِ، وَنَتْفُ الإِبِطِ».",
+  french_text:
+    "Abū Hurayra (ra) rapporte que le Prophète ﷺ a dit : « La fitra comprend cinq pratiques : la circoncision, le rasage des poils pubiens, la taille de la moustache, la coupe des ongles et l’épilation des aisselles. »",
+  source: "Al-Bukhârî & Muslim — ʿUmdat al-Aḥkām",
+  tags: ["fitra", "tahara", "hygiene", "sunna"],
+  opinions: {
+    Hanafi: {
+      ar: "تُعَدُّ خِصَالُ الفِطْرَةِ سُنَنًا مُؤَكَّدَةً، وَالخِتَانُ وَاجِبٌ لِلرَّجُلِ.",
+      fr: "Chez les hanafites, ce sont des sunan confirmées, avec obligation de la circoncision pour l’homme."
+    },
+    Maliki: {
+      ar: "خِصَالُ الفِطْرَةِ مِنَ السُّنَنِ، وَيُكْرَهُ التَّشَدُّدُ فِيهَا.",
+      fr: "Les malikites les considèrent comme sunna, tout en réprouvant l’exagération."
+    },
+    Shafi: {
+      ar: "الخِتَانُ وَاجِبٌ عِنْدَ الشَّافِعِيَّةِ لِلذُّكُورِ وَالإِنَاثِ، وَغَيْرُهَا سُنَنٌ.",
+      fr: "Pour les shaféites, la circoncision est obligatoire pour les deux sexes."
+    },
+    Hanbali: {
+      ar: "الخِتَانُ وَاجِبٌ لِلرَّجُلِ وَمَسْنُونٌ لِلْمَرْأَةِ، وَبَاقِي الخِصَالِ سُنَنٌ.",
+      fr: "Chez les hanbalites, la circoncision est obligatoire pour l’homme et recommandée pour la femme."
+    }
+  },
+  audio_url: null
+}
 
 ];

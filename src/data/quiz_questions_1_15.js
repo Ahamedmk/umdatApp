@@ -1637,7 +1637,679 @@ export const QUIZ_QUESTIONS_1_15 = [
       "L’islam combat l’excès de doute et invite à la tranquillité du cœur.",
     explain:
       "La religion vise la sérénité, pas l’angoisse."
-  }
+  },
+ /* ------------------------------------------------------
+   HADITH 25 – QUIZ COMPLET
+   ------------------------------------------------------ */
+  /* --- QCM 1 --- */
+  {
+    n: 25,
+    q: "Qui rapporte le hadith concernant l’urine du nourrisson ?",
+    options: [
+      "ʿĀʾisha bint Abī Bakr",
+      "Umm Salama",
+      "Umm Qays bint Miḥṣan al-Asadiyya",
+      "Fāṭima bint Qays"
+    ],
+    correctIndex: 2,
+    explain:
+      "Le hadith est rapporté par Umm Qays bint Miḥṣan al-Asadiyya رضي الله عنها."
+  },
+
+  /* --- QCM 2 --- */
+  {
+    n: 25,
+    q: "Quel était l’âge de l’enfant mentionné dans le hadith ?",
+    options: [
+      "Il était pubère",
+      "Il marchait déjà",
+      "Il était sevré",
+      "Il était encore nourrisson"
+    ],
+    correctIndex: 3,
+    explain:
+      "Le texte précise : « بابن لها صغير لم يأكل الطعام » — un petit enfant qui ne mangeait pas encore."
+  },
+
+  /* --- QCM 3 --- */
+  {
+    n: 25,
+    q: "Où l’enfant a-t-il uriné ?",
+    options: [
+      "Sur le sol de la mosquée",
+      "Sur un vêtement",
+      "Sur les genoux du Prophète ﷺ",
+      "Dans un récipient"
+    ],
+    correctIndex: 2,
+    explain:
+      "Le hadith dit : « فبال على ثوبه » — il urina sur son vêtement."
+  },
+
+  /* --- QCM 4 --- */
+  {
+    n: 25,
+    q: "Quelle a été la réaction du Prophète ﷺ ?",
+    options: [
+      "Il lava le vêtement complètement",
+      "Il changea de vêtement",
+      "Il versa de l’eau et n’a pas lavé",
+      "Il ordonna de jeter le vêtement"
+    ],
+    correctIndex: 2,
+    explain:
+      "Le texte est explicite : « فدعا بماء فنضحه ولم يغسله »."
+  },
+
+  /* --- QCM 5 --- */
+  {
+    n: 25,
+    q: "Sur quoi les savants sont-ils unanimes concernant l’urine du nourrisson ?",
+    options: [
+      "Elle est pure",
+      "Elle est douteuse",
+      "Elle est impure",
+      "Elle n’annule pas la prière"
+    ],
+    correctIndex: 2,
+    explain:
+      "Le document indique : « اتفق الفقهاء على نجاسة بول الصبي »."
+  },
+
+  /* --- QCM 6 --- */
+  {
+    n: 25,
+    q: "Quelle divergence existe entre les savants ?",
+    options: [
+      "Sur l’impureté de l’urine",
+      "Sur la validité du hadith",
+      "Sur la manière de purifier",
+      "Sur l’âge de l’enfant"
+    ],
+    correctIndex: 2,
+    explain:
+      "Ils divergent sur la manière de purifier : lavage ou simple aspersion."
+  },
+
+  /* --- QCM 7 --- */
+  {
+    n: 25,
+    q: "Quel est l’avis correct et مشهور selon le commentaire cité (an-Nawawī) ?",
+    options: [
+      "Il faut laver comme toute autre impureté",
+      "Il suffit d’asperger l’urine du nourrisson",
+      "Aucune purification n’est requise",
+      "Cela dépend de la quantité"
+    ],
+    correctIndex: 1,
+    explain:
+      "An-Nawawī indique que l’avis correct et مشهور est l’aspersion (النضح)."
+  },
+
+  /* --- QCM 8 --- */
+  {
+    n: 25,
+    q: "À quelle condition l’aspersion suffit-elle ?",
+    options: [
+      "Si l’enfant est une fille",
+      "Si l’enfant est sevré",
+      "Tant que l’enfant ne mange pas de nourriture",
+      "Uniquement en voyage"
+    ],
+    correctIndex: 2,
+    explain:
+      "Le texte précise que cela vaut tant que l’enfant est exclusivement allaité."
+  },
+
+  /* --- QCM 9 --- */
+  {
+    n: 25,
+    q: "Que faut-il faire si l’enfant commence à manger de la nourriture ?",
+    options: [
+      "Continuer l’aspersion",
+      "Ne rien faire",
+      "Laver comme toute autre impureté",
+      "Changer de vêtement"
+    ],
+    correctIndex: 2,
+    explain:
+      "Le commentaire dit : « إذا أكل الطعام… فإنه يجب الغسل بلا خلاف »."
+  },
+
+  /* --- QCM 10 --- */
+  {
+    n: 25,
+    q: "Quelle sagesse peut être comprise derrière cette facilité ?",
+    options: [
+      "L’annulation de la purification",
+      "La difficulté imposée aux parents",
+      "La facilitation face à une situation fréquente",
+      "La suppression des règles de pureté"
+    ],
+    correctIndex: 2,
+    explain:
+      "La Sharīʿa facilite ce qui est fréquent et difficile à éviter."
+  },
+
+  /* --- QUESTION OUVERTE 1 --- */
+  {
+    n: 25,
+    q: "Quelle est la différence entre النضح (aspersion) et الغسل (lavage) ?",
+    answer:
+      "Le lavage implique l’écoulement de l’eau, tandis que l’aspersion consiste à verser de l’eau sans frotter ni faire couler abondamment.",
+    explain:
+      "Le hadith précise que le Prophète ﷺ a aspergé sans laver."
+  },
+
+  /* --- QUESTION OUVERTE 2 --- */
+  {
+    n: 25,
+    q: "Pourquoi l’urine du nourrisson allaité bénéficie-t-elle d’un allègement ?",
+    answer:
+      "Parce qu’elle est très fréquente, difficile à éviter, et que l’enfant ne consomme que du lait.",
+    explain:
+      "C’est une manifestation de la facilité voulue par la Sharīʿa."
+  },
+
+  /* --- QUESTION OUVERTE 3 --- */
+  {
+    n: 25,
+    q: "Quelle règle de fiqh peut-on tirer de ce hadith ?",
+    answer:
+      "La difficulté entraîne la facilité (المشقة تجلب التيسير).",
+    explain:
+      "Ce hadith est une application concrète de cette règle."
+  },
+
+  /* ----------------- HADITH 26 : بول الجارية ----------------- */
+{
+  n: 26,
+  q: "Qui rapporte le hadith 26 concernant l’urine du nourrisson féminin ?",
+  options: [
+    "ʿAbd Allāh ibn ʿUmar",
+    "Anas ibn Mālik",
+    "ʿĀʾisha Umm al-Muʾminīn",
+    "Abū Hurayra"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith est rapporté par ʿĀʾisha, la Mère des croyants (رضي الله عنها)."
+},
+
+{
+  n: 26,
+  q: "Qui fut amené au Prophète ﷺ dans ce hadith ?",
+  options: [
+    "Un garçon nourrisson",
+    "Une fillette nourrisson",
+    "Un enfant sevré",
+    "Un adulte malade"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le texte dit explicitement : « أُتِيَ بِصَبِيَّةٍ » — une petite fille."
+},
+
+{
+  n: 26,
+  q: "Que fit la fillette sur le vêtement du Prophète ﷺ ?",
+  options: [
+    "Elle vomit",
+    "Elle renversa de l’eau",
+    "Elle urina",
+    "Elle pleura"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith précise : « فَبَالَتْ عَلَى ثَوْبِهِ » — elle urina sur son vêtement."
+},
+
+{
+  n: 26,
+  q: "Quelle action le Prophète ﷺ entreprit-il immédiatement après ?",
+  options: [
+    "Il lava entièrement le vêtement",
+    "Il changea de vêtement",
+    "Il versa de l’eau sur l’urine",
+    "Il frotta le vêtement avec un tissu"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith dit : « فَدَعَا بِمَاءٍ فَأَتْبَعَهُ بَوْلَهَا »."
+},
+
+{
+  n: 26,
+  q: "Que signifie l’expression « فَأَتْبَعَهُ بَوْلَهَا » ?",
+  options: [
+    "Il aspergea légèrement",
+    "Il versa de l’eau jusqu’à recouvrir l’urine",
+    "Il essuya sans eau",
+    "Il laissa sécher"
+  ],
+  correctIndex: 1,
+  explain:
+    "Cela signifie que l’eau a suivi et recouvert l’urine, ce qui correspond à un lavage sans frottement."
+},
+
+{
+  n: 26,
+  q: "Le Prophète ﷺ a-t-il frotté ou essoré le vêtement ?",
+  options: [
+    "Oui, fortement",
+    "Oui, légèrement",
+    "Non",
+    "Le hadith ne le précise pas"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le texte dit clairement : « وَلَمْ يَغْسِلْهُ » — il ne l’a pas frotté/lavé au sens du frottement."
+},
+
+{
+  n: 26,
+  q: "Quel est le statut juridique de l’urine du nourrisson féminin ?",
+  options: [
+    "Pure",
+    "Tolérée",
+    "Impure (najasa)",
+    "Douteuse"
+  ],
+  correctIndex: 2,
+  explain:
+    "Les savants sont unanimes sur la نجاسة بول الجارية — l’impureté de son urine."
+},
+
+{
+  n: 26,
+  q: "Quelle est la méthode de purification requise pour l’urine de la fillette ?",
+  options: [
+    "Essuyage sec",
+    "Aspersion légère (نضح)",
+    "Lavage à l’eau (غسل)",
+    "Aucune purification"
+  ],
+  correctIndex: 2,
+  explain:
+    "Contrairement au garçon nourrisson, l’urine de la fille nécessite un lavage."
+},
+
+{
+  n: 26,
+  q: "Pourquoi ce hadith est-il étudié avec le hadith 25 ?",
+  options: [
+    "Ils ont le même rapporteur",
+    "Ils parlent tous deux de prière",
+    "Ils comparent garçon et fille",
+    "Ils sont faibles isolément"
+  ],
+  correctIndex: 2,
+  explain:
+    "Les deux hadiths montrent la distinction juridique entre بول الصبي et بول الجارية."
+},
+
+{
+  n: 26,
+  q: "Quelle école distingue explicitement entre urine du garçon et de la fille ?",
+  options: [
+    "Ḥanafite uniquement",
+    "Shaféite et Hanbalite",
+    "Mālikite uniquement",
+    "Aucune"
+  ],
+  correctIndex: 1,
+  explain:
+    "Les shaféites et hanbalites appliquent clairement la distinction fondée sur les hadiths."
+},
+
+{
+  n: 26,
+  q: "Quelle est la sagesse principale tirée de ce hadith ?",
+  options: [
+    "Toute impureté se traite de la même manière",
+    "La Sunna détaille précisément les règles",
+    "Le sexe de l’enfant est sans importance",
+    "Le lavage n’est jamais obligatoire"
+  ],
+  correctIndex: 1,
+  explain:
+    "La Sunna distingue avec précision et sagesse selon les situations."
+},
+
+/* ----------------- HADITH 27 : بول الأعرابي في المسجد ----------------- */
+{
+  n: 27,
+  q: "Qui rapporte le hadith du bédouin qui urina dans la mosquée ?",
+  options: [
+    "ʿAbd Allāh ibn ʿUmar",
+    "Anas ibn Mālik",
+    "Abū Hurayra",
+    "ʿĀʾisha"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le hadith est rapporté par Anas ibn Mālik رضي الله عنه."
+},
+
+{
+  n: 27,
+  q: "Quel acte le bédouin accomplit-il dans la mosquée ?",
+  options: [
+    "Il mangea",
+    "Il dormit",
+    "Il urina",
+    "Il parla fort"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le texte dit explicitement : « فَبَالَ فِي طَائِفَةِ الْمَسْجِدِ »."
+},
+
+{
+  n: 27,
+  q: "Quelle fut la réaction immédiate des compagnons ?",
+  options: [
+    "Ils quittèrent la mosquée",
+    "Ils l’ignorèrent",
+    "Ils le réprimandèrent",
+    "Ils appelèrent le Prophète ﷺ"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith mentionne : « فَزَجَرَهُ النَّاسُ » — ils le réprimandèrent."
+},
+
+{
+  n: 27,
+  q: "Quelle fut l’attitude du Prophète ﷺ face à leur réaction ?",
+  options: [
+    "Il approuva leur réprimande",
+    "Il resta silencieux",
+    "Il les empêcha",
+    "Il quitta la mosquée"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le Prophète ﷺ les empêcha : « فَنَهَاهُمُ النَّبِيُّ ﷺ »."
+},
+
+{
+  n: 27,
+  q: "Pourquoi le Prophète ﷺ empêcha-t-il les gens d’interrompre le bédouin ?",
+  options: [
+    "Par indulgence excessive",
+    "Pour éviter une plus grande souillure",
+    "Parce que l’urine n’est pas impure",
+    "Parce que la mosquée n’était pas importante"
+  ],
+  correctIndex: 1,
+  explain:
+    "L’interrompre aurait dispersé l’urine et causé un préjudice plus grand."
+},
+
+{
+  n: 27,
+  q: "Que fit le Prophète ﷺ une fois que le bédouin eut terminé ?",
+  options: [
+    "Il ordonna de laver tout le sol",
+    "Il fit creuser la terre",
+    "Il fit verser un seau d’eau",
+    "Il ferma la mosquée"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith dit : « أَمَرَ بِذَنُوبٍ مِنْ مَاءٍ فَأُهْرِيقَ عَلَيْهِ »."
+},
+
+{
+  n: 27,
+  q: "Que signifie le mot « ذَنُوب » dans le hadith ?",
+  options: [
+    "Une petite coupe",
+    "Un chiffon",
+    "Un grand seau",
+    "Une pierre"
+  ],
+  correctIndex: 2,
+  explain:
+    "« ذَنُوب » désigne un grand seau d’eau."
+},
+
+{
+  n: 27,
+  q: "Quelle règle juridique principale est tirée de ce hadith ?",
+  options: [
+    "L’urine humaine est pure",
+    "La mosquée peut être souillée",
+    "L’urine humaine est impure et se purifie à l’eau",
+    "Il faut toujours creuser la terre"
+  ],
+  correctIndex: 2,
+  explain:
+    "Il y a consensus sur la نجاسة بول الإنسان et sa purification par l’eau."
+},
+
+{
+  n: 27,
+  q: "Quelle méthode de purification est suffisante pour l’urine sur le sol ?",
+  options: [
+    "Essuyer avec un tissu",
+    "Verser de l’eau jusqu’à disparition",
+    "Laisser sécher uniquement",
+    "Brûler la zone"
+  ],
+  correctIndex: 1,
+  explain:
+    "Verser de l’eau suffit sans creuser ni frotter."
+},
+
+{
+  n: 27,
+  q: "Ce hadith montre principalement quelle qualité du Prophète ﷺ ?",
+  options: [
+    "La sévérité",
+    "La dureté",
+    "La sagesse et la douceur",
+    "L’indifférence"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le Prophète ﷺ a allié pédagogie, sagesse et prévention du préjudice."
+},
+
+{
+  n: 27,
+  q: "Quelle leçon éducative générale est tirée de ce hadith ?",
+  options: [
+    "Punir immédiatement toute erreur",
+    "Humilier l’ignorant",
+    "Enseigner avec douceur et discernement",
+    "Fermer les mosquées aux étrangers"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith est une base dans la pédagogie et la gestion des erreurs."
+},
+
+/* ----------------- HADITH 28 : سُنَنُ الفِطْرَة ----------------- */
+{
+  n: 28,
+  q: "Qui rapporte le hadith des « cinq pratiques de la fitra » ?",
+  options: [
+    "Anas ibn Mālik",
+    "ʿAbd Allāh ibn ʿUmar",
+    "Abū Hurayra",
+    "ʿĀʾisha"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith est rapporté par Abū Hurayra رضي الله عنه."
+},
+
+{
+  n: 28,
+  q: "Combien de pratiques de la fitra sont mentionnées dans ce hadith ?",
+  options: [
+    "Trois",
+    "Quatre",
+    "Cinq",
+    "Dix"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le Prophète ﷺ dit explicitement : « الفِطْرَةُ خَمْسٌ »."
+},
+
+{
+  n: 28,
+  q: "Laquelle des pratiques suivantes fait partie des cinq de la fitra ?",
+  options: [
+    "Le siwāk",
+    "La circoncision",
+    "Le lavage du vendredi",
+    "La prière nocturne"
+  ],
+  correctIndex: 1,
+  explain:
+    "La circoncision (الخِتَان) est citée explicitement dans le hadith."
+},
+
+{
+  n: 28,
+  q: "Que signifie « الِاسْتِحْدَاد » dans le hadith ?",
+  options: [
+    "Se laver avec de l’eau",
+    "Raser les cheveux",
+    "Raser les poils pubiens",
+    "Couper la moustache"
+  ],
+  correctIndex: 2,
+  explain:
+    "L’istihdād désigne le rasage des poils pubiens."
+},
+
+{
+  n: 28,
+  q: "Quelle pratique concerne spécifiquement la moustache ?",
+  options: [
+    "نتف الإبط",
+    "تقليم الأظفار",
+    "قص الشارب",
+    "الختان"
+  ],
+  correctIndex: 2,
+  explain:
+    "« قص الشارب » signifie raccourcir la moustache."
+},
+
+{
+  n: 28,
+  q: "Quelle est la sagesse principale derrière les pratiques de la fitra ?",
+  options: [
+    "La difficulté et l’épreuve",
+    "La conformité à la nature saine et la propreté",
+    "La distinction sociale",
+    "L’ascétisme excessif"
+  ],
+  correctIndex: 1,
+  explain:
+    "Les pratiques de la fitra sont conformes à la nature humaine et à la propreté."
+},
+
+{
+  n: 28,
+  q: "Quelle est la règle majoritaire concernant la circoncision chez l’homme ?",
+  options: [
+    "Elle est simplement permise",
+    "Elle est déconseillée",
+    "Elle est recommandée uniquement",
+    "Elle est obligatoire"
+  ],
+  correctIndex: 3,
+  explain:
+    "La majorité des savants considèrent la circoncision obligatoire pour l’homme."
+},
+
+{
+  n: 28,
+  q: "Que signifie « نتف الإبط » ?",
+  options: [
+    "Couper les poils des jambes",
+    "Raser la barbe",
+    "Arracher les poils des aisselles",
+    "Laver les aisselles"
+  ],
+  correctIndex: 2,
+  explain:
+    "« نتف الإبط » signifie l’épilation (arracher) des poils des aisselles."
+},
+
+{
+  n: 28,
+  q: "Quelle pratique vise principalement à empêcher l’accumulation d’impuretés ?",
+  options: [
+    "La taille de la moustache",
+    "La coupe des ongles",
+    "L’épilation des aisselles",
+    "Toutes les réponses"
+  ],
+  correctIndex: 3,
+  explain:
+    "Toutes les pratiques contribuent à la propreté et à l’hygiène."
+},
+
+{
+  n: 28,
+  q: "Ces pratiques de la fitra sont-elles limitées à un contexte culturel particulier ?",
+  options: [
+    "Oui, uniquement aux Arabes",
+    "Oui, uniquement aux bédouins",
+    "Non, elles sont universelles",
+    "Uniquement aux savants"
+  ],
+  correctIndex: 2,
+  explain:
+    "La fitra est universelle et conforme à la nature humaine."
+},
+
+{
+  n: 28,
+  q: "Dans quelle catégorie juridique entrent la majorité des pratiques de la fitra ?",
+  options: [
+    "Obligations",
+    "Interdictions",
+    "Sunan confirmées",
+    "Actes déconseillés"
+  ],
+  correctIndex: 2,
+  explain:
+    "Elles sont considérées comme des sunan mu’akkada, sauf la circoncision selon divergence."
+},
+
+{
+  n: 28,
+  q: "Quelle leçon globale ce hadith enseigne-t-il ?",
+  options: [
+    "La séparation du corps et de la religion",
+    "Le mépris de l’hygiène",
+    "L’importance de la propreté physique et spirituelle",
+    "L’isolement social"
+  ],
+  correctIndex: 2,
+  explain:
+    "L’islam relie la pureté du corps à la foi et à la spiritualité."
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
