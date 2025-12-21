@@ -117,14 +117,19 @@ export async function saveReviewResult(userId, hadithNumber, quality) {
   };
 
   // 2️⃣ On calcule le prochain intervalle avec SM-2 simplifié
-  const next = computeNextReview({
-    quality,
+  const next = computeNextReview(
+  {
     ease_factor: base.ease_factor,
     interval_days: base.interval_days,
     repetitions: base.repetitions,
-  });
+    status: base.status,
+  },
+  quality
+);
+
 
   // 3️⃣ On prépare le payload pour user_hadith_progress
+    // 3️⃣ On prépare le payload pour user_hadith_progress
   const payload = {
     user_id: userId,
     hadith_number: hadithNumber,
@@ -134,8 +139,11 @@ export async function saveReviewResult(userId, hadithNumber, quality) {
     last_result: quality,
     last_review_at: today.toISOString(),
     next_review_date: next.next_review_date || todayISODate,
-    status: next.repetitions >= 3 ? "learned" : "learning",
+
+    // ✅ STATUT COHÉRENT PARTOUT
+    status: next.status, // "learned" si quality >= 4 sinon "learning"
   };
+
 
   console.log("DEBUG saveReviewResult payload", payload);
 

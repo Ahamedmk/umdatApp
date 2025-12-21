@@ -27,6 +27,7 @@ function getStatusMeta(row) {
 
   switch (row.status) {
     case "mastered":
+     case "learned":
       return {
         label: "Maîtrisé",
         className:
