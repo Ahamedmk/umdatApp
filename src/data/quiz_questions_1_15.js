@@ -2298,19 +2298,345 @@ export const QUIZ_QUESTIONS_1_15 = [
   correctIndex: 2,
   explain:
     "L’islam relie la pureté du corps à la foi et à la spiritualité."
+},
+
+/* ----------------- HADITH 29 : طَهَارَةُ الْمُؤْمِنِ ----------------- */
+{
+  n: 29,
+  q: "Qui rapporte le hadith « Le croyant ne devient jamais impur » ?",
+  options: [
+    "Anas ibn Mālik",
+    "ʿAbd Allāh ibn ʿUmar",
+    "Abū Hurayra",
+    "Abū Mūsā al-Ashʿarī"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith est rapporté par Abū Hurayra رضي الله عنه."
+},
+
+{
+  n: 29,
+  q: "Dans quel état se trouvait Abū Hurayra lorsque le Prophète ﷺ le rencontra ?",
+  options: [
+    "En état d’ablution",
+    "En état de jeûne",
+    "En état de janāba",
+    "En état de prière"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le texte dit explicitement : « وهو جنب » — il était en état de janāba."
+},
+
+{
+  n: 29,
+  q: "Que fit Abū Hurayra lorsqu’il rencontra le Prophète ﷺ ?",
+  options: [
+    "Il resta avec lui",
+    "Il s’assit immédiatement",
+    "Il s’éloigna puis alla faire le ghusl",
+    "Il demanda la permission de partir"
+  ],
+  correctIndex: 2,
+  explain:
+    "Il s’éloigna discrètement, alla se laver (ghusl), puis revint."
+},
+
+{
+  n: 29,
+  q: "Pourquoi Abū Hurayra s’éloigna-t-il du Prophète ﷺ ?",
+  options: [
+    "Par peur d’une punition",
+    "Par obligation religieuse",
+    "Par pudeur et respect",
+    "Par interdiction explicite"
+  ],
+  correctIndex: 2,
+  explain:
+    "Il pensait, par respect, ne pas devoir s’asseoir sans être en état de pureté."
+},
+
+{
+  n: 29,
+  q: "Quelle fut la réaction du Prophète ﷺ lorsqu’il apprit la raison de son départ ?",
+  options: [
+    "Il le blâma",
+    "Il se tut",
+    "Il exprima son étonnement",
+    "Il ordonna une expiation"
+  ],
+  correctIndex: 2,
+  explain:
+    "Il dit : « سبحان الله » — exprimant l’étonnement et la correction."
+},
+
+{
+  n: 29,
+  q: "Quelle parole fondamentale le Prophète ﷺ énonça-t-il ?",
+  options: [
+    "La janāba rend impur",
+    "Le croyant doit toujours être en état d’ablution",
+    "Le croyant ne devient jamais impur",
+    "Le ghusl est obligatoire en toute situation"
+  ],
+  correctIndex: 2,
+  explain:
+    "Il dit clairement : « إن المؤمن لا ينجس »."
+},
+
+{
+  n: 29,
+  q: "Que signifie cette parole sur le plan juridique ?",
+  options: [
+    "Le croyant n’a jamais besoin de ghusl",
+    "Le croyant est pur par essence",
+    "Le croyant ne commet jamais de péché",
+    "Le croyant n’a pas d’impuretés physiques"
+  ],
+  correctIndex: 1,
+  explain:
+    "Elle signifie que le croyant n’est jamais نجس العين (impur par essence)."
+},
+
+{
+  n: 29,
+  q: "Quelle est la différence entre ḥadath et najāsa selon ce hadith ?",
+  options: [
+    "Ils sont identiques",
+    "Le ḥadath est une impureté matérielle",
+    "La najāsa concerne l’état, le ḥadath l’essence",
+    "Le ḥadath est un état rituel, pas une impureté matérielle"
+  ],
+  correctIndex: 3,
+  explain:
+    "Le ḥadath est un état rituel empêchant certains actes, pas une impureté physique."
+},
+
+{
+  n: 29,
+  q: "Le contact avec une personne en état de janāba est-il impur ?",
+  options: [
+    "Oui, toujours",
+    "Oui, sans exception",
+    "Non, le corps du croyant est pur",
+    "Seulement avant le ghusl"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le corps du croyant est pur même en état de janāba."
+},
+
+{
+  n: 29,
+  q: "Quel principe général des juristes découle de ce hadith ?",
+  options: [
+    "La pureté dépend des vêtements",
+    "La foi supprime toutes les règles",
+    "L’impureté touche les substances, pas les personnes",
+    "La janāba annule toute relation sociale"
+  ],
+  correctIndex: 2,
+  explain:
+    "La najāsa concerne des choses spécifiques, pas la personne croyante."
+},
+
+{
+  n: 29,
+  q: "Quelle leçon éducative le Prophète ﷺ enseigne-t-il ici ?",
+  options: [
+    "La dureté dans la correction",
+    "La mise à l’écart des ignorants",
+    "La correction avec douceur et pédagogie",
+    "Le silence face à l’erreur"
+  ],
+  correctIndex: 2,
+  explain:
+    "Il corrige Abū Hurayra avec bienveillance et clarté."
+},
+
+{
+  n: 29,
+  q: "Quelle conclusion spirituelle peut-on tirer de ce hadith ?",
+  options: [
+    "Le corps du croyant est sans valeur",
+    "La pureté est uniquement physique",
+    "La dignité du croyant est permanente",
+    "La janāba diminue la foi"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le croyant est honoré et pur par essence, quelle que soit sa situation."
+},
+
+/* ----------------- HADITH 30 : صِفَةُ الْغُسْلِ مِنَ الْجَنَابَة ----------------- */
+{
+  n: 30,
+  q: "Qui rapporte le hadith décrivant le ghusl du Prophète ﷺ après la janāba ?",
+  options: [
+    "Abū Hurayra",
+    "ʿĀʾisha",
+    "Anas ibn Mālik",
+    "Umm Salama"
+  ],
+  correctIndex: 1,
+  explain:
+    "Ce hadith est rapporté par ʿĀʾisha رضي الله عنها."
+},
+
+{
+  n: 30,
+  q: "Quelle est la première chose que faisait le Prophète ﷺ lorsqu’il commençait le ghusl ?",
+  options: [
+    "Verser de l’eau sur la tête",
+    "Faire les ablutions complètes",
+    "Se laver les mains",
+    "Laver tout le corps"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith dit : « غَسَلَ يَدَيْهِ » — il commençait par se laver les mains."
+},
+
+{
+  n: 30,
+  q: "Quel type d’ablution le Prophète ﷺ faisait-il pendant le ghusl ?",
+  options: [
+    "Un wudūʾ partiel",
+    "Un wudūʾ comme pour la prière",
+    "Un tayammum",
+    "Aucune ablution"
+  ],
+  correctIndex: 1,
+  explain:
+    "ʿĀʾisha précise : « وَتَوَضَّأَ وُضُوءَهُ لِلصَّلَاةِ »."
+},
+
+{
+  n: 30,
+  q: "Pourquoi le Prophète ﷺ passait-il ses doigts dans ses cheveux ?",
+  options: [
+    "Par embellissement",
+    "Pour enlever la saleté",
+    "Pour s’assurer que l’eau atteigne la peau",
+    "Par obligation indépendante"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le but est que l’eau atteigne la peau sous les cheveux."
+},
+
+{
+  n: 30,
+  q: "Combien de fois le Prophète ﷺ versait-il l’eau sur sa tête ?",
+  options: [
+    "Une fois",
+    "Deux fois",
+    "Trois fois",
+    "Autant qu’il voulait"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith précise : « أَفَاضَ الْمَاءَ عَلَيْهِ ثَلَاثَ مَرَّاتٍ »."
+},
+
+{
+  n: 30,
+  q: "Quelle est l’obligation fondamentale du ghusl selon le consensus ?",
+  options: [
+    "Se laver dans un ordre précis",
+    "Utiliser beaucoup d’eau",
+    "Faire parvenir l’eau à tout le corps avec l’intention",
+    "Commencer par les cheveux"
+  ],
+  correctIndex: 2,
+  explain:
+    "L’obligation est l’intention et la généralisation de l’eau sur tout le corps."
+},
+
+{
+  n: 30,
+  q: "L’ordre décrit dans le hadith est-il obligatoire selon les quatre écoles ?",
+  options: [
+    "Oui, unanimement",
+    "Seulement chez les hanafites",
+    "Seulement chez les shaféites",
+    "Non, il n’est pas obligatoire"
+  ],
+  correctIndex: 3,
+  explain:
+    "Les quatre écoles s’accordent sur l’absence d’obligation de l’ordre."
+},
+
+{
+  n: 30,
+  q: "Est-il obligatoire de frotter le corps pendant le ghusl ?",
+  options: [
+    "Oui, sans exception",
+    "Oui, uniquement pour les cheveux",
+    "Non, selon la majorité",
+    "Seulement pour la tête"
+  ],
+  correctIndex: 2,
+  explain:
+    "La majorité considère que le frottement n’est pas obligatoire."
+},
+
+{
+  n: 30,
+  q: "Le fait de défaire les cheveux est-il obligatoire pour la femme en janāba ?",
+  options: [
+    "Oui, toujours",
+    "Non, si l’eau atteint les racines",
+    "Oui, seulement si les cheveux sont longs",
+    "Cela dépend de l’intention"
+  ],
+  correctIndex: 1,
+  explain:
+    "Il n’est pas obligatoire de défaire les cheveux si l’eau atteint la peau."
+},
+
+{
+  n: 30,
+  q: "Que prouve le fait que le Prophète ﷺ et ʿĀʾisha se lavaient avec un seul récipient ?",
+  options: [
+    "L’obligation de partager l’eau",
+    "L’impureté de l’eau utilisée",
+    "La permission pour l’homme et la femme de se laver ensemble",
+    "La préférence de l’isolement"
+  ],
+  correctIndex: 2,
+  explain:
+    "Cela prouve la permission et la pureté de l’eau même en janāba."
+},
+
+{
+  n: 30,
+  q: "L’eau utilisée par une personne en janāba devient-elle impure ?",
+  options: [
+    "Oui, automatiquement",
+    "Oui, si elle est en petite quantité",
+    "Non, selon le consensus",
+    "Seulement si elle change de couleur"
+  ],
+  correctIndex: 2,
+  explain:
+    "L’eau reste pure selon le consensus des savants."
+},
+
+{
+  n: 30,
+  q: "Quelle leçon principale ce hadith enseigne-t-il ?",
+  options: [
+    "La difficulté du ghusl",
+    "La rigueur excessive",
+    "La clarté et la facilité de la Sunna",
+    "L’obligation de suivre chaque détail"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith montre une Sunna claire, équilibrée et sans complication."
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

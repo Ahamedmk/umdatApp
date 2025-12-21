@@ -1,6 +1,8 @@
 // /src/pages/NarratorsCollection.jsx
 
 import React, { useMemo, useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+
 import {
   Card,
   CardHeader,
@@ -8,9 +10,19 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-import { Link } from "react-router-dom";
+
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
+
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
+
 import {
   Sparkles,
   BookOpen,
@@ -19,8 +31,6 @@ import {
   Star,
   Filter,
   Search,
-  Trophy,
-  TrendingUp,
 } from "lucide-react";
 
 import { NARRATORS_MOCK } from "@/data/narrators_mock";
@@ -46,19 +56,25 @@ const rarityConfig = {
   },
 };
 
-function NarratorCard({ narrator, index, isUnlocked: forcedUnlocked }) {
+function NarratorCard({
+  narrator,
+  index,
+  isUnlocked: forcedUnlocked,
+  onOpen,
+}) {
   const [isHovered, setIsHovered] = useState(false);
 
   // 🔓 priorité à l’état calculé, sinon fallback sur le mock
   const isUnlocked =
     typeof forcedUnlocked === "boolean" ? forcedUnlocked : narrator.isUnlocked;
+
   const rarity = rarityConfig[narrator.rarity || "common"];
 
   const initials = useMemo(() => {
-    const parts = narrator.name_fr.split(" ");
+    const parts = (narrator.name_fr || "").split(" ");
     const first = parts[0]?.[0] || "";
     const second = parts[1]?.[0] || "";
-    return (first + second).toUpperCase();
+    return (first + second).toUpperCase() || "??";
   }, [narrator.name_fr]);
 
   return (
@@ -71,6 +87,15 @@ function NarratorCard({ narrator, index, isUnlocked: forcedUnlocked }) {
       onMouseLeave={() => setIsHovered(false)}
     >
       <Card
+        role="button"
+        tabIndex={0}
+        onClick={() => onOpen?.(narrator, isUnlocked)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            onOpen?.(narrator, isUnlocked);
+          }
+        }}
         className={`relative overflow-hidden border-2 transition-all duration-300 cursor-pointer h-full
           ${
             isUnlocked
@@ -102,7 +127,7 @@ function NarratorCard({ narrator, index, isUnlocked: forcedUnlocked }) {
         <CardHeader className="relative z-10 pb-3">
           <div className="flex items-start justify-between gap-2">
             <div className="flex items-center gap-3">
-              {/* Avatar simplifié avec initiales (tu peux remplacer par une image plus tard) */}
+              {/* Avatar initiales */}
               <div className="relative">
                 <div className="h-14 w-14 rounded-xl overflow-hidden shadow-lg border-2 bg-slate-800/80 border-slate-200/60 dark:border-slate-700/80 flex items-center justify-center text-lg font-bold text-white">
                   <div
@@ -113,11 +138,6 @@ function NarratorCard({ narrator, index, isUnlocked: forcedUnlocked }) {
                     {isUnlocked ? initials : "?"}
                   </div>
                 </div>
-
-                {/* Si un jour tu veux un trophée "100% hadiths de ce narrateur" */}
-                {/* <div className="absolute -top-1 -right-1 bg-amber-500 rounded-full p-1 shadow-md">
-                  <Trophy className="h-3 w-3 text-white" />
-                </div> */}
               </div>
 
               <div className="flex-1 min-w-0">
@@ -131,6 +151,7 @@ function NarratorCard({ narrator, index, isUnlocked: forcedUnlocked }) {
                     <Lock className="h-4 w-4 text-slate-400 flex-shrink-0" />
                   )}
                 </CardTitle>
+
                 <CardDescription className="text-xs truncate">
                   {isUnlocked ? narrator.name_ar : "Continue ta mémorisation"}
                 </CardDescription>
@@ -151,9 +172,7 @@ function NarratorCard({ narrator, index, isUnlocked: forcedUnlocked }) {
               className={`bg-gradient-to-r ${rarity.gradient} text-white border-0 flex items-center gap-1 shadow-md flex-shrink-0`}
             >
               <Star className="h-3 w-3" />
-              <span className="text-[11px] font-semibold">
-                {rarity.label}
-              </span>
+              <span className="text-[11px] font-semibold">{rarity.label}</span>
             </Badge>
           </div>
         </CardHeader>
@@ -207,30 +226,39 @@ function NarratorCard({ narrator, index, isUnlocked: forcedUnlocked }) {
                 )}
               </>
             ) : (
-              <div className="bg-slate-100 dark:bg-slate-800/50 rounded-lg p-3 border border-dashed border-slate-300 dark:border-slate-600">
+              <div className="bg-slate-100 dark:bg-slate-800/50 rounded-lg p-3 border border-dashed border-slate-300 dark:border-slate-600 space-y-2">
                 <p className="text-slate-600 dark:text-slate-400 text-xs text-center leading-relaxed">
-                  🔒 Continue d&apos;apprendre les hadiths pour débloquer ce
-                  narrateur et découvrir son histoire fascinante.
+                  🔒 {narrator.unlock_by ||
+                    "Maîtrise (4/5) un hadith rapporté par ce narrateur pour le débloquer."}
                 </p>
+
+                {narrator.unlock_hint && (
+                  <div className="mx-auto w-fit px-3 py-1 rounded-full bg-white/70 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 text-[11px] text-slate-700 dark:text-slate-300">
+                    💡 Indice :{" "}
+                    <span className="font-semibold">{narrator.unlock_hint}</span>
+                  </div>
+                )}
               </div>
             )}
           </div>
 
+          {/* CTA (facultatif) : page dédiée */}
           {isUnlocked && (
-  <div className="pt-2">
-    <button
-      size="sm"
-      variant="outline"
-      className="w-full text-xs mt-1"
-    >
-      <Link to={`/narrators/${narrator.slug}`}>
-        En savoir plus sur ce rapporteur
-      </Link>
-    </button>
-  </div>
-)}
-
-          {/* (Plus de stats ici, puisque `stats` a été retiré du mock) */}
+            <div className="pt-2">
+              {/* IMPORTANT: stopPropagation pour ne pas ouvrir le Sheet quand on clique le lien */}
+              <Button
+                size="sm"
+                variant="outline"
+                className="w-full text-xs"
+                onClick={(e) => e.stopPropagation()}
+                asChild
+              >
+                <Link to={`/narrators/${narrator.slug}`}>
+                  En savoir plus (page dédiée)
+                </Link>
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -278,6 +306,11 @@ export function NarratorsCollection() {
   const [searchQuery, setSearchQuery] = useState("");
   const [unlockedIds, setUnlockedIds] = useState([]);
 
+  // Drawer
+  const [openSheet, setOpenSheet] = useState(false);
+  const [selectedNarrator, setSelectedNarrator] = useState(null);
+  const [selectedUnlocked, setSelectedUnlocked] = useState(false);
+
   // 🔓 Récupérer les cartes débloquées depuis localStorage
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -296,20 +329,31 @@ export function NarratorsCollection() {
         filterRarity === "all" || n.rarity === filterRarity;
       const matchesSearch =
         !searchQuery ||
-        n.name_fr.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        n.name_ar.includes(searchQuery);
+        (n.name_fr || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (n.name_ar || "").includes(searchQuery);
       return matchesRarity && matchesSearch;
     });
   }, [filterRarity, searchQuery]);
 
   const total = NARRATORS_MOCK.length;
 
-  // 🧮 Progression basée sur localStorage + mock (Abû Hurayra, Aïcha déjà ouverts)
+  // 🧮 Progression basée sur localStorage + mock
   const unlocked = NARRATORS_MOCK.filter(
     (n) => unlockedIds.includes(n.id) || n.isUnlocked
   ).length;
 
   const progress = total ? Math.round((unlocked / total) * 100) : 0;
+
+  const openNarrator = (narrator, isUnlocked) => {
+    setSelectedNarrator(narrator);
+    setSelectedUnlocked(!!isUnlocked);
+    setOpenSheet(true);
+  };
+
+  const rarity =
+    selectedNarrator?.rarity && rarityConfig[selectedNarrator.rarity]
+      ? rarityConfig[selectedNarrator.rarity]
+      : rarityConfig.common;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50 to-teal-100 dark:from-slate-950 dark:via-emerald-950 dark:to-teal-900 px-4 sm:px-6 py-6">
@@ -403,14 +447,20 @@ export function NarratorsCollection() {
         {/* Grille */}
         {filteredNarrators.length > 0 ? (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {filteredNarrators.map((narrator, index) => (
-              <NarratorCard
-                key={narrator.id}
-                narrator={narrator}
-                index={index}
-                isUnlocked={unlockedIds.includes(narrator.id) || narrator.isUnlocked}
-              />
-            ))}
+            {filteredNarrators.map((narrator, index) => {
+              const unlockedComputed =
+                unlockedIds.includes(narrator.id) || narrator.isUnlocked;
+
+              return (
+                <NarratorCard
+                  key={narrator.id}
+                  narrator={narrator}
+                  index={index}
+                  isUnlocked={unlockedComputed}
+                  onOpen={openNarrator}
+                />
+              );
+            })}
           </div>
         ) : (
           <div className="text-center py-16">
@@ -423,6 +473,140 @@ export function NarratorsCollection() {
           </div>
         )}
       </div>
+
+      {/* ✅ Drawer / Sheet "En savoir plus" */}
+      <Sheet open={openSheet} onOpenChange={setOpenSheet}>
+        <SheetContent side="right" className="w-full sm:max-w-xl">
+          {selectedNarrator ? (
+            <>
+              <SheetHeader>
+                <SheetTitle className="flex items-center gap-2">
+                  <span className="font-bold">
+                    {selectedUnlocked
+                      ? selectedNarrator.name_fr
+                      : "Narrateur à débloquer"}
+                  </span>
+
+                  <Badge
+                    className={`ml-auto bg-gradient-to-r ${rarity.gradient} text-white border-0`}
+                  >
+                    {rarity.label}
+                  </Badge>
+                </SheetTitle>
+
+                <SheetDescription>
+                  {selectedUnlocked
+                    ? selectedNarrator.name_ar
+                    : selectedNarrator.unlock_by ||
+                      "Maîtrise (4/5) un hadith rapporté par lui pour le débloquer."}
+                </SheetDescription>
+              </SheetHeader>
+
+              <div className="mt-5 space-y-4">
+                {/* Badges */}
+                <div className="flex flex-wrap gap-2">
+                  {selectedNarrator.generation && (
+                    <Badge variant="outline">{selectedNarrator.generation}</Badge>
+                  )}
+                  {selectedNarrator.region && (
+                    <Badge variant="outline">📍 {selectedNarrator.region}</Badge>
+                  )}
+                  {selectedNarrator.death_year_h && (
+                    <Badge variant="outline">† {selectedNarrator.death_year_h} H</Badge>
+                  )}
+                  {selectedNarrator.hadith_count && (
+                    <Badge>📚 {selectedNarrator.hadith_count} hadiths</Badge>
+                  )}
+                </div>
+
+                {selectedUnlocked ? (
+                  <>
+                    {/* Résumé */}
+                    <Card className="border-slate-200 dark:border-slate-700">
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-base">Résumé</CardTitle>
+                        <CardDescription>Lecture courte (≈ 2–3 minutes)</CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-3 text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+                        {selectedNarrator.short_bio && <p>{selectedNarrator.short_bio}</p>}
+
+                        {selectedNarrator.bio?.conversion_story && (
+                          <div>
+                            <p className="font-semibold text-slate-800 dark:text-slate-200 mb-1">
+                              Parcours / entrée dans l’islam
+                            </p>
+                            <p>{selectedNarrator.bio.conversion_story}</p>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+
+                    {/* Anecdotes */}
+                    {selectedNarrator.bio?.anecdotes?.length > 0 && (
+                      <Card className="border-slate-200 dark:border-slate-700">
+                        <CardHeader className="pb-2">
+                          <CardTitle className="text-base">
+                            Anecdotes marquantes
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-2 text-sm text-slate-700 dark:text-slate-300">
+                          {selectedNarrator.bio.anecdotes.slice(0, 4).map((a, i) => (
+                            <div key={i} className="flex gap-2">
+                              <span>•</span>
+                              <span>{a}</span>
+                            </div>
+                          ))}
+                        </CardContent>
+                      </Card>
+                    )}
+
+                    {/* Sources */}
+                    {selectedNarrator.bio?.sources?.length > 0 && (
+                      <Card className="border-slate-200 dark:border-slate-700">
+                        <CardHeader className="pb-2">
+                          <CardTitle className="text-base">Sources</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-1 text-xs text-slate-600 dark:text-slate-400">
+                          {selectedNarrator.bio.sources.map((s, i) => (
+                            <div key={i}>- {s}</div>
+                          ))}
+                        </CardContent>
+                      </Card>
+                    )}
+
+                    {/* CTA page dédiée */}
+                    <Button className="w-full" asChild>
+                      <Link to={`/narrators/${selectedNarrator.slug}`}>
+                        Ouvrir la page complète
+                      </Link>
+                    </Button>
+                  </>
+                ) : (
+                  <Card className="border-slate-200 dark:border-slate-700">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base">Déblocage</CardTitle>
+                      <CardDescription>Indice & condition</CardDescription>
+                    </CardHeader>
+                    <CardContent className="text-sm text-slate-700 dark:text-slate-300 space-y-2">
+                      <p>
+                        🔒{" "}
+                        {selectedNarrator.unlock_by ||
+                          "Maîtrise (4/5) un hadith lié à ce narrateur."}
+                      </p>
+                      {selectedNarrator.unlock_hint && (
+                        <p className="text-xs">
+                          💡 <span className="font-semibold">Indice :</span>{" "}
+                          {selectedNarrator.unlock_hint}
+                        </p>
+                      )}
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            </>
+          ) : null}
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

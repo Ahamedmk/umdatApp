@@ -1003,6 +1003,43 @@ export const HADITHS_1_15 = [
     }
   },
   audio_url: null
+},
+
+/*********************** HADITH 29 ************************/
+
+{
+  number: 29,
+  arabic_text:
+    "عَنْ أَبِي هُرَيْرَةَ رَضِيَ اللهُ عَنْهُ: «أَنَّ النَّبِيَّ ﷺ لَقِيَهُ فِي بَعْضِ طُرُقِ الْمَدِينَةِ وَهُوَ جُنُبٌ، فَانْخَنَسَ مِنْهُ، فَذَهَبَ فَاغْتَسَلَ، ثُمَّ جَاءَ، فَقَالَ: أَيْنَ كُنْتَ يَا أَبَا هُرَيْرَةَ؟ قَالَ: كُنْتُ جُنُبًا، فَكَرِهْتُ أَنْ أُجَالِسَكَ وَأَنَا عَلَى غَيْرِ طَهَارَةٍ. فَقَالَ: سُبْحَانَ اللهِ! إِنَّ الْمُؤْمِنَ لَا يَنْجُسُ».",
+  french_text:
+    "Abū Hurayra (ra) rapporte que le Prophète ﷺ lui dit : « Gloire à Allah ! Le croyant ne devient jamais impur. »",
+  source: "Al-Bukhârî & Muslim — ʿUmdat al-Aḥkām",
+  tags: ["tahara", "janaba", "pureté", "aqida"],
+  opinions: {
+    Consensus: {
+      ar: "أَجْمَعَ الْعُلَمَاءُ عَلَى أَنَّ الْمُؤْمِنَ لَا يَكُونُ نَجِسَ العَيْنِ، حَيًّا أَوْ مَيِّتًا.",
+      fr: "Consensus des savants : le croyant n’est jamais impur par essence."
+    }
+  },
+  audio_url: null
+},
+/*********************** HADITH 30 ************************/
+
+{
+  number: 30,
+  arabic_text:
+    "عَنْ عَائِشَةَ رَضِيَ اللهُ عَنْهَا قَالَتْ: «كَانَ رَسُولُ اللهِ ﷺ إِذَا اغْتَسَلَ مِنَ الْجَنَابَةِ، غَسَلَ يَدَيْهِ، وَتَوَضَّأَ وُضُوءَهُ لِلصَّلَاةِ، ثُمَّ اغْتَسَلَ، ثُمَّ يُخَلِّلُ بِيَدَيْهِ شَعْرَهُ، حَتَّى إِذَا ظَنَّ أَنَّهُ قَدْ أَرْوَى بَشَرَتَهُ، أَفَاضَ الْمَاءَ عَلَيْهِ ثَلَاثَ مَرَّاتٍ، ثُمَّ غَسَلَ سَائِرَ جَسَدِهِ. وَكَانَتْ تَقُولُ: كُنْتُ أَغْتَسِلُ أَنَا وَرَسُولُ اللهِ ﷺ مِنْ إِنَاءٍ وَاحِدٍ، نَغْتَرِفُ مِنْهُ جَمِيعًا».",
+  french_text:
+    "ʿĀʾisha (ra) décrit la manière complète dont le Prophète ﷺ effectuait le ghusl de janāba.",
+  source: "Al-Bukhârî & Muslim — ʿUmdat al-Aḥkām",
+  tags: ["ghusl", "janaba", "tahara", "sunna"],
+  opinions: {
+    Consensus: {
+      ar: "اتَّفَقَ الْأَئِمَّةُ الأَرْبَعَةُ عَلَى أَنَّ فَرْضَ الْغُسْلِ تَعْمِيمُ الْجَسَدِ بِالْمَاءِ مَعَ النِّيَّةِ، وَلَا يَجِبُ التَّرْتِيبُ.",
+      fr: "Les quatre écoles s’accordent sur l’obligation de faire parvenir l’eau à tout le corps avec l’intention, sans obligation d’ordre."
+    }
+  },
+  audio_url: null
 }
 
 ];
