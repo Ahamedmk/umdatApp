@@ -106,41 +106,36 @@ export const HADITHS_1_15 = [
     audio_url: null
   },
 
-  {
-    number: 4,
-    narratorId: 1,
-    chapter: "tahara",
-    siraBlockId: "arrival-medina",
-    arabic_text:
-      "عن أبي هريرة رضي الله عنه أن رسولَ الله ﷺ قال: «إذا توضأ أحدُكم فليجعل في أنفه ماءً ثم لينثر، ومن استجمر فليوتر، وإذا استيقظ أحدُكم من نومه فلا يغمس يده في الإناء حتى يغسلها ثلاثًا، فإنه لا يدري أين باتت يده».",
-    french_text:
-      "D’après Abû Hurayra (ra), le Messager d’Allah ﷺ a dit : « Lorsque l’un de vous fait ses ablutions, qu’il aspire de l’eau dans son nez puis qu’il la rejette ; et celui qui se nettoie avec des pierres qu’il le fasse en nombre impair. Et lorsque l’un de vous se réveille de son sommeil, qu’il ne plonge pas sa main dans le récipient avant de l’avoir lavée trois fois, car il ne sait pas où sa main a passé la nuit. »",
-    source: "Al-Bukhârî, Muslim (cf. PDF)",
-    tags: ["tahara", "wudu", "istinja", "istijmar", "sunna"],
-    opinions: {
-      Hanafi: {
-        ar: "قال شيخا المصنف في الشرح: الأمر بالاستنشاق والاستنثار من سننِ الوضوء عند أبي حنيفة ومالك والشافعي، وليسا من فرائضه. كما ذكر أن الاستنجاء بأقل من ثلاثة أحجار يجوز عند أبي حنيفة ومالك إذا حصل الإنقاء، والوتر مستحب.",
-        fr: "Le PDF rapporte, via « nos deux shaykhs », que l’ordre d’aspirer l’eau dans le nez et de la rejeter fait partie des sunan du wudû’ selon Abû Hanîfa, Mâlik et ash-Shâfi‘î, et non de ses obligations. Il mentionne aussi qu’auprès d’Abû Hanîfa et de Mâlik, il est permis de se limiter à moins de trois pierres pour l’istinjâ si la zone est nettoyée, tout en recommandant le nombre impair."
-      },
-      Maliki: {
-        ar: "مذهبُ المالكية في هذا الموضع موافقٌ لما نُقل عن أبي حنيفة: الاستنشاق والاستنثار من سنن الوضوء، والوترُ في الاستجمار مستحب، ويجوز الاقتصار على أقل من ثلاثة أحجار عند حصول الإنقاء كما نص الشرح.",
-        fr: "Pour les mâlikites, tel que présenté dans le PDF, l’aspiration et le rejet de l’eau par le nez sont des sunan du wudû’ ; le nombre impair de pierres est recommandé, et il est permis de se contenter de moins de trois pierres si le nettoyage est complet."
-      },
-      Shafi: {
-        ar: "ينقل الشرح أن الاستنشاق والاستنثار من سنن الوضوء عند الشافعي، لكنه يخالف الحنفية والمالكية في الاستجمار؛ فلا يجوِّز الاكتفاء بأقلَّ من ثلاثة أحجار، بل يجعل الثلاثة حدًّا أدنى، والجمع بين الماء والأحجار أفضل.",
-        fr: "Le commentaire indique que, pour ash-Shâfi‘î, l’aspiration et le rejet de l’eau par le nez relèvent des sunan du wudû’. En revanche, il diverge sur l’istijmâr : il ne permet pas de se limiter à moins de trois pierres, considérant ce nombre comme un minimum, le mieux étant de combiner eau et pierres."
-      },
-      Hanbali: {
-        ar: "ذكر الشارح أن المشهور عن أحمد أن الاستنشاق والاستنثار من واجبات الوضوء، لا من سننه، مستدلًا بأحاديث الأمر بهما، وأنه يرى وجوب الاستجمار بثلاثة أحجار فأكثر.",
-        fr: "Le PDF rapporte que, selon l’avis bien connu d’Ahmad, l’aspiration et le rejet de l’eau dans le nez sont au rang des obligations du wudû’ et non de ses simples sunan, en se basant sur les hadiths d’ordre. Il considère également l’istijmâr avec au moins trois pierres comme obligatoire."
-      },
-      Majority: {
-        ar: "يستفاد من مجموع كلام الشرح أن جمهور الفقهاء على استحباب الاستنشاق والاستنثار، واستحباب الوتر في الاستجمار، مع وجوب أصل إزالة النجاسة، وأن غسل اليدين بعد الاستيقاظ من النوم مشروعٌ على أقل تقدير، وفي وجوبه تفصيلٌ بين الأئمة كما ذُكر عن أحمد والجمهور.",
-        fr: "D’après la synthèse du commentateur, la majorité des juristes considèrent l’aspiration et le rejet de l’eau comme recommandés (sunna), de même que le nombre impair dans l’istijmâr, tout en imposant l’obligation d’enlever la souillure elle-même. Le lavage des mains au réveil est au minimum légiféré, et son caractère obligatoire fait l’objet d’une divergence entre Ahmad et la majorité, telle que mentionnée dans le PDF."
-      }
+{
+  number: 4,
+  narratorId: 1,
+  arabic_text:
+    "عَنْ أَبِي هُرَيْرَةَ رَضِيَ اللهُ عَنْهُ أَنَّ رَسُولَ اللهِ ﷺ قَالَ: «إِذَا تَوَضَّأَ أَحَدُكُمْ فَلْيَجْعَلْ فِي أَنْفِهِ مَاءً ثُمَّ لِيَنْتَثِرْ، وَمَنْ اسْتَجْمَرَ فَلْيُوتِرْ، وَإِذَا اسْتَيْقَظَ أَحَدُكُمْ مِنْ نَوْمِهِ فَلْيَغْسِلْ يَدَيْهِ قَبْلَ أَنْ يُدْخِلَهُمَا فِي الإِنَاءِ ثَلَاثًا، فَإِنَّ أَحَدَكُمْ لَا يَدْرِي أَيْنَ بَاتَتْ يَدُهُ».",
+  french_text:
+    "Abū Hurayra (ra) rapporte que le Messager d’Allah ﷺ a dit : « Lorsque l’un de vous fait ses ablutions, qu’il mette de l’eau dans son nez puis qu’il la rejette. Celui qui s’essuie avec des pierres qu’il fasse un nombre impair. Et lorsque l’un de vous se réveille de son sommeil, qu’il lave ses mains trois fois avant de les plonger dans le récipient, car il ne sait pas où sa main a passé la nuit. »",
+  source: "Al-Bukhārī et Muslim",
+  tags: ["wudu", "istinchaaq", "istijmar", "sommeil"],
+  opinions: {
+    Hanafi: {
+      ar: "الاستنشاق وغسل اليدين بعد النوم سُنَّةٌ في الوضوء.",
+      fr: "Le rinçage du nez et le lavage des mains après le sommeil sont recommandés (sunna)."
     },
-    audio_url: null
+    Maliki: {
+      ar: "الاستنشاق سُنَّةٌ، وغسل اليدين بعد النوم للاستحباب.",
+      fr: "L’istinchāq est une sunna et le lavage des mains après le sommeil est recommandé."
+    },
+    Shafi: {
+      ar: "الاستنشاق من سنن الوضوء، وغسل اليدين بعد النوم مستحب.",
+      fr: "Le rinçage du nez fait partie des sunan du wuḍūʾ, et le lavage des mains après le sommeil est recommandé."
+    },
+    Hanbali: {
+      ar: "الاستنشاق واجب في الوضوء، وغسل اليدين بعد نوم الليل واجب عند بعضهم.",
+      fr: "Le rinçage du nez est obligatoire dans le wuḍūʾ, et certains considèrent obligatoire le lavage des mains après le sommeil nocturne."
+    }
   },
+  audio_url: null
+},
+
 
   {
     number: 5,

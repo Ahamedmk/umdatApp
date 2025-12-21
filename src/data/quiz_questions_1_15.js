@@ -132,46 +132,76 @@ export const QUIZ_QUESTIONS_1_15 = [
       "Les waswâs sont combattus en s’attachant à la certitude : on n’annule ni wuḍû’ ni salât sur la base d’un doute répété non confirmé.",
   },
 
-  /* ----------------- HADITH 4 : Acceptation de la prière après ḥadath ----------------- */
-  {
-    n: 4,
-    q: "Que signifie l’expression « حتى يتوضأ » dans le hadith 4 ?",
-    options: [
-      "Jusqu’à ce qu’il donne une aumône",
-      "Jusqu’à ce qu’il prenne un ghusl",
-      "Jusqu’à ce qu’il refasse correctement ses ablutions",
-      "Jusqu’à ce qu’il change de vêtements",
-    ],
-    correctIndex: 2,
-    explain:
-      "Le hadith indique qu’Allah n’accepte pas la prière de celui qui a rompu ses ablutions jusqu’à ce qu’il refasse le wuḍû’ de manière correcte.",
-  },
-  {
-    n: 4,
-    q: "Quelle est la conséquence juridique si une personne réalise qu’elle a prié sans wuḍû’ ?",
-    options: [
-      "Sa prière reste valide",
-      "Elle doit simplement demander pardon sans répéter la prière",
-      "Elle doit refaire la prière concernée après avoir refait ses ablutions",
-      "Elle doit refaire toutes ses prières de la semaine",
-    ],
-    correctIndex: 2,
-    explain:
-      "Les savants déduisent qu’une prière accomplie sans wuḍû’ n’est pas valide, et doit être rattrapée après la purification.",
-  },
-  {
-    n: 4,
-    q: "Que nous rappelle ce hadith sur la place du wuḍû’ dans la vie du musulman ?",
-    options: [
-      "Qu’il est uniquement recommandé",
-      "Qu’il est une simple tradition culturelle",
-      "Qu’il est une condition indispensable pour la salât",
-      "Qu’il n’a de valeur que le vendredi",
-    ],
-    correctIndex: 2,
-    explain:
-      "Le wuḍû’ n’est pas un détail secondaire : il est une condition de validité de la prière, pilier de la religion.",
-  },
+  /* ----------------- HADITH 4 : Sunan du wudu ----------------- */
+{
+  n: 4,
+  q: "Que doit faire une personne lorsqu’elle met de l’eau dans son nez pendant le wuḍūʾ ?",
+  options: [
+    "La garder",
+    "La rejeter",
+    "L’avaler",
+    "La laisser couler"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le hadith dit : « ثم لينثر » — puis qu’il la rejette."
+},
+
+{
+  n: 4,
+  q: "Pourquoi doit-on laver les mains après le sommeil avant de les plonger dans l’eau ?",
+  options: [
+    "Par pureté rituelle obligatoire",
+    "Par politesse",
+    "Parce qu’on ne sait pas où la main a passé la nuit",
+    "Pour augmenter les récompenses"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le Prophète ﷺ a dit : « فإنه لا يدري أين باتت يده »."
+},
+
+{
+  n: 4,
+  q: "Combien de fois faut-il laver les mains après le réveil ?",
+  options: [
+    "Une fois",
+    "Deux fois",
+    "Trois fois",
+    "Autant qu’on veut"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le texte mentionne clairement : « ثلاثًا »."
+},
+
+{
+  n: 4,
+  q: "Quel est le jugement majoritaire sur l’istinchāq dans le wuḍūʾ ?",
+  options: [
+    "Obligatoire",
+    "Déconseillé",
+    "Sunna",
+    "Annulant le wuḍūʾ"
+  ],
+  correctIndex: 2,
+  explain:
+    "La majorité considère l’istinchāq comme une sunna."
+},
+
+{
+  n: 4,
+  q: "Que signifie « فليوتر » dans le hadith ?",
+  options: [
+    "Utiliser de l’eau",
+    "Faire un nombre pair",
+    "Faire un nombre impair",
+    "Répéter trois fois"
+  ],
+  correctIndex: 2,
+  explain:
+    "« الوتر » signifie l’impair."
+},
 
   /* ----------------- HADITH 5 : Usage de l’eau et gaspillage ----------------- */
   {
