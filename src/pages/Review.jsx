@@ -474,7 +474,7 @@ export function Review() {
                   </div>
 
                   {/* Auto-évaluation */}
-                  {showFr && (
+                  
                     <div className="space-y-4 pt-2">
                       <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
                         <Trophy className="h-4 w-4" />
@@ -523,7 +523,7 @@ export function Review() {
                         ))}
                       </div>
                     </div>
-                  )}
+                  
                 </CardContent>
               </Card>
 
