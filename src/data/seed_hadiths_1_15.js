@@ -1005,19 +1005,20 @@ export const HADITHS_1_15 = [
 {
   number: 29,
   arabic_text:
-    "عَنْ أَبِي هُرَيْرَةَ رَضِيَ اللهُ عَنْهُ: «أَنَّ النَّبِيَّ ﷺ لَقِيَهُ فِي بَعْضِ طُرُقِ الْمَدِينَةِ وَهُوَ جُنُبٌ، فَانْخَنَسَ مِنْهُ، فَذَهَبَ فَاغْتَسَلَ، ثُمَّ جَاءَ، فَقَالَ: أَيْنَ كُنْتَ يَا أَبَا هُرَيْرَةَ؟ قَالَ: كُنْتُ جُنُبًا، فَكَرِهْتُ أَنْ أُجَالِسَكَ وَأَنَا عَلَى غَيْرِ طَهَارَةٍ. فَقَالَ: سُبْحَانَ اللهِ! إِنَّ الْمُؤْمِنَ لَا يَنْجُسُ».",
+    "عَنْ أَبِي هُرَيْرَةَ رَضِيَ اللَّهُ عَنْهُ أَنَّ النَّبِيَّ ﷺ لَقِيَهُ فِي بَعْضِ طُرُقِ الْمَدِينَةِ وَهُوَ جُنُبٌ، قَالَ: فَانْخَنَسْتُ مِنْهُ فَذَهَبْتُ فَاغْتَسَلْتُ ثُمَّ جِئْتُ، فَقَالَ: «أَيْنَ كُنْتَ يَا أَبَا هُرَيْرَةَ؟» قَالَ: كُنْتُ جُنُبًا فَكَرِهْتُ أَنْ أُجَالِسَكَ وَأَنَا عَلَى غَيْرِ طَهَارَةٍ، فَقَالَ: «سُبْحَانَ اللَّهِ، إِنَّ الْمُؤْمِنَ لَا يَنْجُسُ».",
   french_text:
-    "Abū Hurayra (ra) rapporte que le Prophète ﷺ lui dit : « Gloire à Allah ! Le croyant ne devient jamais impur. »",
+    "Abū Hurayra (qu’Allah l’agrée) rapporte que le Prophète ﷺ le rencontra sur l’une des routes de Médine alors qu’il était en état de janāba. Il dit : « Je m’éloignai discrètement de lui, puis j’allai faire le ghusl, avant de revenir. Il me dit alors : “Où étais-tu, Abū Hurayra ?” Je répondis : “J’étais en état de janāba et j’ai détesté m’asseoir avec toi sans être en état de pureté.” Il dit alors : “Gloire à Allah ! Le croyant ne devient jamais impur.” »",
   source: "Al-Bukhârî & Muslim — ʿUmdat al-Aḥkām",
-  tags: ["tahara", "janaba", "pureté", "aqida"],
+  tags: ["tahara", "janaba", "aqida", "adab", "purete"],
   opinions: {
     Consensus: {
-      ar: "أَجْمَعَ الْعُلَمَاءُ عَلَى أَنَّ الْمُؤْمِنَ لَا يَكُونُ نَجِسَ العَيْنِ، حَيًّا أَوْ مَيِّتًا.",
-      fr: "Consensus des savants : le croyant n’est jamais impur par essence."
+      ar: "أَجْمَعَ أَهْلُ الْعِلْمِ عَلَى أَنَّ الْمُؤْمِنَ طَاهِرُ الْعَيْنِ حَيًّا وَمَيِّتًا، وَأَنَّ الْجَنَابَةَ حَدَثٌ حُكْمِيٌّ لَا نَجَاسَةٌ حِسِّيَّةٌ.",
+      fr: "Les savants sont unanimes sur le fait que le croyant est pur par essence, vivant ou mort, et que la janāba est un état rituel juridique, non une impureté matérielle."
     }
   },
-  audio_url: null
+  audio_url: ""
 },
+
 /*********************** HADITH 30 ************************/
 
 {
@@ -1025,16 +1026,17 @@ export const HADITHS_1_15 = [
   arabic_text:
     "عَنْ عَائِشَةَ رَضِيَ اللهُ عَنْهَا قَالَتْ: «كَانَ رَسُولُ اللهِ ﷺ إِذَا اغْتَسَلَ مِنَ الْجَنَابَةِ، غَسَلَ يَدَيْهِ، وَتَوَضَّأَ وُضُوءَهُ لِلصَّلَاةِ، ثُمَّ اغْتَسَلَ، ثُمَّ يُخَلِّلُ بِيَدَيْهِ شَعْرَهُ، حَتَّى إِذَا ظَنَّ أَنَّهُ قَدْ أَرْوَى بَشَرَتَهُ، أَفَاضَ الْمَاءَ عَلَيْهِ ثَلَاثَ مَرَّاتٍ، ثُمَّ غَسَلَ سَائِرَ جَسَدِهِ. وَكَانَتْ تَقُولُ: كُنْتُ أَغْتَسِلُ أَنَا وَرَسُولُ اللهِ ﷺ مِنْ إِنَاءٍ وَاحِدٍ، نَغْتَرِفُ مِنْهُ جَمِيعًا».",
   french_text:
-    "ʿĀʾisha (ra) décrit la manière complète dont le Prophète ﷺ effectuait le ghusl de janāba.",
+    "ʿĀʾisha (qu’Allah l’agrée) a dit : « Lorsque le Messager d’Allah ﷺ se lavait de l’état de janāba, il commençait par se laver les mains, puis il faisait ses ablutions comme pour la prière. Ensuite, il se lavait entièrement, puis il passait ses doigts dans ses cheveux jusqu’à ce qu’il pense que l’eau avait bien atteint la peau. Il versait alors de l’eau sur sa tête à trois reprises, puis il lavait le reste de son corps. Elle disait aussi : “Il m’arrivait de me laver avec le Messager d’Allah ﷺ à partir d’un seul récipient, dans lequel nous puisions tous les deux.” »",
   source: "Al-Bukhârî & Muslim — ʿUmdat al-Aḥkām",
   tags: ["ghusl", "janaba", "tahara", "sunna"],
   opinions: {
     Consensus: {
       ar: "اتَّفَقَ الْأَئِمَّةُ الأَرْبَعَةُ عَلَى أَنَّ فَرْضَ الْغُسْلِ تَعْمِيمُ الْجَسَدِ بِالْمَاءِ مَعَ النِّيَّةِ، وَلَا يَجِبُ التَّرْتِيبُ.",
-      fr: "Les quatre écoles s’accordent sur l’obligation de faire parvenir l’eau à tout le corps avec l’intention, sans obligation d’ordre."
+      fr: "Les quatre écoles juridiques s’accordent sur le fait que l’obligation du ghusl consiste à faire parvenir l’eau à l’ensemble du corps avec l’intention rituelle. L’ordre des gestes n’est pas obligatoire."
     }
   },
   audio_url: null
 }
+
 
 ];
