@@ -1020,7 +1020,6 @@ export const HADITHS_1_15 = [
 },
 
 /*********************** HADITH 30 ************************/
-
 {
   number: 30,
   arabic_text:
@@ -1036,7 +1035,27 @@ export const HADITHS_1_15 = [
     }
   },
   audio_url: null
+},
+/*********************** HADITH 31 ************************/
+
+{
+  number: 31,
+  narratorId: 17,
+  arabic_text:
+    "عَنْ مَيْمُونَةَ بِنْتِ الْحَارِثِ رَضِيَ اللَّهُ عَنْهَا، زَوْجِ النَّبِيِّ ﷺ، أَنَّهَا قَالَتْ: «وَضَعْتُ لِرَسُولِ اللَّهِ ﷺ وُضُوءَ الْجَنَابَةِ، فَأَكْفَأَ بِيَمِينِهِ عَلَى يَسَارِهِ مَرَّتَيْنِ أَوْ ثَلَاثًا، ثُمَّ غَسَلَ فَرْجَهُ، ثُمَّ ضَرَبَ بِيَدِهِ الْأَرْضَ أَوِ الْحَائِطَ مَرَّتَيْنِ أَوْ ثَلَاثًا، ثُمَّ تَمَضْمَضَ وَاسْتَنْشَقَ، وَغَسَلَ وَجْهَهُ وَذِرَاعَيْهِ، ثُمَّ أَفَاضَ عَلَى رَأْسِهِ الْمَاءَ، ثُمَّ غَسَلَ جَسَدَهُ، ثُمَّ تَنَحَّى فَغَسَلَ رِجْلَيْهِ». قَالَتْ: «فَأَتَيْتُهُ بِخِرْقَةٍ فَلَمْ يُرِدْهَا، فَجَعَلَ يَنْفُضُ الْمَاءَ بِيَدَيْهِ».",
+  french_text:
+    "Maymūna bint al-Ḥārith (qu’Allah l’agrée), épouse du Prophète ﷺ, a dit : « J’ai préparé pour le Messager d’Allah ﷺ l’eau pour le lavage rituel de la janāba. Il versa alors de sa main droite sur sa main gauche deux ou trois fois, puis il lava ses parties intimes. Ensuite, il frappa la terre ou le mur avec sa main deux ou trois fois. Puis il fit le rinçage de la bouche et du nez, lava son visage et ses avant-bras, puis versa de l’eau sur sa tête. Ensuite, il lava tout son corps. Puis il se mit légèrement à l’écart et lava ses pieds. » Elle ajouta : « Je lui apportai alors un tissu, mais il n’en voulut pas, et se mit à secouer l’eau de ses mains. »",
+  source: "Al-Bukhârî & Muslim — ʿUmdat al-Aḥkām",
+  tags: ["ghusl", "janaba", "tahara", "sunna", "fiqh"],
+  opinions: {
+    Consensus: {
+      ar: "اتَّفَقَ الْفُقَهَاءُ عَلَى أَنَّ تَعْمِيمَ الْجَسَدِ بِالْمَاءِ هُوَ فَرْضُ الْغُسْلِ، وَأَنَّ مَا وَرَدَ فِي هَذَا الْحَدِيثِ مِنَ التَّرْتِيبِ وَالْكَيْفِيَّةِ هُوَ مِنْ سُنَنِهِ.",
+      fr: "Les juristes sont unanimes sur le fait que l’obligation du ghusl consiste à faire parvenir l’eau à l’ensemble du corps. Les gestes détaillés mentionnés dans ce hadith relèvent de la Sunna et de la manière parfaite d’accomplir le lavage rituel."
+    }
+  },
+  audio_url: ""
 }
+
 
 
 ];

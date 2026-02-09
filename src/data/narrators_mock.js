@@ -856,7 +856,60 @@ export const NARRATORS_MOCK = [
       "Ibn Sa‘d – aṭ-Ṭabaqāt al-Kubrā"
     ],
   },
-}
+},
+
+{
+  id: 17,
+  slug: "maymuna-bint-al-harith",
+  name_ar: "مَيْمُونَةُ بِنْتُ الْحَارِثِ رضي الله عنها",
+  name_fr: "Maymūna bint al-Ḥārith",
+  kunya: "Umm al-Mu’minīn",
+  generation: "Compagnon",
+  death_year_h: 51,
+  region: "Médine / La Mecque",
+  rarity: "legendary",
+  avatar: "https://cdn.jsdelivr.net/gh/IslamicAvatars/sahabiyat/maymuna_bint_al_harith.png",
+  hadith_count: 76,
+  short_bio:
+    "Épouse du Prophète ﷺ (Mère des croyants). Connue pour ses narrations liées à la purification (ṭahāra) et à la vie conjugale du Prophète ﷺ, elle a transmis des hadiths précieux sur ses pratiques quotidiennes.",
+  key_anecdote:
+    "Elle a rapporté des détails précis sur les ablutions et le ghusl du Prophète ﷺ, devenant une référence dans les chapitres de purification pour les juristes.",
+  isUnlocked: false,
+
+  bio: {
+    approx_birth_year_h: null,
+    birth_place: "Arabie (Najd / environs de La Mecque)",
+
+    conversion_story:
+      "Maymūna bint al-Ḥārith رضي الله عنها embrassa l’islam et fit partie des femmes choisies par Allah pour être parmi les Mères des croyants. Son mariage avec le Prophète ﷺ renforça des liens tribaux importants et elle devint une source directe de connaissance sur sa vie privée, sa purification et ses habitudes domestiques.",
+
+    key_roles: [
+      "Mère des croyants (Umm al-Mu’minīn), épouse du Prophète ﷺ.",
+      "Narratrice de hadiths détaillant la purification (wudū’, ghusl) et la vie domestique prophétique.",
+      "Référence en fiqh dans les chapitres de ṭahāra et adab.",
+      "Son foyer fut un lieu de transmission de la Sunna et d’apprentissage pour la communauté.",
+    ],
+
+    anecdotes: [
+      "Elle rapporta des descriptions précises du ghusl du Prophète ﷺ, reprises par les fuqahā’ comme base de la pratique complète.",
+      "Son mariage eut lieu après ‘Umrat al-Qaḍā’, et elle fut liée à plusieurs familles de compagnons connus, renforçant les liens de la communauté.",
+      "Elle transmit des enseignements pratiques sur la pureté, l’étiquette et certaines règles du quotidien au sein du foyer.",
+    ],
+
+    death_year_h: 51,
+    death_place: "Sarif (près de La Mecque)",
+
+    sources: [
+      "Sahîh al-Bukhârî",
+      "Sahîh Muslim",
+      "Ibn Ḥajar – Al-Isâba fî Tamyîz as-Ṣaḥâba",
+      "Adh-Dhahabī – Siyar A‘lâm an-Nubalâ’",
+      "Ibn Sa‘d – aṭ-Ṭabaqāt al-Kubrā"
+    ],
+  },
+},
+
+
 
 
 

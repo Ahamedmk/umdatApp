@@ -2666,9 +2666,205 @@ export const QUIZ_QUESTIONS_1_15 = [
   correctIndex: 2,
   explain:
     "Le hadith montre une Sunna claire, équilibrée et sans complication."
+},
+
+/* ----------------- HADITH 31 : LA MANIÈRE COMPLÈTE DU GHUSL ----------------- */
+
+{
+  n: 31,
+  q: "Qui rapporte le hadith décrivant en détail le ghusl du Prophète ﷺ ?",
+  options: [
+    "ʿĀʾisha bint Abī Bakr",
+    "Maymūna bint al-Ḥārith",
+    "Umm Salama",
+    "Asmāʾ bint Abī Bakr"
+  ],
+  correctIndex: 1,
+  explain:
+    "Ce hadith est rapporté par Maymūna bint al-Ḥārith رضي الله عنها, épouse du Prophète ﷺ."
+},
+
+{
+  n: 31,
+  q: "Dans quel contexte Maymūna rapporte-t-elle ce hadith ?",
+  options: [
+    "Les ablutions pour la prière",
+    "Le ghusl après les menstrues",
+    "Le ghusl de janāba",
+    "Le lavage du vendredi"
+  ],
+  correctIndex: 2,
+  explain:
+    "Elle précise : « وضوء الجنابة » — le lavage rituel consécutif à l’état de janāba."
+},
+
+{
+  n: 31,
+  q: "Que fit le Prophète ﷺ en premier avec ses mains ?",
+  options: [
+    "Il lava directement son corps",
+    "Il lava ses pieds",
+    "Il versa l’eau de la main droite sur la gauche",
+    "Il se rinça la bouche"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le texte dit : « فأكفأ بيمينه على يساره » — il versa de sa main droite sur sa main gauche."
+},
+
+{
+  n: 31,
+  q: "Combien de fois le Prophète ﷺ versa-t-il l’eau sur sa main gauche ?",
+  options: [
+    "Une fois",
+    "Deux ou trois fois",
+    "Trois fois obligatoirement",
+    "Un nombre indéfini"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le hadith mentionne explicitement : « مرتين أو ثلاثًا »."
+},
+
+{
+  n: 31,
+  q: "Que lava-t-il après s’être lavé les mains ?",
+  options: [
+    "Son visage",
+    "Ses pieds",
+    "Ses parties intimes",
+    "Sa tête"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith dit clairement : « ثم غسل فرجه »."
+},
+
+{
+  n: 31,
+  q: "Pourquoi frappa-t-il la terre ou le mur avec sa main ?",
+  options: [
+    "Pour se purifier symboliquement",
+    "Pour enlever les traces de saleté",
+    "Pour faire le tayammum",
+    "Par habitude culturelle"
+  ],
+  correctIndex: 1,
+  explain:
+    "Les savants expliquent que cela permettait d’éliminer toute trace restante après le lavage des parties intimes."
+},
+
+{
+  n: 31,
+  q: "Quels actes le Prophète ﷺ accomplit-il ensuite ?",
+  options: [
+    "La prière",
+    "Le rinçage de la bouche et du nez",
+    "Le lavage des pieds",
+    "Le séchage avec un tissu"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le texte dit : « ثم تمضمض واستنشق » — il se rinça la bouche et le nez."
+},
+
+{
+  n: 31,
+  q: "Quand versa-t-il l’eau sur sa tête ?",
+  options: [
+    "Avant le rinçage de la bouche",
+    "Après avoir lavé le visage et les bras",
+    "À la fin du ghusl",
+    "Avant de laver les parties intimes"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le hadith suit l’ordre : visage → bras → puis « أفاض على رأسه الماء »."
+},
+
+{
+  n: 31,
+  q: "À quel moment lava-t-il ses pieds ?",
+  options: [
+    "En premier",
+    "Avec le reste du corps",
+    "Après s’être déplacé légèrement",
+    "Il ne les lava pas"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le texte dit : « ثم تنحى فغسل رجليه » — il se mit à l’écart puis lava ses pieds."
+},
+
+{
+  n: 31,
+  q: "Que fit le Prophète ﷺ lorsqu’on lui apporta un tissu pour s’essuyer ?",
+  options: [
+    "Il l’utilisa",
+    "Il le refusa et laissa l’eau sécher",
+    "Il ordonna de l’utiliser",
+    "Il le donna à Maymūna"
+  ],
+  correctIndex: 1,
+  explain:
+    "Maymūna dit : « فلم يرده » — il n’en voulut pas."
+},
+
+{
+  n: 31,
+  q: "Comment le Prophète ﷺ fit-il après avoir refusé le tissu ?",
+  options: [
+    "Il resta immobile",
+    "Il s’essuya avec ses vêtements",
+    "Il secoua l’eau de ses mains",
+    "Il recommença le ghusl"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith précise : « فجعل ينفض الماء بيديه »."
+},
+
+{
+  n: 31,
+  q: "Quel est le jugement juridique des gestes détaillés dans ce hadith ?",
+  options: [
+    "Ils sont tous obligatoires",
+    "Ils sont interdits",
+    "Ils font partie de la Sunna du ghusl",
+    "Ils sont propres au Prophète ﷺ"
+  ],
+  correctIndex: 2,
+  explain:
+    "Les savants sont unanimes : ces gestes relèvent de la Sunna et de la perfection du ghusl."
+},
+
+{
+  n: 31,
+  q: "Quelle est l’obligation minimale du ghusl selon le consensus ?",
+  options: [
+    "Se laver trois fois",
+    "Suivre exactement l’ordre du Prophète ﷺ",
+    "Faire parvenir l’eau à tout le corps avec l’intention",
+    "Utiliser un tissu après le lavage"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le fard du ghusl est de faire parvenir l’eau à tout le corps avec l’intention."
+},
+
+{
+  n: 31,
+  q: "Quelle leçon éducative se dégage de ce hadith ?",
+  options: [
+    "La complexité excessive du ghusl",
+    "La rigueur absolue sans souplesse",
+    "La clarté et la pédagogie dans l’enseignement",
+    "L’obligation de toujours s’essuyer"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le Prophète ﷺ enseigne par l’exemple, avec clarté et simplicité."
 }
-
-
 
 
 ];
