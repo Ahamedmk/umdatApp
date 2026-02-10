@@ -2864,7 +2864,337 @@ export const QUIZ_QUESTIONS_1_15 = [
   correctIndex: 2,
   explain:
     "Le Prophète ﷺ enseigne par l’exemple, avec clarté et simplicité."
+},
+
+/* ----------------- HADITH 32 : وَضُوءُ الْجُنُبِ قَبْلَ النَّوْمِ ----------------- */
+{
+  n: 32,
+  q: "Qui est le Compagnon ayant posé la question au Prophète ﷺ dans ce hadith ?",
+  options: [
+    "ʿAbd Allāh ibn ʿAbbās",
+    "ʿUmar ibn al-Khaṭṭāb",
+    "Abū Hurayra",
+    "Anas ibn Mālik"
+  ],
+  correctIndex: 1,
+  explain:
+    "La question est posée par ʿUmar ibn al-Khaṭṭāb رضي الله عنه."
+},
+
+{
+  n: 32,
+  q: "Quel est le sujet principal de la question posée ?",
+  options: [
+    "La prière en état de janāba",
+    "Le jeûne en état de janāba",
+    "Le sommeil en état de janāba",
+    "Le ghusl après le rapport"
+  ],
+  correctIndex: 2,
+  explain:
+    "ʿUmar demande s’il est permis de dormir alors qu’on est en état de janāba."
+},
+
+{
+  n: 32,
+  q: "Quelle fut la réponse du Prophète ﷺ ?",
+  options: [
+    "Non, il faut faire le ghusl",
+    "Oui, sans condition",
+    "Oui, à condition de faire le wudūʾ",
+    "Oui, mais seulement de jour"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le Prophète ﷺ répondit : « Oui, s’il fait ses ablutions. »"
+},
+
+{
+  n: 32,
+  q: "Que signifie cette réponse sur le plan juridique ?",
+  options: [
+    "Le wudūʾ est obligatoire avant de dormir",
+    "Le ghusl n’est jamais obligatoire",
+    "Le wudūʾ est recommandé avant de dormir",
+    "Le sommeil annule la janāba"
+  ],
+  correctIndex: 2,
+  explain:
+    "La majorité des savants comprennent cela comme une recommandation (sunna)."
+},
+
+{
+  n: 32,
+  q: "Le ghusl est-il obligatoire avant de dormir selon ce hadith ?",
+  options: [
+    "Oui, toujours",
+    "Oui, en cas de janāba",
+    "Non, il est permis de dormir sans ghusl",
+    "Seulement pour la prière de nuit"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith prouve qu’il est permis de dormir sans ghusl."
+},
+
+{
+  n: 32,
+  q: "Quel est le statut du wudūʾ du junub avant le sommeil selon la majorité ?",
+  options: [
+    "Obligatoire",
+    "Interdit",
+    "Sunna recommandée",
+    "Simplement permis"
+  ],
+  correctIndex: 2,
+  explain:
+    "Les quatre écoles considèrent cela comme recommandé."
+},
+
+{
+  n: 32,
+  q: "Quel est l’objectif du wudūʾ avant le sommeil en état de janāba ?",
+  options: [
+    "Annuler totalement la janāba",
+    "Permettre la prière",
+    "Alléger l’état de grande impureté",
+    "Remplacer le ghusl"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le wudūʾ ne supprime pas la janāba mais en atténue l’état."
+},
+
+{
+  n: 32,
+  q: "Peut-on manger ou boire en état de janāba sans ghusl ?",
+  options: [
+    "Non, jamais",
+    "Oui, mais avec wudūʾ recommandé",
+    "Seulement après ghusl",
+    "Uniquement en cas de nécessité"
+  ],
+  correctIndex: 1,
+  explain:
+    "Par analogie avec le sommeil, le wudūʾ est recommandé avant de manger."
+},
+
+{
+  n: 32,
+  q: "Que nous enseigne ce hadith sur la pédagogie prophétique ?",
+  options: [
+    "La rigueur absolue",
+    "La difficulté dans la religion",
+    "La facilité et la sagesse",
+    "L’interdiction sans explication"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le Prophète ﷺ facilite sans supprimer les règles."
+},
+
+{
+  n: 32,
+  q: "Quelle règle générale de fiqh peut-on tirer de ce hadith ?",
+  options: [
+    "Toute impureté empêche le sommeil",
+    "La janāba interdit la vie quotidienne",
+    "Certaines obligations sont liées à la prière",
+    "Le ghusl est obligatoire à tout moment"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le ghusl est requis pour la prière, pas pour les actes ordinaires."
+},
+
+{
+  n: 32,
+  q: "Quel comportement est le plus conforme à la Sunna pour le junub avant de dormir ?",
+  options: [
+    "Dormir sans rien faire",
+    "Faire le ghusl obligatoirement",
+    "Faire le wudūʾ avant de dormir",
+    "Rester éveillé jusqu’au ghusl"
+  ],
+  correctIndex: 2,
+  explain:
+    "La Sunna est de faire le wudūʾ avant de dormir."
+},
+
+{
+  n: 32,
+  q: "Quelle leçon spirituelle se dégage de ce hadith ?",
+  options: [
+    "La dureté purifie",
+    "La pureté est uniquement physique",
+    "La religion est fondée sur l’équilibre",
+    "Le ghusl remplace toute intention"
+  ],
+  correctIndex: 2,
+  explain:
+    "L’Islam allie pureté, facilité et sagesse."
+}, 
+/* ----------------- HADITH 33 : غُسْلُ الْمَرْأَةِ مِنَ الاِحْتِلَام ----------------- */
+
+{
+  n: 33,
+  q: "Qui rapporte le hadith concernant le ghusl de la femme après un rêve érotique ?",
+  options: [
+    "ʿĀʾisha",
+    "Umm Salama",
+    "Umm Ḥabība",
+    "Asmāʾ bint Abī Bakr"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le hadith est rapporté par Umm Salama رضي الله عنها, épouse du Prophète ﷺ."
+},
+
+{
+  n: 33,
+  q: "Quelle femme posa la question au Prophète ﷺ ?",
+  options: [
+    "ʿĀʾisha",
+    "Umm Salama",
+    "Umm Sulaym",
+    "Fāṭima"
+  ],
+  correctIndex: 2,
+  explain:
+    "C’est Umm Sulaym, l’épouse d’Abū Ṭalḥa, qui posa la question."
+},
+
+{
+  n: 33,
+  q: "Par quelle phrase Umm Sulaym introduisit-elle sa question ?",
+  options: [
+    "Allah est Pardonneur",
+    "La science est obligatoire",
+    "Allah ne s’embarrasse pas de la vérité",
+    "La pudeur fait partie de la foi"
+  ],
+  correctIndex: 2,
+  explain:
+    "Elle dit : « إِنَّ اللَّهَ لَا يَسْتَحْيِي مِنَ الْحَقِّ »."
+},
+
+{
+  n: 33,
+  q: "Quelle était la question posée au Prophète ﷺ ?",
+  options: [
+    "La femme doit-elle faire le wudūʾ après un rêve ?",
+    "La femme doit-elle prier après un rêve ?",
+    "La femme doit-elle faire le ghusl si elle a un rêve érotique ?",
+    "La femme doit-elle jeûner après un rêve ?"
+  ],
+  correctIndex: 2,
+  explain:
+    "La question portait sur l’obligation du ghusl après l’iḥtilām."
+},
+
+{
+  n: 33,
+  q: "Quelle fut la réponse du Prophète ﷺ ?",
+  options: [
+    "Non, jamais",
+    "Oui, dans tous les cas",
+    "Oui, si elle a vu de l’eau",
+    "Seulement si elle a eu du plaisir"
+  ],
+  correctIndex: 2,
+  explain:
+    "Il répondit : « نَعَمْ، إِذَا هِيَ رَأَتِ الْمَاءَ »."
+},
+
+{
+  n: 33,
+  q: "Que signifie l’expression « رَأَتِ الْمَاءَ » dans le hadith ?",
+  options: [
+    "Voir de l’eau réelle",
+    "Se laver avec de l’eau",
+    "Constater une émission de maniy",
+    "Ressentir un rêve"
+  ],
+  correctIndex: 2,
+  explain:
+    "Cela signifie la présence d’une émission (maniy)."
+},
+
+{
+  n: 33,
+  q: "Si la femme rêve mais ne voit aucune émission, que déduit-on du hadith ?",
+  options: [
+    "Le ghusl reste obligatoire",
+    "Le wudūʾ est obligatoire",
+    "Aucune purification n’est requise",
+    "Elle doit jeûner"
+  ],
+  correctIndex: 2,
+  explain:
+    "L’obligation est conditionnée par la vision de l’eau."
+},
+
+{
+  n: 33,
+  q: "Ce hadith montre-t-il une différence entre l’homme et la femme concernant le ghusl ?",
+  options: [
+    "Oui, la femme n’est pas concernée",
+    "Oui, l’homme seulement est concerné",
+    "Non, la règle est la même",
+    "La femme a une règle plus stricte"
+  ],
+  correctIndex: 2,
+  explain:
+    "La règle du ghusl dépend de l’émission, pour l’homme comme pour la femme."
+},
+
+{
+  n: 33,
+  q: "Quelle valeur éducative ressort de l’attitude du Prophète ﷺ ?",
+  options: [
+    "La sévérité dans les questions",
+    "Le rejet des questions intimes",
+    "L’encouragement à poser des questions utiles",
+    "Le silence face aux sujets délicats"
+  ],
+  correctIndex: 2,
+  explain:
+    "Il répond clairement sans gêne, montrant que la science religieuse prime."
+},
+
+{
+  n: 33,
+  q: "Quel principe général de fiqh est illustré par ce hadith ?",
+  options: [
+    "La règle suit le doute",
+    "La règle dépend de la preuve concrète",
+    "La pureté est toujours obligatoire",
+    "La pudeur empêche l’apprentissage"
+  ],
+  correctIndex: 1,
+  explain:
+    "L’obligation du ghusl dépend d’un signe concret : l’émission."
+},
+
+{
+  n: 33,
+  q: "Quel enseignement spirituel majeur peut-on retenir ?",
+  options: [
+    "La religion est fondée sur la gêne",
+    "La vérité religieuse doit être dite clairement",
+    "Les femmes n’ont pas besoin de science",
+    "La pureté est uniquement symbolique"
+  ],
+  correctIndex: 1,
+  explain:
+    "Allah ne s’embarrasse pas de la vérité : la clarté prime en matière de religion."
 }
+
+
+
+
+
+
 
 
 ];

@@ -1054,7 +1054,91 @@ export const HADITHS_1_15 = [
     }
   },
   audio_url: ""
-}
+},
+/*********************** HADITH 32 ************************/
+
+{
+  number: 32,
+  arabic_text:
+    "عَنْ عَبْدِ اللَّهِ بْنِ عُمَرَ عَنْ عُمَرَ بْنِ الْخَطَّابِ رَضِيَ اللَّهُ عَنْهُ قَالَ: قَالَ: يَا رَسُولَ اللَّهِ، أَيَرْقُدُ أَحَدُنَا وَهُوَ جُنُبٌ؟ قَالَ: «نَعَمْ، إِذَا تَوَضَّأَ أَحَدُكُمْ فَلْيَرْقُدْ».",
+  
+  french_text:
+    "ʿAbd Allāh ibn ʿUmar rapporte que ʿUmar ibn al-Khaṭṭāb (ra) demanda : « Ô Messager d’Allah, l’un de nous peut-il dormir alors qu’il est en état de janāba ? » Le Prophète ﷺ répondit : « Oui, lorsqu’il fait ses ablutions, qu’il dorme. »",
+  
+  source:
+    "Al-Bukhârî & Muslim — ʿUmdat al-Aḥkām (Hadith 32)",
+  
+  tags: ["janaba", "wudu", "ghusl", "sommeil", "tahara"],
+
+  opinions: {
+    Hanafi: {
+      ar:
+        "يَرَى الحَنَفِيَّةُ أَنَّ وُضُوءَ الجُنُبِ قَبْلَ النَّوْمِ سُنَّةٌ مُؤَكَّدَةٌ، وَلَيْسَ بِوَاجِبٍ، وَيَجُوزُ لَهُ النَّوْمُ دُونَ غُسْلٍ.",
+      fr:
+        "Chez les hanafites, les ablutions du junub avant le sommeil sont une sunna confirmée. Il lui est permis de dormir sans ghusl."
+    },
+
+    Maliki: {
+      ar:
+        "يَقُولُ المَالِكِيَّةُ إِنَّ وُضُوءَ الجُنُبِ قَبْلَ النَّوْمِ مُسْتَحَبٌّ، وَلَا يَجِبُ، وَالغُسْلُ إِنَّمَا يَجِبُ لِلصَّلَاةِ.",
+      fr:
+        "Pour les malikites, le wudūʾ du junub avant de dormir est recommandé, non obligatoire, le ghusl n’étant requis que pour la prière."
+    },
+
+    Shafi: {
+      ar:
+        "يَرَى الشَّافِعِيَّةُ أَنَّ الوُضُوءَ لِلجُنُبِ قَبْلَ النَّوْمِ سُنَّةٌ، لِلتَّخْفِيفِ مِنْ حَدَثِ الجَنَابَةِ، وَلَا يَجِبُ.",
+      fr:
+        "Chez les shaféites, le wudūʾ du junub avant le sommeil est une sunna visant à alléger l’état de janāba, sans caractère obligatoire."
+    },
+
+    Hanbali: {
+      ar:
+        "عِنْدَ الحَنَابِلَةِ يُسْتَحَبُّ لِلجُنُبِ أَنْ يَتَوَضَّأَ قَبْلَ النَّوْمِ، وَيَجُوزُ لَهُ النَّوْمُ دُونَ وُضُوءٍ، وَإِنْ كَانَ خِلَافَ الأَفْضَلِ.",
+      fr:
+        "Les hanbalites recommandent au junub de faire le wudūʾ avant de dormir. Il peut dormir sans, mais cela est contraire à ce qui est préférable."
+    }
+  },
+
+  audio_url: null
+},
+/*********************** HADITH 33 ************************/
+
+{
+  number: 33,
+  arabic_text:
+    "عَنْ أُمِّ سَلَمَةَ زَوْجِ النَّبِيِّ ﷺ قَالَتْ: «جَاءَتْ أُمُّ سُلَيْمٍ امْرَأَةُ أَبِي طَلْحَةَ إِلَى رَسُولِ اللَّهِ ﷺ، فَقَالَتْ: يَا رَسُولَ اللَّهِ، إِنَّ اللَّهَ لَا يَسْتَحْيِي مِنَ الْحَقِّ، فَهَلْ عَلَى الْمَرْأَةِ مِنْ غُسْلٍ إِذَا هِيَ احْتَلَمَتْ؟ فَقَالَ رَسُولُ اللَّهِ ﷺ: نَعَمْ، إِذَا هِيَ رَأَتِ الْمَاءَ».",
+
+  french_text:
+    "Umm Salama (ra), l’épouse du Prophète ﷺ, rapporte : « Umm Sulaym, l’épouse d’Abū Ṭalḥa, vint auprès du Messager d’Allah ﷺ et dit : “Ô Messager d’Allah, Allah ne s’embarrasse pas de la vérité. La femme doit-elle faire le ghusl lorsqu’elle a un rêve érotique (iḥtilām) ?” Le Messager d’Allah ﷺ répondit : “Oui, si elle voit de l’eau (c.-à-d. une émission).” »",
+
+  source: "Al-Bukhârî & Muslim — ʿUmdat al-Aḥkām (Hadith 33) — d’après le fichier fourni",
+  tags: ["tahara", "ghusl", "ihtilam", "femme", "maniy"],
+
+  // Avis des 4 écoles : non ajoutés (non détaillés dans l’extrait fourni).
+  opinions: {
+    Hanafi: {
+      ar: "لَمْ يَرِدْ فِي الْمِلَفِّ الْمُقَدَّمِ ذِكْرُ رَأْيِ الْحَنَفِيَّةِ فِي هَذِهِ الْمَسْأَلَةِ.",
+      fr: "L’avis hanafite n’est pas mentionné dans le fichier fourni."
+    },
+    Maliki: {
+      ar: "لَمْ يَرِدْ فِي الْمِلَفِّ الْمُقَدَّمِ ذِكْرُ رَأْيِ الْمَالِكِيَّةِ فِي هَذِهِ الْمَسْأَلَةِ.",
+      fr: "L’avis malikite n’est pas mentionné dans le fichier fourni."
+    },
+    Shafi: {
+      ar: "لَمْ يَرِدْ فِي الْمِلَفِّ الْمُقَدَّمِ ذِكْرُ رَأْيِ الشَّافِعِيَّةِ فِي هَذِهِ الْمَسْأَلَةِ.",
+      fr: "L’avis shaféite n’est pas mentionné dans le fichier fourni."
+    },
+    Hanbali: {
+      ar: "لَمْ يَرِدْ فِي الْمِلَفِّ الْمُقَدَّمِ ذِكْرُ رَأْيِ الْحَنَابِلَةِ فِي هَذِهِ الْمَسْأَلَةِ.",
+      fr: "L’avis hanbalite n’est pas mentionné dans le fichier fourni."
+    }
+  },
+
+  audio_url: null
+},
+
+
 
 
 
