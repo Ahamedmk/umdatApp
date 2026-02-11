@@ -1106,6 +1106,7 @@ export const HADITHS_1_15 = [
 
 {
   number: 33,
+  narratorId: 18,
   arabic_text:
     "عَنْ أُمِّ سَلَمَةَ زَوْجِ النَّبِيِّ ﷺ قَالَتْ: «جَاءَتْ أُمُّ سُلَيْمٍ امْرَأَةُ أَبِي طَلْحَةَ إِلَى رَسُولِ اللَّهِ ﷺ، فَقَالَتْ: يَا رَسُولَ اللَّهِ، إِنَّ اللَّهَ لَا يَسْتَحْيِي مِنَ الْحَقِّ، فَهَلْ عَلَى الْمَرْأَةِ مِنْ غُسْلٍ إِذَا هِيَ احْتَلَمَتْ؟ فَقَالَ رَسُولُ اللَّهِ ﷺ: نَعَمْ، إِذَا هِيَ رَأَتِ الْمَاءَ».",
 
@@ -1137,6 +1138,85 @@ export const HADITHS_1_15 = [
 
   audio_url: null
 },
+/*********************** HADITH 34 ************************/
+
+{
+  number: 34,
+  arabic_text:
+    "عَنْ عَائِشَةَ رضي الله عنها قَالَتْ: «كُنْتُ أَغْسِلُ الْجَنَابَةَ مِنْ ثَوْبِ رَسُولِ اللَّهِ ﷺ فَيَخْرُجُ إِلَى الصَّلَاةِ وَإِنَّ بُقَعَ الْمَاءِ فِي ثَوْبِهِ». وَفِي لَفْظٍ لِمُسْلِمٍ: «لَقَدْ كُنْتُ أَفْرُكُهُ مِنْ ثَوْبِ رَسُولِ اللَّهِ ﷺ فَرْكًا فَيُصَلِّي فِيهِ».",
+  french_text:
+    "ʿĀʾisha (ra) dit : « Je lavais la trace de janāba (le maniy) sur le vêtement du Messager d’Allah ﷺ, puis il sortait pour la prière alors même que des traces d’eau restaient sur son vêtement. » Et dans une version de Muslim : « Il m’arrivait de le gratter (à sec) du vêtement du Messager d’Allah ﷺ, puis il priait avec. »",
+  source: "Al-Bukhârî & Muslim — ʿUmdat al-Aḥkām (Hadith 34)",
+  tags: ["tahara", "maniy", "najasa", "vetement", "salat"],
+
+  opinions: {
+    Hanafi: {
+      ar:
+        "الْمَنِيُّ نَجِسٌ عِنْدَ أَبِي حَنِيفَةَ، وَيُشْتَرَطُ إِزَالَتُهُ عَنْ الثَّوْبِ لِصِحَّةِ الصَّلَاةِ؛ وَتَكُونُ إِزَالَتُهُ بِالْغَسْلِ أَوْ بِالْفَرْكِ إِذَا كَانَ يَابِسًا.",
+      fr:
+        "Chez les hanafites, le maniy est considéré comme impur : il faut donc l’enlever du vêtement pour prier. On peut l’enlever par lavage, ou en le grattant/frottant lorsqu’il est sec."
+    },
+
+    Maliki: {
+      ar:
+        "الْمَنِيُّ نَجِسٌ عِنْدَ مَالِكٍ، وَيَجِبُ غَسْلُهُ مِنَ الثَّوْبِ قَبْلَ الصَّلَاةِ، وَيَدُلُّ الْحَدِيثُ عَلَى أَنَّ غَسْلَهُ يَكْفِي وَأَنَّ بَقَايَا بُقَعِ الْمَاءِ لَا تَضُرُّ.",
+      fr:
+        "Chez les malikites, le maniy est impur et doit être lavé du vêtement avant la prière. Le hadith montre aussi que la présence de traces d’eau après lavage ne nuit pas."
+    },
+
+    Shafi: {
+      ar:
+        "الْمَنِيُّ طَاهِرٌ عِنْدَ الشَّافِعِيَّةِ، وَيُسْتَحَبُّ إِزَالَتُهُ تَنْظِيفًا؛ وَيَكْفِي فِيهِ الْفَرْكُ إِذَا يَبِسَ كَمَا فِي لَفْظِ مُسْلِمٍ.",
+      fr:
+        "Pour les shaféites, le maniy est pur : l’enlever du vêtement relève surtout du nettoyage. S’il est sec, le grattage/frottement suffit (version de Muslim)."
+    },
+
+    Hanbali: {
+      ar:
+        "الْمَنِيُّ طَاهِرٌ عِنْدَ أَحْمَدَ (وَهُوَ مَذْهَبُ الْحَنَابِلَةِ)، وَإِزَالَتُهُ مُسْتَحَبَّةٌ لِلنَّظَافَةِ؛ وَيَجُوزُ فَرْكُهُ إِذَا كَانَ يَابِسًا.",
+      fr:
+        "Chez les hanbalites (avis d’Aḥmad), le maniy est pur : l’enlever est recommandé par souci de propreté. Lorsqu’il est sec, on peut le retirer en le frottant."
+    }
+  },
+
+  audio_url: ""
+},
+/*********************** HADITH 35 ************************/
+
+{
+  number: 35,
+  arabic_text:
+    "عَنْ أَبِي هُرَيْرَةَ رضي الله عنه: أَنَّ رَسُولَ اللَّهِ ﷺ قَالَ: «إِذَا جَلَسَ بَيْنَ شُعَبِهَا الأَرْبَعِ ثُمَّ جَهَدَهَا فَقَدْ وَجَبَ الغُسْلُ». وَفِي لَفْظٍ لِمُسْلِمٍ: «وَإِنْ لَمْ يُنْزِلْ».",
+  french_text:
+    "Abū Hurayra (ra) rapporte que le Messager d’Allah ﷺ a dit : « Lorsque l’homme s’assoit entre les quatre membres (de son épouse), puis a le rapport, alors le ghusl devient obligatoire. » Et dans une version de Muslim : « même s’il n’éjacule pas. »",
+  source: "Al-Bukhârî & Muslim — ʿUmdat al-Aḥkām (Hadith 35)",
+  tags: ["tahara", "ghusl", "janaba", "rapport", "fiqh"],
+
+  // Avis des écoles UNIQUEMENT car le fichier mentionne explicitement
+  // que l’obligation du ghusl est l’avis de la majorité incluant les 4 imams.
+  opinions: {
+    Hanafi: {
+      ar: "يَجِبُ الغُسْلُ بِمُجَرَّدِ الْجِمَاعِ (التقاء الختانين) وَإِنْ لَمْ يَحْصُلْ إِنْزَالٌ.",
+      fr: "Chez les hanafites, le ghusl est obligatoire dès le rapport (rencontre des deux parties), même sans éjaculation."
+    },
+    Maliki: {
+      ar: "الْغُسْلُ وَاجِبٌ بِالْجِمَاعِ وَإِنْ لَمْ يُنْزِلْ؛ لِدَلَالَةِ الحَدِيثِ عَلَى وُجُوبِهِ.",
+      fr: "Chez les malikites, le ghusl devient obligatoire par le rapport, même sans éjaculation."
+    },
+    Shafi: {
+      ar: "يَثْبُتُ وُجُوبُ الغُسْلِ بِإِيلاَجِ الذَّكَرِ فِي الْفَرْجِ وَإِنْ لَمْ يَكُنْ إِنْزَالٌ.",
+      fr: "Chez les shaféites, le ghusl est obligatoire dès la pénétration, même s’il n’y a pas d’éjaculation."
+    },
+    Hanbali: {
+      ar: "يَجِبُ الغُسْلُ بِالْجِمَاعِ (التقاء الختانين) وَإِنْ لَمْ يُنْزِلْ، وَهُوَ قَوْلُ الجُمْهُورِ.",
+      fr: "Chez les hanbalites, le ghusl est obligatoire dès le rapport (rencontre des deux parties), même sans éjaculation."
+    }
+  },
+
+  audio_url: null
+}
+
+
 
 
 

@@ -3188,7 +3188,298 @@ export const QUIZ_QUESTIONS_1_15 = [
   correctIndex: 1,
   explain:
     "Allah ne s’embarrasse pas de la vérité : la clarté prime en matière de religion."
+},
+/* ----------------- HADITH 34 : حُكْمُ الْمَنِيِّ وَإِزَالَتُهُ مِنَ الثَّوْبِ ----------------- */
+  {
+    n: 34,
+    q: "Qui rapporte le hadith sur le lavage/grattage de la trace de janāba sur le vêtement du Prophète ﷺ ?",
+    options: ["Umm Salama", "ʿĀʾisha", "Abū Hurayra", "Ibn ʿUmar"],
+    correctIndex: 1,
+    explain: "Ce hadith est rapporté par ʿĀʾisha رضي الله عنها."
+  },
+
+  {
+    n: 34,
+    q: "De quelle substance parle ce hadith lorsqu’il évoque la « janāba » sur le vêtement ?",
+    options: ["Le madhī", "Le maniy", "Le sang", "L’urine"],
+    correctIndex: 1,
+    explain:
+      "Le contexte des versions (lavage puis prière, et frottement à sec) concerne la trace de maniy liée à la janāba."
+  },
+
+  {
+    n: 34,
+    q: "Que faisait ʿĀʾisha (ra) à propos de cette trace sur le vêtement du Prophète ﷺ ?",
+    options: ["Elle la laissait telle quelle", "Elle la parfumait", "Elle la lavait", "Elle la brûlait"],
+    correctIndex: 2,
+    explain:
+      "Le texte dit : « كُنْتُ أَغْسِلُ الْجَنَابَةَ مِنْ ثَوْبِ رَسُولِ اللَّهِ ﷺ » — je la lavais."
+  },
+
+  {
+    n: 34,
+    q: "Après ce lavage, que faisait le Prophète ﷺ ?",
+    options: [
+      "Il changeait obligatoirement de vêtement",
+      "Il sortait prier avec ce vêtement",
+      "Il attendait que le vêtement sèche complètement",
+      "Il répétait le ghusl"
+    ],
+    correctIndex: 1,
+    explain:
+      "Le hadith dit qu’il sortait pour la prière alors qu’il y avait encore des traces d’eau sur le vêtement."
+  },
+
+  {
+    n: 34,
+    q: "Que signifie la présence de « traces d’eau » sur le vêtement après lavage ?",
+    options: [
+      "Le lavage n’était pas valable",
+      "Le vêtement restait impur",
+      "Le vêtement pouvait être porté même humide",
+      "Il fallait refaire l’ablution"
+    ],
+    correctIndex: 2,
+    explain:
+      "Le hadith indique que l’humidité restante (traces d’eau) ne nuit pas : il priait avec."
+  },
+
+  {
+    n: 34,
+    q: "Quelle version supplémentaire est rapportée dans Muslim ?",
+    options: [
+      "Qu’elle versait de l’eau abondamment",
+      "Qu’elle le grattait/frottait à sec (فَرْكًا)",
+      "Qu’elle le couvrait de poussière",
+      "Qu’elle le rinçait trois fois"
+    ],
+    correctIndex: 1,
+    explain:
+      "Muslim rapporte : « لَقَدْ كُنْتُ أَفْرُكُهُ ... فَرْكًا » — je le frottais/grattais à sec."
+  },
+
+  {
+    n: 34,
+    q: "Le mot « أَفْرُكُهُ » (afrukuhu) signifie :",
+    options: ["Je le peignais", "Je le grattai/frottai", "Je le cousais", "Je le déchirais"],
+    correctIndex: 1,
+    explain: "« الفَرْك » signifie frotter/gratter, notamment pour retirer une trace sèche."
+  },
+
+  {
+    n: 34,
+    q: "Que montre la version du frottement à sec concernant la trace quand elle est sèche ?",
+    options: [
+      "Qu’elle est impossible à enlever",
+      "Que le frottement peut suffire quand c’est sec",
+      "Qu’il faut toujours tremper toute la nuit",
+      "Qu’il faut du savon obligatoire"
+    ],
+    correctIndex: 1,
+    explain:
+      "La version de Muslim indique qu’une trace sèche pouvait être retirée par frottement."
+  },
+
+  {
+    n: 34,
+    q: "Quel enseignement pratique sur la purification des vêtements peut-on tirer de ce hadith ?",
+    options: [
+      "On ne peut jamais prier avec un vêtement lavé récemment",
+      "Il faut sécher absolument avant de prier",
+      "On peut prier avec un vêtement encore humide après purification",
+      "Toute trace nécessite de remplacer le vêtement"
+    ],
+    correctIndex: 2,
+    explain:
+      "Le Prophète ﷺ priait avec le vêtement après lavage, malgré les traces d’eau."
+  },
+
+  {
+    n: 34,
+    q: "Selon l’objet (fiqh) lié au texte, quel point fait l’objet d’une divergence entre écoles ?",
+    options: [
+      "Le caractère pur/impur du maniy",
+      "L’obligation de prier en groupe",
+      "Le nombre de rakʿāt du fajr",
+      "Le jeûne du vendredi"
+    ],
+    correctIndex: 0,
+    explain:
+      "Les écoles divergent sur la purification intrinsèque du maniy : certains le jugent pur, d’autres impur."
+  },
+
+  {
+    n: 34,
+    q: "Quelle attitude éducative/éthique ressort du hadith ?",
+    options: [
+      "La négligence de l’hygiène",
+      "La recherche de la propreté sans rigidité excessive",
+      "L’interdiction de laver les vêtements",
+      "L’obligation de multiplier les contraintes"
+    ],
+    correctIndex: 1,
+    explain:
+      "Le hadith combine propreté (lavage/frottement) et facilité (prière même si traces d’eau)."
+  },
+
+  {
+    n: 34,
+    q: "Si la trace est retirée (lavage ou frottement à sec selon le cas), quel est le résultat pour la prière ?",
+    options: [
+      "La prière n’est jamais valable",
+      "La prière est valable avec ce vêtement",
+      "Il faut refaire le wudūʾ obligatoirement",
+      "Il faut offrir une aumône"
+    ],
+    correctIndex: 1,
+    explain:
+      "Le Prophète ﷺ priait avec ce vêtement après traitement de la trace."
+  },
+  /* ----------------- QUIZ HADITH 35 : وُجُوبُ الغُسْلِ بِالْجِمَاعِ ----------------- */
+{
+  n: 35,
+  q: "Qui rapporte le hadith : « Lorsque l’homme s’assoit entre ses quatre membres… » ?",
+  options: [
+    "ʿAbd Allāh ibn ʿUmar",
+    "Abū Hurayra",
+    "ʿAlī ibn Abī Ṭālib",
+    "Anas ibn Mālik"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le hadith est rapporté par Abū Hurayra رضي الله عنه."
+},
+
+{
+  n: 35,
+  q: "Que signifie l’expression « entre ses quatre membres » ?",
+  options: [
+    "Les mains et les pieds",
+    "Les épaules et les genoux",
+    "Les membres de la femme lors du rapport",
+    "Les quatre directions"
+  ],
+  correctIndex: 2,
+  explain:
+    "Elle désigne les membres de la femme entourant l’homme lors du rapport."
+},
+
+{
+  n: 35,
+  q: "Quel acte rend le ghusl obligatoire selon ce hadith ?",
+  options: [
+    "L’éjaculation uniquement",
+    "Le simple contact",
+    "La pénétration (rapport complet)",
+    "Le désir sans contact"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le ghusl devient obligatoire dès la pénétration, même sans éjaculation."
+},
+
+{
+  n: 35,
+  q: "Quelle précision ajoute la version rapportée par Muslim ?",
+  options: [
+    "Seulement en cas d’éjaculation",
+    "Même s’il n’y a pas d’éjaculation",
+    "Uniquement la nuit",
+    "Seulement pour l’homme"
+  ],
+  correctIndex: 1,
+  explain:
+    "La version de Muslim précise : « وإن لم يُنزل » — même sans éjaculation."
+},
+
+{
+  n: 35,
+  q: "Quel est l’avis des quatre écoles juridiques concernant ce point ?",
+  options: [
+    "Le ghusl est recommandé seulement",
+    "Le ghusl est obligatoire même sans éjaculation",
+    "Le ghusl n’est obligatoire qu’en cas d’éjaculation",
+    "Il y a désaccord total"
+  ],
+  correctIndex: 1,
+  explain:
+    "Les quatre écoles considèrent le ghusl obligatoire dès le rapport, même sans éjaculation."
+},
+
+{
+  n: 35,
+  q: "Quel principe juridique est établi par ce hadith ?",
+  options: [
+    "L’intention suffit sans acte",
+    "Le simple contact annule le wudūʾ",
+    "La pénétration suffit pour rendre le ghusl obligatoire",
+    "Le ghusl est toujours facultatif"
+  ],
+  correctIndex: 2,
+  explain:
+    "La rencontre des deux parties (التقاء الختانين) suffit à rendre le ghusl obligatoire."
+},
+
+{
+  n: 35,
+  q: "Ce hadith abroge-t-il l’ancienne règle « L’eau est due à l’eau » ?",
+  options: [
+    "Oui, selon la majorité",
+    "Non, elle reste valable",
+    "Seulement chez les hanafites",
+    "Uniquement pour les femmes"
+  ],
+  correctIndex: 0,
+  explain:
+    "La règle ancienne était liée à l’éjaculation. Ce hadith établit l’obligation même sans émission."
+},
+
+{
+  n: 35,
+  q: "Quel terme juridique est utilisé pour désigner la rencontre des deux parties intimes ?",
+  options: [
+    "الوضوء",
+    "الاستنجاء",
+    "التقاء الختانين",
+    "المضمضة"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le terme utilisé par les juristes est « التقاء الختانين »."
+},
+
+{
+  n: 35,
+  q: "Cette obligation concerne :",
+  options: [
+    "Seulement l’homme",
+    "Seulement la femme",
+    "Les deux partenaires",
+    "Uniquement le mari"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le ghusl devient obligatoire pour les deux partenaires."
+},
+
+{
+  n: 35,
+  q: "Quelle sagesse juridique ressort de ce hadith ?",
+  options: [
+    "La pureté dépend uniquement de l’éjaculation",
+    "La loi considère l’acte lui-même comme cause d’obligation",
+    "La pureté n’est pas nécessaire pour la prière",
+    "Le ghusl est une simple recommandation"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le législateur a lié l’obligation au rapport lui-même, indépendamment de l’émission."
 }
+
+
+
+
+
 
 
 

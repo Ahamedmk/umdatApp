@@ -909,6 +909,58 @@ export const NARRATORS_MOCK = [
   },
 },
 
+{
+  id: 18,
+  slug: "umm-salama",
+  name_ar: "أمُّ سَلَمَةَ رضي الله عنها",
+  name_fr: "Umm Salama",
+  kunya: "Umm Salama (Umm al-Mu’minīn)",
+  generation: "Compagnon",
+  death_year_h: 61,
+  region: "Médine",
+  rarity: "legendary",
+  avatar: "https://cdn.jsdelivr.net/gh/IslamicAvatars/sahabiyat/umm_salama.png",
+  hadith_count: 378,
+  short_bio:
+    "Épouse du Prophète ﷺ et Mère des croyants. Elle fut parmi les femmes les plus savantes de son époque et transmit de nombreux hadiths liés à la purification, au mariage et aux règles familiales.",
+  key_anecdote:
+    "Lors du traité de Hudaybiyya, c’est elle qui conseilla au Prophète ﷺ de commencer par se raser lui-même pour apaiser les compagnons — conseil qui sauva la situation.",
+  isUnlocked: false,
+
+  bio: {
+    approx_birth_year_h: null,
+    birth_place: "La Mecque",
+
+    conversion_story:
+      "Umm Salama رضي الله عنها fut parmi les premières femmes à embrasser l’islam. Elle émigra en Abyssinie puis à Médine, subissant de grandes épreuves avant d’être honorée par son mariage avec le Prophète ﷺ après la mort de son époux Abū Salama. Sa sagesse et son intelligence marquèrent profondément la communauté.",
+
+    key_roles: [
+      "Mère des croyants (Umm al-Mu’minīn).",
+      "Grande juriste parmi les femmes compagnonnes.",
+      "Référence en fiqh concernant la purification, le mariage et les règles féminines.",
+      "Conseillère du Prophète ﷺ lors d’événements majeurs.",
+    ],
+
+    anecdotes: [
+      "Son conseil stratégique au Prophète ﷺ à Hudaybiyya permit d’éviter une crise parmi les compagnons.",
+      "Elle rapporta des hadiths détaillés sur le ghusl et les règles liées aux femmes.",
+      "Elle était connue pour sa sagesse et sa capacité de réflexion profonde.",
+    ],
+
+    death_year_h: 61,
+    death_place: "Médine",
+
+    sources: [
+      "Sahîh al-Bukhârî",
+      "Sahîh Muslim",
+      "Ibn Ḥajar – Al-Isâba fî Tamyîz as-Ṣaḥâba",
+      "Adh-Dhahabī – Siyar A‘lâm an-Nubalâ’",
+      "Ibn Sa‘d – aṭ-Ṭabaqāt al-Kubrā"
+    ],
+  },
+},
+
+
 
 
 
