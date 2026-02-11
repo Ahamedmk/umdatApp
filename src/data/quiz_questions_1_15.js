@@ -3474,7 +3474,655 @@ export const QUIZ_QUESTIONS_1_15 = [
   correctIndex: 1,
   explain:
     "Le législateur a lié l’obligation au rapport lui-même, indépendamment de l’émission."
-}
+},
+
+/* ----------------- QUIZ HADITH 36 : مِقْدَارُ مَاءِ الغُسْلِ ----------------- */
+
+{
+  n: 36,
+  q: "Qui rapporte ce hadith concernant la quantité d’eau pour le ghusl ?",
+  options: [
+    "Abū Hurayra",
+    "ʿĀʾisha",
+    "Abū Jaʿfar Muḥammad ibn ʿAlī",
+    "Ibn ʿUmar"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith est rapporté par Abū Jaʿfar Muḥammad ibn ʿAlī ibn al-Ḥusayn."
+},
+
+{
+  n: 36,
+  q: "Chez quel Compagnon se trouvaient-ils lorsqu’on posa la question sur le ghusl ?",
+  options: [
+    "ʿAlī ibn Abī Ṭālib",
+    "Jābir ibn ʿAbd Allāh",
+    "ʿUmar ibn al-Khaṭṭāb",
+    "Abū Mūsā al-Ashʿarī"
+  ],
+  correctIndex: 1,
+  explain:
+    "Ils étaient chez Jābir ibn ʿAbd Allāh رضي الله عنه."
+},
+
+{
+  n: 36,
+  q: "Quelle quantité d’eau Jābir indiqua-t-il comme suffisante pour le ghusl ?",
+  options: [
+    "Un mudd",
+    "Deux ṣāʿ",
+    "Un ṣāʿ",
+    "Trois mudd"
+  ],
+  correctIndex: 2,
+  explain:
+    "Il dit clairement : « يَكْفِيكَ صَاعٌ » — un ṣāʿ suffit."
+},
+
+{
+  n: 36,
+  q: "Comment réagit l’homme qui entendit cette réponse ?",
+  options: [
+    "Il accepta immédiatement",
+    "Il demanda une preuve",
+    "Il dit que cela ne lui suffisait pas",
+    "Il quitta l’assemblée"
+  ],
+  correctIndex: 2,
+  explain:
+    "Il répondit : « مَا يَكْفِينِي » — cela ne me suffit pas."
+},
+
+{
+  n: 36,
+  q: "Comment Jābir répondit-il à cet homme ?",
+  options: [
+    "Il resta silencieux",
+    "Il augmenta la quantité d’eau",
+    "Il rappela que cela suffisait au Prophète ﷺ",
+    "Il annula la réponse précédente"
+  ],
+  correctIndex: 2,
+  explain:
+    "Il dit que cette quantité suffisait à quelqu’un de meilleur que lui — le Prophète ﷺ."
+},
+
+{
+  n: 36,
+  q: "Quelle description est donnée dans une autre version du hadith ?",
+  options: [
+    "Le Prophète ﷺ utilisait deux récipients",
+    "Il versait l’eau sur sa tête trois fois",
+    "Il faisait le ghusl en silence",
+    "Il utilisait toujours de l’eau chaude"
+  ],
+  correctIndex: 1,
+  explain:
+    "La version mentionne : « كان النبي ﷺ يفرغ الماء على رأسه ثلاثًا »."
+},
+
+{
+  n: 36,
+  q: "Quel principe juridique peut-on tirer de ce hadith ?",
+  options: [
+    "Le ghusl exige une grande quantité d’eau",
+    "La quantité minimale est strictement fixée",
+    "La suffisance dépend de l’efficacité dans l’usage de l’eau",
+    "Le ghusl doit être répété plusieurs fois"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith montre que la suffisance dépend de la bonne utilisation de l’eau, non de l’abondance."
+},
+
+{
+  n: 36,
+  q: "Que montre la parole de Jābir concernant le Prophète ﷺ ?",
+  options: [
+    "Sa force physique",
+    "Sa simplicité et son absence de gaspillage",
+    "Son abondance de moyens",
+    "Son obligation d’utiliser beaucoup d’eau"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le Prophète ﷺ utilisait peu d’eau sans gaspillage, montrant simplicité et modération."
+},
+
+{
+  n: 36,
+  q: "Quelle leçon spirituelle peut-on tirer de ce hadith ?",
+  options: [
+    "Multiplier l’eau augmente la récompense",
+    "La Sunna privilégie la modération",
+    "La purification nécessite l’exagération",
+    "La quantité prime sur l’intention"
+  ],
+  correctIndex: 1,
+  explain:
+    "La Sunna enseigne la modération et l’absence d’excès."
+},
+
+{
+  n: 36,
+  q: "Que signifie le fait que Jābir dirigea ensuite la prière en un seul vêtement ?",
+  options: [
+    "La prière nécessite deux vêtements",
+    "Il est permis de prier avec un seul vêtement couvrant correctement",
+    "La prière n’était pas obligatoire",
+    "Le vêtement était impur"
+  ],
+  correctIndex: 1,
+  explain:
+    "Cela montre qu’il est permis de prier avec un seul vêtement s’il couvre correctement la ʿawra."
+},
+/* ----------------- HADITH 37 : التيمم للجنب عند عدم الماء ----------------- */
+  {
+    n: 37,
+    q: "Qui rapporte le hadith 37 ?",
+    options: ["Abū Hurayra", "ʿImrān ibn Ḥuṣayn", "ʿAbd Allāh ibn ʿUmar", "Anas ibn Mālik"],
+    correctIndex: 1,
+    explain: "Le hadith est rapporté par ʿImrān ibn Ḥuṣayn رضي الله عنه."
+  },
+
+  {
+    n: 37,
+    q: "Quelle scène le Prophète ﷺ observe-t-il ?",
+    options: [
+      "Un homme qui prie seul à l’avant",
+      "Un homme qui fait les ablutions",
+      "Un homme à l’écart qui n’a pas prié avec le groupe",
+      "Un homme qui quitte la mosquée"
+    ],
+    correctIndex: 2,
+    explain: "Le texte dit : « رَأَى رَجُلًا مُعْتَزِلًا لَمْ يُصَلِّ فِي القَوْمِ »."
+  },
+
+  {
+    n: 37,
+    q: "Quelle question le Prophète ﷺ lui pose-t-il ?",
+    options: [
+      "Pourquoi es-tu en retard ?",
+      "Qu’est-ce qui t’a empêché de prier avec le groupe ?",
+      "As-tu rompu tes ablutions ?",
+      "As-tu entendu l’adhān ?"
+    ],
+    correctIndex: 1,
+    explain: "Il dit : « مَا مَنَعَكَ أَنْ تُصَلِّيَ فِي القَوْمِ؟ »."
+  },
+
+  {
+    n: 37,
+    q: "Quelle excuse l’homme donne-t-il ?",
+    options: [
+      "Il était malade",
+      "Il était en voyage",
+      "Il était en état de janāba et n’avait pas d’eau",
+      "Il ne connaissait pas la direction de la qibla"
+    ],
+    correctIndex: 2,
+    explain: "Il répond : « أَصَابَتْنِي جَنَابَةٌ وَلَا مَاءَ »."
+  },
+
+  {
+    n: 37,
+    q: "Quelle solution le Prophète ﷺ lui donne-t-il ?",
+    options: [
+      "Attendre jusqu’à trouver de l’eau",
+      "Prier sans purification",
+      "Faire le tayammum avec le ṣaʿīd (terre)",
+      "Recommencer plus tard à la maison"
+    ],
+    correctIndex: 2,
+    explain: "Il dit : « عَلَيْكَ بِالصَّعِيدِ فَإِنَّهُ يَكْفِيكَ »."
+  },
+
+  {
+    n: 37,
+    q: "Que signifie « الصعيد » dans ce hadith ?",
+    options: [
+      "L’eau de mer",
+      "La terre/sol poussiéreux (matière terrestre pure)",
+      "Un parfum",
+      "Une pierre précieuse"
+    ],
+    correctIndex: 1,
+    explain: "Le ṣaʿīd désigne la matière terrestre (terre/sol) utilisée pour le tayammum."
+  },
+
+  {
+    n: 37,
+    q: "Que prouve ce hadith concernant le tayammum ?",
+    options: [
+      "Il est réservé au wudūʾ uniquement",
+      "Il est permis au junub (janāba) en l’absence d’eau",
+      "Il est interdit avant le ghusl",
+      "Il remplace l’eau même si l’eau est disponible"
+    ],
+    correctIndex: 1,
+    explain: "Le Prophète ﷺ l’ordonne à un homme en janāba sans eau."
+  },
+
+  {
+    n: 37,
+    q: "Quelle règle pratique découle de ce hadith quand l’eau est absente ?",
+    options: [
+      "On abandonne la prière",
+      "On prie sans purification",
+      "On fait tayammum puis on prie",
+      "On reporte jusqu’à la fin du temps"
+    ],
+    correctIndex: 2,
+    explain: "L’ordre prophétique montre qu’on fait tayammum et on accomplit la prière."
+  },
+
+  {
+    n: 37,
+    q: "D’après l’exposé du fichier, comment est décrit le tayammum chez Mālik, ash-Shāfiʿī et Aḥmad (avis مشهور) ?",
+    options: [
+      "Il remplace l’eau en toute circonstance",
+      "Il est un بدل ضرورة : il permet la prière sans “lever” le ḥadath",
+      "Il est invalide pour la prière",
+      "Il est uniquement pour les petites impuretés"
+    ],
+    correctIndex: 1,
+    explain:
+      "Dans l’exposé : « التيمم بدل ضروري عند مالك والشافعي وأحمد (في المشهور) » : c’est une permission liée à la nécessité."
+  },
+
+  {
+    n: 37,
+    q: "Quelle est la position attribuée à Abū Ḥanīfa dans l’exposé ?",
+    options: [
+      "Tayammum فقط للمسافر",
+      "Tayammum بدل مطلق (substitut général)",
+      "Tayammum غير مشروع للجنب",
+      "Tayammum لا يصح إلا بالتراب فقط دون غيره"
+    ],
+    correctIndex: 1,
+    explain: "Il est cité : « وذهب أبو حنيفة إلى أنه بدل مطلق »."
+  },
+
+  {
+    n: 37,
+    q: "Quelle leçon éducative ressort de l’attitude du Prophète ﷺ ?",
+    options: [
+      "Il ignore l’homme et continue",
+      "Il blâme durement l’homme",
+      "Il questionne puis enseigne la solution clairement",
+      "Il exige une expiation"
+    ],
+    correctIndex: 2,
+    explain: "Il l’interroge, écoute son cas, puis lui donne une règle simple et applicable."
+  },
+
+  {
+    n: 37,
+    q: "Quel principe global de fiqh illustre ce hadith ?",
+    options: [
+      "La difficulté annule toutes les obligations",
+      "La purification est une condition, et la Sharīʿa prévoit un substitut en cas d’impossibilité",
+      "La prière en groupe est interdite",
+      "Le tayammum est meilleur que l’eau"
+    ],
+    correctIndex: 1,
+    explain:
+      "Quand l’eau est indisponible, la Sharīʿa remplace la purification par eau par le tayammum afin de préserver la prière."
+  },
+  /* ----------------- HADITH 38 : تَيَمُّمُ الجُنُبِ ----------------- */
+  {
+    n: 38,
+    q: "Qui rapporte le hadith de ʿAmmār sur le tayammum en état de janāba ?",
+    options: [
+      "Abū Hurayra",
+      "ʿAmmār ibn Yāsir",
+      "ʿUmar ibn al-Khaṭṭāb",
+      "Anas ibn Mālik"
+    ],
+    correctIndex: 1,
+    explain:
+      "Le récit est rapporté par ʿAmmār ibn Yāsir رضي الله عنه."
+  },
+
+  {
+    n: 38,
+    q: "Pourquoi ʿAmmār a-t-il eu recours au tayammum ?",
+    options: [
+      "Parce qu’il était malade",
+      "Parce qu’il n’avait pas d’eau",
+      "Parce qu’il manquait de temps",
+      "Parce qu’il était en voyage obligatoire"
+    ],
+    correctIndex: 1,
+    explain:
+      "Il dit explicitement : « فلم أجد الماء » — il ne trouva pas d’eau."
+  },
+
+  {
+    n: 38,
+    q: "Dans quel état rituel se trouvait ʿAmmār ?",
+    options: [
+      "En état de wudūʾ",
+      "En état de ḥayḍ (menstrues)",
+      "En état de janāba",
+      "En état d’iḥrām"
+    ],
+    correctIndex: 2,
+    explain:
+      "Il dit : « فأجنبت » — il était devenu junub (janāba)."
+  },
+
+  {
+    n: 38,
+    q: "Que fit ʿAmmār au début, pensant bien faire ?",
+    options: [
+      "Il fit wudūʾ seulement",
+      "Il se roula dans la terre comme une bête",
+      "Il attendit jusqu’à trouver de l’eau",
+      "Il pria sans purification"
+    ],
+    correctIndex: 1,
+    explain:
+      "Il dit : « فتمرغت في الصعيد كما تتمرغ الدابة »."
+  },
+
+  {
+    n: 38,
+    q: "Que fit ʿAmmār après cela ?",
+    options: [
+      "Il alla voir le Prophète ﷺ et lui raconta ce qu’il avait fait",
+      "Il garda cela secret",
+      "Il demanda aux compagnons et refusa l’avis du Prophète ﷺ",
+      "Il renouvela l’acte plusieurs fois"
+    ],
+    correctIndex: 0,
+    explain:
+      "Le texte : « ثم أتيت النبي ﷺ فذكرت ذلك له »."
+  },
+
+  {
+    n: 38,
+    q: "Quelle fut la réaction du Prophète ﷺ sur la manière de ʿAmmār ?",
+    options: [
+      "Il l’a approuvée telle quelle",
+      "Il a ordonné de recommencer en se roulant davantage",
+      "Il a corrigé en disant qu’une façon plus simple suffisait",
+      "Il a annulé le tayammum pour le junub"
+    ],
+    correctIndex: 2,
+    explain:
+      "Il dit : « إنما كان يكفيك أن تقول بيديك هكذا » : une méthode simple suffisait."
+  },
+
+  {
+    n: 38,
+    q: "Combien de fois le Prophète ﷺ frappa-t-il la terre dans ce hadith ?",
+    options: ["Une fois", "Deux fois", "Trois fois", "Il n’a pas frappé la terre"],
+    correctIndex: 0,
+    explain:
+      "Le texte : « ثم ضرب بيديه الأرض ضربة واحدة »."
+  },
+
+  {
+    n: 38,
+    q: "Après avoir frappé la terre, quel geste est mentionné en premier ?",
+    options: [
+      "Essuyer le visage directement",
+      "Secouer les mains longuement",
+      "Passer la main gauche sur la main droite",
+      "Essuyer les avant-bras jusqu’aux coudes"
+    ],
+    correctIndex: 2,
+    explain:
+      "Le hadith mentionne : « ثم مسح الشمال على اليمين »."
+  },
+
+  {
+    n: 38,
+    q: "Quelles parties ont été essuyées selon le texte du hadith ?",
+    options: [
+      "Le visage et le dos des mains",
+      "Le visage, la tête et les pieds",
+      "Le visage et les avant-bras jusqu’aux épaules",
+      "Le visage seulement"
+    ],
+    correctIndex: 0,
+    explain:
+      "Le hadith : « وظاهر كفيه ووجهه » — dos des mains + visage."
+  },
+
+  {
+    n: 38,
+    q: "Quel principe de fiqh ressort clairement de ce hadith ?",
+    options: [
+      "Le tayammum remplace uniquement le wudūʾ, pas le ghusl",
+      "Le tayammum est valable pour lever la janāba en absence d’eau",
+      "Le tayammum n’est valable que pour les voyages",
+      "Le tayammum nécessite de se rouler entièrement dans la terre"
+    ],
+    correctIndex: 1,
+    explain:
+      "Le Prophète ﷺ a enseigné le tayammum au junub lorsqu’il n’y a pas d’eau."
+  },
+
+  {
+    n: 38,
+    q: "Quelle erreur de raisonnement le Prophète ﷺ corrige chez ʿAmmār ?",
+    options: [
+      "Penser que la purification doit être compliquée",
+      "Penser que la prière n’est pas obligatoire",
+      "Penser que l’eau est toujours disponible",
+      "Penser que la terre est impure"
+    ],
+    correctIndex: 0,
+    explain:
+      "Il lui montre que le tayammum est simple : une frappe et essuyage."
+  },
+
+  {
+    n: 38,
+    q: "Quelle leçon éducative ressort de l’attitude du Prophète ﷺ ?",
+    options: [
+      "Il reproche durement l’ignorance",
+      "Il annule toute initiative personnelle",
+      "Il enseigne avec clarté et douceur en montrant le geste",
+      "Il impose une pénalité"
+    ],
+    correctIndex: 2,
+    explain:
+      "Il corrige en expliquant et en démontrant, sans blâme agressif."
+  },
+
+  {
+    n: 38,
+    q: "En pratique, que faut-il retenir sur la forme du tayammum d’après ce hadith ?",
+    options: [
+      "Rouler tout le corps dans la terre",
+      "Une frappe, puis essuyer le visage et les mains (au moins le dos des mains)",
+      "Trois frappes, puis essuyer les bras et la tête",
+      "Essuyer uniquement le visage"
+    ],
+    correctIndex: 1,
+    explain:
+      "Le Prophète ﷺ a montré : une seule frappe, puis essuyage du visage et des mains."
+  },
+  /* ----------------- HADITH 39 : خَصَائِصُ النَّبِيِّ ﷺ (خَمْسٌ أُعْطِيتُهَا) ----------------- */
+  {
+    n: 39,
+    q: "Qui rapporte le hadith « On m’a accordé cinq choses… » ?",
+    options: ["Abū Hurayra", "Jābir ibn ʿAbd Allāh al-Anṣārī", "ʿAbd Allāh ibn ʿUmar", "Anas ibn Mālik"],
+    correctIndex: 1,
+    explain: "Ce hadith est rapporté par Jābir ibn ʿAbd Allāh al-Anṣārī رضي الله عنه."
+  },
+
+  {
+    n: 39,
+    q: "Combien de privilèges (خصائص) le Prophète ﷺ mentionne-t-il dans ce hadith ?",
+    options: ["Trois", "Quatre", "Cinq", "Sept"],
+    correctIndex: 2,
+    explain: "Le texte dit clairement : « أُعْطِيتُ خَمْسًا » — “On m’a accordé cinq choses”."
+  },
+
+  {
+    n: 39,
+    q: "Quel est le premier privilège cité ?",
+    options: [
+      "La licéité des butins",
+      "L’intercession",
+      "La victoire par la terreur à une distance d’un mois",
+      "L’envoi à toute l’humanité"
+    ],
+    correctIndex: 2,
+    explain: "Le premier point est : « نُصِرْتُ بِالرُّعْبِ مَسِيرَةَ شَهْرٍ »."
+  },
+
+  {
+    n: 39,
+    q: "Que signifie « نُصِرْتُ بِالرُّعْبِ مَسِيرَةَ شَهْرٍ » ?",
+    options: [
+      "Ses ennemis avaient peur de lui à une journée de marche",
+      "Allah lui accordait une victoire par la crainte inspirée à l’ennemi jusqu’à un mois de distance",
+      "Il devait voyager un mois avant de combattre",
+      "Il n’a combattu qu’un mois dans toute sa vie"
+    ],
+    correctIndex: 1,
+    explain:
+      "Cela signifie qu’Allah lui donnait un secours en inspirant la crainte à l’ennemi à une distance d’un mois de marche."
+  },
+
+  {
+    n: 39,
+    q: "Que dit le hadith au sujet de la terre ?",
+    options: [
+      "Elle est interdite comme lieu de prière",
+      "Elle est un lieu de prière et un moyen de purification",
+      "Seule la mosquée est un lieu de prière",
+      "Elle n’est un moyen de purification que pour les prophètes"
+    ],
+    correctIndex: 1,
+    explain: "Le hadith dit : « وَجُعِلَتْ لِيَ الأَرْضُ مَسْجِدًا وَطَهُورًا »."
+  },
+
+  {
+    n: 39,
+    q: "Dans l’expression « مَسْجِدًا وَطَهُورًا », que signifie « مَسْجِدًا » ici ?",
+    options: [
+      "Un bâtiment spécifique",
+      "Une direction unique obligatoire",
+      "Un lieu où l’on peut prier (en général)",
+      "Un endroit interdit aux voyageurs"
+    ],
+    correctIndex: 2,
+    explain:
+      "Ici « masjidan » signifie que la terre a été rendue apte à la prière (en général), pas seulement un bâtiment."
+  },
+
+  {
+    n: 39,
+    q: "Que signifie « طَهُورًا » dans ce contexte ?",
+    options: [
+      "Un parfum",
+      "Un moyen de purification (notamment le tayammum quand l’eau manque)",
+      "Une nourriture pure",
+      "Une récompense"
+    ],
+    correctIndex: 1,
+    explain:
+      "« طَهُورًا » signifie un moyen de purification : l’eau, et en cas d’absence d’eau, le tayammum avec la terre."
+  },
+
+  {
+    n: 39,
+    q: "Quelle conséquence pratique est tirée : « فَأَيُّمَا رَجُلٍ مِنْ أُمَّتِي أَدْرَكَتْهُ الصَّلَاةُ فَلْيُصَلِّ » ?",
+    options: [
+      "Il doit retarder la prière jusqu’à la mosquée",
+      "Il peut prier dès que l’heure arrive, où qu’il soit",
+      "Il ne prie que s’il a un imam",
+      "Il doit regrouper toutes les prières"
+    ],
+    correctIndex: 1,
+    explain:
+      "Le hadith indique qu’on prie dès l’entrée du temps, même hors d’une mosquée, car la terre est “masjid”."
+  },
+
+  {
+    n: 39,
+    q: "Quel privilège concerne les butins de guerre (المغانم) ?",
+    options: [
+      "Ils sont interdits à cette communauté",
+      "Ils ont été rendus licites au Prophète ﷺ et à sa communauté",
+      "Ils étaient licites à tous les prophètes avant lui",
+      "Ils ne sont licites qu’aux pauvres"
+    ],
+    correctIndex: 1,
+    explain:
+      "Le hadith dit : « وَأُحِلَّتْ لِيَ الْمَغَانِمُ وَلَمْ تَحِلَّ لِأَحَدٍ قَبْلِي »."
+  },
+
+  {
+    n: 39,
+    q: "Que signifie « أُعْطِيتُ الشَّفَاعَةَ » ?",
+    options: [
+      "Le Prophète ﷺ n’intercède jamais",
+      "Il a reçu le privilège de l’intercession",
+      "L’intercession est réservée aux anges uniquement",
+      "L’intercession concerne seulement la vie d’ici-bas"
+    ],
+    correctIndex: 1,
+    explain: "Le texte dit explicitement : « وَأُعْطِيتُ الشَّفَاعَةَ »."
+  },
+
+  {
+    n: 39,
+    q: "Quelle différence le hadith établit-il entre la mission des prophètes précédents et celle de Muhammad ﷺ ?",
+    options: [
+      "Les prophètes précédents étaient envoyés à tous les peuples",
+      "Les prophètes précédents étaient envoyés à leur peuple, et lui à toute l’humanité",
+      "Muhammad ﷺ n’a été envoyé qu’aux Arabes",
+      "Tous les prophètes avaient exactement la même mission géographique"
+    ],
+    correctIndex: 1,
+    explain:
+      "Le hadith dit : « وَكَانَ النَّبِيُّ يُبْعَثُ إِلَى قَوْمِهِ خَاصَّةً، وَبُعِثْتُ إِلَى النَّاسِ عَامَّةً »."
+  },
+
+  {
+    n: 39,
+    q: "Quel est le thème principal de ce hadith ?",
+    options: [
+      "Les conditions du wudūʾ",
+      "Les mérites des ablutions",
+      "Les privilèges spécifiques accordés au Prophète ﷺ et à sa communauté",
+      "Les règles du jeûne"
+    ],
+    correctIndex: 2,
+    explain:
+      "Le hadith énumère des خصائص : secours par la crainte, terre masjid et purification, licéité des butins, intercession, mission universelle."
+  },
+
+  {
+    n: 39,
+    q: "Quelle leçon générale sur la facilité de la religion ressort de ce hadith ?",
+    options: [
+      "La prière n’est possible qu’en un lieu unique",
+      "La purification n’est possible que par l’eau",
+      "Allah a facilité la prière et la purification à cette communauté",
+      "La prière est annulée si l’on voyage"
+    ],
+    correctIndex: 2,
+    explain:
+      "Le fait que la terre soit “masjid” et “tahūr” montre une grande facilité : prière possible partout, et purification possible même sans eau."
+  }
+
+
+
+
+
+
+
+
+
 
 
 

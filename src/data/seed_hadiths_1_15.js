@@ -1214,7 +1214,139 @@ export const HADITHS_1_15 = [
   },
 
   audio_url: null
+},
+/*********************** HADITH 36 ************************/
+{
+  number: 36,
+  narratorId: 18,
+  arabic_text:
+    "عَنْ أَبِي جَعْفَرٍ مُحَمَّدِ بْنِ عَلِيِّ بْنِ الحُسَيْنِ بْنِ عَلِيٍّ رَضِيَ اللهُ عَنْهُ: «أَنَّهُ كَانَ هُوَ وَأَبُوهُ عِنْدَ جَابِرِ بْنِ عَبْدِ اللهِ رَضِيَ اللهُ عَنْهُ، وَعِنْدَهُ قَوْمُهُ، فَسَأَلُوهُ عَنِ الغُسْلِ؟ فَقَالَ: يَكْفِيكَ صَاعٌ. فَقَالَ رَجُلٌ: مَا يَكْفِينِي. فَقَالَ جَابِرٌ: كَانَ يَكْفِي مَنْ هُوَ أَوْفَى مِنْكَ شَعْرًا، وَخَيْرًا مِنْكَ — يُرِيدُ رَسُولَ اللهِ ﷺ — ثُمَّ أَمَّنَا فِي ثَوْبٍ». وَفِي لَفْظٍ: «كَانَ النَّبِيُّ ﷺ يُفْرِغُ المَاءَ عَلَى رَأْسِهِ ثَلَاثًا».",
+  french_text:
+    "Abū Jaʿfar Muḥammad ibn ʿAlī rapporte que lui et son père étaient chez Jābir ibn ʿAbd Allāh (ra). Des gens l’interrogèrent au sujet du ghusl. Il répondit : « Un ṣāʿ d’eau te suffit. » Un homme dit : « Cela ne me suffit pas. » Jābir répliqua : « Cela suffisait à quelqu’un qui avait plus de cheveux que toi et qui était meilleur que toi — il voulait dire le Messager d’Allāh ﷺ. » Et (Jābir) dirigea ensuite la prière en portant un seul vêtement. Dans une autre version : « Le Prophète ﷺ versait l’eau sur sa tête trois fois. »",
+  source: "Al-Bukhârî & Muslim — ʿUmdat al-Aḥkām (Hadith 36)",
+  tags: ["tahara", "ghusl", "janaba", "saa", "sunna"],
+
+  // Avis des écoles : je ne mets ici que ce qui est explicitement mentionné dans le fichier fourni.
+  opinions: {
+    Shafi: {
+      ar:
+        "قَالَ الشَّافِعِيُّ: قَدْ يَرْفُقُ بِالقَلِيلِ فَيَكْفِي بِهِ، وَقَدْ يَحْتَرِفُ بِالكَثِيرِ فَلَا يَكْفِي.",
+      fr:
+        "Chez les shaféites (tel que cité dans le fichier), la suffisance dépend aussi de la manière d’utiliser l’eau : on peut faire suffire une petite quantité en l’employant avec soin, alors qu’une grande quantité peut ne pas suffire si elle est gaspillée."
+    }
+  },
+
+  audio_url: null
+},
+/*********************** HADITH 37 ************************/
+
+{
+  number: 37,
+  arabic_text:
+    "عَنْ عِمْرَانَ بْنِ حُصَيْنٍ رَضِيَ اللهُ عَنْهُ: «أَنَّ رَسُولَ اللهِ ﷺ رَأَى رَجُلًا مُعْتَزِلًا لَمْ يُصَلِّ فِي القَوْمِ، فَقَالَ: يَا فُلَانُ، مَا مَنَعَكَ أَنْ تُصَلِّيَ فِي القَوْمِ؟ فَقَالَ: يَا رَسُولَ اللهِ، أَصَابَتْنِي جَنَابَةٌ وَلَا مَاءَ. فَقَالَ: عَلَيْكَ بِالصَّعِيدِ، فَإِنَّهُ يَكْفِيكَ».",
+  french_text:
+    "ʿImrān ibn Ḥuṣayn (ra) rapporte : « Le Messager d’Allah ﷺ vit un homme à l’écart qui n’avait pas prié avec les gens. Il lui dit : “Untel, qu’est-ce qui t’a empêché de prier avec le groupe ?” Il répondit : “Ô Messager d’Allah, j’étais en état de janāba et je n’ai pas d’eau.” Il dit : “Utilise la terre (le ṣaʿīd), cela te suffit.” »",
+  source: "Al-Bukhârî & Muslim — ʿUmdat al-Aḥkām (Hadith 37)",
+  tags: ["tahara", "tayammum", "janaba", "absence_eau", "salat"],
+
+  opinions: {
+    Maliki: {
+      ar:
+        "التَّيَمُّمُ بَدَلٌ ضَرُورِيٌّ عِنْدَ مَالِكٍ (وَكَذَلِكَ يُذْكَرُ مَعَهُ الشَّافِعِيُّ وَأَحْمَدُ فِي المَشْهُورِ): لَا يَرْفَعُ الحَدَثَ، وَلَكِنْ يُبِيحُ الصَّلَاةَ لِلضَّرُورَةِ، وَيُشْرَعُ لِلجُنُبِ عِنْدَ عَدَمِ المَاءِ.",
+      fr:
+        "Chez Mālik (et dans cet exposé : comme chez ash-Shāfiʿī et Aḥmad dans l’avis مشهور), le tayammum est un substitut en cas de nécessité : il ne “supprime” pas l’état de ḥadath en soi, mais permet d’accomplir la prière quand l’eau manque."
+    },
+
+    Shafi: {
+      ar:
+        "عِنْدَ الشَّافِعِيَّةِ (عَلَى هَذَا النَّقْلِ): التَّيَمُّمُ بَدَلُ ضَرُورَةٍ، فَيُصَلَّى بِهِ مَا دَامَتِ الضَّرُورَةُ، وَيُعْمَلُ بِقَوْلِهِ ﷺ: «فَإِذَا وَجَدَ المَاءَ فَلْيَمَسَّهُ بَشَرَتَهُ فَإِنَّ ذَلِكَ خَيْرٌ».",
+      fr:
+        "Selon cet exposé, l’école shaféite considère le tayammum comme une permission liée à la nécessité : on prie tant que l’absence d’eau demeure, et dès que l’eau est trouvée on revient à l’usage de l’eau (comme dans : « S’il trouve l’eau, qu’il la fasse toucher sa peau… »)."
+    },
+
+    Hanbali: {
+      ar:
+        "عِنْدَ الحَنَابِلَةِ (فِي المَشْهُورِ عَنْ أَحْمَدَ كَمَا ذُكِرَ): هُوَ بَدَلُ ضَرُورَةٍ لَا يَرْفَعُ الحَدَثَ، وَيُشْرَعُ لِلجُنُبِ إِذَا عَدِمَ المَاءَ، وَإِذَا وَجَدَهُ رَجَعَ إِلَى الأَصْلِ (الغُسْل).",
+      fr:
+        "Dans l’avis مشهور chez les hanbalites (tel que rapporté ici), le tayammum est un substitut de nécessité : il permet la prière en l’absence d’eau, puis dès que l’eau est disponible on revient au ghusl."
+    },
+
+    Hanafi: {
+      ar:
+        "وَذَهَبَ أَبُو حَنِيفَةَ إِلَى أَنَّهُ بَدَلٌ مُطْلَقٌ، لِقَوْلِهِ ﷺ: «إِنَّ الصَّعِيدَ الطَّيِّبَ طَهُورُ المُسْلِمِ وَإِنْ لَمْ يَجِدِ المَاءَ عَشْرَ سِنِينَ، فَإِذَا وَجَدَ المَاءَ فَلْيَمَسَّهُ بَشَرَتَهُ فَإِنَّ ذَلِكَ خَيْرٌ».",
+      fr:
+        "Abū Ḥanīfa considère le tayammum comme un substitut “général” (بدل مطلق), en s’appuyant sur le sens du hadith : « La terre pure est une purification pour le musulman même s’il ne trouve pas d’eau pendant dix ans ; s’il trouve l’eau, qu’il la fasse toucher sa peau… »"
+    }
+  },
+
+  audio_url: null
+},
+/*********************** HADITH 38 ************************/
+
+{
+  number: 38,
+  arabic_text:
+    "عَنْ عَمَّارِ بْنِ يَاسِرٍ رَضِيَ اللهُ عَنْهُ قَالَ: «بَعَثَنِي النَّبِيُّ ﷺ فِي حَاجَةٍ فَأَجْنَبْتُ فَلَمْ أَجِدِ الْمَاءَ، فَتَمَرَّغْتُ فِي الصَّعِيدِ كَمَا تَتَمَرَّغُ الدَّابَّةُ، ثُمَّ أَتَيْتُ النَّبِيَّ ﷺ فَذَكَرْتُ ذَلِكَ لَهُ، فَقَالَ: إِنَّمَا كَانَ يَكْفِيكَ أَنْ تَقُولَ بِيَدَيْكَ هَكَذَا. ثُمَّ ضَرَبَ بِيَدَيْهِ الأَرْضَ ضَرْبَةً وَاحِدَةً، ثُمَّ مَسَحَ الشِّمَالَ عَلَى الْيَمِينِ، وَظَاهِرَ كَفَّيْهِ وَوَجْهَهُ».",
+  french_text:
+    "ʿAmmār ibn Yāsir (ra) rapporte : « Le Prophète ﷺ m’avait envoyé pour une tâche. Je suis devenu en état de janāba et je ne trouvai pas d’eau. Je me roulai alors dans la terre comme se roule une bête. Puis je vins voir le Prophète ﷺ et je lui racontai cela. Il dit : “Il te suffisait de faire avec tes mains ainsi.” Puis il frappa la terre d’un seul coup avec ses mains, passa la main gauche sur la droite, et essuya le dos de ses mains ainsi que son visage. »",
+  source: "Al-Bukhârî & Muslim — ʿUmdat al-Aḥkām (Hadith 38)",
+  tags: ["tayammum", "janaba", "tahara", "absence_eau", "fiqh"],
+
+  opinions: {
+    Hanafi: {
+      ar:
+        "عند الحنفية: يُمْسَحُ فِي التَّيَمُّمِ الوَجْهُ وَاليَدَانِ إِلَى المِرْفَقَيْنِ، ويجوز التيمم قبل دخول الوقت، ويجوز أن يصلي بتيمم واحد ما شاء من الصلوات ما لم يُحْدِث. ويجوز التيمم بكل ما كان من جنس الأرض.",
+      fr:
+        "Chez les hanafites : on essuie le visage et les mains jusqu’aux coudes ; le tayammum peut être fait avant l’entrée de l’heure ; un même tayammum peut servir à plusieurs prières tant qu’on ne rompt pas l’état ; il est valide avec tout ce qui est de جنس الأرض (terre, sable, pierre, etc.)."
+    },
+
+    Maliki: {
+      ar:
+        "عند المالكية: لا يجب مسح اليدين إلى المرفقين بل إلى الكوعين، ولا يُفْعَلُ التيمم إلا بعد دخول وقت الصلاة، ولا يُصَلَّى بتيمم واحد أكثر من فريضة، ويجوز التيمم بأجزاء الأرض (كالتراب والرمل والحجر) إذا كان عليها غبار يعلق باليد.",
+      fr:
+        "Chez les malikites : l’essuyage des mains n’est pas exigé jusqu’aux coudes (on s’arrête aux poignets) ; le tayammum se fait après l’entrée de l’heure ; un tayammum ne sert pas pour plus d’une prière obligatoire ; il est permis avec les matières terrestres (terre/sable/pierre…) lorsqu’il y a une poussière qui adhère."
+    },
+
+    Shafi: {
+      ar:
+        "عند الشافعية: يُمْسَحُ الوَجْهُ وَاليَدَانِ إِلَى المِرْفَقَيْنِ، ولا يُفْعَلُ التيمم إلا بعد دخول الوقت، ولا يُصَلَّى بتيمم واحد أكثر من فريضة، ولا يجوز التيمم إلا بالتراب.",
+      fr:
+        "Chez les shaféites : on essuie le visage et les mains jusqu’aux coudes ; le tayammum se fait après l’entrée de l’heure ; un tayammum ne suffit pas pour plus d’une prière obligatoire ; il n’est valable qu’avec de la terre/poussière (turāb)."
+    },
+
+    Hanbali: {
+      ar:
+        "عند الحنابلة: لا يجب مسح اليدين إلى المرفقين بل إلى الكوعين، ولا يُفْعَلُ التيمم إلا بعد دخول الوقت، ولا يجوز التيمم إلا بالتراب.",
+      fr:
+        "Chez les hanbalites : l’essuyage des mains jusqu’aux coudes n’est pas obligatoire (on s’arrête aux poignets) ; le tayammum se fait après l’entrée de l’heure ; et il est limité à la terre/poussière (turāb)."
+    }
+  },
+
+  audio_url: null
+},
+/*********************** HADITH 39 ************************/
+{
+  number: 39,
+  arabic_text:
+    "عَنْ جَابِرِ بْنِ عَبْدِ اللهِ الأَنْصَارِيِّ رضي الله عنه أَنَّ النَّبِيَّ ﷺ قَالَ: «أُعْطِيتُ خَمْسًا لَمْ يُعْطَهُنَّ أَحَدٌ مِنَ الأَنْبِيَاءِ قَبْلِي: نُصِرْتُ بِالرُّعْبِ مَسِيرَةَ شَهْرٍ، وَجُعِلَتْ لِيَ الأَرْضُ مَسْجِدًا وَطَهُورًا، فَأَيُّمَا رَجُلٍ مِنْ أُمَّتِي أَدْرَكَتْهُ الصَّلَاةُ فَلْيُصَلِّ، وَأُحِلَّتْ لِيَ الْمَغَانِمُ وَلَمْ تَحِلَّ لِأَحَدٍ قَبْلِي، وَأُعْطِيتُ الشَّفَاعَةَ، وَكَانَ النَّبِيُّ يُبْعَثُ إِلَى قَوْمِهِ خَاصَّةً، وَبُعِثْتُ إِلَى النَّاسِ عَامَّةً».",
+  french_text:
+    "Jābir ibn ʿAbd Allāh al-Anṣārī (ra) rapporte que le Prophète ﷺ a dit : « On m’a accordé cinq choses qui n’avaient été accordées à aucun prophète avant moi : j’ai été secouru par la terreur (inspirée à l’ennemi) à une distance d’un mois de marche ; la terre a été rendue pour moi un lieu de prière et un moyen de purification ; ainsi, tout homme de ma communauté, lorsque l’heure de la prière le atteint, qu’il prie ; le butin m’a été rendu licite alors qu’il n’était licite à personne avant moi ; on m’a accordé l’intercession ; et les prophètes étaient envoyés à leur peuple en particulier, tandis que j’ai été envoyé à l’ensemble des gens. »",
+  source: "Al-Bukhârî & Muslim — ʿUmdat al-Aḥkām (Hadith 39)",
+  tags: ["tahara", "tayammum", "salat", "masjid", "maghanim", "shafaa", "khasa_is", "risala"],
+
+  // Avis ajoutés uniquement lorsqu’ils sont explicitement indiqués dans le fichier fourni.
+  opinions: {
+    Consensus: {
+      ar: "التَّيَمُّمُ ثَابِتٌ بِالْكِتَابِ وَالسُّنَّةِ وَإِجْمَاعِ الأُمَّةِ.",
+      fr: "Le tayammum est établi par le Coran, la Sunna et le consensus de la communauté."
+    }
+  },
+
+  audio_url: null
 }
+
+
+
 
 
 

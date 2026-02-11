@@ -960,6 +960,56 @@ export const NARRATORS_MOCK = [
   },
 },
 
+{
+  id: 19,
+  slug: "abu-jafar-muhammad-ibn-ali-al-baqir",
+  name_ar: "أبو جعفر محمد بن علي الباقر رحمه الله",
+  name_fr: "Abū Jaʿfar Muḥammad ibn ʿAlī (al-Bāqir)",
+  kunya: "Abū Jaʿfar",
+  generation: "Tābiʿī",
+  death_year_h: 114,
+  region: "Médine",
+  rarity: "epic",
+  avatar: "https://cdn.jsdelivr.net/gh/IslamicAvatars/scholars/muhammad_al_baqir.png",
+  hadith_count: 172,
+  short_bio:
+    "Grand savant de Médine, fils de ʿAlī Zayn al-ʿĀbidīn et arrière-petit-fils de Ḥusayn ibn ʿAlī. Il fut reconnu pour sa vaste science et sa profondeur en fiqh et en hadith.",
+  key_anecdote:
+    "Surnommé « al-Bāqir » (celui qui ouvre et approfondit la science) en raison de sa maîtrise exceptionnelle des sciences religieuses.",
+  isUnlocked: false,
+
+  bio: {
+    approx_birth_year_h: 57,
+    birth_place: "Médine",
+
+    conversion_story:
+      "Né dans une famille noble issue de la lignée du Prophète ﷺ par Fāṭima رضي الله عنها, Abū Jaʿfar Muḥammad ibn ʿAlī grandit dans un environnement de science et de piété. Il étudia auprès de grands compagnons encore vivants et transmit la science à de nombreux élèves.",
+
+    key_roles: [
+      "Grand savant parmi les Tābiʿīn.",
+      "Référence en fiqh médinois.",
+      "Transmetteur de hadiths auprès des générations suivantes.",
+      "Figure centrale de la famille prophétique dans la transmission du savoir.",
+    ],
+
+    anecdotes: [
+      "Il fut reconnu pour sa profondeur dans l’explication des versets du Coran.",
+      "Des savants comme al-Zuhrī reconnaissaient son immense science.",
+      "Son surnom « al-Bāqir » signifie celui qui perce les secrets du savoir.",
+    ],
+
+    death_year_h: 114,
+    death_place: "Médine",
+
+    sources: [
+      "Ibn Sa‘d – aṭ-Ṭabaqāt al-Kubrā",
+      "Adh-Dhahabī – Siyar A‘lām an-Nubalā’",
+      "Ibn Ḥajar – Tahdhīb at-Tahdhīb",
+      "Tārīkh al-Islām – adh-Dhahabī"
+    ],
+  },
+},
+
 
 
 
