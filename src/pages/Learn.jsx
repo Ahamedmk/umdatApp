@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import HowScoringWorksModal from "@/components/HowScoringWorksModal";
 
 import { BookOpen, Search, Filter, ArrowRight, Sparkles } from "lucide-react";
 
@@ -15,7 +16,7 @@ import { supabase } from "../lib/supabase";
 import { HADITHS_1_15 } from "../data/seed_hadiths_1_15";
 import { useAuth } from "../context/AuthContext";
 
-// Petit helper pour l'affichage des statuts
+// Petit helper pour l'affichage des statuts (UI honnête)
 function getStatusMeta(row) {
   if (!row) {
     return {
@@ -27,24 +28,33 @@ function getStatusMeta(row) {
 
   switch (row.status) {
     case "mastered":
-     case "learned":
       return {
         label: "Maîtrisé",
         className:
-          "bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200",
+          "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200",
       };
+
+    case "learned":
+      return {
+        label: "Appris",
+        className:
+          "bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200",
+      };
+
     case "learning":
       return {
         label: "En cours",
         className:
           "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200",
       };
+
     case "review":
       return {
         label: "À revoir",
         className:
           "bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-200",
       };
+
     case "new":
     default:
       return {
@@ -90,13 +100,11 @@ export function Learn() {
 
         if (error) throw error;
 
-        // Si la table est vide, on peut quand même fallback sur les seeds
         if (!data || data.length === 0) {
           if (active) setItems(HADITHS_1_15);
           return;
         }
 
-        // data = liste complète des hadiths en DB
         if (active) setItems(data);
       } catch (e) {
         console.error("Erreur chargement hadiths, fallback seeds:", e);
@@ -124,7 +132,6 @@ export function Learn() {
 
     async function loadProgress() {
       try {
-        // si aucun hadith chargé, on ne fait pas d'appel inutile
         if (!items || items.length === 0) {
           if (active) setProgressByHadith({});
           return;
@@ -176,17 +183,19 @@ export function Learn() {
     return ["all", ...Array.from(set)];
   }, [items]);
 
-  // Stats basées sur la progression Supabase
+  // Stats basées sur la progression Supabase (sépare learned vs mastered)
   const stats = useMemo(() => {
     const res = {
       total: items.length,
       dueToday: 0,
+      learned: 0,
       mastered: 0,
     };
 
     const today = new Date().toISOString().slice(0, 10);
 
     Object.values(progressByHadith).forEach((row) => {
+      if (row.status === "learned") res.learned += 1;
       if (row.status === "mastered") res.mastered += 1;
       if (row.next_review_date && row.next_review_date <= today) {
         res.dueToday += 1;
@@ -222,9 +231,13 @@ export function Learn() {
               <BookOpen className="h-6 w-6 text-white" />
             </div>
             <div className="min-w-0">
+              <div className="flex items-center gap-2">
               <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 truncate">
                 Apprendre
               </h2>
+              
+  <HowScoringWorksModal triggerText="Comment ça marche ?" />
+</div>
               <p className="text-sm text-slate-600 dark:text-slate-400">
                 {stats.total > 0
                   ? `Hadiths disponibles : ${stats.total}`
@@ -270,8 +283,8 @@ export function Learn() {
           </CardContent>
         </Card>
 
-        {/* Stats rapides (connectées à Supabase) */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {/* Stats rapides */}
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
           <Card className="bg-gradient-to-br from-emerald-500 to-teal-600 border-0 text-white shadow-lg">
             <CardContent className="pt-6 text-center">
               <div className="text-3xl font-bold mb-1">{stats.total}</div>
@@ -287,6 +300,15 @@ export function Learn() {
               <div className="text-sm opacity-90">
                 À réviser aujourd&apos;hui
               </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-teal-500 to-cyan-600 border-0 text-white shadow-lg">
+            <CardContent className="pt-6 text-center">
+              <div className="text-3xl font-bold mb-1">
+                {user ? stats.learned : "–"}
+              </div>
+              <div className="text-sm opacity-90">Hadiths appris</div>
             </CardContent>
           </Card>
 
@@ -331,7 +353,6 @@ export function Learn() {
                     key={h.number}
                     className="group relative w-full overflow-hidden border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 transition-shadow duration-300 hover:shadow-lg"
                   >
-                    {/* overlay sécurisé */}
                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                     <CardHeader className="pb-3 relative z-10">
@@ -344,20 +365,24 @@ export function Learn() {
                             >
                               #{h.number}
                             </Badge>
+
                             <Badge
                               variant="outline"
                               className="text-xs truncate max-w-[40vw] sm:max-w-none"
                             >
                               {h.source || "Source PDF"}
                             </Badge>
+
                             <Badge
                               variant="secondary"
                               className={`text-[10px] sm:text-xs rounded-full ${statusMeta.className}`}
                             >
                               {statusMeta.label}
                             </Badge>
+
                             <Sparkles className="h-3 w-3 text-yellow-500 shrink-0" />
                           </div>
+
                           <CardTitle className="text-lg text-slate-800 dark:text-slate-100 truncate">
                             Hadith {h.number}
                           </CardTitle>

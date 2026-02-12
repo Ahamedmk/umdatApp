@@ -215,25 +215,26 @@ export function Review() {
       desc: "Je me souviens à peine",
     },
     {
-      value: 2,
-      label: "Difficile",
-      desc: "Plusieurs erreurs",
-    },
-    {
-      value: 3,
-      label: "Moyen",
-      desc: "Quelques hésitations",
-    },
-    {
-      value: 4,
-      label: "Facile",
-      desc: "Bien mémorisé",
-    },
-    {
-      value: 5,
-      label: "Parfait",
-      desc: "Récitation fluide",
-    },
+  value: 2,
+  label: "Rappel assisté",
+  desc: "Je bloque au début, mais dès que je révèle, tout revient",
+},
+{
+  value: 3,
+  label: "Autonome",
+  desc: "Ça revient sans révéler, mais avec hésitations",
+},
+{
+  value: 4,
+  label: "Fluide",
+  desc: "Quasi sans effort, petites pauses",
+},
+{
+  value: 5,
+  label: "Automatique",
+  desc: "Immédiat, sans hésitation",
+},
+
   ];
 
   const isLoadingInitial = loading && !hadiths.length;

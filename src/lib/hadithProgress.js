@@ -1,36 +1,58 @@
 // /src/lib/hadithProgress.js
 import { supabase } from "./supabase";
 
-/**
- * Détermine le statut d’un hadith à partir de la qualité.
- * Retourne TOUJOURS une valeur valide de l'ENUM hadith_status.
- *
- * - 0,1,2,3  → "learning"
- * - 4,5      → "learned"
- */
-export function computeStatusFromQuality(quality) {
-  const q = Number(quality);
+const MIN_GAP_DAYS_FOR_MASTERY_WIN = 5;
+const MASTERY_WINS_REQUIRED = 3;
 
-  if (Number.isNaN(q)) {
-    // Sécurité : on ne renvoie jamais une chaîne vide
-    return "learning";
-  }
-
-  if (q >= 4) {
-    return "learned";
-  }
-
-  return "learning";
+function toISODate(d) {
+  return new Date(d).toISOString().slice(0, 10);
+}
+function addDaysISO(baseISO, days) {
+  const d = new Date(baseISO + "T00:00:00Z");
+  d.setUTCDate(d.getUTCDate() + Number(days || 0));
+  return toISODate(d);
+}
+function daysBetweenISO(aISO, bISO) {
+  const a = new Date(aISO + "T00:00:00Z");
+  const b = new Date(bISO + "T00:00:00Z");
+  return Math.floor((b - a) / 86400000);
+}
+function clamp(n, min, max) {
+  return Math.max(min, Math.min(max, n));
 }
 
 /**
- * Mini algorithme SM-2 pour calculer la prochaine révision.
- *
- * existing : objet venant de user_hadith_progress (facultatif)
- *   { ease_factor, interval_days, repetitions }
- *
- * Retour :
- *   { ease_factor, interval_days, repetitions, next_review_date, status }
+ * Ton mapping de statut (hors mastered)
+ * - 0..3 => learning
+ * - 4..5 => learned
+ */
+export function computeStatusFromQuality(quality) {
+  const q = Number(quality);
+  if (Number.isNaN(q)) return "learning";
+  return q >= 4 ? "learned" : "learning";
+}
+
+// Scheduling learned/learning
+function scheduleForQualityLearned(q) {
+  if (q <= 2) return 1; // demain
+  if (q === 3) return 2;
+  if (q === 4) return 3;
+  return 4; // 5
+}
+
+// Scheduling mastered (adaptatif)
+function scheduleForQualityMastered(currentIntervalDays, q) {
+  const base = Math.max(3, Number(currentIntervalDays || 10));
+  if (q === 5) return Math.round(base * 2);
+  if (q === 4) return Math.round(base * 1.5);
+  if (q === 3) return base;
+  if (q === 2) return 3; // tolérance
+  return 1; // 0-1 => demain
+}
+
+/**
+ * ⚠️ On garde computeNextReview si tu l’utilises ailleurs,
+ * mais Review.jsx appelle saveReviewResult() => c’est là la source de vérité.
  */
 export function computeNextReview(existing = {}, quality) {
   const q = Number(quality);
@@ -43,7 +65,6 @@ export function computeNextReview(existing = {}, quality) {
   let interval_days = existing.interval_days ?? 0;
 
   if (q < 3) {
-    // Échec : on “reset” un peu la courbe
     repetitions = 0;
     interval_days = 0;
   } else if (interval_days === 0) {
@@ -60,121 +81,189 @@ export function computeNextReview(existing = {}, quality) {
 
   const status = computeStatusFromQuality(q);
 
-  return {
-    ease_factor,
-    interval_days,
-    repetitions,
-    next_review_date,
-    status,
-  };
+  return { ease_factor, interval_days, repetitions, next_review_date, status };
 }
 
 /**
- * Sauvegarde le résultat d’une révision dans user_hadith_progress.
- *
- * @param {string} userId         - id de l’utilisateur
- * @param {number} hadithNumber   - numéro du hadith
- * @param {number} quality        - note 0–5
- * @param {object} nextArg        - (optionnel) objet déjà calculé côté client
- *                                  { ease, ease_factor, interval_days, repetitions, next_review_date, status }
- *
- * Si nextArg n’est pas fourni, on recalcule tout ici avec computeNextReview().
+ * ✅ LOGIQUE HYBRIDE + MASTERED
+ * - last_result reste un INTEGER (0–5), conforme à ta DB
  */
-// /src/lib/hadithProgress.j
-
-// ... computeNextReview reste tel quel
-
 export async function saveReviewResult(userId, hadithNumber, quality) {
-  console.log("DEBUG saveReviewResult input", {
-    userId,
-    hadithNumber,
-    quality,
-  });
+  const q = Number(quality);
+  if (!userId || !hadithNumber || Number.isNaN(q)) return;
 
-  const today = new Date();
-  const todayISODate = today.toISOString().slice(0, 10);
+  const todayISO = toISODate(new Date());
+  const nowISO = new Date().toISOString();
 
-  // 1️⃣ On récupère la progression existante pour ce hadith
+  // 1) Charger l’existant
   const { data: existing, error: fetchError } = await supabase
     .from("user_hadith_progress")
     .select(
-      "hadith_number, ease_factor, interval_days, repetitions, next_review_date, last_result, status"
+      [
+        "hadith_number",
+        "status",
+        "interval_days",
+        "ease_factor",
+        "repetitions",
+        "next_review_date",
+        "last_result",
+        "consecutive_failures",
+        "mastery_wins",
+        "last_mastery_win_date",
+      ].join(",")
     )
     .eq("user_id", userId)
     .eq("hadith_number", hadithNumber)
     .maybeSingle();
 
   if (fetchError) {
-    console.error("Erreur fetch progression :", fetchError);
+    console.error("Erreur fetch progression:", fetchError);
     throw fetchError;
   }
 
   const base = existing || {
-    ease_factor: 2.5,
-    interval_days: 0,
-    repetitions: 0,
     status: "learning",
+    interval_days: 0,
+    ease_factor: 2.5,
+    repetitions: 0,
+    consecutive_failures: 0,
+    mastery_wins: 0,
+    last_mastery_win_date: null,
   };
 
-  // 2️⃣ On calcule le prochain intervalle avec SM-2 simplifié
-  const next = computeNextReview(
-  {
-    ease_factor: base.ease_factor,
-    interval_days: base.interval_days,
-    repetitions: base.repetitions,
-    status: base.status,
-  },
-  quality
-);
+  const passed = q >= 3;
+  const goodForMastery = q >= 4;
 
+  let nextStatus = base.status || "learning";
+  let nextIntervalDays = Number(base.interval_days || 0);
+  let nextReviewDate = todayISO;
 
-  // 3️⃣ On prépare le payload pour user_hadith_progress
-    // 3️⃣ On prépare le payload pour user_hadith_progress
+  let consecutiveFailures = Number(base.consecutive_failures || 0);
+  let masteryWins = Number(base.mastery_wins || 0);
+  let lastMasteryWinDate = base.last_mastery_win_date || null;
+
+  // 2) Appliquer la logique
+  if (nextStatus === "mastered") {
+    if (!passed) {
+      consecutiveFailures += 1;
+
+      // fail => demain
+      nextIntervalDays = 1;
+      nextReviewDate = addDaysISO(todayISO, 1);
+
+      // 2 fails consécutifs => downgrade doux
+      if (consecutiveFailures >= 2) {
+        nextStatus = "learned";
+        consecutiveFailures = 0;
+
+        nextIntervalDays = 3;
+        nextReviewDate = addDaysISO(todayISO, 3);
+
+        // garde un peu d'avance
+        masteryWins = Math.max(2, masteryWins);
+      }
+    } else {
+      consecutiveFailures = 0;
+      const d = scheduleForQualityMastered(base.interval_days, q);
+      nextIntervalDays = d;
+      nextReviewDate = addDaysISO(todayISO, d);
+    }
+  } else {
+    // learning/learned/new
+    if (!passed) {
+      consecutiveFailures += 1;
+
+      // demain
+      nextIntervalDays = 1;
+      nextReviewDate = addDaysISO(todayISO, 1);
+
+      // si déjà learned, on le laisse learned (appris mais fragile)
+      if (nextStatus !== "learned") nextStatus = "learning";
+    } else {
+      consecutiveFailures = 0;
+
+      // statut de base (hors mastered)
+      if (nextStatus !== "learned") {
+        nextStatus = computeStatusFromQuality(q); // learning ou learned
+      }
+
+      const d = scheduleForQualityLearned(q);
+      nextIntervalDays = d;
+      nextReviewDate = addDaysISO(todayISO, d);
+
+      // progression vers mastered: 3 wins >=4 espacées de 5j
+      if (nextStatus === "learned" && goodForMastery) {
+        if (!lastMasteryWinDate) {
+          masteryWins = 1;
+          lastMasteryWinDate = todayISO;
+        } else {
+          const gap = daysBetweenISO(lastMasteryWinDate, todayISO);
+          if (gap >= MIN_GAP_DAYS_FOR_MASTERY_WIN) {
+            masteryWins = clamp(masteryWins + 1, 0, MASTERY_WINS_REQUIRED);
+            lastMasteryWinDate = todayISO;
+          }
+        }
+
+        if (masteryWins >= MASTERY_WINS_REQUIRED) {
+          nextStatus = "mastered";
+          nextIntervalDays = Math.max(10, nextIntervalDays);
+          nextReviewDate = addDaysISO(todayISO, nextIntervalDays);
+        }
+      }
+    }
+  }
+
+  // 3) Payload (cohérent avec tes colonnes)
   const payload = {
     user_id: userId,
     hadith_number: hadithNumber,
-    ease_factor: next.ease_factor,
-    interval_days: next.interval_days,
-    repetitions: next.repetitions,
-    last_result: quality,
-    last_review_at: today.toISOString(),
-    next_review_date: next.next_review_date || todayISODate,
 
-    // ✅ STATUT COHÉRENT PARTOUT
-    status: next.status, // "learned" si quality >= 4 sinon "learning"
+    status: nextStatus,
+    interval_days: nextIntervalDays,
+    next_review_date: nextReviewDate,
+
+    // ✅ ta DB attend un integer
+    last_result: q,
+
+    last_review_at: nowISO,
+    last_review_date: todayISO, // tu as cette colonne
+
+    consecutive_failures: consecutiveFailures,
+    mastery_wins: masteryWins,
+    last_mastery_win_date: lastMasteryWinDate,
   };
-
 
   console.log("DEBUG saveReviewResult payload", payload);
 
-  // 4️⃣ Upsert de la progression principale
+  // 4) Upsert
   const { error: upsertError } = await supabase
     .from("user_hadith_progress")
     .upsert(payload, { onConflict: "user_id,hadith_number" });
 
   if (upsertError) {
-    console.error("Erreur upsert user_hadith_progress :", upsertError);
+    console.error("Erreur upsert user_hadith_progress:", upsertError);
     throw upsertError;
   }
 
-  // 5️⃣ 📌 Enregistrement dans l'historique (review_events)
+  // 5) Historique (si ta table existe)
+  // On garde ton insert, mais on ajoute result si tu l’as.
   const { error: historyError } = await supabase.from("review_events").insert({
     user_id: userId,
     hadith_number: hadithNumber,
-    quality,
+    quality: q,
     event_type: "review",
-    // created_at est rempli automatiquement par default now()
+    // created_at auto
   });
 
   if (historyError) {
-    console.error("Erreur insertion review_events :", historyError);
-    // on NE throw PAS ici pour ne pas casser le flux de l’appli
+    console.error("Erreur insertion review_events:", historyError);
+    // on ne throw pas
   }
+
+  return payload;
 }
 
-
-
-// 🔎 Récupération de l'historique des révisions pour un utilisateur
+// 🔎 Récupération historique
 export async function getReviewHistory(userId) {
   if (!userId) return [];
 
@@ -197,7 +286,6 @@ export async function getDueCount(userId) {
 
   const todayISO = new Date().toISOString().slice(0, 10);
 
-  // On veut tous les hadiths dont la prochaine révision est aujourd'hui ou avant
   const { count, error } = await supabase
     .from("user_hadith_progress")
     .select("hadith_number", { count: "exact", head: true })
@@ -211,8 +299,3 @@ export async function getDueCount(userId) {
 
   return count ?? 0;
 }
-
-
-
-
-
