@@ -54,6 +54,13 @@ const rarityConfig = {
     glowColor: "rgba(251, 146, 60, 0.2)",
     borderGlow: "shadow-amber-500/20",
   },
+  epic: {
+  label: "Épique",
+  gradient: "from-fuchsia-500 to-violet-600",
+  glowColor: "rgba(217, 70, 239, 0.22)",
+  borderGlow: "shadow-fuchsia-500/20",
+},
+
 };
 
 function NarratorCard({
@@ -68,14 +75,14 @@ function NarratorCard({
   const isUnlocked =
     typeof forcedUnlocked === "boolean" ? forcedUnlocked : narrator.isUnlocked;
 
-  const rarity = rarityConfig[narrator.rarity || "common"];
+  const rarity = rarityConfig[narrator?.rarity] ?? rarityConfig.common;
 
   const initials = useMemo(() => {
-    const parts = (narrator.name_fr || "").split(" ");
+    const parts = (narrator?.name_fr || "").split(" ");
     const first = parts[0]?.[0] || "";
     const second = parts[1]?.[0] || "";
     return (first + second).toUpperCase() || "??";
-  }, [narrator.name_fr]);
+  }, [narrator?.name_fr]);
 
   return (
     <div
@@ -377,7 +384,7 @@ export function NarratorsCollection() {
 
             {/* Carte de progression */}
             <Card className="border-0 shadow-lg bg-gradient-to-br from-white to-emerald-50 dark:from-slate-900 dark:to-emerald-950/30 backdrop-blur-sm">
-              <CardContent className="px-5 py-4 space-y-3 min-w-[240px]">
+              <CardContent className="px-5 py-4 space-y-3 min-w-60">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Sparkles className="h-5 w-5 text-amber-500" />
