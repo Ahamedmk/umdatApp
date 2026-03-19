@@ -4,25 +4,36 @@ import { supabase } from "./supabase";
 const MIN_GAP_DAYS_FOR_MASTERY_WIN = 5;
 const MASTERY_WINS_REQUIRED = 3;
 
-function toISODate(d) {
-  return new Date(d).toISOString().slice(0, 10);
+function toLocalISODate(date = new Date()) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
 }
+
 function addDaysISO(baseISO, days) {
-  const d = new Date(baseISO + "T00:00:00Z");
-  d.setUTCDate(d.getUTCDate() + Number(days || 0));
-  return toISODate(d);
+  const [y, m, d] = baseISO.split("-").map(Number);
+  const date = new Date(y, m - 1, d);
+  date.setDate(date.getDate() + Number(days || 0));
+  return toLocalISODate(date);
 }
+
 function daysBetweenISO(aISO, bISO) {
-  const a = new Date(aISO + "T00:00:00Z");
-  const b = new Date(bISO + "T00:00:00Z");
+  const [ay, am, ad] = aISO.split("-").map(Number);
+  const [by, bm, bd] = bISO.split("-").map(Number);
+
+  const a = new Date(ay, am - 1, ad);
+  const b = new Date(by, bm - 1, bd);
+
   return Math.floor((b - a) / 86400000);
 }
+
 function clamp(n, min, max) {
   return Math.max(min, Math.min(max, n));
 }
 
 /**
- * Ton mapping de statut (hors mastered)
+ * Statut de base hors mastered
  * - 0..3 => learning
  * - 4..5 => learned
  */
@@ -32,70 +43,75 @@ export function computeStatusFromQuality(quality) {
   return q >= 4 ? "learned" : "learning";
 }
 
-// Scheduling learned/learning
+// Intervalle pour learning/learned
 function scheduleForQualityLearned(q) {
-  if (q <= 2) return 1; // demain
+  if (q <= 2) return 1;
   if (q === 3) return 2;
   if (q === 4) return 3;
-  return 4; // 5
+  return 4; // q === 5
 }
 
-// Scheduling mastered (adaptatif)
+// Intervalle pour mastered
 function scheduleForQualityMastered(currentIntervalDays, q) {
   const base = Math.max(3, Number(currentIntervalDays || 10));
-  if (q === 5) return Math.round(base * 2);
-  if (q === 4) return Math.round(base * 1.5);
+  if (q === 5) return Math.max(4, Math.round(base * 2));
+  if (q === 4) return Math.max(3, Math.round(base * 1.5));
   if (q === 3) return base;
-  if (q === 2) return 3; // tolérance
-  return 1; // 0-1 => demain
+  if (q === 2) return 3;
+  return 1;
 }
 
 /**
- * ⚠️ On garde computeNextReview si tu l’utilises ailleurs,
- * mais Review.jsx appelle saveReviewResult() => c’est là la source de vérité.
+ * Fonction optionnelle si utilisée ailleurs
  */
 export function computeNextReview(existing = {}, quality) {
   const q = Number(quality);
 
-  const prevEase = existing.ease_factor ?? 2.5;
-  let ease_factor = prevEase + (q >= 4 ? 0.1 : -0.2);
-  if (ease_factor < 1.3) ease_factor = 1.3;
+  const prevEase = Number(existing.ease_factor ?? 2.5);
+  let ease_factor = prevEase + (q >= 4 ? 0.1 : q === 3 ? 0 : -0.2);
+  ease_factor = Math.max(1.3, Math.min(ease_factor, 3.0));
 
-  let repetitions = (existing.repetitions ?? 0) + 1;
-  let interval_days = existing.interval_days ?? 0;
+  let repetitions = Number(existing.repetitions ?? 0);
+  let interval_days = Number(existing.interval_days ?? 0);
 
   if (q < 3) {
     repetitions = 0;
-    interval_days = 0;
-  } else if (interval_days === 0) {
     interval_days = 1;
-  } else if (interval_days === 1) {
-    interval_days = 3;
   } else {
-    interval_days = Math.round(interval_days * ease_factor);
+    repetitions += 1;
+
+    if (interval_days <= 0) {
+      interval_days = 1;
+    } else if (interval_days === 1) {
+      interval_days = 3;
+    } else {
+      interval_days = Math.max(1, Math.round(interval_days * ease_factor));
+    }
   }
 
-  const base = new Date();
-  base.setDate(base.getDate() + Math.max(interval_days, 0));
-  const next_review_date = base.toISOString().slice(0, 10);
-
+  const todayISO = toLocalISODate(new Date());
+  const next_review_date = addDaysISO(todayISO, interval_days);
   const status = computeStatusFromQuality(q);
 
-  return { ease_factor, interval_days, repetitions, next_review_date, status };
+  return {
+    ease_factor,
+    interval_days,
+    repetitions,
+    next_review_date,
+    status,
+  };
 }
 
 /**
- * ✅ LOGIQUE HYBRIDE + MASTERED
- * - last_result reste un INTEGER (0–5), conforme à ta DB
+ * ✅ Logique principale
  */
 export async function saveReviewResult(userId, hadithNumber, quality) {
   const q = Number(quality);
   if (!userId || !hadithNumber || Number.isNaN(q)) return;
 
-  const todayISO = toISODate(new Date());
+  const todayISO = toLocalISODate(new Date());
   const nowISO = new Date().toISOString();
 
-  // 1) Charger l’existant
   const { data: existing, error: fetchError } = await supabase
     .from("user_hadith_progress")
     .select(
@@ -138,20 +154,25 @@ export async function saveReviewResult(userId, hadithNumber, quality) {
   let nextIntervalDays = Number(base.interval_days || 0);
   let nextReviewDate = todayISO;
 
+  let easeFactor = Number(base.ease_factor || 2.5);
+  let repetitions = Number(base.repetitions || 0);
+
   let consecutiveFailures = Number(base.consecutive_failures || 0);
   let masteryWins = Number(base.mastery_wins || 0);
   let lastMasteryWinDate = base.last_mastery_win_date || null;
 
-  // 2) Appliquer la logique
+  // Ajustement ease factor
+  easeFactor = easeFactor + (q >= 4 ? 0.1 : q === 3 ? 0 : -0.2);
+  easeFactor = clamp(easeFactor, 1.3, 3.0);
+
   if (nextStatus === "mastered") {
     if (!passed) {
       consecutiveFailures += 1;
+      repetitions = 0;
 
-      // fail => demain
       nextIntervalDays = 1;
       nextReviewDate = addDaysISO(todayISO, 1);
 
-      // 2 fails consécutifs => downgrade doux
       if (consecutiveFailures >= 2) {
         nextStatus = "learned";
         consecutiveFailures = 0;
@@ -159,39 +180,44 @@ export async function saveReviewResult(userId, hadithNumber, quality) {
         nextIntervalDays = 3;
         nextReviewDate = addDaysISO(todayISO, 3);
 
-        // garde un peu d'avance
         masteryWins = Math.max(2, masteryWins);
       }
     } else {
       consecutiveFailures = 0;
+      repetitions += 1;
+
       const d = scheduleForQualityMastered(base.interval_days, q);
       nextIntervalDays = d;
       nextReviewDate = addDaysISO(todayISO, d);
     }
   } else {
-    // learning/learned/new
     if (!passed) {
       consecutiveFailures += 1;
+      repetitions = 0;
 
-      // demain
       nextIntervalDays = 1;
       nextReviewDate = addDaysISO(todayISO, 1);
 
-      // si déjà learned, on le laisse learned (appris mais fragile)
-      if (nextStatus !== "learned") nextStatus = "learning";
+      if (nextStatus !== "learned") {
+        nextStatus = "learning";
+      }
     } else {
       consecutiveFailures = 0;
+      repetitions += 1;
 
-      // statut de base (hors mastered)
       if (nextStatus !== "learned") {
-        nextStatus = computeStatusFromQuality(q); // learning ou learned
+        nextStatus = computeStatusFromQuality(q);
       }
 
-      const d = scheduleForQualityLearned(q);
-      nextIntervalDays = d;
-      nextReviewDate = addDaysISO(todayISO, d);
+      nextIntervalDays = scheduleForQualityLearned(q);
 
-      // progression vers mastered: 3 wins >=4 espacées de 5j
+      // sécurité absolue : si q >= 4, jamais aujourd’hui
+      if (q >= 4 && nextIntervalDays < 1) {
+        nextIntervalDays = 1;
+      }
+
+      nextReviewDate = addDaysISO(todayISO, nextIntervalDays);
+
       if (nextStatus === "learned" && goodForMastery) {
         if (!lastMasteryWinDate) {
           masteryWins = 1;
@@ -213,7 +239,6 @@ export async function saveReviewResult(userId, hadithNumber, quality) {
     }
   }
 
-  // 3) Payload (cohérent avec tes colonnes)
   const payload = {
     user_id: userId,
     hadith_number: hadithNumber,
@@ -222,11 +247,12 @@ export async function saveReviewResult(userId, hadithNumber, quality) {
     interval_days: nextIntervalDays,
     next_review_date: nextReviewDate,
 
-    // ✅ ta DB attend un integer
-    last_result: q,
+    ease_factor: easeFactor,
+    repetitions: repetitions,
 
+    last_result: q,
     last_review_at: nowISO,
-    last_review_date: todayISO, // tu as cette colonne
+    last_review_date: todayISO,
 
     consecutive_failures: consecutiveFailures,
     mastery_wins: masteryWins,
@@ -235,7 +261,6 @@ export async function saveReviewResult(userId, hadithNumber, quality) {
 
   console.log("DEBUG saveReviewResult payload", payload);
 
-  // 4) Upsert
   const { error: upsertError } = await supabase
     .from("user_hadith_progress")
     .upsert(payload, { onConflict: "user_id,hadith_number" });
@@ -245,25 +270,20 @@ export async function saveReviewResult(userId, hadithNumber, quality) {
     throw upsertError;
   }
 
-  // 5) Historique (si ta table existe)
-  // On garde ton insert, mais on ajoute result si tu l’as.
   const { error: historyError } = await supabase.from("review_events").insert({
     user_id: userId,
     hadith_number: hadithNumber,
     quality: q,
     event_type: "review",
-    // created_at auto
   });
 
   if (historyError) {
     console.error("Erreur insertion review_events:", historyError);
-    // on ne throw pas
   }
 
   return payload;
 }
 
-// 🔎 Récupération historique
 export async function getReviewHistory(userId) {
   if (!userId) return [];
 
@@ -284,7 +304,7 @@ export async function getReviewHistory(userId) {
 export async function getDueCount(userId) {
   if (!userId) return 0;
 
-  const todayISO = new Date().toISOString().slice(0, 10);
+  const todayISO = toLocalISODate(new Date());
 
   const { count, error } = await supabase
     .from("user_hadith_progress")

@@ -16,7 +16,14 @@ import { supabase } from "../lib/supabase";
 import { HADITHS_1_15 } from "../data/seed_hadiths_1_15";
 import { useAuth } from "../context/AuthContext";
 
-// Petit helper pour l'affichage des statuts (UI honnête)
+function toLocalISODate(date = new Date()) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+// Helper d'affichage des statuts avec progression vers la maîtrise
 function getStatusMeta(row) {
   if (!row) {
     return {
@@ -25,6 +32,8 @@ function getStatusMeta(row) {
         "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200",
     };
   }
+
+  const masteryWins = Number(row.mastery_wins || 0);
 
   switch (row.status) {
     case "mastered":
@@ -36,7 +45,10 @@ function getStatusMeta(row) {
 
     case "learned":
       return {
-        label: "Appris",
+        label:
+          masteryWins > 0
+            ? `Appris (${Math.min(masteryWins, 3)}/3)`
+            : "Appris",
         className:
           "bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200",
       };
@@ -68,13 +80,12 @@ function getStatusMeta(row) {
 export function Learn() {
   const { user } = useAuth();
 
-  const [items, setItems] = useState([]); // liste dynamique de tous les hadiths
+  const [items, setItems] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterSource, setFilterSource] = useState("all");
   const [loading, setLoading] = useState(true);
-  const [progressByHadith, setProgressByHadith] = useState({}); // { [number]: row }
+  const [progressByHadith, setProgressByHadith] = useState({});
 
-  // thème déjà géré globalement → on garde juste la synchro initiale
   useEffect(() => {
     const pref = localStorage.getItem("theme");
     const prefersDark =
@@ -85,8 +96,7 @@ export function Learn() {
     document.documentElement.classList.toggle("dark", enable);
   }, []);
 
-  // Charger tous les hadiths depuis la table `hadiths`
-  // + fallback sur HADITHS_1_15 si la DB plante
+  // Charger tous les hadiths
   useEffect(() => {
     let active = true;
 
@@ -115,13 +125,13 @@ export function Learn() {
     }
 
     loadHadiths();
+
     return () => {
       active = false;
     };
   }, []);
 
-  // Charger la progression de l'utilisateur (si connecté),
-  // en fonction des hadiths réellement présents (items)
+  // Charger la progression utilisateur
   useEffect(() => {
     if (!user) {
       setProgressByHadith({});
@@ -148,7 +158,9 @@ export function Learn() {
 
         const { data, error } = await supabase
           .from("user_hadith_progress")
-          .select("hadith_number, status, next_review_date, last_result")
+          .select(
+            "hadith_number, status, next_review_date, last_result, mastery_wins"
+          )
           .eq("user_id", user.id)
           .in("hadith_number", numbers);
 
@@ -171,32 +183,41 @@ export function Learn() {
     }
 
     loadProgress();
+
     return () => {
       active = false;
     };
   }, [user, items]);
 
-  // Liste des sources pour le filtre (dynamique)
   const sources = useMemo(() => {
     const set = new Set();
     items.forEach((h) => h.source && set.add(h.source));
     return ["all", ...Array.from(set)];
   }, [items]);
 
-  // Stats basées sur la progression Supabase (sépare learned vs mastered)
   const stats = useMemo(() => {
     const res = {
       total: items.length,
       dueToday: 0,
       learned: 0,
       mastered: 0,
+      almostMastered: 0, // bonus utile
     };
 
-    const today = new Date().toISOString().slice(0, 10);
+    const today = toLocalISODate(new Date());
 
     Object.values(progressByHadith).forEach((row) => {
-      if (row.status === "learned") res.learned += 1;
-      if (row.status === "mastered") res.mastered += 1;
+      const masteryWins = Number(row.mastery_wins || 0);
+
+      if (row.status === "learned") {
+        res.learned += 1;
+        if (masteryWins >= 2) res.almostMastered += 1;
+      }
+
+      if (row.status === "mastered") {
+        res.mastered += 1;
+      }
+
       if (row.next_review_date && row.next_review_date <= today) {
         res.dueToday += 1;
       }
@@ -205,9 +226,9 @@ export function Learn() {
     return res;
   }, [items, progressByHadith]);
 
-  // Filtrage (recherche + source)
   const filteredItems = useMemo(() => {
     const q = searchQuery.trim();
+
     return (items || []).filter((h) => {
       const matchesSearch =
         q === "" ||
@@ -217,6 +238,7 @@ export function Learn() {
           h.french_text.toLowerCase().includes(q.toLowerCase()));
 
       const matchesSource = filterSource === "all" || h.source === filterSource;
+
       return matchesSearch && matchesSource;
     });
   }, [items, searchQuery, filterSource]);
@@ -231,21 +253,29 @@ export function Learn() {
               <BookOpen className="h-6 w-6 text-white" />
             </div>
             <div className="min-w-0">
-              <div className="flex items-center gap-2">
-              <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 truncate">
-                Apprendre
-              </h2>
-              
-  <HowScoringWorksModal triggerText="Comment ça marche ?" />
-</div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 truncate">
+                  Apprendre
+                </h2>
+                <HowScoringWorksModal triggerText="Comment ça marche ?" />
+              </div>
+
               <p className="text-sm text-slate-600 dark:text-slate-400">
                 {stats.total > 0
                   ? `Hadiths disponibles : ${stats.total}`
                   : "Aucun hadith pour le moment"}
               </p>
+
               {!user && (
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                   Connecte-toi pour sauvegarder ta progression.
+                </p>
+              )}
+
+              {user && (
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  Un hadith devient maîtrisé après 3 validations fortes (4 ou 5)
+                  espacées dans le temps.
                 </p>
               )}
             </div>
@@ -265,6 +295,7 @@ export function Learn() {
                   className="pl-10 bg-white dark:bg-slate-900 w-full"
                 />
               </div>
+
               <div className="flex items-center gap-2 shrink-0">
                 <Filter className="h-4 w-4 text-slate-500" />
                 <select
@@ -322,6 +353,22 @@ export function Learn() {
           </Card>
         </div>
 
+        {/* Petit indicateur bonus */}
+        {user && stats.almostMastered > 0 && (
+          <Card className="border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 shadow-sm">
+            <CardContent className="pt-4 pb-4">
+              <p className="text-sm text-slate-700 dark:text-slate-300">
+                Tu as <span className="font-semibold">{stats.almostMastered}</span>{" "}
+                hadith{stats.almostMastered > 1 ? "s" : ""} presque maîtrisé
+                {stats.almostMastered > 1 ? "s" : ""}{" "}
+                <span className="text-slate-500 dark:text-slate-400">
+                  (2 validations fortes sur 3).
+                </span>
+              </p>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Liste des hadiths */}
         <ScrollArea className="h-[65vh] max-w-full overscroll-contain">
           <div className="space-y-4 px-0 sm:px-1">
@@ -347,6 +394,7 @@ export function Learn() {
               filteredItems.map((h) => {
                 const progress = progressByHadith[h.number];
                 const statusMeta = getStatusMeta(progress);
+                const masteryWins = Number(progress?.mastery_wins || 0);
 
                 return (
                   <Card
@@ -379,6 +427,15 @@ export function Learn() {
                             >
                               {statusMeta.label}
                             </Badge>
+
+                            {progress?.status === "learned" && masteryWins > 0 && (
+                              <Badge
+                                variant="outline"
+                                className="text-[10px] sm:text-xs rounded-full border-teal-200 text-teal-700 dark:border-teal-700 dark:text-teal-300"
+                              >
+                                Progression maîtrise : {Math.min(masteryWins, 3)}/3
+                              </Badge>
+                            )}
 
                             <Sparkles className="h-3 w-3 text-yellow-500 shrink-0" />
                           </div>
@@ -414,9 +471,16 @@ export function Learn() {
                         >
                           {h.arabic_text}
                         </div>
+
                         {h.french_text && (
                           <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-3 md:group-hover:line-clamp-none transition-all">
                             {h.french_text}
+                          </p>
+                        )}
+
+                        {progress?.next_review_date && (
+                          <p className="text-xs text-slate-500 dark:text-slate-400">
+                            Prochaine révision : {progress.next_review_date}
                           </p>
                         )}
                       </div>

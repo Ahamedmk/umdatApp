@@ -52,7 +52,6 @@ export function Review() {
     needs_work: 0,
   });
 
-  // --- Thème (on respecte le choix global) ---
   useEffect(() => {
     const pref = localStorage.getItem("theme");
     const prefersDark =
@@ -62,13 +61,8 @@ export function Review() {
     document.documentElement.classList.toggle("dark", enable);
   }, []);
 
-  /* ----------------------------------------------------
-   * Chargement des hadiths "dus" depuis Supabase
-   * → 100% dynamique : peu importe le numéro (1, 15, 50, 200...)
-   * -------------------------------------------------- */
   async function loadDue(userId) {
     if (!userId) {
-      // Pas d'utilisateur connecté → on vide proprement
       setHadiths([]);
       setHadithDueBadge(0);
       setProgressByNumber({});
@@ -83,7 +77,6 @@ export function Review() {
     try {
       const today = new Date().toISOString().slice(0, 10);
 
-      // On récupère toutes les cartes "due" (next_review_date <= today)
       const { data: progress, error: progError } = await supabase
         .from("user_hadith_progress")
         .select(
@@ -110,7 +103,6 @@ export function Review() {
         return p.hadith_number;
       });
 
-      // On va chercher les textes dans la table `hadiths`
       const { data: hadithData, error: hadithError } = await supabase
         .from("hadiths")
         .select("number, arabic_text, french_text, source")
@@ -126,7 +118,7 @@ export function Review() {
         const fromDb = dbMap.get(n);
         const fromSeed = HADITHS_1_15.find((x) => x.number === n);
         if (fromDb) merged.push(fromDb);
-        else if (fromSeed) merged.push(fromSeed); // fallback pour les anciens 1–15
+        else if (fromSeed) merged.push(fromSeed);
       }
 
       setHadiths(merged);
@@ -146,7 +138,6 @@ export function Review() {
     }
   }
 
-  // --- Chargement initial quand le user change ---
   useEffect(() => {
     if (user?.id) {
       loadDue(user.id);
@@ -156,9 +147,6 @@ export function Review() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
-  /* ----------------------------------------------------
-   * Données du hadith courant
-   * -------------------------------------------------- */
   const h = useMemo(() => hadiths[idx], [hadiths, idx]);
   const arabicText = h?.arabic_text || "";
   const visibleChars = 35;
@@ -169,15 +157,13 @@ export function Review() {
     ? Math.round(((idx + 1) / hadiths.length) * 100)
     : 0;
 
-  /* ----------------------------------------------------
-   * Répondre (notation SM-2)
-   * -------------------------------------------------- */
   const answer = async (quality) => {
     if (!h || !user || saving) return;
 
+    const currentHadithNumber = h.number;
+
     setSaving(true);
 
-    // Stats de session (affichage en haut)
     setSessionStats((prev) => ({
       total: prev.total + 1,
       perfect: prev.perfect + (quality === 5 ? 1 : 0),
@@ -186,16 +172,45 @@ export function Review() {
     }));
 
     try {
-      // Le helper gère SM-2 et met à jour next_review_date / status
-      await saveReviewResult(user.id, h.number, quality);
+      await saveReviewResult(user.id, currentHadithNumber, quality);
 
-      // On recharge la liste à partir de la base → si ce hadith n'est plus "due",
-      // il disparaît de la session automatiquement
-      await loadDue(user.id);
+      // IMPORTANT :
+      // On retire localement le hadith de la session actuelle
+      // pour éviter qu'il réapparaisse immédiatement si la date
+      // calculée côté base reste "due" aujourd'hui.
+      setHadiths((prev) => {
+        const currentIndex = prev.findIndex(
+          (item) => item.number === currentHadithNumber
+        );
 
-      // Reset affichage du texte
+        if (currentIndex === -1) return prev;
+
+        const nextList = prev.filter((item) => item.number !== currentHadithNumber);
+
+        setIdx((oldIdx) => {
+          if (nextList.length === 0) return 0;
+          if (oldIdx > currentIndex) return Math.max(0, oldIdx - 1);
+          if (oldIdx >= nextList.length) return nextList.length - 1;
+          return oldIdx;
+        });
+
+        setHadithDueBadge(nextList.length);
+        return nextList;
+      });
+
+      // On retire aussi sa progression locale
+      setProgressByNumber((prev) => {
+        const copy = { ...prev };
+        delete copy[currentHadithNumber];
+        return copy;
+      });
+
+      // Reset affichage
       setShowFr(false);
       setShowFullArabic(false);
+
+      // Optionnel : on peut re-synchroniser en arrière-plan seulement
+      // quand la session devient vide, mais ici on reste simple et stable.
     } catch (err) {
       console.error("Erreur lors de la sauvegarde de la révision:", err);
     } finally {
@@ -204,38 +219,13 @@ export function Review() {
   };
 
   const qualityLabels = [
-    {
-      value: 0,
-      label: "Oublié",
-      desc: "Je ne me souviens pas du tout",
-    },
-    {
-      value: 1,
-      label: "Très difficile",
-      desc: "Je me souviens à peine",
-    },
-    {
-  value: 2,
-  label: "Rappel assisté",
-  desc: "Je bloque au début, mais dès que je révèle, tout revient",
-},
-{
-  value: 3,
-  label: "Autonome",
-  desc: "Ça revient sans révéler, mais avec hésitations",
-},
-{
-  value: 4,
-  label: "Fluide",
-  desc: "Quasi sans effort, petites pauses",
-},
-{
-  value: 5,
-  label: "Automatique",
-  desc: "Immédiat, sans hésitation",
-},
-
-  ];
+  { value: 0, label: "Trou noir", desc: "Je ne m'en souviens pas", delay: "demain" },
+  { value: 1, label: "Très difficile", desc: "Très difficile à rappeler", delay: "demain" },
+  { value: 2, label: "Après avoir regardé", desc: "Je dois regarder pour continuer", delay: "demain" },
+  { value: 3, label: "Hésitations", desc: "Ça revient mais avec effort", delay: "2 jours" },
+  { value: 4, label: "Fluide", desc: "Récitation fluide", delay: "3 jours" },
+  { value: 5, label: "Parfait", desc: "Instantané", delay: "4 jours" },
+];
 
   const isLoadingInitial = loading && !hadiths.length;
   const noHadiths = !loading && !hadiths.length;
@@ -245,7 +235,6 @@ export function Review() {
     <TooltipProvider>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-blue-950 dark:to-indigo-950">
         <div className="max-w-4xl w-full mx-auto px-3 sm:px-6 py-6 space-y-6">
-          {/* Header */}
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-3 min-w-0">
               <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-lg shrink-0">
@@ -260,15 +249,13 @@ export function Review() {
                 </p>
                 {!user && (
                   <p className="text-xs text-red-500 mt-1">
-                    Tu n&apos;es pas connecté : ta progression ne sera pas
-                    sauvegardée.
+                    Tu n&apos;es pas connecté : ta progression ne sera pas sauvegardée.
                   </p>
                 )}
               </div>
             </div>
           </div>
 
-          {/* Progress bar */}
           <Card className="border-slate-200 dark:border-slate-700 shadow-lg bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
             <CardContent className="pt-6">
               <div className="space-y-3">
@@ -285,43 +272,33 @@ export function Review() {
             </CardContent>
           </Card>
 
-          {/* Session stats */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <Card className="bg-gradient-to-br from-blue-500 to-indigo-600 border-0 text-white shadow-lg">
               <CardContent className="pt-4 pb-3 text-center">
-                <div className="text-2xl font-bold mb-1">
-                  {sessionStats.total}
-                </div>
+                <div className="text-2xl font-bold mb-1">{sessionStats.total}</div>
                 <div className="text-xs opacity-90">Total notés</div>
               </CardContent>
             </Card>
             <Card className="bg-gradient-to-br from-green-500 to-emerald-600 border-0 text-white shadow-lg">
               <CardContent className="pt-4 pb-3 text-center">
-                <div className="text-2xl font-bold mb-1">
-                  {sessionStats.perfect}
-                </div>
+                <div className="text-2xl font-bold mb-1">{sessionStats.perfect}</div>
                 <div className="text-xs opacity-90">Parfait</div>
               </CardContent>
             </Card>
             <Card className="bg-gradient-to-br from-emerald-500 to-teal-600 border-0 text-white shadow-lg">
               <CardContent className="pt-4 pb-3 text-center">
-                <div className="text-2xl font-bold mb-1">
-                  {sessionStats.good}
-                </div>
+                <div className="text-2xl font-bold mb-1">{sessionStats.good}</div>
                 <div className="text-xs opacity-90">Facile</div>
               </CardContent>
             </Card>
             <Card className="bg-gradient-to-br from-orange-500 to-red-500 border-0 text-white shadow-lg">
               <CardContent className="pt-4 pb-3 text-center">
-                <div className="text-2xl font-bold mb-1">
-                  {sessionStats.needs_work}
-                </div>
+                <div className="text-2xl font-bold mb-1">{sessionStats.needs_work}</div>
                 <div className="text-xs opacity-90">À revoir</div>
               </CardContent>
             </Card>
           </div>
 
-          {/* Cas 1 : chargement initial */}
           {isLoadingInitial && (
             <Card className="border-slate-200 dark:border-slate-700 shadow-xl bg-white/80 dark:bg-slate-800/80 overflow-hidden relative">
               <CardContent className="pt-6 space-y-4 animate-pulse min-h-[320px]">
@@ -332,7 +309,6 @@ export function Review() {
             </Card>
           )}
 
-          {/* Cas 2 : aucun hadith à réviser */}
           {noHadiths && !isLoadingInitial && (
             <Card className="border-dashed border-2 border-slate-300 dark:border-slate-700">
               <CardContent className="py-12 text-center space-y-3">
@@ -341,28 +317,23 @@ export function Review() {
                   Tu as terminé toutes tes révisions pour aujourd’hui ✅
                 </p>
                 <p className="text-sm text-slate-500 dark:text-slate-400">
-                  Reviens demain in châ Allah pour la prochaine session, ou
-                  apprends un nouveau hadith depuis la page{" "}
+                  Reviens demain in châ Allah pour la prochaine session, ou apprends
+                  un nouveau hadith depuis la page{" "}
                   <span className="font-semibold">Apprendre</span>.
                 </p>
               </CardContent>
             </Card>
           )}
 
-          {/* Cas 3 : contenu normal */}
           {hCurrent && !isLoadingInitial && (
             <>
-              {/* Carte principale */}
               <Card className="border-slate-200 dark:border-slate-700 shadow-xl bg-white dark:bg-slate-800 overflow-hidden relative">
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-blue-500/5 to-indigo-500/5" />
 
                 <CardHeader className="relative z-10">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2 min-w-0">
-                      <Badge
-                        variant="secondary"
-                        className="rounded-full shrink-0"
-                      >
+                      <Badge variant="secondary" className="rounded-full shrink-0">
                         #{hCurrent.number}
                       </Badge>
                       <Badge
@@ -379,15 +350,13 @@ export function Review() {
                     Hadith {hCurrent.number}
                   </CardTitle>
                   <CardDescription>
-                    Récite en arabe, puis révèle la traduction pour
-                    t’auto-évaluer
+                    Récite en arabe, puis révèle la traduction pour t’auto-évaluer
                   </CardDescription>
                 </CardHeader>
 
                 <Separator className="bg-slate-200 dark:bg-slate-700 relative z-10" />
 
                 <CardContent className="space-y-6 pt-6 relative z-10">
-                  {/* Texte arabe + floutage */}
                   <div className="p-6 bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
                     <div
                       dir="rtl"
@@ -435,7 +404,6 @@ export function Review() {
                     )}
                   </div>
 
-                  {/* Traduction */}
                   <div className="space-y-4">
                     {!showFr ? (
                       <Button
@@ -473,71 +441,84 @@ export function Review() {
                       </div>
                     )}
                   </div>
+                  {/* Explication mobile */}
+<div className="sm:hidden bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 text-xs text-slate-600 dark:text-slate-300 space-y-1">
+  <p><strong>0</strong> → Trou noir</p>
+  <p><strong>1</strong> → Très difficile</p>
+  <p><strong>2</strong> → Après avoir regardé</p>
+  <p><strong>3</strong> → Quelques hésitations</p>
+  <p><strong>4</strong> → Fluide</p>
+  <p><strong>5</strong> → Parfait</p>
+</div>
 
-                  {/* Auto-évaluation */}
-                  
-                    <div className="space-y-4 pt-2">
-                      <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
-                        <Trophy className="h-4 w-4" />
-                        <span className="font-medium">
-                          Comment était ta récitation ?
-                        </span>
-                      </div>
-
-                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                        {qualityLabels.map((q) => (
-                          <Tooltip key={q.value}>
-                            <TooltipTrigger asChild>
-                              <Button
-                                onClick={() => answer(q.value)}
-                                disabled={saving}
-                                className="h-auto py-4 flex-col gap-1 rounded-lg"
-                                style={
-                                  q.value >= 4
-                                    ? {
-                                        backgroundImage:
-                                          q.value === 4
-                                            ? "linear-gradient(135deg,#10b981,#0f766e)"
-                                            : "linear-gradient(135deg,#22c55e,#16a34a)",
-                                        color: "#ffffff",
-                                        border: "none",
-                                      }
-                                    : {
-                                        backgroundColor: "#ffffff",
-                                        color: "#0f172a",
-                                        border: "1px solid #e2e8f0",
-                                      }
-                                }
-                              >
-                                <span className="text-2xl font-bold">
-                                  {q.value}
-                                </span>
-                                <span className="text-xs font-medium">
-                                  {q.label}
-                                </span>
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p className="text-xs">{q.desc}</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        ))}
-                      </div>
+<p className="text-sm text-slate-500 dark:text-slate-400">
+  Note ta récitation honnêtement pour améliorer la mémorisation.
+</p>
+                  <div className="space-y-4 pt-2">
+                    <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+                      <Trophy className="h-4 w-4" />
+                      <span className="font-medium">
+                        Comment était ta récitation ?
+                      </span>
                     </div>
-                  
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+  {qualityLabels.map((q) => (
+    <Tooltip key={q.value}>
+      <TooltipTrigger asChild>
+        <Button
+          onClick={() => answer(q.value)}
+          disabled={saving}
+          className="h-auto py-4 px-3 flex flex-col items-center gap-1 rounded-lg"
+          style={
+            q.value >= 4
+              ? {
+                  backgroundImage:
+                    q.value === 4
+                      ? "linear-gradient(135deg,#10b981,#0f766e)"
+                      : "linear-gradient(135deg,#22c55e,#16a34a)",
+                  color: "#ffffff",
+                }
+              : {
+                  backgroundColor: "#ffffff",
+                  color: "#0f172a",
+                  border: "1px solid #e2e8f0",
+                }
+          }
+        >
+          <span className="text-2xl font-bold">{q.value}</span>
+
+          <span className="text-xs font-medium">
+            {q.label}
+          </span>
+
+          {/* délai */}
+          <span
+            className={`text-[10px] ${
+              q.value >= 4 ? "text-white/80" : "text-slate-500"
+            }`}
+          >
+            ↺ {q.delay}
+          </span>
+        </Button>
+      </TooltipTrigger>
+
+      <TooltipContent className="hidden sm:block">
+        <p className="text-xs">{q.desc}</p>
+      </TooltipContent>
+    </Tooltip>
+  ))}
+</div>
+                  </div>
                 </CardContent>
               </Card>
 
-              {/* Navigation si plus d’un hadith dans la liste actuelle */}
               {hadiths.length > 1 && (
                 <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center sm:justify-between sm:gap-3">
-                  {/* Précédent */}
                   <Button
                     onClick={() => {
                       setIdx((i) =>
-                        hadiths.length
-                          ? (i - 1 + hadiths.length) % hadiths.length
-                          : 0
+                        hadiths.length ? (i - 1 + hadiths.length) % hadiths.length : 0
                       );
                       setShowFr(false);
                       setShowFullArabic(false);
@@ -553,12 +534,9 @@ export function Review() {
                     <span className="truncate">Précédent</span>
                   </Button>
 
-                  {/* Suivant */}
                   <Button
                     onClick={() => {
-                      setIdx((i) =>
-                        hadiths.length ? (i + 1) % hadiths.length : 0
-                      );
+                      setIdx((i) => (hadiths.length ? (i + 1) % hadiths.length : 0));
                       setShowFr(false);
                       setShowFullArabic(false);
                     }}
