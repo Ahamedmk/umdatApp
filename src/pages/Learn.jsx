@@ -23,58 +23,69 @@ function toLocalISODate(date = new Date()) {
   return `${y}-${m}-${d}`;
 }
 
-// Helper d'affichage des statuts avec progression vers la maîtrise
-function getStatusMeta(row) {
-  if (!row) {
-    return {
+function getStatusMeta(status) {
+  const STATUS_META = {
+    new: {
       label: "Nouveau",
       className:
         "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200",
-    };
-  }
+    },
+    learning: {
+      label: "En cours",
+      className:
+        "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200",
+    },
+    learned: {
+      label: "Appris",
+      className:
+        "bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200",
+    },
+    mastered: {
+      label: "Maîtrisé",
+      className:
+        "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200",
+    },
+    review: {
+      label: "À revoir",
+      className:
+        "bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-200",
+    },
+  };
 
-  const masteryWins = Number(row.mastery_wins || 0);
+  return STATUS_META[status] || STATUS_META.new;
+}
 
-  switch (row.status) {
-    case "mastered":
-      return {
-        label: "Maîtrisé",
-        className:
-          "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200",
-      };
+function MasteryProgress({ wins = 0 }) {
+  const safeWins = Math.min(Number(wins || 0), 3);
 
-    case "learned":
-      return {
-        label:
-          masteryWins > 0
-            ? `Appris (${Math.min(masteryWins, 3)}/3)`
-            : "Appris",
-        className:
-          "bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200",
-      };
+  return (
+    <div className="flex items-center gap-2 mt-1">
+      <div className="flex gap-1">
+        {[1, 2, 3].map((i) => (
+          <div
+            key={i}
+            className={`w-2.5 h-2.5 rounded-full transition-all ${
+              i <= safeWins
+                ? "bg-emerald-500"
+                : "bg-slate-300 dark:bg-slate-700"
+            }`}
+          />
+        ))}
+      </div>
+      <span className="text-[10px] text-slate-500">{safeWins}/3</span>
+    </div>
+  );
+}
 
-    case "learning":
-      return {
-        label: "En cours",
-        className:
-          "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200",
-      };
-
-    case "review":
-      return {
-        label: "À revoir",
-        className:
-          "bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-200",
-      };
-
-    case "new":
-    default:
-      return {
-        label: "Nouveau",
-        className:
-          "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200",
-      };
-  }
+function StatCard({ value, label, className }) {
+  return (
+    <Card className={`border-0 text-white shadow-lg ${className}`}>
+      <CardContent className="pt-6 text-center">
+        <div className="text-3xl font-bold mb-1">{value}</div>
+        <div className="text-sm opacity-90">{label}</div>
+      </CardContent>
+    </Card>
+  );
 }
 
 export function Learn() {
@@ -90,13 +101,11 @@ export function Learn() {
     const pref = localStorage.getItem("theme");
     const prefersDark =
       typeof window !== "undefined" &&
-      window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches;
+      window.matchMedia?.("(prefers-color-scheme: dark)").matches;
     const enable = pref ? pref === "dark" : prefersDark;
     document.documentElement.classList.toggle("dark", enable);
   }, []);
 
-  // Charger tous les hadiths
   useEffect(() => {
     let active = true;
 
@@ -109,13 +118,9 @@ export function Learn() {
           .order("number", { ascending: true });
 
         if (error) throw error;
+        if (!active) return;
 
-        if (!data || data.length === 0) {
-          if (active) setItems(HADITHS_1_15);
-          return;
-        }
-
-        if (active) setItems(data);
+        setItems(data?.length ? data : HADITHS_1_15);
       } catch (e) {
         console.error("Erreur chargement hadiths, fallback seeds:", e);
         if (active) setItems(HADITHS_1_15);
@@ -125,15 +130,13 @@ export function Learn() {
     }
 
     loadHadiths();
-
     return () => {
       active = false;
     };
   }, []);
 
-  // Charger la progression utilisateur
   useEffect(() => {
-    if (!user) {
+    if (!user || items.length === 0) {
       setProgressByHadith({});
       return;
     }
@@ -142,11 +145,6 @@ export function Learn() {
 
     async function loadProgress() {
       try {
-        if (!items || items.length === 0) {
-          if (active) setProgressByHadith({});
-          return;
-        }
-
         const numbers = items
           .map((h) => h.number)
           .filter((n) => typeof n === "number");
@@ -164,80 +162,78 @@ export function Learn() {
           .eq("user_id", user.id)
           .in("hadith_number", numbers);
 
-        if (error) {
-          console.error("Erreur loadProgress:", error);
-          if (active) setProgressByHadith({});
-          return;
-        }
+        if (error) throw error;
+        if (!active) return;
 
-        const map = {};
-        (data || []).forEach((row) => {
-          map[row.hadith_number] = row;
-        });
+        const map = Object.fromEntries(
+          (data || []).map((row) => [row.hadith_number, row])
+        );
 
-        if (active) setProgressByHadith(map);
+        setProgressByHadith(map);
       } catch (e) {
-        console.error("Exception loadProgress:", e);
+        console.error("Erreur loadProgress:", e);
         if (active) setProgressByHadith({});
       }
     }
 
     loadProgress();
-
     return () => {
       active = false;
     };
   }, [user, items]);
 
   const sources = useMemo(() => {
-    const set = new Set();
-    items.forEach((h) => h.source && set.add(h.source));
-    return ["all", ...Array.from(set)];
+    return [
+      "all",
+      ...new Set(items.map((h) => h.source).filter(Boolean)),
+    ];
   }, [items]);
 
   const stats = useMemo(() => {
-    const res = {
-      total: items.length,
-      dueToday: 0,
-      learned: 0,
-      mastered: 0,
-      almostMastered: 0, // bonus utile
-    };
+    const today = toLocalISODate();
+    const rows = Object.values(progressByHadith);
 
-    const today = toLocalISODate(new Date());
+    return rows.reduce(
+      (acc, row) => {
+        const masteryWins = Number(row.mastery_wins || 0);
 
-    Object.values(progressByHadith).forEach((row) => {
-      const masteryWins = Number(row.mastery_wins || 0);
+        if (row.status === "learned") {
+          acc.learned += 1;
+          if (masteryWins >= 2) acc.almostMastered += 1;
+        }
 
-      if (row.status === "learned") {
-        res.learned += 1;
-        if (masteryWins >= 2) res.almostMastered += 1;
+        if (row.status === "mastered") {
+          acc.mastered += 1;
+        }
+
+        if (row.next_review_date && row.next_review_date <= today) {
+          acc.dueToday += 1;
+        }
+
+        return acc;
+      },
+      {
+        total: items.length,
+        dueToday: 0,
+        learned: 0,
+        mastered: 0,
+        almostMastered: 0,
       }
-
-      if (row.status === "mastered") {
-        res.mastered += 1;
-      }
-
-      if (row.next_review_date && row.next_review_date <= today) {
-        res.dueToday += 1;
-      }
-    });
-
-    return res;
-  }, [items, progressByHadith]);
+    );
+  }, [items.length, progressByHadith]);
 
   const filteredItems = useMemo(() => {
-    const q = searchQuery.trim();
+    const q = searchQuery.trim().toLowerCase();
 
-    return (items || []).filter((h) => {
+    return items.filter((h) => {
       const matchesSearch =
-        q === "" ||
-        h.number?.toString().includes(q) ||
-        (h.arabic_text && h.arabic_text.includes(q)) ||
-        (h.french_text &&
-          h.french_text.toLowerCase().includes(q.toLowerCase()));
+        !q ||
+        String(h.number || "").includes(q) ||
+        h.arabic_text?.includes(searchQuery.trim()) ||
+        h.french_text?.toLowerCase().includes(q);
 
-      const matchesSource = filterSource === "all" || h.source === filterSource;
+      const matchesSource =
+        filterSource === "all" || h.source === filterSource;
 
       return matchesSearch && matchesSource;
     });
@@ -246,12 +242,12 @@ export function Learn() {
   return (
     <div className="min-h-screen overflow-x-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-blue-950 dark:to-indigo-950">
       <div className="max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
-        {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3 min-w-0">
             <div className="p-3 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl shadow-lg shrink-0">
               <BookOpen className="h-6 w-6 text-white" />
             </div>
+
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 truncate">
@@ -266,23 +262,15 @@ export function Learn() {
                   : "Aucun hadith pour le moment"}
               </p>
 
-              {!user && (
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  Connecte-toi pour sauvegarder ta progression.
-                </p>
-              )}
-
-              {user && (
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  Un hadith devient maîtrisé après 3 validations fortes (4 ou 5)
-                  espacées dans le temps.
-                </p>
-              )}
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                {user
+                  ? "Un hadith devient maîtrisé après 3 validations fortes (4 ou 5) espacées dans le temps."
+                  : "Connecte-toi pour sauvegarder ta progression."}
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Recherche & filtre */}
         <Card className="border-slate-200 dark:border-slate-700 shadow-lg bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
           <CardContent className="pt-6">
             <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
@@ -303,9 +291,9 @@ export function Learn() {
                   onChange={(e) => setFilterSource(e.target.value)}
                   className="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm max-w-[55vw] sm:max-w-none"
                 >
-                  {sources.map((s) => (
-                    <option key={s} value={s}>
-                      {s === "all" ? "Toutes les sources" : s}
+                  {sources.map((source) => (
+                    <option key={source} value={source}>
+                      {source === "all" ? "Toutes les sources" : source}
                     </option>
                   ))}
                 </select>
@@ -314,46 +302,29 @@ export function Learn() {
           </CardContent>
         </Card>
 
-        {/* Stats rapides */}
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-          <Card className="bg-gradient-to-br from-emerald-500 to-teal-600 border-0 text-white shadow-lg">
-            <CardContent className="pt-6 text-center">
-              <div className="text-3xl font-bold mb-1">{stats.total}</div>
-              <div className="text-sm opacity-90">Hadiths au total</div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-blue-500 to-indigo-600 border-0 text-white shadow-lg">
-            <CardContent className="pt-6 text-center">
-              <div className="text-3xl font-bold mb-1">
-                {user ? stats.dueToday : "–"}
-              </div>
-              <div className="text-sm opacity-90">
-                À réviser aujourd&apos;hui
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-teal-500 to-cyan-600 border-0 text-white shadow-lg">
-            <CardContent className="pt-6 text-center">
-              <div className="text-3xl font-bold mb-1">
-                {user ? stats.learned : "–"}
-              </div>
-              <div className="text-sm opacity-90">Hadiths appris</div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-purple-500 to-pink-600 border-0 text-white shadow-lg">
-            <CardContent className="pt-6 text-center">
-              <div className="text-3xl font-bold mb-1">
-                {user ? stats.mastered : "–"}
-              </div>
-              <div className="text-sm opacity-90">Hadiths maîtrisés</div>
-            </CardContent>
-          </Card>
+          <StatCard
+            value={stats.total}
+            label="Hadiths au total"
+            className="bg-gradient-to-br from-emerald-500 to-teal-600"
+          />
+          <StatCard
+            value={user ? stats.dueToday : "–"}
+            label="À réviser aujourd'hui"
+            className="bg-gradient-to-br from-blue-500 to-indigo-600"
+          />
+          <StatCard
+            value={user ? stats.learned : "–"}
+            label="Hadiths appris"
+            className="bg-gradient-to-br from-teal-500 to-cyan-600"
+          />
+          <StatCard
+            value={user ? stats.mastered : "–"}
+            label="Hadiths maîtrisés"
+            className="bg-gradient-to-br from-purple-500 to-pink-600"
+          />
         </div>
 
-        {/* Petit indicateur bonus */}
         {user && stats.almostMastered > 0 && (
           <Card className="border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 shadow-sm">
             <CardContent className="pt-4 pb-4">
@@ -369,7 +340,6 @@ export function Learn() {
           </Card>
         )}
 
-        {/* Liste des hadiths */}
         <ScrollArea className="h-[65vh] max-w-full overscroll-contain">
           <div className="space-y-4 px-0 sm:px-1">
             {loading ? (
@@ -393,7 +363,7 @@ export function Learn() {
             ) : (
               filteredItems.map((h) => {
                 const progress = progressByHadith[h.number];
-                const statusMeta = getStatusMeta(progress);
+                const statusMeta = getStatusMeta(progress?.status);
                 const masteryWins = Number(progress?.mastery_wins || 0);
 
                 return (
@@ -428,12 +398,13 @@ export function Learn() {
                               {statusMeta.label}
                             </Badge>
 
-                            {progress?.status === "learned" && masteryWins > 0 && (
-                              <Badge
-                                variant="outline"
-                                className="text-[10px] sm:text-xs rounded-full border-teal-200 text-teal-700 dark:border-teal-700 dark:text-teal-300"
-                              >
-                                Progression maîtrise : {Math.min(masteryWins, 3)}/3
+                            {progress?.status === "learned" && (
+                              <MasteryProgress wins={masteryWins} />
+                            )}
+
+                            {progress?.status === "mastered" && (
+                              <Badge className="bg-emerald-500 text-white">
+                                🏆
                               </Badge>
                             )}
 

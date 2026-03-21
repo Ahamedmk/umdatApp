@@ -1343,6 +1343,311 @@ export const HADITHS_1_15 = [
   },
 
   audio_url: null
+},
+/*********************** HADITH 40 ************************/
+
+{
+  number: 40,
+  arabic_text:
+    "عَنْ عَائِشَةَ رَضِيَ اللَّهُ عَنْهَا: أَنَّ فَاطِمَةَ بِنْتَ أَبِي حُبَيْشٍ سَأَلَتِ النَّبِيَّ ﷺ فَقَالَتْ: إِنِّي أُسْتَحَاضُ فَلَا أَطْهُرُ، أَفَأَدَعُ الصَّلَاةَ؟ فَقَالَ: «لَا، إِنَّ ذَلِكِ عِرْقٌ، وَلَكِنْ دَعِي الصَّلَاةَ قَدْرَ الأَيَّامِ الَّتِي كُنْتِ تَحِيضِينَ فِيهَا، ثُمَّ اغْتَسِلِي وَصَلِّي». وَفِي رِوَايَةٍ: «وَلَيْسَ بِالْحَيْضَةِ، فَإِذَا أَقْبَلَتِ الْحَيْضَةُ فَاتْرُكِي الصَّلَاةَ، فَإِذَا ذَهَبَ قَدْرُهَا فَاغْسِلِي عَنْكِ الدَّمَ وَصَلِّي».",
+
+  french_text:
+    "ʿĀʾisha (ra) rapporte que Fāṭima bint Abī Ḥubaysh interrogea le Prophète ﷺ en disant : « Je suis atteinte d’istiḥāḍa et je ne deviens pas pure. Dois-je alors délaisser la prière ? » Il répondit : « Non. Ce n’est qu’une veine (un saignement maladif). Mais délaisse la prière durant le nombre de jours pendant lesquels tu avais l’habitude d’avoir tes menstrues, puis fais le ghusl et prie. » Et dans une autre version : « Ce n’est pas le sang des menstrues. Lorsque les menstrues arrivent, délaisse la prière ; puis lorsque leur durée habituelle est écoulée, lave le sang et prie. »",
+
+  source:
+    "Al-Bukhârî & Muslim — ʿUmdat al-Aḥkām (Hadith 40)",
+  
+  tags: ["tahara", "hayd", "istihada", "ghusl", "wudu", "salat", "femme"],
+
+  opinions: {
+    Hanafi: {
+      ar:
+        "ذَهَبَ أَبُو حَنِيفَةَ إِلَى أَنَّ الْمُسْتَحَاضَةَ تَتَوَضَّأُ لِكُلِّ وَقْتِ صَلَاةٍ، وَأَنَّ أَقَلَّ الْحَيْضِ ثَلَاثَةُ أَيَّامٍ بِلَيَالِيهَا، وَأَكْثَرَهُ عَشَرَةُ أَيَّامٍ. وَذَكَرَ الْمِلَفُّ أَنَّ وَقْتَ الْيَأْسِ عِنْدَهُمْ خَمْسٌ وَخَمْسُونَ سَنَةً.",
+      fr:
+        "Selon les hanafites, la femme en istiḥāḍa fait ses ablutions pour chaque temps de prière. Le minimum du ḥayḍ est de trois jours et nuits, et son maximum de dix jours. Le fichier mentionne aussi que l’âge du désespoir menstruel (al-iyās) est de cinquante-cinq ans chez eux."
+    },
+
+    Maliki: {
+      ar:
+        "عِنْدَ الْمَالِكِيَّةِ: تَتْرُكُ الْمُسْتَحَاضَةُ الصَّلَاةَ قَدْرَ عَادَتِهَا، ثُمَّ تَغْتَسِلُ وَتُصَلِّي. وَذَكَرَ الْمِلَفُّ أَنَّ أَقَلَّ الْحَيْضِ عِنْدَهُمْ دَفْعَةٌ، وَأَكْثَرَهُ لِلْمُبْتَدَأَةِ خَمْسَةَ عَشَرَ يَوْمًا، وَأَنَّ وَقْتَ الْيَأْسِ سَبْعُونَ سَنَةً.",
+      fr:
+        "Chez les malikites, la femme en istiḥāḍa délaisse la prière pendant la durée de son habitude menstruelle, puis elle fait le ghusl et prie. Le fichier précise que, chez eux, le minimum du ḥayḍ peut être une simple émission, que son maximum pour la débutante est de quinze jours, et que l’âge du désespoir menstruel est de soixante-dix ans."
+    },
+
+    Shafi: {
+      ar:
+        "ذَهَبَ الشَّافِعِيُّ إِلَى وُجُوبِ الْوُضُوءِ لِكُلِّ فَرِيضَةٍ عَلَى الْمُسْتَحَاضَةِ، وَذَكَرَ الْمِلَفُّ أَنَّ أَقَلَّ الْحَيْضِ يَوْمٌ وَلَيْلَةٌ، وَأَكْثَرَهُ خَمْسَةَ عَشَرَ يَوْمًا وَلَيْلَةً، وَأَنَّهُ لَا حَدَّ لِلْيَأْسِ مَا دَامَ إِمْكَانُ الْحَيْضِ.",
+      fr:
+        "Selon les shaféites, la femme en istiḥāḍa doit faire ses ablutions pour chaque prière obligatoire. Le fichier mentionne également que le minimum du ḥayḍ est d’un jour et une nuit, son maximum de quinze jours et nuits, et qu’il n’y a pas chez eux de limite fixe pour l’âge du désespoir menstruel tant que les menstrues restent possibles."
+    },
+
+    Hanbali: {
+      ar:
+        "ذَكَرَ الْمِلَفُّ أَنَّ أَحْمَدَ يَرَى أَنَّ الْمُسْتَحَاضَةَ تَتَوَضَّأُ لِكُلِّ وَقْتِ صَلَاةٍ، وَأَنَّ أَقَلَّ الْحَيْضِ يَوْمٌ وَلَيْلَةٌ، وَأَكْثَرَهُ خَمْسَةَ عَشَرَ يَوْمًا وَلَيْلَةً، وَأَنَّ وَقْتَ الْيَأْسِ خَمْسُونَ سَنَةً.",
+      fr:
+        "Le fichier indique que, chez les hanbalites, la femme en istiḥāḍa fait ses ablutions pour chaque temps de prière. Le minimum du ḥayḍ est d’un jour et une nuit, son maximum de quinze jours et nuits, et l’âge du désespoir menstruel est fixé à cinquante ans."
+    }
+  },
+
+  audio_url: null
+},
+/*********************** HADITH 41 ************************/
+
+{
+  number: 41,
+  arabic_text:
+    "عَنْ عَائِشَةَ رَضِيَ اللَّهُ عَنْهَا: «أَنَّ أُمَّ حَبِيبَةَ اسْتُحِيضَتْ سَبْعَ سِنِينَ، فَسَأَلَتْ رَسُولَ اللَّهِ ﷺ عَنْ ذَلِكَ، فَأَمَرَهَا أَنْ تَغْتَسِلَ، فَكَانَتْ تَغْتَسِلُ لِكُلِّ صَلَاةٍ».",
+
+  french_text:
+    "ʿĀʾisha (ra) rapporte que Umm Ḥabība fut atteinte d’istiḥāḍa pendant sept années. Elle interrogea alors le Messager d’Allah ﷺ à ce sujet, et il lui ordonna de faire le ghusl. Elle faisait donc le ghusl pour chaque prière.",
+
+  source:
+    "Al-Bukhârî & Muslim — ʿUmdat al-Aḥkām (Hadith 41)",
+
+  tags: ["tahara", "istihada", "ghusl", "wudu", "salat", "femme"],
+
+  opinions: {
+    Hanafi: {
+      ar:
+        "ذَكَرَ الْمِلَفُّ أَنَّ جُمْهُورَ الْفُقَهَاءِ، وَمِنْهُمُ الأَئِمَّةُ الأَرْبَعَةُ، يَرَوْنَ أَنَّ عَلَى الْمُسْتَحَاضَةِ غُسْلًا وَاحِدًا عِنْدَ انْقِضَاءِ أَيَّامِ حَيْضِهَا، ثُمَّ تُصَلِّي. وَلَمْ يُفَصِّلِ الْمِلَفُّ هُنَا رَأْيًا حَنَفِيًّا مُسْتَقِلًّا فِي مَسْأَلَةِ الْغُسْلِ لِكُلِّ صَلَاةٍ.",
+      fr:
+        "Le fichier indique que la majorité des juristes, y compris les quatre imams, considèrent que la femme en istiḥāḍa doit faire un seul ghusl à la fin de ses jours de règles habituels, puis prier. Le fichier ne détaille pas ici un avis hanafite indépendant imposant le ghusl pour chaque prière."
+    },
+
+    Maliki: {
+      ar:
+        "ذَكَرَ الْمِلَفُّ أَنَّ جُمْهُورَ الْفُقَهَاءِ، وَمِنْهُمُ الأَئِمَّةُ الأَرْبَعَةُ، يُوجِبُونَ غُسْلًا وَاحِدًا عَلَى الْمُسْتَحَاضَةِ. وَقَالَ مَالِكٌ بِاسْتِحْبَابِ وُضُوءِ الْمُسْتَحَاضَةِ لِكُلِّ صَلَاةٍ، وَلَا يَقُولُ بِوُجُوبِهِ لِظَاهِرِ حَدِيثِ فَاطِمَةَ بِنْتِ أَبِي حُبَيْشٍ: «فَاغْتَسِلِي وَصَلِّي».",
+      fr:
+        "Le fichier mentionne que, comme les autres imams, Mālik considère qu’un seul ghusl est requis pour la femme en istiḥāḍa. Il précise aussi que Mālik recommande les ablutions pour chaque prière, sans les rendre obligatoires, en s’appuyant sur le sens apparent du hadith de Fāṭima bint Abī Ḥubaysh : « Puis fais le ghusl et prie. »"
+    },
+
+    Shafi: {
+      ar:
+        "ذَكَرَ الْمِلَفُّ أَنَّ جُمْهُورَ الْفُقَهَاءِ، وَمِنْهُمُ الأَئِمَّةُ الأَرْبَعَةُ، يَقُولُونَ بِوُجُوبِ غُسْلٍ وَاحِدٍ عَلَى الْمُسْتَحَاضَةِ. وَلَمْ يُفَصِّلِ الْمِلَفُّ هُنَا رَأْيًا شَافِعِيًّا مُفْرَدًا فِي مَسْأَلَةِ الِاغْتِسَالِ لِكُلِّ صَلَاةٍ.",
+      fr:
+        "Le fichier indique que les quatre imams, donc ash-Shāfiʿī compris, retiennent l’obligation d’un seul ghusl pour la femme en istiḥāḍa. Il ne détaille pas ici un avis shaféite séparé sur le ghusl pour chaque prière."
+    },
+
+    Hanbali: {
+      ar:
+        "ذَكَرَ الْمِلَفُّ أَنَّ جُمْهُورَ الْفُقَهَاءِ، وَمِنْهُمُ الأَئِمَّةُ الأَرْبَعَةُ، عَلَى أَنَّ الْمُسْتَحَاضَةَ يَكْفِيهَا غُسْلٌ وَاحِدٌ. وَلَمْ يُفَصِّلِ الْمِلَفُّ هُنَا رَأْيًا حَنْبَلِيًّا خَاصًّا فِي وُجُوبِ الْغُسْلِ لِكُلِّ صَلَاةٍ.",
+      fr:
+        "Le fichier mentionne que la femme en istiḥāḍa n’a besoin que d’un seul ghusl selon la majorité des juristes, parmi lesquels les quatre imams. Il ne détaille pas ici un avis hanbalite distinct imposant le ghusl pour chaque prière."
+    }
+  },
+
+  audio_url: null
+},
+
+/*********************** HADITH 42 ************************/
+
+{
+  number: 42,
+  arabic_text:
+    "عَنْ عَائِشَةَ رَضِيَ اللَّهُ عَنْهَا قَالَتْ: «كُنْتُ أَغْتَسِلُ أَنَا وَرَسُولُ اللَّهِ ﷺ مِنْ إِنَاءٍ وَاحِدٍ، كِلَانَا جُنُبٌ».",
+  french_text:
+    "ʿĀʾisha (ra) a dit : « Le Messager d’Allah ﷺ et moi faisions le ghusl à partir d’un même récipient, alors que nous étions tous deux en état de janāba. »",
+  source:
+    "Al-Bukhârî & Muslim — ʿUmdat al-Aḥkām (Hadith 42)",
+  tags: ["tahara", "ghusl", "janaba", "couple", "sunna"],
+
+  opinions: {
+    Hanafi: {
+      ar:
+        "لَمْ يُذْكَرْ فِي الْمِلَفِّ الْمُقَدَّمِ نَصٌّ خَاصٌّ يُفَصِّلُ مَذْهَبَ الْحَنَفِيَّةِ فِي هَذَا الْحَدِيثِ.",
+      fr:
+        "Le fichier fourni ne mentionne pas ici un avis hanafite détaillé spécifique à ce hadith."
+    },
+
+    Maliki: {
+      ar:
+        "لَمْ يُذْكَرْ فِي الْمِلَفِّ الْمُقَدَّمِ نَصٌّ خَاصٌّ يُفَصِّلُ مَذْهَبَ الْمَالِكِيَّةِ فِي هَذَا الْحَدِيثِ.",
+      fr:
+        "Le fichier fourni ne mentionne pas ici un avis malikite détaillé spécifique à ce hadith."
+    },
+
+    Shafi: {
+      ar:
+        "لَمْ يُذْكَرْ فِي الْمِلَفِّ الْمُقَدَّمِ نَصٌّ خَاصٌّ يُفَصِّلُ مَذْهَبَ الشَّافِعِيَّةِ فِي هَذَا الْحَدِيثِ.",
+      fr:
+        "Le fichier fourni ne mentionne pas ici un avis shaféite détaillé spécifique à ce hadith."
+    },
+
+    Hanbali: {
+      ar:
+        "لَمْ يُذْكَرْ فِي الْمِلَفِّ الْمُقَدَّمِ نَصٌّ خَاصٌّ يُفَصِّلُ مَذْهَبَ الْحَنَابِلَةِ فِي هَذَا الْحَدِيثِ.",
+      fr:
+        "Le fichier fourni ne mentionne pas ici un avis hanbalite détaillé spécifique à ce hadith."
+    }
+  },
+
+  audio_url: null
+},
+
+/*********************** HADITH 43 ************************/
+
+{
+  number: 43,
+  arabic_text:
+    "عَنْ عَائِشَةَ رَضِيَ اللَّهُ عَنْهَا قَالَتْ: «وَكَانَ يَأْمُرُنِي فَأَتَّزِرُ، فَيُبَاشِرُنِي وَأَنَا حَائِضٌ».",
+  french_text:
+    "ʿĀʾisha (ra) a dit : « Il m’ordonnait alors de mettre un izār, puis il me touchait alors que j’étais en état de menstrues. »",
+  source:
+    "Al-Bukhârî & Muslim — ʿUmdat al-Aḥkām (Hadith 43)",
+  tags: ["hayd", "haida", "couple", "mubashara", "tahara"],
+
+  opinions: {
+    Hanafi: {
+      ar:
+        "ذَكَرَ الْمِلَفُّ أَنَّ أَبَا حَنِيفَةَ قَالَ: أَمَّا الْوَطْءُ فِي الْفَرْجِ فَحَرَامٌ بِالنَّصِّ وَالْإِجْمَاعِ، وَأَمَّا الِاسْتِمْتَاعُ بِمَا بَيْنَ السُّرَّةِ وَالرُّكْبَةِ خِلَالَ الْفَرْجِ وَالدُّبُرِ فَلَا يَجُوزُ عِنْدَهُ.",
+      fr:
+        "Le fichier indique qu’Abū Ḥanīfa considère que le rapport vaginal pendant les règles est interdit par le texte et par le consensus. Quant à la jouissance dans la zone comprise entre le nombril et le genou, en dehors du sexe et de l’anus, elle n’est pas permise chez lui."
+    },
+
+    Maliki: {
+      ar:
+        "ذَكَرَ الْمِلَفُّ أَنَّ مَالِكًا قَالَ: أَمَّا الْوَطْءُ فِي الْفَرْجِ فَحَرَامٌ بِالنَّصِّ وَالْإِجْمَاعِ، وَأَمَّا الِاسْتِمْتَاعُ بِمَا بَيْنَ السُّرَّةِ وَالرُّكْبَةِ خِلَالَ الْفَرْجِ وَالدُّبُرِ فَلَا يَجُوزُ عِنْدَهُ، وَأَمَّا الْمُبَاشَرَةُ بِمَا فَوْقَ السُّرَّةِ وَدُونَ الرُّكْبَةِ فَهِيَ مُبَاحَةٌ بِالْإِجْمَاعِ.",
+      fr:
+        "Le fichier mentionne que Mālik juge interdit le rapport vaginal pendant les règles, par texte et consensus. Il ne permet pas non plus la jouissance dans la zone entre le nombril et le genou, hors sexe et anus. En revanche, ce qui est au-dessus du nombril et au-dessous du genou est permis par consensus."
+    },
+
+    Shafi: {
+      ar:
+        "ذَكَرَ الْمِلَفُّ أَنَّ الشَّافِعِيَّ فِي الْجَدِيدِ قَالَ: إِنَّ مَنْ وَطِئَ الْحَائِضَ فَلَا تَجِبُ عَلَيْهِ الْكَفَّارَةُ، وَإِنَّمَا عَلَيْهِ التَّوْبَةُ. وَقَالَ أَيْضًا: لَا يَجُوزُ الِاسْتِمْتَاعُ بِمَا بَيْنَ السُّرَّةِ وَالرُّكْبَةِ.",
+      fr:
+        "Le fichier indique que, dans son nouvel avis, ash-Shāfiʿī considère que celui qui a eu un rapport avec une femme réglée n’a pas de kaffāra obligatoire, mais doit se repentir. Il n’autorise pas non plus la jouissance dans la zone entre le nombril et le genou."
+    },
+
+    Hanbali: {
+      ar:
+        "ذَكَرَ الْمِلَفُّ أَنَّ عَنْ أَحْمَدَ رِوَايَتَيْنِ: إِحْدَاهُمَا عَدَمُ وُجُوبِ الْكَفَّارَةِ عَلَى مَنْ وَطِئَ الْحَائِضَ، وَالْمَشْهُورُ عَنْهُ وُجُوبُهَا، وَهِيَ أَنْ يَتَصَدَّقَ بِدِينَارٍ أَوْ نِصْفِ دِينَارٍ. وَذَكَرَ أَيْضًا أَنَّهُ قَالَ بِإِبَاحَةِ الِاسْتِمْتَاعِ بِمَا بَيْنَ السُّرَّةِ وَالرُّكْبَةِ خِلَالَ الْفَرْجِ وَالدُّبُرِ.",
+      fr:
+        "Le fichier mentionne que, chez Aḥmad, il existe deux avis concernant celui qui a un rapport avec une femme réglée : selon l’un, il n’y a pas de kaffāra obligatoire ; selon l’avis le plus مشهور, elle est due, sous forme d’une aumône d’un dīnār ou d’un demi-dīnār. Le fichier mentionne aussi qu’il permet la jouissance entre le nombril et le genou, hors sexe et anus."
+    }
+  },
+
+  audio_url: null
+},
+
+/*********************** HADITH 44 ************************/
+
+{
+  number: 44,
+  arabic_text:
+    "عَنْ عَائِشَةَ رَضِيَ اللَّهُ عَنْهَا قَالَتْ: «وَكَانَ يُخْرِجُ رَأْسَهُ إِلَيَّ، وَهُوَ مُعْتَكِفٌ، فَأَغْسِلُهُ وَأَنَا حَائِضٌ».",
+  french_text:
+    "ʿĀʾisha (ra) a dit : « Le Prophète ﷺ sortait sa tête vers moi alors qu’il était en retraite spirituelle (iʿtikāf), et je la lavais alors que j’étais en état de menstrues. »",
+  source:
+    "Al-Bukhârî & Muslim — ʿUmdat al-Aḥkām (Hadith 44)",
+  tags: ["itikaf", "hayd", "haida", "tahara", "masjid"],
+
+  opinions: {
+    Hanafi: {
+      ar:
+        "لَمْ يُذْكَرْ فِي الْمِلَفِّ الْمُقَدَّمِ نَصٌّ خَاصٌّ يُفَصِّلُ مَذْهَبَ الْحَنَفِيَّةِ فِي هَذَا الْحَدِيثِ.",
+      fr:
+        "Le fichier fourni ne mentionne pas ici un avis hanafite détaillé spécifique à ce hadith."
+    },
+
+    Maliki: {
+      ar:
+        "لَمْ يُذْكَرْ فِي الْمِلَفِّ الْمُقَدَّمِ نَصٌّ خَاصٌّ يُفَصِّلُ مَذْهَبَ الْمَالِكِيَّةِ فِي هَذَا الْحَدِيثِ.",
+      fr:
+        "Le fichier fourni ne mentionne pas ici un avis malikite détaillé spécifique à ce hadith."
+    },
+
+    Shafi: {
+      ar:
+        "لَمْ يُذْكَرْ فِي الْمِلَفِّ الْمُقَدَّمِ نَصٌّ خَاصٌّ يُفَصِّلُ مَذْهَبَ الشَّافِعِيَّةِ فِي هَذَا الْحَدِيثِ.",
+      fr:
+        "Le fichier fourni ne mentionne pas ici un avis shaféite détaillé spécifique à ce hadith."
+    },
+
+    Hanbali: {
+      ar:
+        "لَمْ يُذْكَرْ فِي الْمِلَفِّ الْمُقَدَّمِ نَصٌّ خَاصٌّ يُفَصِّلُ مَذْهَبَ الْحَنَابِلَةِ فِي هَذَا الْحَدِيثِ.",
+      fr:
+        "Le fichier fourni ne mentionne pas ici un avis hanbalite détaillé spécifique à ce hadith."
+    }
+  },
+
+  audio_url: null
+},
+/*********************** HADITH 45 ************************/
+
+{
+  number: 45,
+  arabic_text:
+    "عَنْ عَائِشَةَ رَضِيَ اللَّهُ عَنْهَا قَالَتْ: «كَانَ رَسُولُ اللَّهِ ﷺ يَتَّكِئُ فِي حِجْرِي وَأَنَا حَائِضٌ، فَيَقْرَأُ الْقُرْآنَ».",
+  french_text:
+    "ʿĀʾisha (ra) rapporte : « Le Messager d’Allah ﷺ s’appuyait sur mes genoux alors que j’étais en état de menstrues, et il récitait le Coran. »",
+  source: "Al-Bukhârî & Muslim (cf. PDF)",
+  tags: ["menstrues", "coran", "purete", "interaction"],
+  opinions: {
+    Hanafi: {
+      ar: null,
+      fr: "Aucun avis hanafite explicite n’est mentionné dans le document fourni."
+    },
+    Maliki: {
+      ar: "والمشهور عن مالك الجواز للحائض دون الجنب",
+      fr: "Selon l’avis مشهور chez Mālik, la femme en état de menstrues peut réciter le Coran, contrairement à la personne en état de janāba."
+    },
+    Shafi: {
+      ar: "ومذهب الشافعي: الصحيح امتناع قراءة الحائض القرآن",
+      fr: "Selon l’école shāfiʿite, l’avis الصحيح est l’interdiction pour la femme en état de menstrues de réciter le Coran."
+    },
+    Hanbali: {
+      ar: null,
+      fr: "Aucun avis hanbalite explicite n’est mentionné dans le document fourni."
+    }
+  },
+  audio_url: null
+},
+/*********************** HADITH 46 ************************/
+
+{
+  number: 46,
+  arabic_text:
+    "عَنْ مُعَاذَةَ بِنْتِ عَبْدِ اللَّهِ رَحِمَهَا اللَّهُ قَالَتْ: سَأَلْتُ عَائِشَةَ رَضِيَ اللَّهُ عَنْهَا فَقُلْتُ: مَا بَالُ الْحَائِضِ تَقْضِي الصَّوْمَ، وَلَا تَقْضِي الصَّلَاةَ؟ فَقَالَتْ: أَحَرُورِيَّةٌ أَنْتِ؟ فَقُلْتُ: لَسْتُ بِحَرُورِيَّةٍ، وَلَكِنِّي أَسْأَلُ. فَقَالَتْ: كَانَ يُصِيبُنَا ذَلِكَ، فَنُؤْمَرُ بِقَضَاءِ الصَّوْمِ، وَلَا نُؤْمَرُ بِقَضَاءِ الصَّلَاةِ.",
+  french_text:
+    "Muʿādha bint ʿAbd Allāh (qu’Allah lui fasse miséricorde) rapporte : « J’ai interrogé ʿĀʾisha (ra) en lui disant : “Pourquoi la femme qui a ses règles rattrape-t-elle le jeûne mais ne rattrape-t-elle pas la prière ?” Elle répondit : “Es-tu une ḥarūriyya ?” Je dis : “Je ne suis pas une ḥarūriyya, mais je pose simplement la question.” Elle dit alors : “Cela nous arrivait, et l’on nous ordonnait de rattraper le jeûne, mais on ne nous ordonnait pas de rattraper la prière.” »",
+  source: "Al-Bukhârî & Muslim — ʿUmdat al-Aḥkām (Hadith 46)",
+  tags: ["hayd", "menstrues", "siyam", "salah", "qada"],
+
+  opinions: {
+    Consensus: {
+      ar:
+        "حُرْمَةُ الصَّلَاةِ وَسُقُوطُ وُجُوبِ الصَّلَاةِ فَلَا تَقْضِيهَا بِالْإِجْمَاعِ، وَحُرْمَةُ الصَّوْمِ وَعَدَمُ صِحَّتِهِ، وَوُجُوبُ قَضَائِهِ بِالْإِجْمَاعِ.",
+      fr:
+        "Le document indique un consensus : la prière est interdite à la femme en état de menstrues et elle n’a pas à la rattraper ; en revanche, le jeûne lui est interdit durant cette période, n’est pas valide, et elle doit le rattraper."
+    },
+
+    Hanafi: {
+      ar: null,
+      fr:
+        "Aucun avis hanafite explicite, distinct des autres écoles, n’est détaillé dans l’extrait fourni sur la question précise du rattrapage du jeûne sans rattrapage de la prière."
+    },
+
+    Maliki: {
+      ar: null,
+      fr:
+        "Aucun avis malikite explicite, distinct des autres écoles, n’est détaillé dans l’extrait fourni sur ce point précis."
+    },
+
+    Shafi: {
+      ar: null,
+      fr:
+        "Aucun avis shaféite explicite, distinct des autres écoles, n’est détaillé dans l’extrait fourni sur ce point précis."
+    },
+
+    Hanbali: {
+      ar: null,
+      fr:
+        "Aucun avis hanbalite explicite, distinct des autres écoles, n’est détaillé dans l’extrait fourni sur ce point précis."
+    }
+  },
+
+  audio_url: null
 }
 
 

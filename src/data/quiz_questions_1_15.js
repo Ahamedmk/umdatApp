@@ -4113,7 +4113,770 @@ export const QUIZ_QUESTIONS_1_15 = [
     correctIndex: 2,
     explain:
       "Le fait que la terre soit “masjid” et “tahūr” montre une grande facilité : prière possible partout, et purification possible même sans eau."
-  }
+  },
+/* ----------------- HADITH 40 : « La distinction entre الحيض et الاستحاضة » ----------------- */
+{
+  n: 40,
+  q: "Que signifie l’istiḥāḍa selon le hadith ?",
+  options: [
+    "Un sang menstruel normal",
+    "Une maladie ou un saignement anormal (veine)",
+    "Une purification complète",
+    "Un type de prière spécifique"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le Prophète ﷺ dit : « إن ذلك عرق » — c’est un saignement provenant d’une veine, donc ce n’est pas le ḥayḍ."
+},
+
+{
+  n: 40,
+  q: "Que doit faire la femme en istiḥāḍa concernant la prière ?",
+  options: [
+    "Arrêter totalement la prière",
+    "Prier normalement sans interruption",
+    "Délaisser la prière uniquement pendant la durée habituelle de ses règles",
+    "Jeûner mais ne pas prier"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith précise qu’elle délaisse la prière uniquement durant ses jours habituels de ḥayḍ."
+},
+
+{
+  n: 40,
+  q: "Que doit faire la femme après la fin de la durée habituelle de ses menstrues ?",
+  options: [
+    "Ne rien faire",
+    "Faire seulement les ablutions",
+    "Faire le ghusl puis prier",
+    "Attendre un mois complet"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le Prophète ﷺ a dit : « ثم اغتسلي وصلي » — ensuite fais le ghusl et prie."
+},
+
+{
+  n: 40,
+  q: "Quelle est la différence principale entre الحيض et الاستحاضة ?",
+  options: [
+    "Aucune différence",
+    "L’un est obligatoire et l’autre recommandé",
+    "Le ḥayḍ empêche la prière, l’istiḥāḍa non",
+    "L’istiḥāḍa est plus grave que le ḥayḍ"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le ḥayḍ empêche la prière, tandis que l’istiḥāḍa est un saignement maladif qui n’empêche pas la prière."
+},
+
+{
+  n: 40,
+  q: "Que doit faire la femme lorsqu’elle voit revenir ses menstrues (الحيضة) ?",
+  options: [
+    "Continuer à prier",
+    "Arrêter la prière",
+    "Faire le ghusl immédiatement",
+    "Ignorer le sang"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le hadith dit : « فإذا أقبلت الحيضة فاتركي الصلاة » — lorsqu’arrivent les règles, elle doit délaisser la prière."
+},
+
+{
+  n: 40,
+  q: "Quel principe juridique important est tiré de ce hadith ?",
+  options: [
+    "Toute perte de sang annule la prière",
+    "La facilité dans la religion et la distinction des cas",
+    "La prière n’est pas obligatoire",
+    "Le jeûne est prioritaire sur la prière"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le hadith montre la distinction entre différents types de sang et la facilité de la législation islamique."
+},
+
+{
+  n: 40,
+  q: "Selon le hadith, que doit faire la femme après la fin du ḥayḍ avant de prier ?",
+  options: [
+    "Rien",
+    "Faire uniquement le tayammum",
+    "Se laver du sang puis prier",
+    "Attendre un jour complet"
+  ],
+  correctIndex: 2,
+  explain:
+    "Dans une version : « فاغسلي عنك الدم وصلي » — lave le sang puis prie."
+},
+/* ----------------- HADITH 41 : « La femme en istihâḍa » ----------------- */
+
+{
+  n: 41,
+  q: "Combien de temps Umm Ḥabība fut-elle atteinte d’istiḥāḍa selon le hadith ?",
+  options: [
+    "Trois jours",
+    "Sept années",
+    "Un mois",
+    "Quarante jours"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le hadith mentionne clairement : « استحيضت سبع سنين » — elle fut atteinte d’istiḥāḍa pendant sept années."
+},
+
+{
+  n: 41,
+  q: "Que fit Umm Ḥabība face à cette situation ?",
+  options: [
+    "Elle arrêta complètement la prière",
+    "Elle demanda conseil à des compagnons",
+    "Elle interrogea le Prophète ﷺ",
+    "Elle ignora le problème"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith dit : « فسألت رسول الله ﷺ » — elle interrogea le Messager d’Allah ﷺ."
+},
+
+{
+  n: 41,
+  q: "Quelle instruction principale le Prophète ﷺ lui donna-t-il ?",
+  options: [
+    "De ne plus prier",
+    "De jeûner uniquement",
+    "De faire le ghusl",
+    "De donner en aumône"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le Prophète ﷺ lui ordonna : « أن تغتسل » — de faire le ghusl (grandes ablutions)."
+},
+
+{
+  n: 41,
+  q: "Que faisait Umm Ḥabība après avoir reçu cet ordre ?",
+  options: [
+    "Elle faisait un ghusl une fois par semaine",
+    "Elle faisait le ghusl pour chaque prière",
+    "Elle ne faisait que les ablutions",
+    "Elle ne priait plus"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le hadith précise : « فكانت تغتسل لكل صلاة » — elle faisait le ghusl pour chaque prière."
+},
+
+{
+  n: 41,
+  q: "Quel est le jugement majoritaire des savants concernant le ghusl pour chaque prière ?",
+  options: [
+    "Obligatoire pour toutes les femmes",
+    "Recommandé mais non obligatoire",
+    "Interdit",
+    "Obligatoire uniquement en cas de doute"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le document indique que la majorité des savants considère que le ghusl pour chaque prière n’est pas obligatoire, mais recommandé."
+},
+
+{
+  n: 41,
+  q: "Que doit faire la femme en istihâḍa selon la majorité après la fin de ses règles habituelles ?",
+  options: [
+    "Arrêter la prière",
+    "Faire un seul ghusl puis prier",
+    "Faire le ghusl à chaque prière obligatoirement",
+    "Ne faire aucune purification"
+  ],
+  correctIndex: 1,
+  explain:
+    "La majorité des savants considère qu’elle fait un seul ghusl après ses règles, puis elle prie normalement."
+},
+
+{
+  n: 41,
+  q: "Que nous enseigne ce hadith sur la religion ?",
+  options: [
+    "La difficulté est obligatoire",
+    "La purification n’est pas importante",
+    "La religion apporte des solutions adaptées",
+    "Il faut délaisser la prière en cas de difficulté"
+  ],
+  correctIndex: 2,
+  explain:
+    "Ce hadith montre que l’islam apporte des solutions pratiques aux situations difficiles, comme l’istiḥāḍa."
+},
+
+{
+  n: 41,
+  q: "Pourquoi la femme en istihâḍa continue-t-elle à prier ?",
+  options: [
+    "Car elle n’est pas considérée comme en état de menstrues",
+    "Parce que la prière n’est pas obligatoire",
+    "Parce qu’elle remplace le jeûne",
+    "Parce qu’elle est dispensée de purification"
+  ],
+  correctIndex: 0,
+  explain:
+    "L’istiḥāḍa est un saignement anormal (maladie), et non des règles, donc elle doit continuer à prier."
+},
+/* ----------------- HADITH 42 : « Le ghusl à deux dans un même récipient » ----------------- */
+
+{
+  n: 42,
+  q: "Qui rapporte le hadith sur le ghusl effectué à partir d’un même récipient ?",
+  options: [
+    "Umm Salama",
+    "ʿĀʾisha",
+    "Asmāʾ bint Abī Bakr",
+    "Maymūna"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le hadith est rapporté par ʿĀʾisha رضي الله عنها."
+},
+
+{
+  n: 42,
+  q: "Avec qui ʿĀʾisha faisait-elle le ghusl dans ce hadith ?",
+  options: [
+    "Avec une autre épouse du Prophète ﷺ",
+    "Avec sa servante",
+    "Avec le Messager d’Allah ﷺ",
+    "Avec sa sœur"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le texte dit clairement : « أنا ورسول الله ﷺ » — moi et le Messager d’Allah ﷺ."
+},
+
+{
+  n: 42,
+  q: "À partir de quoi faisaient-ils le ghusl ?",
+  options: [
+    "De deux récipients différents",
+    "D’un puits",
+    "D’un même récipient",
+    "D’une rivière"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith dit : « من إناء واحد » — à partir d’un seul récipient."
+},
+
+{
+  n: 42,
+  q: "Dans quel état se trouvaient-ils tous les deux ?",
+  options: [
+    "En état d’ablution",
+    "En état de jeûne",
+    "En état de janāba",
+    "En état de voyage"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le texte précise : « كلانا جنب » — nous étions tous deux en état de janāba."
+},
+
+{
+  n: 42,
+  q: "Quelle règle principale ce hadith montre-t-il ?",
+  options: [
+    "Il est interdit de partager l’eau",
+    "Le mari et l’épouse peuvent faire le ghusl à partir d’un même récipient",
+    "Chaque personne doit avoir son propre récipient",
+    "Le ghusl ne se fait qu’en solitude"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le hadith montre explicitement la permission pour l’homme et la femme de faire le ghusl dans un même récipient."
+},
+
+{
+  n: 42,
+  q: "Quelle leçon de simplicité ressort de ce hadith ?",
+  options: [
+    "La religion impose toujours l’abondance d’eau",
+    "Le confort est une condition du ghusl",
+    "La Sunna enseigne la simplicité et l’absence de gaspillage",
+    "Le ghusl est réservé aux riches"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le fait d’utiliser un seul récipient montre la simplicité de la pratique prophétique et l’éloignement du gaspillage."
+},
+
+{
+  n: 42,
+  q: "Ce hadith montre aussi que la présence de la janāba signifie :",
+  options: [
+    "L’impossibilité de toucher l’eau",
+    "L’impureté essentielle de la personne",
+    "Un état rituel nécessitant le ghusl",
+    "L’interdiction de parler"
+  ],
+  correctIndex: 2,
+  explain:
+    "La janāba est un état rituel qui nécessite le ghusl ; elle ne veut pas dire que la personne est impure par essence."
+}
+
+];
+
+
+/* ----------------- HADITH 43 : « La mubāshara avec l’épouse en état de menstrues » ----------------- */
+
+const QUIZ_HADITH_43 = [
+
+{
+  n: 43,
+  q: "Qui rapporte ce hadith : « Il m’ordonnait de mettre un izār, puis il me touchait alors que j’étais réglée » ?",
+  options: [
+    "ʿĀʾisha",
+    "Umm Ḥabība",
+    "Maymūna",
+    "Fāṭima bint Abī Ḥubaysh"
+  ],
+  correctIndex: 0,
+  explain:
+    "Ce hadith est rapporté par ʿĀʾisha رضي الله عنها."
+},
+
+{
+  n: 43,
+  q: "Que demandait le Prophète ﷺ à ʿĀʾisha avant de la toucher ?",
+  options: [
+    "De faire le ghusl",
+    "De sortir de la pièce",
+    "De mettre un izār",
+    "De faire les ablutions"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith dit : « يأمرني فأتزر » — il m’ordonnait alors de mettre un izār."
+},
+
+{
+  n: 43,
+  q: "Dans quel état se trouvait ʿĀʾisha à ce moment-là ?",
+  options: [
+    "En état de janāba",
+    "En état de menstrues",
+    "En état de voyage",
+    "En état de jeûne"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le texte dit explicitement : « وأنا حائض » — alors que j’étais en état de menstrues."
+},
+
+{
+  n: 43,
+  q: "Quelle règle fondamentale ce hadith confirme-t-il ?",
+  options: [
+    "Tout contact avec l’épouse réglée est interdit",
+    "Le rapport vaginal pendant les règles est permis",
+    "Le rapport vaginal pendant les règles est interdit, mais certaines formes de proximité restent permises",
+    "L’épouse réglée doit être totalement évitée"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith montre la permission de certaines formes de proximité, tout en laissant intacte l’interdiction du rapport vaginal durant les règles."
+},
+
+{
+  n: 43,
+  q: "Que signifie ici « mubāshara » ?",
+  options: [
+    "Le mariage",
+    "Le divorce",
+    "Le contact intime sans rapport sexuel vaginal",
+    "Le ghusl commun"
+  ],
+  correctIndex: 2,
+  explain:
+    "Dans ce contexte, il s’agit d’une proximité et d’un contact intime sans rapport vaginal."
+},
+
+{
+  n: 43,
+  q: "Pourquoi le Prophète ﷺ ordonnait-il le port de l’izār ?",
+  options: [
+    "Pour enseigner l’étiquette et éloigner ce qui est interdit",
+    "Parce que le vêtement est obligatoire dans toute maison",
+    "Pour annuler les règles",
+    "Pour remplacer le ghusl"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le port de l’izār montre une retenue et une protection contre l’approche de ce qui est interdit."
+},
+
+{
+  n: 43,
+  q: "Quelle idée fausse ce hadith corrige-t-il ?",
+  options: [
+    "Que la femme réglée ne prie pas",
+    "Que la femme réglée est totalement intouchable",
+    "Que le ghusl est facultatif",
+    "Que le jeûne est interdit"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le hadith corrige l’idée selon laquelle la femme en période de règles devrait être totalement évitée ou exclue."
+},
+
+{
+  n: 43,
+  q: "D’après le fichier fourni, que disent la plupart des juristes au sujet de la kaffāra pour celui qui a eu un rapport avec sa femme pendant les règles ?",
+  options: [
+    "Elle est unanimement obligatoire",
+    "La majorité ne la rend pas obligatoire",
+    "Elle remplace le repentir",
+    "Elle n’existe jamais dans aucun avis"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le fichier indique que la majorité ne considère pas la kaffāra comme obligatoire, même si un avis connu chez Aḥmad la retient."
+}
+
+];
+
+
+/* ----------------- HADITH 44 : « Le Prophète ﷺ sortait sa tête alors qu’il était en iʿtikāf » ----------------- */
+
+const QUIZ_HADITH_44 = [
+
+{
+  n: 44,
+  q: "Qui rapporte le hadith sur le fait de laver la tête du Prophète ﷺ pendant son iʿtikāf ?",
+  options: [
+    "Umm Salama",
+    "ʿĀʾisha",
+    "Ḥafṣa",
+    "Asmāʾ"
+  ],
+  correctIndex: 1,
+  explain:
+    "Ce hadith est rapporté par ʿĀʾisha رضي الله عنها."
+},
+
+{
+  n: 44,
+  q: "Que faisait le Prophète ﷺ pendant qu’il était en iʿtikāf ?",
+  options: [
+    "Il quittait complètement la mosquée",
+    "Il sortait sa tête vers ʿĀʾisha",
+    "Il interrompait son iʿtikāf",
+    "Il demandait de l’eau au marché"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le hadith dit : « وكان يخرج رأسه إليّ » — il sortait sa tête vers moi."
+},
+
+{
+  n: 44,
+  q: "Que faisait ʿĀʾisha lorsque le Prophète ﷺ sortait sa tête ?",
+  options: [
+    "Elle la couvrait",
+    "Elle la parfumait uniquement",
+    "Elle la lavait",
+    "Elle la peignait sans la laver"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le texte dit : « فأغسله » — alors je la lavais."
+},
+
+{
+  n: 44,
+  q: "Dans quel état se trouvait ʿĀʾisha au moment où elle lavait la tête du Prophète ﷺ ?",
+  options: [
+    "En état de janāba",
+    "En état de menstrues",
+    "En état de jeûne",
+    "En état de voyage"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le hadith précise : « وأنا حائض » — alors que j’étais en état de menstrues."
+},
+
+{
+  n: 44,
+  q: "Quelle règle ce hadith montre-t-il concernant la femme réglée ?",
+  options: [
+    "Elle ne peut toucher aucun objet",
+    "Elle ne peut rien faire pour son mari",
+    "Son contact n’est pas impur en lui-même",
+    "Elle ne peut approcher la maison"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith montre que la femme en état de menstrues n’est pas impure par essence et que son contact ordinaire est permis."
+},
+
+{
+  n: 44,
+  q: "Quelle règle ce hadith indique-t-il sur l’iʿtikāf ?",
+  options: [
+    "Le simple fait de sortir une partie du corps annule l’iʿtikāf",
+    "Sortir la tête sans quitter réellement la mosquée n’annule pas l’iʿtikāf",
+    "L’iʿtikāf exige de ne parler à personne",
+    "L’iʿtikāf interdit de se laver"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le fichier souligne que le fait pour le muʿtakif de sortir sa tête de la mosquée n’annule pas son iʿtikāf."
+},
+
+{
+  n: 44,
+  q: "Quelle autre leçon pratique ressort de ce hadith ?",
+  options: [
+    "Le soin du corps contredit la spiritualité",
+    "La retraite spirituelle empêche toute propreté",
+    "Le musulman entretient sa propreté même pendant l’iʿtikāf",
+    "Le lavage des cheveux est déconseillé"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith montre qu’on continue à prendre soin de son hygiène et de sa propreté, même en retraite spirituelle."
+},
+
+{
+  n: 44,
+  q: "Que corrige ce hadith au sujet des menstrues ?",
+  options: [
+    "Que la femme réglée ne peut rien toucher du tout",
+    "Que la femme réglée doit quitter son foyer",
+    "Que la femme réglée doit refaire le ghusl en permanence",
+    "Que la femme réglée ne peut pas parler"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le hadith montre qu’une femme réglée peut aider, laver, servir et toucher sans que cela soit considéré comme une souillure en soi."
+},
+/* ----------------- HADITH 45 : « Le Prophète ﷺ s’appuyait sur ʿĀʾisha pendant ses règles » ----------------- */
+
+{
+  n: 45,
+  q: "Qui rapporte ce hadith concernant le Prophète ﷺ ?",
+  options: [
+    "Umm Salama",
+    "ʿĀʾisha",
+    "Ḥafṣa",
+    "Asmāʾ"
+  ],
+  correctIndex: 1,
+  explain:
+    "Ce hadith est rapporté par ʿĀʾisha رضي الله عنها."
+},
+
+{
+  n: 45,
+  q: "Que faisait le Prophète ﷺ dans ce hadith ?",
+  options: [
+    "Il priait",
+    "Il dormait",
+    "Il s’appuyait sur ʿĀʾisha",
+    "Il faisait le ghusl"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith dit : « يتكئ في حجري » — il s’appuyait sur mes genoux."
+},
+
+{
+  n: 45,
+  q: "Dans quel état se trouvait ʿĀʾisha ?",
+  options: [
+    "En état de janāba",
+    "En état de menstrues",
+    "En état de jeûne",
+    "En état de voyage"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le texte précise : « وأنا حائض » — alors que j’étais en état de menstrues."
+},
+
+{
+  n: 45,
+  q: "Que faisait le Prophète ﷺ pendant qu’il était ainsi ?",
+  options: [
+    "Il parlait aux compagnons",
+    "Il dormait",
+    "Il récitait le Coran",
+    "Il faisait des invocations silencieuses"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith dit clairement : « فيقرأ القرآن » — il récitait le Coran."
+},
+
+{
+  n: 45,
+  q: "Quelle règle importante ce hadith montre-t-il concernant la femme en état de menstrues ?",
+  options: [
+    "Elle est impure en elle-même",
+    "Elle ne peut être approchée",
+    "Son corps est pur et peut être en contact",
+    "Elle doit rester isolée"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith montre que la femme en état de menstrues n’est pas impure en elle-même et que son contact est permis."
+},
+
+{
+  n: 45,
+  q: "Quelle idée fausse ce hadith corrige-t-il ?",
+  options: [
+    "Que le Coran doit être récité à voix basse",
+    "Que la femme réglée doit être totalement évitée",
+    "Que le ghusl est obligatoire après chaque prière",
+    "Que la prière est facultative"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le hadith corrige l’idée que la femme en état de menstrues doit être complètement évitée ou isolée."
+},
+
+{
+  n: 45,
+  q: "Quelle question juridique ce hadith soulève indirectement ?",
+  options: [
+    "La prière du voyageur",
+    "La lecture du Coran par la femme en menstrues",
+    "Le jeûne du malade",
+    "Le zakāt"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le commentaire du document mentionne la divergence des savants concernant la lecture du Coran par la femme en état de menstrues."
+},
+
+{
+  n: 45,
+  q: "Selon le document, quel est l’avis du madhhab shāfiʿite concernant la lecture du Coran par la femme en menstrues ?",
+  options: [
+    "C’est obligatoire",
+    "C’est recommandé",
+    "C’est permis",
+    "C’est interdit"
+  ],
+  correctIndex: 3,
+  explain:
+    "Le texte indique : « الصحيح امتناع قراءة الحائض القرآن » — l’avis الصحيح chez les shāfiʿites est l’interdiction."
+},
+
+{
+  n: 45,
+  q: "Selon l’avis مشهور chez Mālik mentionné dans le document, la femme en menstrues peut-elle lire le Coran ?",
+  options: [
+    "Non, jamais",
+    "Oui, contrairement au junub",
+    "Seulement en prière",
+    "Seulement en cas de nécessité"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le document dit : « الجواز للحائض دون الجنب » — c’est permis pour la femme en menstrues contrairement au junub."
+},
+/* ----------------- HADITH 46 : « Rattraper le jeûne mais pas la prière » ----------------- */
+
+{
+  n: 46,
+  q: "Pourquoi la femme en état de menstrues ne rattrape-t-elle pas la prière selon le hadith ?",
+  options: [
+    "Parce qu’elle n’est pas obligée de prier du tout",
+    "Parce qu’elle n’en a pas la capacité physique",
+    "Parce qu’elle n’en reçoit pas l’ordre",
+    "Parce que la prière est facultative"
+  ],
+  correctIndex: 2,
+  explain:
+    "ʿĀʾisha (ra) dit : « ولا نؤمر بقضاء الصلاة » — nous ne recevions pas l’ordre de rattraper la prière."
+},
+
+{
+  n: 46,
+  q: "Quelle obligation concerne la femme en période de menstrues selon ce hadith ?",
+  options: [
+    "Rattraper la prière",
+    "Rattraper le jeûne",
+    "Rattraper les deux",
+    "Ne rien rattraper"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le hadith dit : « فنؤمر بقضاء الصوم » — on nous ordonnait de rattraper le jeûne."
+},
+
+{
+  n: 46,
+  q: "Quelle question Muʿādha pose-t-elle à ʿĀʾisha (ra) ?",
+  options: [
+    "Pourquoi la prière est obligatoire ?",
+    "Pourquoi la femme prie pendant ses règles ?",
+    "Pourquoi elle rattrape le jeûne mais pas la prière ?",
+    "Pourquoi elle ne jeûne pas du tout ?"
+  ],
+  correctIndex: 2,
+  explain:
+    "La question est explicitement : « ما بال الحائض تقضي الصوم ولا تقضي الصلاة؟ »."
+},
+
+{
+  n: 46,
+  q: "Que signifie la réaction de ʿĀʾisha (ra) : « أحرورية أنت؟ » ?",
+  options: [
+    "Une simple question neutre",
+    "Une critique d’une opinion déviante (khārijite)",
+    "Un compliment",
+    "Une invocation"
+  ],
+  correctIndex: 1,
+  explain:
+    "Les ḥarūriyyah (khārijites) soutenaient que la femme devait rattraper la prière, d’où la réaction de ʿĀʾisha."
+},
+
+{
+  n: 46,
+  q: "Quelle est la sagesse principale tirée de ce hadith ?",
+  options: [
+    "Tout acte manqué doit être rattrapé",
+    "On suit les ordres du Prophète ﷺ même sans en connaître toute la raison",
+    "La prière est moins importante que le jeûne",
+    "Le jeûne est facultatif"
+  ],
+  correctIndex: 1,
+  explain:
+    "ʿĀʾisha se base sur la pratique prophétique : on suit la révélation et les ordres sans spéculation."
+},
+
+{
+  n: 46,
+  q: "Quel principe juridique est affirmé dans ce hadith ?",
+  options: [
+    "L’analogie prime sur le texte",
+    "Les obligations sont identiques pour tous",
+    "Le texte prévaut sur le raisonnement personnel",
+    "Les règles changent selon les personnes"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith montre que la règle est basée sur l’ordre prophétique, non sur une simple logique analogique."
+}
+
+
+
 
 
 
