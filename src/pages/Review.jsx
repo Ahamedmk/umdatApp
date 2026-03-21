@@ -1,5 +1,5 @@
 // /src/pages/Review.jsx
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
 import { setHadithDueBadge } from "@/lib/appBadge";
 
@@ -35,6 +35,13 @@ import { saveReviewResult } from "../lib/hadithProgress";
 import { supabase } from "../lib/supabase";
 import { HADITHS_1_15 } from "../data/seed_hadiths_1_15";
 
+function toLocalISODate(date = new Date()) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
 export function Review() {
   const { user } = useAuth();
 
@@ -51,6 +58,9 @@ export function Review() {
     good: 0,
     needs_work: 0,
   });
+
+  // Hadiths déjà traités dans la session courante
+  const answeredInSessionRef = useRef(new Set());
 
   useEffect(() => {
     const pref = localStorage.getItem("theme");
@@ -75,12 +85,12 @@ export function Review() {
 
     setLoading(true);
     try {
-      const today = new Date().toISOString().slice(0, 10);
+      const today = toLocalISODate(new Date());
 
       const { data: progress, error: progError } = await supabase
         .from("user_hadith_progress")
         .select(
-          "hadith_number, ease_factor, interval_days, repetitions, next_review_date, last_result, status"
+          "hadith_number, ease_factor, interval_days, repetitions, next_review_date, last_result, status, mastery_wins"
         )
         .eq("user_id", userId)
         .lte("next_review_date", today);
@@ -121,8 +131,13 @@ export function Review() {
         else if (fromSeed) merged.push(fromSeed);
       }
 
-      setHadiths(merged);
-      setHadithDueBadge(merged.length);
+      // Très important : on exclut les hadiths déjà traités pendant cette session
+      const filteredMerged = merged.filter(
+        (item) => !answeredInSessionRef.current.has(item.number)
+      );
+
+      setHadiths(filteredMerged);
+      setHadithDueBadge(filteredMerged.length);
       setProgressByNumber(progMap);
       setIdx(0);
       setShowFr(false);
@@ -139,6 +154,8 @@ export function Review() {
   }
 
   useEffect(() => {
+    answeredInSessionRef.current = new Set();
+
     if (user?.id) {
       loadDue(user.id);
     } else {
@@ -171,61 +188,90 @@ export function Review() {
       needs_work: prev.needs_work + (quality < 3 ? 1 : 0),
     }));
 
+    // On marque le hadith comme traité dans la session
+    answeredInSessionRef.current.add(currentHadithNumber);
+
+    // On le retire immédiatement de la session locale
+    setHadiths((prev) => {
+      const currentIndex = prev.findIndex(
+        (item) => item.number === currentHadithNumber
+      );
+
+      if (currentIndex === -1) return prev;
+
+      const nextList = prev.filter((item) => item.number !== currentHadithNumber);
+
+      setIdx((oldIdx) => {
+        if (nextList.length === 0) return 0;
+        if (oldIdx >= nextList.length) return nextList.length - 1;
+        return oldIdx;
+      });
+
+      setHadithDueBadge(nextList.length);
+      return nextList;
+    });
+
+    setProgressByNumber((prev) => {
+      const copy = { ...prev };
+      delete copy[currentHadithNumber];
+      return copy;
+    });
+
+    setShowFr(false);
+    setShowFullArabic(false);
+
     try {
       await saveReviewResult(user.id, currentHadithNumber, quality);
-
-      // IMPORTANT :
-      // On retire localement le hadith de la session actuelle
-      // pour éviter qu'il réapparaisse immédiatement si la date
-      // calculée côté base reste "due" aujourd'hui.
-      setHadiths((prev) => {
-        const currentIndex = prev.findIndex(
-          (item) => item.number === currentHadithNumber
-        );
-
-        if (currentIndex === -1) return prev;
-
-        const nextList = prev.filter((item) => item.number !== currentHadithNumber);
-
-        setIdx((oldIdx) => {
-          if (nextList.length === 0) return 0;
-          if (oldIdx > currentIndex) return Math.max(0, oldIdx - 1);
-          if (oldIdx >= nextList.length) return nextList.length - 1;
-          return oldIdx;
-        });
-
-        setHadithDueBadge(nextList.length);
-        return nextList;
-      });
-
-      // On retire aussi sa progression locale
-      setProgressByNumber((prev) => {
-        const copy = { ...prev };
-        delete copy[currentHadithNumber];
-        return copy;
-      });
-
-      // Reset affichage
-      setShowFr(false);
-      setShowFullArabic(false);
-
-      // Optionnel : on peut re-synchroniser en arrière-plan seulement
-      // quand la session devient vide, mais ici on reste simple et stable.
+      // Surtout ne pas recharger toute la liste ici
     } catch (err) {
       console.error("Erreur lors de la sauvegarde de la révision:", err);
+
+      // rollback simple si erreur
+      answeredInSessionRef.current.delete(currentHadithNumber);
+      await loadDue(user.id);
     } finally {
       setSaving(false);
     }
   };
 
   const qualityLabels = [
-  { value: 0, label: "Trou noir", desc: "Je ne m'en souviens pas", delay: "demain" },
-  { value: 1, label: "Très difficile", desc: "Très difficile à rappeler", delay: "demain" },
-  { value: 2, label: "Après avoir regardé", desc: "Je dois regarder pour continuer", delay: "demain" },
-  { value: 3, label: "Hésitations", desc: "Ça revient mais avec effort", delay: "2 jours" },
-  { value: 4, label: "Fluide", desc: "Récitation fluide", delay: "3 jours" },
-  { value: 5, label: "Parfait", desc: "Instantané", delay: "4 jours" },
-];
+    {
+      value: 0,
+      label: "Trou noir",
+      desc: "Je ne me souviens pas du tout",
+      delay: "demain",
+    },
+    {
+      value: 1,
+      label: "Très difficile",
+      desc: "Très difficile à rappeler",
+      delay: "demain",
+    },
+    {
+      value: 2,
+      label: "Après avoir regardé",
+      desc: "Je dois regarder pour continuer",
+      delay: "demain",
+    },
+    {
+      value: 3,
+      label: "Hésitations",
+      desc: "Ça revient mais avec effort",
+      delay: "2 jours",
+    },
+    {
+      value: 4,
+      label: "Fluide",
+      desc: "Récitation fluide",
+      delay: "3 jours",
+    },
+    {
+      value: 5,
+      label: "Parfait",
+      desc: "Instantané",
+      delay: "4 jours",
+    },
+  ];
 
   const isLoadingInitial = loading && !hadiths.length;
   const noHadiths = !loading && !hadiths.length;
@@ -288,7 +334,7 @@ export function Review() {
             <Card className="bg-gradient-to-br from-emerald-500 to-teal-600 border-0 text-white shadow-lg">
               <CardContent className="pt-4 pb-3 text-center">
                 <div className="text-2xl font-bold mb-1">{sessionStats.good}</div>
-                <div className="text-xs opacity-90">Facile</div>
+                <div className="text-xs opacity-90">Fluide</div>
               </CardContent>
             </Card>
             <Card className="bg-gradient-to-br from-orange-500 to-red-500 border-0 text-white shadow-lg">
@@ -441,74 +487,81 @@ export function Review() {
                       </div>
                     )}
                   </div>
-                  {/* Explication mobile */}
-<div className="sm:hidden bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 text-xs text-slate-600 dark:text-slate-300 space-y-1">
-  <p><strong>0</strong> → Trou noir</p>
-  <p><strong>1</strong> → Très difficile</p>
-  <p><strong>2</strong> → Après avoir regardé</p>
-  <p><strong>3</strong> → Quelques hésitations</p>
-  <p><strong>4</strong> → Fluide</p>
-  <p><strong>5</strong> → Parfait</p>
-</div>
 
-<p className="text-sm text-slate-500 dark:text-slate-400">
-  Note ta récitation honnêtement pour améliorer la mémorisation.
-</p>
                   <div className="space-y-4 pt-2">
                     <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
                       <Trophy className="h-4 w-4" />
-                      <span className="font-medium">
-                        Comment était ta récitation ?
-                      </span>
+                      <span className="font-medium">Comment était ta récitation ?</span>
+                    </div>
+
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                      Note ta récitation honnêtement pour améliorer la mémorisation.
+                    </p>
+
+                    <div className="sm:hidden bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 text-xs text-slate-600 dark:text-slate-300 space-y-1">
+                      <p>
+                        <strong>0</strong> → Trou noir
+                      </p>
+                      <p>
+                        <strong>1</strong> → Très difficile
+                      </p>
+                      <p>
+                        <strong>2</strong> → Après avoir regardé
+                      </p>
+                      <p>
+                        <strong>3</strong> → Hésitations
+                      </p>
+                      <p>
+                        <strong>4</strong> → Fluide
+                      </p>
+                      <p>
+                        <strong>5</strong> → Parfait
+                      </p>
                     </div>
 
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-  {qualityLabels.map((q) => (
-    <Tooltip key={q.value}>
-      <TooltipTrigger asChild>
-        <Button
-          onClick={() => answer(q.value)}
-          disabled={saving}
-          className="h-auto py-4 px-3 flex flex-col items-center gap-1 rounded-lg"
-          style={
-            q.value >= 4
-              ? {
-                  backgroundImage:
-                    q.value === 4
-                      ? "linear-gradient(135deg,#10b981,#0f766e)"
-                      : "linear-gradient(135deg,#22c55e,#16a34a)",
-                  color: "#ffffff",
-                }
-              : {
-                  backgroundColor: "#ffffff",
-                  color: "#0f172a",
-                  border: "1px solid #e2e8f0",
-                }
-          }
-        >
-          <span className="text-2xl font-bold">{q.value}</span>
+                      {qualityLabels.map((q) => (
+                        <Tooltip key={q.value}>
+                          <TooltipTrigger asChild>
+                            <Button
+                              onClick={() => answer(q.value)}
+                              disabled={saving}
+                              className="h-auto py-4 px-3 flex flex-col items-center gap-1 rounded-lg"
+                              style={
+                                q.value >= 4
+                                  ? {
+                                      backgroundImage:
+                                        q.value === 4
+                                          ? "linear-gradient(135deg,#10b981,#0f766e)"
+                                          : "linear-gradient(135deg,#22c55e,#16a34a)",
+                                      color: "#ffffff",
+                                      border: "none",
+                                    }
+                                  : {
+                                      backgroundColor: "#ffffff",
+                                      color: "#0f172a",
+                                      border: "1px solid #e2e8f0",
+                                    }
+                              }
+                            >
+                              <span className="text-2xl font-bold">{q.value}</span>
+                              <span className="text-xs font-medium">{q.label}</span>
+                              <span
+                                className={`text-[10px] ${
+                                  q.value >= 4 ? "text-white/80" : "text-slate-500"
+                                }`}
+                              >
+                                ↺ {q.delay}
+                              </span>
+                            </Button>
+                          </TooltipTrigger>
 
-          <span className="text-xs font-medium">
-            {q.label}
-          </span>
-
-          {/* délai */}
-          <span
-            className={`text-[10px] ${
-              q.value >= 4 ? "text-white/80" : "text-slate-500"
-            }`}
-          >
-            ↺ {q.delay}
-          </span>
-        </Button>
-      </TooltipTrigger>
-
-      <TooltipContent className="hidden sm:block">
-        <p className="text-xs">{q.desc}</p>
-      </TooltipContent>
-    </Tooltip>
-  ))}
-</div>
+                          <TooltipContent className="hidden sm:block">
+                            <p className="text-xs">{q.desc}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      ))}
+                    </div>
                   </div>
                 </CardContent>
               </Card>
