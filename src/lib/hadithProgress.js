@@ -319,3 +319,82 @@ export async function getDueCount(userId) {
 
   return count ?? 0;
 }
+
+// Helpers de lecture pour Learn.jsx / ChapterLearn.jsx
+
+export function getProgressStatusFromRow(row) {
+  if (!row) return "new";
+
+  const status = row.status || "learning";
+  const todayISO = toLocalISODate(new Date());
+
+  if (status === "mastered") {
+    return "mastered";
+  }
+
+  if (row.next_review_date && row.next_review_date <= todayISO) {
+    return "review";
+  }
+
+  if (status === "learned") {
+    return "learning";
+  }
+
+  if (status === "learning") {
+    return "learning";
+  }
+
+  return "new";
+}
+
+export function mergeHadithsWithSupabaseProgress(hadiths, progressRows = []) {
+  const progressMap = new Map(
+    (progressRows || []).map((row) => [Number(row.hadith_number), row])
+  );
+
+  return hadiths.map((hadith) => {
+    const row = progressMap.get(Number(hadith.number));
+
+    return {
+      ...hadith,
+      progressStatus: getProgressStatusFromRow(row),
+      progressRow: row || null,
+      score: row?.last_result ?? null,
+      next_review_date: row?.next_review_date ?? null,
+      interval_days: row?.interval_days ?? null,
+      repetitions: row?.repetitions ?? 0,
+      mastery_wins: row?.mastery_wins ?? 0,
+    };
+  });
+}
+
+export async function getUserHadithProgress(userId) {
+  if (!userId) return [];
+
+  const { data, error } = await supabase
+    .from("user_hadith_progress")
+    .select(
+      [
+        "hadith_number",
+        "status",
+        "interval_days",
+        "ease_factor",
+        "repetitions",
+        "next_review_date",
+        "last_result",
+        "last_review_at",
+        "last_review_date",
+        "consecutive_failures",
+        "mastery_wins",
+        "last_mastery_win_date",
+      ].join(",")
+    )
+    .eq("user_id", userId);
+
+  if (error) {
+    console.error("Erreur getUserHadithProgress:", error);
+    throw error;
+  }
+
+  return data ?? [];
+}

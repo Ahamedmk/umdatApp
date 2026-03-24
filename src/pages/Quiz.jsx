@@ -33,7 +33,7 @@ import {
   Sparkles,
 } from "lucide-react";
 
-import { HADITHS_1_15 } from "@/data/seed_hadiths_1_15";
+import { HADITHS_TAHARA } from "@/data/seed_hadiths_tahara";
 import { QUIZ_QUESTIONS_1_15 } from "@/data/quiz_questions_1_15";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
@@ -93,13 +93,16 @@ export function Quiz() {
         if (error) throw error;
 
         const nums = Array.from(
-          new Set((data || []).map((r) => r.hadith_number))
+          new Set((data || []).map((r) => r.hadith_number)),
         ).sort((a, b) => a - b);
 
         if (active) {
           setLearnedNumbers(nums);
           // si le filtre actuel ne fait pas partie des appris → reset
-          if (nums.length === 0 || (filterN !== "all" && !nums.includes(parseInt(filterN, 10)))) {
+          if (
+            nums.length === 0 ||
+            (filterN !== "all" && !nums.includes(parseInt(filterN, 10)))
+          ) {
             setFilterN("all");
             setIndex(0);
           }
@@ -124,9 +127,7 @@ export function Quiz() {
   const pool = useMemo(() => {
     if (!learnedNumbers.length) return [];
 
-    let base = QUIZ_QUESTIONS_1_15.filter((q) =>
-      learnedNumbers.includes(q.n)
-    );
+    let base = QUIZ_QUESTIONS_1_15.filter((q) => learnedNumbers.includes(q.n));
 
     if (filterN !== "all") {
       const num = parseInt(filterN, 10);
@@ -267,19 +268,43 @@ export function Quiz() {
         };
       }
       return dark
-        ? { borderColor: "#4b5563", backgroundColor: "transparent", color: "#e5e7eb" }
-        : { borderColor: "#cbd5f5", backgroundColor: "transparent", color: "#0f172a" };
+        ? {
+            borderColor: "#4b5563",
+            backgroundColor: "transparent",
+            color: "#e5e7eb",
+          }
+        : {
+            borderColor: "#cbd5f5",
+            backgroundColor: "transparent",
+            color: "#0f172a",
+          };
     }
 
     if (isSelected) {
       return dark
-        ? { borderColor: "#e5e7eb", backgroundColor: "#e5e7eb33", color: "#e5e7eb" }
-        : { borderColor: "#4c1d95", backgroundColor: "#4c1d95", color: "#ffffff" };
+        ? {
+            borderColor: "#e5e7eb",
+            backgroundColor: "#e5e7eb33",
+            color: "#e5e7eb",
+          }
+        : {
+            borderColor: "#4c1d95",
+            backgroundColor: "#4c1d95",
+            color: "#ffffff",
+          };
     }
 
     return dark
-      ? { borderColor: "#4b5563", backgroundColor: "transparent", color: "#e5e7eb" }
-      : { borderColor: "#cbd5f5", backgroundColor: "transparent", color: "#0f172a" };
+      ? {
+          borderColor: "#4b5563",
+          backgroundColor: "transparent",
+          color: "#e5e7eb",
+        }
+      : {
+          borderColor: "#cbd5f5",
+          backgroundColor: "transparent",
+          color: "#0f172a",
+        };
   };
 
   // ================== RENDER ==================
@@ -414,9 +439,9 @@ export function Quiz() {
                 Tu n&apos;as pas encore de hadith marqué comme appris.
               </p>
               <p className="text-sm text-slate-500 dark:text-slate-400">
-                Va dans la page <span className="font-semibold">Apprendre</span>,
-                auto-évalue un hadith avec une note <strong>4 ou 5</strong>, puis reviens
-                ici pour l&apos;avoir en quiz.
+                Va dans la page <span className="font-semibold">Apprendre</span>
+                , auto-évalue un hadith avec une note <strong>4 ou 5</strong>,
+                puis reviens ici pour l&apos;avoir en quiz.
               </p>
             </CardContent>
           </Card>
@@ -456,12 +481,12 @@ export function Quiz() {
                     const buttonStyle = getOptionStyle(
                       isSelected,
                       isCorrect,
-                      isWrong
+                      isWrong,
                     );
                     const radioStyle = getRadioStyle(
                       isSelected,
                       isCorrect,
-                      isWrong
+                      isWrong,
                     );
 
                     return (
@@ -591,9 +616,7 @@ export function Quiz() {
               <CardHeader>
                 <CardTitle className="text-base flex items-center gap-2">
                   <Sparkles className="h-4 w-4 text-yellow-500 shrink-0" />
-                  <span className="truncate">
-                    Rappel — Hadith {current.n}
-                  </span>
+                  <span className="truncate">Rappel — Hadith {current.n}</span>
                 </CardTitle>
                 <CardDescription>
                   Contexte pour ancrer ta compréhension
@@ -601,9 +624,7 @@ export function Quiz() {
               </CardHeader>
               <CardContent className="space-y-4">
                 {(() => {
-                  const h = HADITHS_1_15.find(
-                    (x) => x.number === current.n
-                  );
+                  const h = HADITHS_TAHARA.find((x) => x.number === current.n);
                   if (!h) {
                     return (
                       <div className="text-sm text-slate-500 dark:text-slate-400">

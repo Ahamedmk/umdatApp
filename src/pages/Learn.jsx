@@ -1,469 +1,752 @@
 // /src/pages/Learn.jsx
+
 import React, { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import {
+  BookOpen,
+  ArrowRight,
+  Flame,
+  RefreshCw,
+  CheckCircle2,
+  Loader2,
+  Sparkles,
+  ChevronRight,
+  Star,
+} from "lucide-react";
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import HowScoringWorksModal from "@/components/HowScoringWorksModal";
 
-import { BookOpen, Search, Filter, ArrowRight, Sparkles } from "lucide-react";
-
-import { supabase } from "../lib/supabase";
-import { HADITHS_1_15 } from "../data/seed_hadiths_1_15";
+import { CHAPTERS } from "../data/chapters";
+import { ALL_HADITHS } from "../data/allHadiths";
 import { useAuth } from "../context/AuthContext";
+import {
+  getUserHadithProgress,
+  mergeHadithsWithSupabaseProgress,
+} from "../lib/hadithProgress";
 
-function toLocalISODate(date = new Date()) {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const d = String(date.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
+/* ─── helpers ─── */
+
+function statusLabel(status) {
+  switch (status) {
+    case "mastered": return "Maîtrisé";
+    case "review":   return "À revoir";
+    case "learning": return "En cours";
+    default:         return "Nouveau";
+  }
 }
 
-function getStatusMeta(status) {
-  const STATUS_META = {
-    new: {
-      label: "Nouveau",
-      className:
-        "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200",
-    },
-    learning: {
-      label: "En cours",
-      className:
-        "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200",
-    },
-    learned: {
-      label: "Appris",
-      className:
-        "bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200",
-    },
-    mastered: {
-      label: "Maîtrisé",
-      className:
-        "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200",
-    },
-    review: {
-      label: "À revoir",
-      className:
-        "bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-200",
-    },
-  };
-
-  return STATUS_META[status] || STATUS_META.new;
+function statusColor(status) {
+  switch (status) {
+    case "mastered": return "var(--clr-gold)";
+    case "review":   return "var(--clr-amber)";
+    case "learning": return "var(--clr-accent)";
+    default:         return "var(--clr-muted-fg)";
+  }
 }
 
-function MasteryProgress({ wins = 0 }) {
-  const safeWins = Math.min(Number(wins || 0), 3);
+/* ─── sub-components ─── */
 
+function StatPill({ icon: Icon, label, value, accent }) {
   return (
-    <div className="flex items-center gap-2 mt-1">
-      <div className="flex gap-1">
-        {[1, 2, 3].map((i) => (
-          <div
-            key={i}
-            className={`w-2.5 h-2.5 rounded-full transition-all ${
-              i <= safeWins
-                ? "bg-emerald-500"
-                : "bg-slate-300 dark:bg-slate-700"
-            }`}
-          />
-        ))}
-      </div>
-      <span className="text-[10px] text-slate-500">{safeWins}/3</span>
+    <div className="learn-stat-pill" style={{ "--accent": accent }}>
+      <span className="learn-stat-icon"><Icon size={16} /></span>
+      <span className="learn-stat-value">{value}</span>
+      <span className="learn-stat-label">{label}</span>
     </div>
   );
 }
 
-function StatCard({ value, label, className }) {
+function ProgressRing({ percent, size = 52 }) {
+  const r = (size - 6) / 2;
+  const circ = 2 * Math.PI * r;
+  const offset = circ - (percent / 100) * circ;
   return (
-    <Card className={`border-0 text-white shadow-lg ${className}`}>
-      <CardContent className="pt-6 text-center">
-        <div className="text-3xl font-bold mb-1">{value}</div>
-        <div className="text-sm opacity-90">{label}</div>
-      </CardContent>
-    </Card>
+    <svg width={size} height={size} className="learn-ring">
+      <circle cx={size / 2} cy={size / 2} r={r} className="learn-ring-bg" />
+      <circle
+        cx={size / 2} cy={size / 2} r={r}
+        className="learn-ring-fg"
+        strokeDasharray={circ}
+        strokeDashoffset={offset}
+        transform={`rotate(-90 ${size / 2} ${size / 2})`}
+      />
+      <text x="50%" y="50%" dominantBaseline="middle" textAnchor="middle" className="learn-ring-text">
+        {percent}%
+      </text>
+    </svg>
   );
 }
 
+/* ─── main component ─── */
+
 export function Learn() {
+  const navigate = useNavigate();
   const { user } = useAuth();
 
-  const [items, setItems] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filterSource, setFilterSource] = useState("all");
-  const [loading, setLoading] = useState(true);
-  const [progressByHadith, setProgressByHadith] = useState({});
+  const [progressRows, setProgressRows] = useState([]);
+  const [loading, setLoading]           = useState(true);
+  const [loadError, setLoadError]       = useState("");
 
   useEffect(() => {
-    const pref = localStorage.getItem("theme");
-    const prefersDark =
-      typeof window !== "undefined" &&
-      window.matchMedia?.("(prefers-color-scheme: dark)").matches;
-    const enable = pref ? pref === "dark" : prefersDark;
-    document.documentElement.classList.toggle("dark", enable);
-  }, []);
-
-  useEffect(() => {
-    let active = true;
-
-    async function loadHadiths() {
-      setLoading(true);
-      try {
-        const { data, error } = await supabase
-          .from("hadiths")
-          .select("number, arabic_text, french_text, source")
-          .order("number", { ascending: true });
-
-        if (error) throw error;
-        if (!active) return;
-
-        setItems(data?.length ? data : HADITHS_1_15);
-      } catch (e) {
-        console.error("Erreur chargement hadiths, fallback seeds:", e);
-        if (active) setItems(HADITHS_1_15);
-      } finally {
-        if (active) setLoading(false);
-      }
-    }
-
-    loadHadiths();
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!user || items.length === 0) {
-      setProgressByHadith({});
-      return;
-    }
-
-    let active = true;
+    let mounted = true;
 
     async function loadProgress() {
+      if (!user?.id) {
+        if (mounted) { setProgressRows([]); setLoading(false); }
+        return;
+      }
       try {
-        const numbers = items
-          .map((h) => h.number)
-          .filter((n) => typeof n === "number");
-
-        if (numbers.length === 0) {
-          if (active) setProgressByHadith({});
-          return;
-        }
-
-        const { data, error } = await supabase
-          .from("user_hadith_progress")
-          .select(
-            "hadith_number, status, next_review_date, last_result, mastery_wins"
-          )
-          .eq("user_id", user.id)
-          .in("hadith_number", numbers);
-
-        if (error) throw error;
-        if (!active) return;
-
-        const map = Object.fromEntries(
-          (data || []).map((row) => [row.hadith_number, row])
-        );
-
-        setProgressByHadith(map);
-      } catch (e) {
-        console.error("Erreur loadProgress:", e);
-        if (active) setProgressByHadith({});
+        setLoading(true);
+        setLoadError("");
+        const rows = await getUserHadithProgress(user.id);
+        if (!mounted) return;
+        setProgressRows(rows);
+      } catch (error) {
+        console.error(error);
+        if (!mounted) return;
+        setLoadError("Impossible de charger la progression.");
+        setProgressRows([]);
+      } finally {
+        if (mounted) setLoading(false);
       }
     }
 
     loadProgress();
-    return () => {
-      active = false;
-    };
-  }, [user, items]);
+    return () => { mounted = false; };
+  }, [user?.id]);
 
-  const sources = useMemo(() => {
-    return [
-      "all",
-      ...new Set(items.map((h) => h.source).filter(Boolean)),
-    ];
-  }, [items]);
+  const hadithsWithProgress = useMemo(
+    () => mergeHadithsWithSupabaseProgress(ALL_HADITHS, progressRows),
+    [progressRows]
+  );
 
-  const stats = useMemo(() => {
-    const today = toLocalISODate();
-    const rows = Object.values(progressByHadith);
+  const globalStats = useMemo(() => {
+    const total    = hadithsWithProgress.length;
+    const mastered = hadithsWithProgress.filter(h => h.progressStatus === "mastered").length;
+    const review   = hadithsWithProgress.filter(h => h.progressStatus === "review").length;
+    const learning = hadithsWithProgress.filter(h => h.progressStatus === "learning").length;
+    return { total, mastered, review, learning };
+  }, [hadithsWithProgress]);
 
-    return rows.reduce(
-      (acc, row) => {
-        const masteryWins = Number(row.mastery_wins || 0);
+  const chapterCards = useMemo(() => {
+    return CHAPTERS.map(chapter => {
+      const ch = hadithsWithProgress
+        .filter(h => h.chapterSlug === chapter.slug)
+        .sort((a, b) => (a.hadithOrder || a.number || a.id) - (b.hadithOrder || b.number || b.id));
 
-        if (row.status === "learned") {
-          acc.learned += 1;
-          if (masteryWins >= 2) acc.almostMastered += 1;
-        }
+      const total    = ch.length;
+      const mastered = ch.filter(h => h.progressStatus === "mastered").length;
+      const review   = ch.filter(h => h.progressStatus === "review").length;
+      const learning = ch.filter(h => h.progressStatus === "learning").length;
+      const percent  = total > 0 ? Math.round((mastered / total) * 100) : 0;
 
-        if (row.status === "mastered") {
-          acc.mastered += 1;
-        }
+      const nextRecommended =
+        ch.find(h => h.progressStatus === "review")   ||
+        ch.find(h => h.progressStatus === "learning") ||
+        ch.find(h => h.progressStatus === "new")      ||
+        ch[0];
 
-        if (row.next_review_date && row.next_review_date <= today) {
-          acc.dueToday += 1;
-        }
+      return { ...chapter, total, mastered, review, learning, percent, nextRecommended };
+    }).sort((a, b) => a.order - b.order);
+  }, [hadithsWithProgress]);
 
-        return acc;
-      },
-      {
-        total: items.length,
-        dueToday: 0,
-        learned: 0,
-        mastered: 0,
-        almostMastered: 0,
-      }
+  const globalNextHadith = useMemo(() => (
+    hadithsWithProgress.find(h => h.progressStatus === "review")   ||
+    hadithsWithProgress.find(h => h.progressStatus === "learning") ||
+    hadithsWithProgress.find(h => h.progressStatus === "new")      ||
+    hadithsWithProgress[0]
+  ), [hadithsWithProgress]);
+
+  /* ── loading state ── */
+  if (loading) {
+    return (
+      <>
+        <LearnStyles />
+        <div className="learn-loader">
+          <Loader2 className="learn-loader-icon" />
+          <span>Chargement de ta progression…</span>
+        </div>
+      </>
     );
-  }, [items.length, progressByHadith]);
+  }
 
-  const filteredItems = useMemo(() => {
-    const q = searchQuery.trim().toLowerCase();
-
-    return items.filter((h) => {
-      const matchesSearch =
-        !q ||
-        String(h.number || "").includes(q) ||
-        h.arabic_text?.includes(searchQuery.trim()) ||
-        h.french_text?.toLowerCase().includes(q);
-
-      const matchesSource =
-        filterSource === "all" || h.source === filterSource;
-
-      return matchesSearch && matchesSource;
-    });
-  }, [items, searchQuery, filterSource]);
-
+  /* ── main render ── */
   return (
-    <div className="min-h-screen overflow-x-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-blue-950 dark:to-indigo-950">
-      <div className="max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="p-3 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl shadow-lg shrink-0">
-              <BookOpen className="h-6 w-6 text-white" />
-            </div>
+    <>
+      <LearnStyles />
+      <div className="learn-root">
 
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 truncate">
-                  Apprendre
-                </h2>
-                <HowScoringWorksModal triggerText="Comment ça marche ?" />
-              </div>
-
-              <p className="text-sm text-slate-600 dark:text-slate-400">
-                {stats.total > 0
-                  ? `Hadiths disponibles : ${stats.total}`
-                  : "Aucun hadith pour le moment"}
-              </p>
-
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                {user
-                  ? "Un hadith devient maîtrisé après 3 validations fortes (4 ou 5) espacées dans le temps."
-                  : "Connecte-toi pour sauvegarder ta progression."}
-              </p>
-            </div>
+        {/* ── Header ── */}
+        <header className="learn-header">
+          <div>
+            <h1 className="learn-title">
+              <span className="learn-title-ar">تعلّم</span>
+              Apprentissage
+            </h1>
+            <p className="learn-subtitle">Reprends là où tu t'es arrêté · Progresse chaque jour</p>
+            {loadError && <p className="learn-error">{loadError}</p>}
           </div>
-        </div>
+          <div className="learn-header-ornament" aria-hidden="true">﷽</div>
+        </header>
 
-        <Card className="border-slate-200 dark:border-slate-700 shadow-lg bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
-          <CardContent className="pt-6">
-            <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
-              <div className="relative flex-1 min-w-0">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
-                <Input
-                  placeholder="Rechercher par numéro, texte arabe ou français..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-white dark:bg-slate-900 w-full"
-                />
-              </div>
+        {/* ── Continue card ── */}
+        <section className="learn-continue-card">
+          <div className="learn-continue-label">
+            <Sparkles size={14} />
+            Continuer mon apprentissage
+          </div>
 
-              <div className="flex items-center gap-2 shrink-0">
-                <Filter className="h-4 w-4 text-slate-500" />
-                <select
-                  value={filterSource}
-                  onChange={(e) => setFilterSource(e.target.value)}
-                  className="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm max-w-[55vw] sm:max-w-none"
-                >
-                  {sources.map((source) => (
-                    <option key={source} value={source}>
-                      {source === "all" ? "Toutes les sources" : source}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-          <StatCard
-            value={stats.total}
-            label="Hadiths au total"
-            className="bg-gradient-to-br from-emerald-500 to-teal-600"
-          />
-          <StatCard
-            value={user ? stats.dueToday : "–"}
-            label="À réviser aujourd'hui"
-            className="bg-gradient-to-br from-blue-500 to-indigo-600"
-          />
-          <StatCard
-            value={user ? stats.learned : "–"}
-            label="Hadiths appris"
-            className="bg-gradient-to-br from-teal-500 to-cyan-600"
-          />
-          <StatCard
-            value={user ? stats.mastered : "–"}
-            label="Hadiths maîtrisés"
-            className="bg-gradient-to-br from-purple-500 to-pink-600"
-          />
-        </div>
-
-        {user && stats.almostMastered > 0 && (
-          <Card className="border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 shadow-sm">
-            <CardContent className="pt-4 pb-4">
-              <p className="text-sm text-slate-700 dark:text-slate-300">
-                Tu as <span className="font-semibold">{stats.almostMastered}</span>{" "}
-                hadith{stats.almostMastered > 1 ? "s" : ""} presque maîtrisé
-                {stats.almostMastered > 1 ? "s" : ""}{" "}
-                <span className="text-slate-500 dark:text-slate-400">
-                  (2 validations fortes sur 3).
+          {globalNextHadith ? (
+            <div className="learn-continue-body">
+              <div className="learn-continue-info">
+                <span className="learn-continue-chapter">
+                  {globalNextHadith.chapterTitle || globalNextHadith.chapterSlug}
                 </span>
-              </p>
-            </CardContent>
-          </Card>
-        )}
+                <h2 className="learn-continue-hadith">
+                  Hadith {globalNextHadith.hadithOrder || globalNextHadith.number || globalNextHadith.id}
+                  {globalNextHadith.title ? ` — ${globalNextHadith.title}` : ""}
+                </h2>
+                <div className="learn-continue-badges">
+                  <span
+                    className="learn-status-dot"
+                    style={{ "--dot": statusColor(globalNextHadith.progressStatus) }}
+                  />
+                  <span className="learn-status-text">
+                    {statusLabel(globalNextHadith.progressStatus)}
+                  </span>
+                  {globalNextHadith.score != null && (
+                    <span className="learn-score-badge">
+                      <Star size={11} /> {globalNextHadith.score}/5
+                    </span>
+                  )}
+                </div>
+              </div>
 
-        <ScrollArea className="h-[65vh] max-w-full overscroll-contain">
-          <div className="space-y-4 px-0 sm:px-1">
-            {loading ? (
-              <>
-                <Card className="animate-pulse border-slate-200 dark:border-slate-700">
-                  <CardContent className="h-24 pt-6" />
-                </Card>
-                <Card className="animate-pulse border-slate-200 dark:border-slate-700">
-                  <CardContent className="h-24 pt-6" />
-                </Card>
-              </>
-            ) : filteredItems.length === 0 ? (
-              <Card className="border-dashed border-2 border-slate-300 dark:border-slate-700">
-                <CardContent className="py-12 text-center">
-                  <Search className="h-12 w-12 text-slate-400 mx-auto mb-3" />
-                  <p className="text-slate-600 dark:text-slate-400">
-                    Aucun hadith trouvé
-                  </p>
-                </CardContent>
-              </Card>
-            ) : (
-              filteredItems.map((h) => {
-                const progress = progressByHadith[h.number];
-                const statusMeta = getStatusMeta(progress?.status);
-                const masteryWins = Number(progress?.mastery_wins || 0);
+              <div className="learn-continue-actions">
+                <button
+                  className="learn-btn-primary"
+                  onClick={() => navigate(`/hadith/${globalNextHadith.id}`)}
+                >
+                  Continuer <ArrowRight size={15} />
+                </button>
+                <button
+                  className="learn-btn-ghost"
+                  onClick={() => navigate(`/learn/${globalNextHadith.chapterSlug}`)}
+                >
+                  Voir le chapitre
+                </button>
+              </div>
+            </div>
+          ) : (
+            <p className="learn-empty">Aucun hadith disponible pour le moment.</p>
+          )}
+        </section>
 
-                return (
-                  <Card
-                    key={h.number}
-                    className="group relative w-full overflow-hidden border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 transition-shadow duration-300 hover:shadow-lg"
-                  >
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        {/* ── Stats strip ── */}
+        <div className="learn-stats-strip">
+          <StatPill icon={BookOpen}     label="Total"     value={globalStats.total}    accent="var(--clr-muted-fg)" />
+          <StatPill icon={CheckCircle2} label="Maîtrisés" value={globalStats.mastered} accent="var(--clr-gold)"     />
+          <StatPill icon={RefreshCw}    label="À revoir"  value={globalStats.review}   accent="var(--clr-amber)"    />
+          <StatPill icon={Flame}        label="En cours"  value={globalStats.learning} accent="var(--clr-accent)"   />
+        </div>
 
-                    <CardHeader className="pb-3 relative z-10">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex flex-wrap items-center gap-2 mb-2">
-                            <Badge
-                              variant="secondary"
-                              className="rounded-full shrink-0"
-                            >
-                              #{h.number}
-                            </Badge>
-
-                            <Badge
-                              variant="outline"
-                              className="text-xs truncate max-w-[40vw] sm:max-w-none"
-                            >
-                              {h.source || "Source PDF"}
-                            </Badge>
-
-                            <Badge
-                              variant="secondary"
-                              className={`text-[10px] sm:text-xs rounded-full ${statusMeta.className}`}
-                            >
-                              {statusMeta.label}
-                            </Badge>
-
-                            {progress?.status === "learned" && (
-                              <MasteryProgress wins={masteryWins} />
-                            )}
-
-                            {progress?.status === "mastered" && (
-                              <Badge className="bg-emerald-500 text-white">
-                                🏆
-                              </Badge>
-                            )}
-
-                            <Sparkles className="h-3 w-3 text-yellow-500 shrink-0" />
-                          </div>
-
-                          <CardTitle className="text-lg text-slate-800 dark:text-slate-100 truncate">
-                            Hadith {h.number}
-                          </CardTitle>
-                        </div>
-
-                        <Button
-                          asChild
-                          size="sm"
-                          className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md md:group-hover:scale-[1.03] transition-transform will-change-transform"
-                        >
-                          <Link
-                            to={`/hadith/${h.number}`}
-                            className="flex items-center gap-2"
-                          >
-                            Ouvrir
-                            <ArrowRight className="h-4 w-4" />
-                          </Link>
-                        </Button>
-                      </div>
-                    </CardHeader>
-
-                    <Separator className="bg-slate-200 dark:bg-slate-700" />
-
-                    <CardContent className="pt-4 relative z-10">
-                      <div className="space-y-3">
-                        <div
-                          dir="rtl"
-                          className="text-lg font-serif leading-loose text-slate-800 dark:text-slate-200 break-words overflow-hidden line-clamp-3 md:group-hover:line-clamp-none transition-all"
-                        >
-                          {h.arabic_text}
-                        </div>
-
-                        {h.french_text && (
-                          <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-3 md:group-hover:line-clamp-none transition-all">
-                            {h.french_text}
-                          </p>
-                        )}
-
-                        {progress?.next_review_date && (
-                          <p className="text-xs text-slate-500 dark:text-slate-400">
-                            Prochaine révision : {progress.next_review_date}
-                          </p>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              })
-            )}
+        {/* ── Chapters ── */}
+        <section>
+          <div className="learn-section-head">
+            <h2 className="learn-section-title">Mes chapitres</h2>
+            <p className="learn-section-sub">Choisis un chapitre pour voir ses hadiths</p>
           </div>
-        </ScrollArea>
+
+          <div className="learn-chapters-grid">
+            {chapterCards.map((chapter, i) => (
+              <article
+                key={chapter.id}
+                className="learn-chapter-card"
+                style={{ "--delay": `${i * 60}ms` }}
+              >
+                <div className="learn-chapter-top">
+                  <div className="learn-chapter-titles">
+                    <h3 className="learn-chapter-title-fr">{chapter.titleFr}</h3>
+                    <p className="learn-chapter-title-ar">{chapter.titleAr}</p>
+                  </div>
+                  <ProgressRing percent={chapter.percent} />
+                </div>
+
+                {chapter.description && (
+                  <p className="learn-chapter-desc">{chapter.description}</p>
+                )}
+
+                <div className="learn-chapter-stats">
+                  {[
+                    { label: "Total",     value: chapter.total },
+                    { label: "Maîtrisés", value: chapter.mastered },
+                    { label: "En cours",  value: chapter.learning },
+                    { label: "À revoir",  value: chapter.review },
+                  ].map(s => (
+                    <div key={s.label} className="learn-chapter-stat">
+                      <span className="learn-chapter-stat-val">{s.value}</span>
+                      <span className="learn-chapter-stat-lbl">{s.label}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="learn-chapter-divider" />
+
+                {chapter.nextRecommended ? (
+                  <div className="learn-chapter-next">
+                    <span className="learn-chapter-next-label">Prochain recommandé</span>
+                    <span className="learn-chapter-next-title">
+                      Hadith {chapter.nextRecommended.hadithOrder || chapter.nextRecommended.number || chapter.nextRecommended.id}
+                      {chapter.nextRecommended.title ? ` — ${chapter.nextRecommended.title}` : ""}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="learn-chapter-next">
+                    <span className="learn-chapter-next-label">Aucun hadith pour l'instant.</span>
+                  </div>
+                )}
+
+                <div className="learn-chapter-actions">
+                  <button
+                    className="learn-btn-primary learn-btn-sm"
+                    onClick={() => navigate(`/learn/${chapter.slug}`)}
+                  >
+                    Entrer <ChevronRight size={14} />
+                  </button>
+                  {chapter.nextRecommended && (
+                    <button
+                      className="learn-btn-ghost learn-btn-sm"
+                      onClick={() => navigate(`/hadith/${chapter.nextRecommended.id}`)}
+                    >
+                      Continuer
+                    </button>
+                  )}
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
       </div>
-    </div>
+    </>
+  );
+}
+
+/* ─── scoped styles injected as a component ─── */
+function LearnStyles() {
+  return (
+    <style>{`
+      /* ── tokens ── */
+      .learn-root {
+        --clr-bg:        #0d1117;
+        --clr-surface:   #161c24;
+        --clr-surface2:  #1e2630;
+        --clr-border:    rgba(255,255,255,.07);
+        --clr-border2:   rgba(255,255,255,.12);
+        --clr-fg:        #e8e0d0;
+        --clr-muted-fg:  #7a8694;
+        --clr-gold:      #c9a84c;
+        --clr-gold-dim:  rgba(201,168,76,.15);
+        --clr-amber:     #e08a3c;
+        --clr-accent:    #4a9f82;
+        --clr-accent-dim:rgba(74,159,130,.12);
+
+        font-family: 'Georgia', 'Times New Roman', serif;
+        background: var(--clr-bg);
+        color: var(--clr-fg);
+        min-height: 100vh;
+        padding: 1.5rem 1rem 4rem;
+        max-width: 900px;
+        margin: 0 auto;
+      }
+
+      /* ── loader ── */
+      .learn-loader {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+        justify-content: center;
+        min-height: 50vh;
+        color: var(--clr-muted-fg);
+        font-family: Georgia, serif;
+      }
+      .learn-loader-icon { animation: spin 1s linear infinite; }
+      @keyframes spin { to { transform: rotate(360deg); } }
+
+      /* ── header ── */
+      .learn-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--clr-border2);
+      }
+      .learn-title {
+        font-size: 1.9rem;
+        font-weight: 700;
+        letter-spacing: -.02em;
+        line-height: 1.1;
+        display: flex;
+        align-items: baseline;
+        gap: .55rem;
+        margin: 0 0 .35rem;
+        color: var(--clr-fg);
+      }
+      .learn-title-ar {
+        font-size: 1.2rem;
+        color: var(--clr-gold);
+        font-weight: 400;
+        opacity: .8;
+      }
+      .learn-subtitle {
+        font-size: .82rem;
+        color: var(--clr-muted-fg);
+        font-style: italic;
+        margin: 0;
+      }
+      .learn-error {
+        font-size: .8rem;
+        color: #e05555;
+        margin-top: .4rem;
+      }
+      .learn-header-ornament {
+        font-size: 1.6rem;
+        color: var(--clr-gold);
+        opacity: .25;
+        line-height: 1;
+        flex-shrink: 0;
+        padding-top: .15rem;
+      }
+
+      /* ── continue card ── */
+      .learn-continue-card {
+        background: linear-gradient(135deg, var(--clr-surface) 0%, rgba(201,168,76,.06) 100%);
+        border: 1px solid var(--clr-gold-dim);
+        border-radius: 16px;
+        padding: 1.4rem 1.5rem;
+        margin-bottom: 1.5rem;
+        position: relative;
+        overflow: hidden;
+      }
+      .learn-continue-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, var(--clr-gold), transparent);
+        border-radius: 16px 16px 0 0;
+      }
+      .learn-continue-label {
+        display: flex;
+        align-items: center;
+        gap: .4rem;
+        font-size: .72rem;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: var(--clr-gold);
+        margin-bottom: 1rem;
+        font-family: 'Georgia', serif;
+        font-style: italic;
+      }
+      .learn-continue-body {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .learn-continue-chapter {
+        font-size: .75rem;
+        color: var(--clr-muted-fg);
+        text-transform: uppercase;
+        letter-spacing: .07em;
+        display: block;
+        margin-bottom: .3rem;
+      }
+      .learn-continue-hadith {
+        font-size: 1.15rem;
+        font-weight: 700;
+        margin: 0 0 .6rem;
+        color: var(--clr-fg);
+        line-height: 1.3;
+      }
+      .learn-continue-badges {
+        display: flex;
+        align-items: center;
+        gap: .55rem;
+        flex-wrap: wrap;
+      }
+      .learn-status-dot {
+        width: 7px; height: 7px;
+        border-radius: 50%;
+        background: var(--dot);
+        flex-shrink: 0;
+      }
+      .learn-status-text {
+        font-size: .78rem;
+        color: var(--clr-muted-fg);
+      }
+      .learn-score-badge {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        font-size: .73rem;
+        color: var(--clr-gold);
+        background: var(--clr-gold-dim);
+        border-radius: 20px;
+        padding: 2px 8px;
+      }
+      .learn-continue-actions {
+        display: flex;
+        gap: .65rem;
+        flex-wrap: wrap;
+        flex-shrink: 0;
+      }
+      .learn-empty {
+        font-size: .85rem;
+        color: var(--clr-muted-fg);
+        font-style: italic;
+      }
+
+      /* ── buttons ── */
+      .learn-btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+        background: var(--clr-gold);
+        color: #0d1117;
+        border: none;
+        border-radius: 9px;
+        padding: .55rem 1.1rem;
+        font-size: .85rem;
+        font-weight: 700;
+        font-family: Georgia, serif;
+        cursor: pointer;
+        transition: opacity .15s, transform .15s;
+      }
+      .learn-btn-primary:hover { opacity: .88; transform: translateY(-1px); }
+      .learn-btn-primary:active { transform: translateY(0); opacity: 1; }
+
+      .learn-btn-ghost {
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+        background: transparent;
+        color: var(--clr-muted-fg);
+        border: 1px solid var(--clr-border2);
+        border-radius: 9px;
+        padding: .55rem 1.1rem;
+        font-size: .85rem;
+        font-family: Georgia, serif;
+        cursor: pointer;
+        transition: border-color .15s, color .15s, transform .15s;
+      }
+      .learn-btn-ghost:hover {
+        border-color: var(--clr-gold);
+        color: var(--clr-gold);
+        transform: translateY(-1px);
+      }
+
+      .learn-btn-sm { padding: .42rem .9rem; font-size: .8rem; }
+
+      /* ── stats strip ── */
+      .learn-stats-strip {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: .75rem;
+        margin-bottom: 2.5rem;
+      }
+      @media (max-width: 540px) {
+        .learn-stats-strip { grid-template-columns: repeat(2, 1fr); }
+      }
+      .learn-stat-pill {
+        background: var(--clr-surface);
+        border: 1px solid var(--clr-border);
+        border-radius: 12px;
+        padding: .85rem .9rem;
+        display: flex;
+        flex-direction: column;
+        gap: .2rem;
+        transition: border-color .2s;
+      }
+      .learn-stat-pill:hover { border-color: var(--clr-border2); }
+      .learn-stat-icon {
+        color: var(--accent);
+        line-height: 1;
+        margin-bottom: .1rem;
+      }
+      .learn-stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        line-height: 1;
+        color: var(--clr-fg);
+      }
+      .learn-stat-label {
+        font-size: .72rem;
+        color: var(--clr-muted-fg);
+        letter-spacing: .03em;
+      }
+
+      /* ── section head ── */
+      .learn-section-head {
+        margin-bottom: 1rem;
+      }
+      .learn-section-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin: 0 0 .2rem;
+        color: var(--clr-fg);
+      }
+      .learn-section-sub {
+        font-size: .8rem;
+        color: var(--clr-muted-fg);
+        margin: 0;
+        font-style: italic;
+      }
+
+      /* ── chapters grid ── */
+      .learn-chapters-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1rem;
+      }
+
+      /* ── chapter card ── */
+      .learn-chapter-card {
+        background: var(--clr-surface);
+        border: 1px solid var(--clr-border);
+        border-radius: 16px;
+        padding: 1.3rem;
+        display: flex;
+        flex-direction: column;
+        gap: .9rem;
+        transition: border-color .2s, transform .2s, box-shadow .2s;
+        animation: cardIn .4s ease both;
+        animation-delay: var(--delay, 0ms);
+      }
+      .learn-chapter-card:hover {
+        border-color: var(--clr-border2);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px rgba(0,0,0,.35);
+      }
+      @keyframes cardIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+
+      .learn-chapter-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: .75rem;
+      }
+      .learn-chapter-title-fr {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--clr-fg);
+        margin: 0 0 .2rem;
+        line-height: 1.25;
+      }
+      .learn-chapter-title-ar {
+        font-size: .95rem;
+        color: var(--clr-gold);
+        opacity: .75;
+        margin: 0;
+        font-weight: 400;
+        direction: rtl;
+      }
+      .learn-chapter-desc {
+        font-size: .8rem;
+        color: var(--clr-muted-fg);
+        line-height: 1.5;
+        margin: 0;
+        font-style: italic;
+      }
+
+      .learn-chapter-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: .45rem;
+      }
+      .learn-chapter-stat {
+        background: var(--clr-surface2);
+        border-radius: 9px;
+        padding: .55rem .4rem;
+        text-align: center;
+      }
+      .learn-chapter-stat-val {
+        display: block;
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--clr-fg);
+        line-height: 1;
+      }
+      .learn-chapter-stat-lbl {
+        display: block;
+        font-size: .65rem;
+        color: var(--clr-muted-fg);
+        margin-top: .2rem;
+        letter-spacing: .03em;
+      }
+
+      .learn-chapter-divider {
+        height: 1px;
+        background: var(--clr-border);
+        margin: 0 -.1rem;
+      }
+
+      .learn-chapter-next {
+        background: var(--clr-surface2);
+        border-radius: 10px;
+        padding: .7rem .9rem;
+      }
+      .learn-chapter-next-label {
+        display: block;
+        font-size: .7rem;
+        color: var(--clr-muted-fg);
+        letter-spacing: .05em;
+        text-transform: uppercase;
+        margin-bottom: .25rem;
+      }
+      .learn-chapter-next-title {
+        display: block;
+        font-size: .85rem;
+        color: var(--clr-fg);
+        font-weight: 600;
+        line-height: 1.35;
+      }
+
+      .learn-chapter-actions {
+        display: flex;
+        gap: .6rem;
+        flex-wrap: wrap;
+      }
+
+      /* ── progress ring ── */
+      .learn-ring { flex-shrink: 0; }
+      .learn-ring-bg {
+        fill: none;
+        stroke: var(--clr-surface2);
+        stroke-width: 4;
+      }
+      .learn-ring-fg {
+        fill: none;
+        stroke: var(--clr-gold);
+        stroke-width: 4;
+        stroke-linecap: round;
+        transition: stroke-dashoffset .6s ease;
+      }
+      .learn-ring-text {
+        fill: var(--clr-gold);
+        font-size: 11px;
+        font-family: Georgia, serif;
+        font-weight: 700;
+      }
+    `}</style>
   );
 }
 

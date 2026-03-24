@@ -7,6 +7,7 @@ import { Home } from "./pages/Home";
 import { Learn } from "./pages/Learn";
 import { Review } from "./pages/Review";
 import { Quiz } from "./pages/Quiz";
+import ChapterLearn from "./pages/ChapterLearn";
 import NarratorsCollection from "./pages/NarratorsCollection";
 import { Compare } from "./pages/Compare";
 import SiraTimeline from "./pages/SiraTimeline";
@@ -138,6 +139,17 @@ export default function App() {
           />
 
           <Route
+            path="/learn/:chapterSlug"
+            element={
+              <ProtectedRoute>
+                <OnboardingGate>
+                  <ChapterLearn />
+                </OnboardingGate>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
             path="/account"
             element={
               <ProtectedRoute>
@@ -161,6 +173,17 @@ export default function App() {
 
           <Route
             path="/hadith/:n"
+            element={
+              <ProtectedRoute>
+                <OnboardingGate>
+                  <HadithDetail />
+                </OnboardingGate>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/hadith/:hadithId"
             element={
               <ProtectedRoute>
                 <OnboardingGate>

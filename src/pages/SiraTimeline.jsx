@@ -28,7 +28,7 @@ import {
 
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "../lib/supabase";
-import { HADITHS_1_15 } from "@/data/seed_hadiths_1_15";
+import { HADITHS_TAHARA } from "@/data/seed_hadiths_tahara";
 
 // ──────────────────────────────────────
 // 1. TIMELINE : mapping Sîra + hadiths 1–15
@@ -177,8 +177,7 @@ Chaque fois que tu respectes cette limite, tu ressembles un peu plus aux habitan
     vibes: ["Grands péchés", "Namîma", "Respect des règles cachées"],
     hadithNumbers: [16],
     story: {
-      hook:
-        "Deux tombes, pas de noms, pas de dates… et pourtant le Prophète ﷺ s’arrête, parle de leur châtiment, et plante une branche pour eux.",
+      hook: "Deux tombes, pas de noms, pas de dates… et pourtant le Prophète ﷺ s’arrête, parle de leur châtiment, et plante une branche pour eux.",
       body: `
 À ce moment de la Sîra, la communauté est déjà bien installée à Médine. Les règles de purification sont connues, la prière est constante, mais Allah attire l’attention sur autre chose : ce qui se passe après la mort.
 
@@ -203,8 +202,7 @@ Application pour toi aujourd’hui :
     vibes: ["Qiyâm", "Derniers instants", "Attention aux détails"],
     hadithNumbers: [17, 18, 19, 20],
     story: {
-      hook:
-        "Si tu devais résumer la fin de la vie du Prophète ﷺ en un geste symbolique… tu serais surpris de voir à quel point le siwâk revient souvent.",
+      hook: "Si tu devais résumer la fin de la vie du Prophète ﷺ en un geste symbolique… tu serais surpris de voir à quel point le siwâk revient souvent.",
       body: `
 Les hadiths 17 à 20 tournent autour du même objet très simple : un petit morceau de bois, le siwâk.
 
@@ -228,8 +226,7 @@ Garde un siwâk (ou au minimum une brosse à dents) lié à ta prière et à ton
     vibes: ["Voyage", "Facilités", "Fiqh vivant"],
     hadithNumbers: [21],
     story: {
-      hook:
-        "Tu imagines peut-être que plus on est pieux, plus tout devient difficile. Mais regarde ce que fait le Prophète ﷺ sur la route.",
+      hook: "Tu imagines peut-être que plus on est pieux, plus tout devient difficile. Mais regarde ce que fait le Prophète ﷺ sur la route.",
       body: `
 Al-Mughîra ibn Shuʿba raconte une scène très simple : il enlève les khuffayn du Prophète ﷺ pour l’aider à se purifier, et le Prophète lui dit de les laisser : « Je les ai enfilés en état de pureté », puis il passe simplement la main humide dessus.
 
@@ -243,9 +240,8 @@ Apprends au moins une rukhsa de fiqh correctement (comme le masḥ sur les chaus
   },
 ];
 
-
 const getHadithByNumber = (n) =>
-  HADITHS_1_15.find((h) => h.number === n) || null;
+  HADITHS_TAHARA.find((h) => h.number === n) || null;
 
 // ──────────────────────────────────────
 // 2. Composant principal
@@ -302,14 +298,14 @@ export function SiraTimeline() {
         const learned = new Set(
           (data || [])
             .filter((row) => row.status === "learned")
-            .map((row) => row.hadith_number)
+            .map((row) => row.hadith_number),
         );
 
         // started = tout ce qui n'est pas "new" (donc learning + learned)
         const started = new Set(
           (data || [])
             .filter((row) => row.status !== "new")
-            .map((row) => row.hadith_number)
+            .map((row) => row.hadith_number),
         );
 
         if (active) {
@@ -361,7 +357,7 @@ export function SiraTimeline() {
     const maxLearned = Math.max(...learnedNumbers);
 
     const directStep = SIRA_TIMELINE.find((step) =>
-      step.hadithNumbers.includes(maxLearned)
+      step.hadithNumbers.includes(maxLearned),
     );
     if (directStep) return directStep;
 
@@ -408,9 +404,7 @@ export function SiraTimeline() {
                     <MapPin className="h-3.5 w-3.5 text-emerald-200" />
                     <span className="text-emerald-50/90">
                       Tu es actuellement dans :{" "}
-                      <span className="font-semibold">
-                        {currentStep.label}
-                      </span>
+                      <span className="font-semibold">{currentStep.label}</span>
                     </span>
                   </div>
                 )}
@@ -441,7 +435,10 @@ export function SiraTimeline() {
               <span>Progression globale sur cette timeline</span>
               <span className="font-semibold">{globalStats.pct} %</span>
             </div>
-            <Progress value={globalStats.pct} className="h-2 bg-emerald-950/40" />
+            <Progress
+              value={globalStats.pct}
+              className="h-2 bg-emerald-950/40"
+            />
           </div>
         </div>
 
@@ -461,8 +458,8 @@ export function SiraTimeline() {
               Parcours chronologique
             </CardTitle>
             <CardDescription>
-              De la sincérité à La Mecque jusqu’aux règles de conduite à Médine :
-              suis le fil de la Sîra à travers tes hadiths.
+              De la sincérité à La Mecque jusqu’aux règles de conduite à Médine
+              : suis le fil de la Sîra à travers tes hadiths.
             </CardDescription>
           </CardHeader>
           <Separator className="bg-slate-200 dark:bg-slate-700" />
@@ -473,17 +470,15 @@ export function SiraTimeline() {
                   const totalH = step.hadithNumbers.length;
 
                   const startedCount = step.hadithNumbers.filter((n) =>
-                    startedSet.has(n)
+                    startedSet.has(n),
                   ).length;
 
                   const learnedCount = step.hadithNumbers.filter((n) =>
-                    learnedSet.has(n)
+                    learnedSet.has(n),
                   ).length;
 
                   const pct =
-                    totalH > 0
-                      ? Math.round((startedCount / totalH) * 100)
-                      : 0;
+                    totalH > 0 ? Math.round((startedCount / totalH) * 100) : 0;
 
                   const isCurrentBlock =
                     !loading && startedCount > 0 && learnedCount < totalH;
@@ -497,8 +492,8 @@ export function SiraTimeline() {
                           isCompleted
                             ? "from-emerald-400 to-emerald-600"
                             : isCurrentBlock
-                            ? "from-amber-400 to-orange-500"
-                            : "from-slate-300 to-slate-400 dark:from-slate-600 dark:to-slate-500"
+                              ? "from-amber-400 to-orange-500"
+                              : "from-slate-300 to-slate-400 dark:from-slate-600 dark:to-slate-500"
                         }`}
                       />
 
@@ -769,8 +764,7 @@ export function SiraTimeline() {
                               className="rounded-full border-slate-600 text-[11px] bg-slate-900/80 hover:bg-slate-800"
                             >
                               <a href={`/hadith/${n}`}>
-                                <BookOpen className="h-3 w-3 mr-1" />
-                                H{n}
+                                <BookOpen className="h-3 w-3 mr-1" />H{n}
                               </a>
                             </Button>
                           ))}

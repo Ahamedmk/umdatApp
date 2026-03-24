@@ -1,25 +1,22 @@
 // src/hooks/useNarratorUnlocks.js
 import { useEffect, useMemo, useState } from "react";
 import { NARRATORS_MOCK } from "../data/narrators_mocks";
-import { HADITHS_1_15 } from "../data/seed_hadiths_1_15";
+import { HADITHS_1_15 } from "../data/seed_hadiths_tahara";
 
 // Si tu as d'autres fichiers de hadiths, tu pourras les concaténer ici :
 const ALL_HADITHS = [...HADITHS_1_15];
 
 // Map rapide: number -> hadith
-const hadithByNumber = new Map(
-  ALL_HADITHS.map((h) => [h.number, h])
-);
+const hadithByNumber = new Map(ALL_HADITHS.map((h) => [h.number, h]));
 
 // Id des narrateurs déjà débloqués au départ (dans le MOCK)
 const INITIAL_UNLOCKED_IDS = new Set(
-  NARRATORS_MOCK.filter((n) => n.isUnlocked).map((n) => n.id)
+  NARRATORS_MOCK.filter((n) => n.isUnlocked).map((n) => n.id),
 );
 
 export function useNarratorUnlocks(masteredHadithNumbers) {
-  const [unlockedNarratorIds, setUnlockedNarratorIds] = useState(
-    INITIAL_UNLOCKED_IDS
-  );
+  const [unlockedNarratorIds, setUnlockedNarratorIds] =
+    useState(INITIAL_UNLOCKED_IDS);
   const [justUnlockedNarrator, setJustUnlockedNarrator] = useState(null);
 
   useEffect(() => {
@@ -39,8 +36,7 @@ export function useNarratorUnlocks(masteredHadithNumbers) {
 
     narratorIdsFromMastered.forEach((id) => {
       if (!unlockedNarratorIds.has(id) && !newNarrator) {
-        newNarrator =
-          NARRATORS_MOCK.find((n) => n.id === id) || null;
+        newNarrator = NARRATORS_MOCK.find((n) => n.id === id) || null;
       }
     });
 
@@ -58,9 +54,8 @@ export function useNarratorUnlocks(masteredHadithNumbers) {
   }, [masteredHadithNumbers, unlockedNarratorIds]);
 
   const unlockedNarrators = useMemo(
-    () =>
-      NARRATORS_MOCK.filter((n) => unlockedNarratorIds.has(n.id)),
-    [unlockedNarratorIds]
+    () => NARRATORS_MOCK.filter((n) => unlockedNarratorIds.has(n.id)),
+    [unlockedNarratorIds],
   );
 
   return {

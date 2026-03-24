@@ -1,7 +1,7 @@
 // /src/components/Navbar.jsx
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { HADITHS_1_15 } from "../data/seed_hadiths_1_15";
+import { HADITHS_TAHARA } from "../data/seed_hadiths_tahara";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
@@ -50,7 +50,7 @@ export function Navbar() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const totalHadiths = HADITHS_1_15.length;
+  const totalHadiths = HADITHS_TAHARA.length;
 
   const [open, setOpen] = useState(false);
   const [goto, setGoto] = useState("");
@@ -105,11 +105,11 @@ export function Navbar() {
       gradient: "from-blue-500 to-indigo-600",
     },
     {
-  to: "/progress",
-  label: "Progression",
-  icon: BarChart3,
-  gradient: "from-violet-500 to-purple-600",
-},
+      to: "/progress",
+      label: "Progression",
+      icon: BarChart3,
+      gradient: "from-violet-500 to-purple-600",
+    },
     {
       to: "/quiz",
       label: "Quiz",
@@ -121,7 +121,7 @@ export function Navbar() {
       label: "Comparer",
       icon: Scale3d,
       gradient: "from-amber-500 to-orange-600",
-     },
+    },
     // {
     //   to: "/exam",
     //   label: "Examen",
@@ -134,12 +134,12 @@ export function Navbar() {
     //   icon: Target,
     //   gradient: "from-cyan-500 to-blue-600",
     // },
-  //   {
-  //   to: "/timeline",
-  //   label: "Timeline Sîra",
-  //   icon: Map,
-  //   gradient: "from-emerald-500 to-sky-500",
-  // },
+    //   {
+    //   to: "/timeline",
+    //   label: "Timeline Sîra",
+    //   icon: Map,
+    //   gradient: "from-emerald-500 to-sky-500",
+    // },
     // 👇 Nouveau bouton : Historique des révisions
     {
       to: "/history",
@@ -259,7 +259,11 @@ export function Navbar() {
           {/* Theme Toggle */}
           <div className="flex items-center gap-1.5 px-2 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
             <Sun className="h-3.5 w-3.5 text-slate-600 dark:text-slate-400" />
-            <Switch checked={dark} onCheckedChange={toggleTheme} className="scale-75" />
+            <Switch
+              checked={dark}
+              onCheckedChange={toggleTheme}
+              className="scale-75"
+            />
             <Moon className="h-3.5 w-3.5 text-slate-600 dark:text-slate-400" />
           </div>
 

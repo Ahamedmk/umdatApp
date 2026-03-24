@@ -2,199 +2,108 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "../lib/supabase";
-
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { BarChart3, Flame, CheckCircle2, Clock, CalendarDays, AlertTriangle, Sparkles } from "lucide-react";
-
 import {
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip as RechartsTooltip,
-  CartesianGrid,
+  BarChart3, Flame, CheckCircle2, Clock,
+  CalendarDays, AlertTriangle, Sparkles,
+} from "lucide-react";
+import {
+  ResponsiveContainer, BarChart, Bar, XAxis, YAxis,
+  Tooltip as RechartsTooltip, CartesianGrid, Cell,
 } from "recharts";
 
-/**
- * ✅ IMPORTANT
- * Tu peux garder ton import actuel si tu n’as pas encore de liste globale.
- * Mais comme ton UI parle de "39 hadiths", l’idéal est d’avoir un tableau unique (ex: HADITHS_1_39).
- *
- * Options possibles (au choix selon ton projet) :
- * - import { HADITHS_1_39 as HADITHS } from "../data/seed_hadiths_1_39";
- * - import { HADITHS } from "../data/hadiths";
- * - ou garder HADITHS_1_15 pour l’instant
- */
-import { HADITHS_1_15 as HADITHS } from "../data/seed_hadiths_1_15";
+import { HADITHS_TAHARA as HADITHS } from "../data/seed_hadiths_tahara";
 
-// Petite fonction utilitaire pour formatter une date YYYY-MM-DD
+/* ─── helpers ─── */
 function formatDate(dateStr) {
   if (!dateStr) return "—";
   try {
-    const d = new Date(dateStr);
-    return d.toLocaleDateString("fr-FR", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    });
-  } catch {
-    return dateStr;
-  }
+    return new Date(dateStr).toLocaleDateString("fr-FR", { day: "2-digit", month: "short", year: "numeric" });
+  } catch { return dateStr; }
 }
 
-/**
- * ✅ Nouveau streak :
- * Nombre de jours distincts où l'utilisateur a fait au moins 1 révision
- * (sur la fenêtre chargée).
- * On ne pénalise plus les jours "sans due".
- */
 function computeStreak(dates) {
   if (!dates.length) return 0;
-  const uniqueDays = new Set(dates.map((d) => new Date(d).toISOString().slice(0, 10)));
-  return uniqueDays.size;
+  return new Set(dates.map(d => new Date(d).toISOString().slice(0, 10))).size;
 }
 
-/**
- * ✅ Normalisation des statuts pour rester cohérent avec ton nouveau vocabulaire.
- * Avant: "learned"
- * Maintenant: "memorized"
- *
- * On convertit au runtime pour éviter de casser les anciennes rows si tu en as.
- */
-function normalizeStatus(rawStatus) {
-  if (!rawStatus) return "not_started";
-  if (rawStatus === "learned") return "memorized";
-  return rawStatus;
+function normalizeStatus(raw) {
+  if (!raw) return "not_started";
+  if (raw === "learned") return "memorized";
+  return raw;
 }
 
+/* ─── custom bar tooltip ─── */
+function CustomTooltip({ active, payload }) {
+  if (!active || !payload?.length) return null;
+  const d = payload[0].payload;
+  return (
+    <div className="pd-tooltip">
+      <span className="pd-tooltip-date">{formatDate(d.date)}</span>
+      <span className="pd-tooltip-val">{d.count} révision{d.count > 1 ? "s" : ""}</span>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════ */
 export default function ProgressDashboard() {
   const { user } = useAuth();
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading]         = useState(true);
   const [progressRows, setProgressRows] = useState([]);
-  const [reviewDates, setReviewDates] = useState([]); // timestamps des review_events
+  const [reviewDates, setReviewDates]   = useState([]);
 
   useEffect(() => {
-    if (!user?.id) {
-      setLoading(false);
-      return;
-    }
-
+    if (!user?.id) { setLoading(false); return; }
     async function loadData() {
       setLoading(true);
       try {
-        // 1) Progression par hadith
-        const { data: prog, error: progError } = await supabase
+        const { data: prog, error: pe } = await supabase
           .from("user_hadith_progress")
           .select("hadith_number, status, next_review_date, repetitions, interval_days, last_result, ease_factor")
           .eq("user_id", user.id);
+        if (pe) throw pe;
 
-        if (progError) throw progError;
-
-        // 2) Events de révision (streak + graph)
-        const { data: events, error: eventsError } = await supabase
-          .from("review_events")
-          .select("created_at")
+        const { data: events, error: ee } = await supabase
+          .from("review_events").select("created_at")
           .eq("user_id", user.id)
-          .order("created_at", { ascending: false })
-          .limit(365);
+          .order("created_at", { ascending: false }).limit(365);
+        if (ee) throw ee;
 
-        if (eventsError) throw eventsError;
-
-        // ✅ normalise les statuts (learned -> memorized)
-        const normalized = (prog || []).map((row) => ({
-          ...row,
-          status: normalizeStatus(row.status),
-        }));
-
-        setProgressRows(normalized);
-        setReviewDates((events || []).map((e) => e.created_at));
+        setProgressRows((prog || []).map(r => ({ ...r, status: normalizeStatus(r.status) })));
+        setReviewDates((events || []).map(e => e.created_at));
       } catch (err) {
-        console.error("Erreur chargement dashboard:", err);
-        setProgressRows([]);
-        setReviewDates([]);
-      } finally {
-        setLoading(false);
-      }
+        console.error(err);
+        setProgressRows([]); setReviewDates([]);
+      } finally { setLoading(false); }
     }
-
     loadData();
   }, [user?.id]);
 
-  const todayStr = useMemo(() => new Date().toISOString().slice(0, 10), []);
+  const todayStr      = useMemo(() => new Date().toISOString().slice(0, 10), []);
+  const totalHadiths  = HADITHS.length;
 
-  // Map { hadith_number: rowProgress }
   const progressMap = useMemo(() => {
     const m = {};
-    for (const row of progressRows) {
-      m[row.hadith_number] = row;
-    }
+    for (const r of progressRows) m[r.hadith_number] = r;
     return m;
   }, [progressRows]);
 
-  // ✅ Stats globales (cohérent avec "mémorisé")
-  const totalHadiths = HADITHS.length;
+  const memorizedCount = useMemo(() => progressRows.filter(p => p.status === "memorized").length, [progressRows]);
+  const learningCount  = useMemo(() => progressRows.filter(p => p.status === "learning").length,  [progressRows]);
+  const dueTodayOrLate = useMemo(() => progressRows.filter(p => p.next_review_date && p.next_review_date <= todayStr).length, [progressRows, todayStr]);
+  const streak         = useMemo(() => computeStreak(reviewDates), [reviewDates]);
+  const memorizedPct   = totalHadiths ? Math.round((memorizedCount / totalHadiths) * 100) : 0;
 
-  const memorizedCount = useMemo(
-    () => progressRows.filter((p) => normalizeStatus(p.status) === "memorized").length,
-    [progressRows]
-  );
-
-  const learningCount = useMemo(
-    () => progressRows.filter((p) => normalizeStatus(p.status) === "learning").length,
-    [progressRows]
-  );
-
-  // ✅ À réviser = items qui ont une date <= aujourd’hui
-  // (peu importe "memorized" ou "learning" : si SM-2 planifie, c’est à réviser)
-  const dueTodayOrLate = useMemo(() => {
-    return progressRows.filter((p) => {
-      if (!p.next_review_date) return false;
-      return p.next_review_date <= todayStr;
-    }).length;
-  }, [progressRows, todayStr]);
-
-  // Nouveau streak (jours distincts avec révision)
-  const streak = useMemo(() => computeStreak(reviewDates), [reviewDates]);
-
-  const memorizedPercent = totalHadiths ? Math.round((memorizedCount / totalHadiths) * 100) : 0;
-
-  // ─────────────────────────────────────────────
-  // Graphique (14 derniers jours)
-  // ─────────────────────────────────────────────
-  const reviewActivityData = useMemo(() => {
-    if (!reviewDates.length) {
-      // on retourne quand même 14 jours à 0 pour éviter un rendu “vide” trop sec (optionnel)
-      const days = [];
-      for (let i = 13; i >= 0; i--) {
-        const d = new Date();
-        d.setHours(0, 0, 0, 0);
-        d.setDate(d.getDate() - i);
-        const key = d.toISOString().slice(0, 10);
-        days.push({
-          date: key,
-          label: d.toLocaleDateString("fr-FR", { day: "2-digit" }),
-          count: 0,
-        });
-      }
-      return days;
-    }
-
+  /* chart data — 14 days */
+  const chartData = useMemo(() => {
     const counts = {};
-    reviewDates.forEach((ts) => {
-      const d = new Date(ts);
-      const key = d.toISOString().slice(0, 10);
-      counts[key] = (counts[key] || 0) + 1;
+    reviewDates.forEach(ts => {
+      const k = new Date(ts).toISOString().slice(0, 10);
+      counts[k] = (counts[k] || 0) + 1;
     });
-
     const days = [];
     for (let i = 13; i >= 0; i--) {
-      const d = new Date();
-      d.setHours(0, 0, 0, 0);
-      d.setDate(d.getDate() - i);
-
+      const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate() - i);
       const key = d.toISOString().slice(0, 10);
       days.push({
         date: key,
@@ -202,276 +111,393 @@ export default function ProgressDashboard() {
         count: counts[key] || 0,
       });
     }
-
     return days;
   }, [reviewDates]);
 
-  // Prochaines révisions (les 5 plus proches dans le futur)
-  const upcomingReviews = useMemo(() => {
-    return [...progressRows]
-      .filter((p) => p.next_review_date && p.next_review_date >= todayStr)
-      .sort((a, b) => (a.next_review_date < b.next_review_date ? -1 : 1))
-      .slice(0, 5);
-  }, [progressRows, todayStr]);
+  /* upcoming reviews */
+  const upcomingReviews = useMemo(() => (
+    [...progressRows]
+      .filter(p => p.next_review_date && p.next_review_date >= todayStr)
+      .sort((a, b) => a.next_review_date < b.next_review_date ? -1 : 1)
+      .slice(0, 5)
+  ), [progressRows, todayStr]);
 
-  if (!user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 px-4">
-        <Card className="max-w-md w-full border-slate-200 dark:border-slate-700 bg-white/90 dark:bg-slate-900/90 backdrop-blur">
-          <CardContent className="py-8 text-center space-y-3">
-            <BarChart3 className="h-8 w-8 mx-auto text-slate-500 mb-2" />
-            <p className="font-semibold text-slate-800 dark:text-slate-100">
-              Connecte-toi pour voir ton tableau de progression.
-            </p>
-            <p className="text-sm text-slate-500 dark:text-slate-400">
-              Tes statistiques se calculent automatiquement à partir de tes révisions.
-            </p>
-          </CardContent>
-        </Card>
+  /* ── not logged in ── */
+  if (!user) return (
+    <>
+      <PdStyles />
+      <div className="pd-root pd-center">
+        <div className="pd-login-card">
+          <BarChart3 size={28} className="pd-login-icon" />
+          <p className="pd-login-title">Connecte-toi pour voir ta progression</p>
+          <p className="pd-login-sub">Tes statistiques se calculent automatiquement à partir de tes révisions.</p>
+        </div>
       </div>
-    );
-  }
+    </>
+  );
+
+  /* ── status helpers ── */
+  const STATUS_META = {
+    memorized:   { label: "Mémorisé",      color: "#4a9f82" },
+    learning:    { label: "En cours",      color: "#4a9fc8" },
+    not_started: { label: "Non commencé",  color: "#7a8694" },
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-sky-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950">
-      {/* ✅ cohérent avec ton écran mobile (max-w-3xl) */}
-      <div className="max-w-3xl mx-auto px-4 py-6 space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg">
-              <BarChart3 className="h-6 w-6 text-white" />
-            </div>
+    <>
+      <PdStyles />
+      <div className="pd-root">
+
+        {/* ── Header ── */}
+        <header className="pd-header">
+          <div className="pd-header-left">
+            <div className="pd-icon-wrap"><BarChart3 size={17} /></div>
             <div>
-              <h1 className="text-3xl leading-tight font-extrabold text-slate-900 dark:text-slate-100">
-                Tableau de progression
-              </h1>
-              <p className="text-sm text-slate-600 dark:text-slate-400">
-                Visualise où tu en es dans la mémorisation des {totalHadiths} hadiths.
+              <h1 className="pd-title">Tableau de progression</h1>
+              <p className="pd-subtitle">
+                Mémorisation de {totalHadiths} hadiths · SM-2
               </p>
             </div>
           </div>
+          <span className="pd-global-badge">
+            {memorizedCount}/{totalHadiths} mémorisés
+          </span>
+        </header>
+
+        {/* ── Stats ── */}
+        <div className="pd-stats">
+          {[
+            { icon: CheckCircle2, label: "Mémorisés",  value: memorizedCount, sub: `${memorizedPct}% des ${totalHadiths}`, accent: "#4a9f82" },
+            { icon: Sparkles,     label: "En cours",   value: learningCount,  sub: "Activement révisés",                    accent: "#4a9fc8" },
+            { icon: Clock,        label: "À réviser",  value: dueTodayOrLate, sub: "Aujourd'hui ou en retard",              accent: "#e08a3c" },
+            { icon: Flame,        label: "Streak",     value: streak,         sub: "Jours de révision",                     accent: "#c95a4a" },
+          ].map(s => {
+            const Icon = s.icon;
+            return (
+              <div key={s.label} className="pd-stat" style={{ "--accent": s.accent }}>
+                <div className="pd-stat-icon"><Icon size={15} /></div>
+                <span className="pd-stat-value">{s.value}</span>
+                <span className="pd-stat-label">{s.label}</span>
+                <span className="pd-stat-sub">{s.sub}</span>
+              </div>
+            );
+          })}
         </div>
 
-        <Badge className="bg-slate-900 text-slate-50 dark:bg-slate-100 dark:text-slate-900">
-          {memorizedCount}/{totalHadiths} hadiths mémorisés
-        </Badge>
-
-        {/* Stats globales */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <Card className="bg-gradient-to-br from-emerald-500 to-teal-600 text-white border-0 shadow-lg">
-            <CardContent className="pt-4 pb-3 space-y-1 text-center">
-              <div className="flex items-center justify-center gap-2">
-                <CheckCircle2 className="h-4 w-4" />
-                <span className="text-xs uppercase tracking-wide opacity-80">Mémorisés</span>
-              </div>
-              <div className="text-2xl font-bold">{memorizedCount}</div>
-              <div className="text-[11px] opacity-80">
-                {memorizedPercent}% des {totalHadiths} hadiths
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white border-0 shadow-lg">
-            <CardContent className="pt-4 pb-3 space-y-1 text-center">
-              <div className="flex items-center justify-center gap-2">
-                <Sparkles className="h-4 w-4" />
-                <span className="text-xs uppercase tracking-wide opacity-80">En cours</span>
-              </div>
-              <div className="text-2xl font-bold">{learningCount}</div>
-              <div className="text-[11px] opacity-80">Hadiths activement révisés</div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-amber-500 to-orange-500 text-white border-0 shadow-lg">
-            <CardContent className="pt-4 pb-3 space-y-1 text-center">
-              <div className="flex items-center justify-center gap-2">
-                <Clock className="h-4 w-4" />
-                <span className="text-xs uppercase tracking-wide opacity-80">À réviser</span>
-              </div>
-              <div className="text-2xl font-bold">{dueTodayOrLate}</div>
-              <div className="text-[11px] opacity-80">pour aujourd&apos;hui (ou en retard)</div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-rose-500 to-red-500 text-white border-0 shadow-lg">
-            <CardContent className="pt-4 pb-3 space-y-1 text-center">
-              <div className="flex items-center justify-center gap-2">
-                <Flame className="h-4 w-4" />
-                <span className="text-xs uppercase tracking-wide opacity-80">Streak de révision</span>
-              </div>
-              <div className="text-2xl font-bold">{streak}</div>
-              <div className="text-[11px] opacity-80">jour(s) où tu as révisé au moins un hadith</div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Graphique */}
-        <Card className="border-slate-200 dark:border-slate-800 shadow-md bg-white/90 dark:bg-slate-900/90">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-slate-100">
-              <BarChart3 className="h-5 w-5 text-emerald-500" />
-              Rythme de révision (14 derniers jours)
-            </CardTitle>
-            <CardDescription>
-              Nombre de hadiths révisés chaque jour. Idéal pour garder un œil sur ta constance.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="h-64 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={reviewActivityData} margin={{ top: 8, right: 16, left: 0, bottom: 4 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                  <XAxis dataKey="label" tick={{ fontSize: 11 }} tickLine={false} />
-                  <YAxis allowDecimals={false} tick={{ fontSize: 11 }} tickLine={false} />
-                  <RechartsTooltip
-                    formatter={(value) => [`${value} hadith(s)`, "Révisions"]}
-                    labelFormatter={(_, payload) => {
-                      const p = payload && payload[0];
-                      return p ? formatDate(p.payload.date) : "Jour";
-                    }}
-                  />
-                  <Bar dataKey="count" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-
-            {/* petit hint UX */}
-            {reviewDates.length === 0 && (
-              <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
-                Aucune révision enregistrée récemment. Dès que tu feras des sessions, ce graphique se remplira automatiquement.
-              </p>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Vue détaillée */}
-        <Card className="border-slate-200 dark:border-slate-800 shadow-md bg-white/90 dark:bg-slate-900/90">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-slate-100">
-              <CalendarDays className="h-5 w-5 text-blue-500" />
-              Vue détaillée par hadith
-            </CardTitle>
-            <CardDescription>Statut de chaque hadith et prochaines révisions.</CardDescription>
-          </CardHeader>
-
-          <CardContent className="space-y-4">
-            {loading ? (
-              <div className="space-y-2">
-                <div className="h-3 rounded bg-slate-200 dark:bg-slate-800 w-1/3 animate-pulse" />
-                <div className="space-y-1">
-                  {[...Array(7)].map((_, i) => (
-                    <div key={i} className="h-10 rounded-md bg-slate-100 dark:bg-slate-800 animate-pulse" />
+        {/* ── Chart ── */}
+        <section className="pd-card">
+          <div className="pd-card-header">
+            <span className="pd-card-icon"><BarChart3 size={14} /></span>
+            <span>Rythme de révision — 14 derniers jours</span>
+          </div>
+          <div className="pd-chart-wrap">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={chartData} margin={{ top: 6, right: 8, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,.06)" />
+                <XAxis dataKey="label" tick={{ fill: "#7a8694", fontSize: 10 }} tickLine={false} axisLine={false} />
+                <YAxis allowDecimals={false} tick={{ fill: "#7a8694", fontSize: 10 }} tickLine={false} axisLine={false} />
+                <RechartsTooltip content={<CustomTooltip />} cursor={{ fill: "rgba(255,255,255,.04)" }} />
+                <Bar dataKey="count" radius={[4, 4, 0, 0]}>
+                  {chartData.map((entry, i) => (
+                    <Cell
+                      key={i}
+                      fill={entry.count > 0 ? "#4a9fc8" : "rgba(255,255,255,.06)"}
+                    />
                   ))}
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {HADITHS.map((h) => {
-                  const prog = progressMap[h.number];
-                  const status = normalizeStatus(prog?.status);
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          {reviewDates.length === 0 && (
+            <p className="pd-chart-empty">
+              Aucune révision enregistrée. Lance ta première session pour alimenter ce graphique.
+            </p>
+          )}
+        </section>
 
-                  let statusLabel = "Non commencé";
-                  let statusClass = "bg-slate-100 text-slate-700";
+        {/* ── Upcoming reviews ── */}
+        <section className="pd-card">
+          <div className="pd-card-header">
+            <span className="pd-card-icon"><AlertTriangle size={14} /></span>
+            <span>Prochaines révisions</span>
+          </div>
 
-                  if (status === "learning") {
-                    statusLabel = "En cours";
-                    statusClass = "bg-blue-100 text-blue-700";
-                  }
-                  if (status === "memorized") {
-                    statusLabel = "Mémorisé";
-                    statusClass = "bg-emerald-100 text-emerald-700";
-                  }
-
-                  const repetitions = prog?.repetitions ?? 0;
-                  const lastResult = prog?.last_result;
-                  const nextDate = prog?.next_review_date;
-
-                  return (
-                    <div
-                      key={h.number}
-                      className="rounded-xl border border-slate-200 dark:border-slate-800 px-3 py-2.5 flex flex-col md:flex-row md:items-center md:justify-between gap-2 bg-slate-50/70 dark:bg-slate-900/60"
-                    >
-                      <div className="flex items-center gap-3 min-w-0">
-                        <div className="h-8 w-8 rounded-lg bg-slate-900 text-slate-50 flex items-center justify-center text-sm font-semibold">
-                          #{h.number}
-                        </div>
-
-                        <div className="min-w-0">
-                          <div className="text-sm font-semibold text-slate-800 dark:text-slate-100 truncate">
-                            {h.title || `Hadith ${h.number}`}
-                          </div>
-
-                          <div className="text-xs text-slate-500 dark:text-slate-400">
-                            Répétitions : {repetitions}
-                            {lastResult != null ? <> • Dernier score : {lastResult}/5</> : null}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-3 md:text-right">
-                        <div className="text-xs text-slate-500 dark:text-slate-400">
-                          <div className="flex md:block items-center gap-1">
-                            <Clock className="h-3 w-3 text-slate-400" />
-                            <span>Prochaine révision : {formatDate(nextDate)}</span>
-                          </div>
-                        </div>
-
-                        <Badge className={`${statusClass} text-xs font-medium`}>{statusLabel}</Badge>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Prochaines révisions */}
-        <Card className="border-slate-200 dark:border-slate-800 shadow-md bg-white/90 dark:bg-slate-900/90">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-slate-100">
-              <AlertTriangle className="h-5 w-5 text-amber-500" />
-              Prochaines révisions à venir
-            </CardTitle>
-            <CardDescription>Les 5 prochains hadiths qui arrivent dans ta file de révision.</CardDescription>
-          </CardHeader>
-
-          <CardContent className="space-y-3">
-            {upcomingReviews.length === 0 ? (
-              <p className="text-sm text-slate-500 dark:text-slate-400">
-                Aucune révision planifiée pour les prochains jours. Continue d&apos;apprendre de nouveaux hadiths ou
-                reviens demain in shâ Allah.
-              </p>
-            ) : (
-              upcomingReviews.map((p) => (
-                <div
-                  key={p.hadith_number}
-                  className="flex items-center justify-between px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/60"
-                >
-                  <div className="flex items-center gap-2">
-                    <div className="h-7 w-7 rounded-md bg-blue-600 text-white text-xs flex items-center justify-center">
-                      #{p.hadith_number}
-                    </div>
-
-                    <div className="text-xs text-slate-700 dark:text-slate-200">
-                      <div className="font-medium">Hadith {p.hadith_number}</div>
-                      <div className="text-[11px] text-slate-500 dark:text-slate-400">
-                        Interval : {p.interval_days} jour(s) • Répétitions : {p.repetitions}
-                      </div>
-                    </div>
+          {upcomingReviews.length === 0 ? (
+            <p className="pd-empty-txt">Aucune révision planifiée. Continue d'apprendre de nouveaux hadiths.</p>
+          ) : (
+            <div className="pd-upcoming-list">
+              {upcomingReviews.map((p, i) => (
+                <div key={p.hadith_number} className="pd-upcoming-row" style={{ "--delay": `${i * 50}ms` }}>
+                  <span className="pd-upcoming-num">#{p.hadith_number}</span>
+                  <div className="pd-upcoming-info">
+                    <span className="pd-upcoming-title">Hadith {p.hadith_number}</span>
+                    <span className="pd-upcoming-meta">
+                      Intervalle {p.interval_days}j · {p.repetitions} rép.
+                    </span>
                   </div>
-
-                  <div className="text-xs text-slate-600 dark:text-slate-300 text-right">
-                    <div className="font-medium">{formatDate(p.next_review_date)}</div>
-                    <div className="text-[11px] text-slate-500 dark:text-slate-400">Prochaine session</div>
+                  <div className="pd-upcoming-date">
+                    <span>{formatDate(p.next_review_date)}</span>
+                    <span className="pd-upcoming-date-sub">Prochaine session</span>
                   </div>
                 </div>
-              ))
-            )}
-          </CardContent>
-        </Card>
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* ── Detailed hadith list ── */}
+        <section className="pd-card">
+          <div className="pd-card-header">
+            <span className="pd-card-icon"><CalendarDays size={14} /></span>
+            <span>Vue détaillée par hadith</span>
+          </div>
+
+          {loading ? (
+            <div className="pd-skeleton-list">
+              {[...Array(6)].map((_, i) => <div key={i} className="pd-skeleton-row" />)}
+            </div>
+          ) : (
+            <div className="pd-detail-list">
+              {HADITHS.map((h, i) => {
+                const prog   = progressMap[h.number];
+                const status = normalizeStatus(prog?.status);
+                const meta   = STATUS_META[status] || STATUS_META.not_started;
+
+                return (
+                  <div
+                    key={h.number}
+                    className="pd-detail-row"
+                    style={{ "--delay": `${i * 25}ms`, "--status-clr": meta.color }}
+                  >
+                    <div className="pd-detail-bar" />
+
+                    <div className="pd-detail-num">#{h.number}</div>
+
+                    <div className="pd-detail-body">
+                      <span className="pd-detail-title">{h.title || `Hadith ${h.number}`}</span>
+                      <span className="pd-detail-meta">
+                        {prog ? `${prog.repetitions} rép.` : "Non commencé"}
+                        {prog?.last_result != null ? ` · Score ${prog.last_result}/5` : ""}
+                      </span>
+                    </div>
+
+                    <div className="pd-detail-right">
+                      <span className="pd-detail-status" style={{ "--clr": meta.color }}>
+                        <span className="pd-detail-dot" />
+                        {meta.label}
+                      </span>
+                      <span className="pd-detail-date">
+                        <Clock size={10} /> {formatDate(prog?.next_review_date)}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </section>
+
       </div>
-    </div>
+    </>
+  );
+}
+
+/* ═══════════════════════════════════════ */
+function PdStyles() {
+  return (
+    <style>{`
+      .pd-root {
+        --bg:       #0d1117;
+        --surface:  #161c24;
+        --surface2: #1e2630;
+        --border:   rgba(255,255,255,.07);
+        --border2:  rgba(255,255,255,.13);
+        --fg:       #e8e0d0;
+        --muted:    #7a8694;
+        --gold:     #c9a84c;
+        --gold-dim: rgba(201,168,76,.13);
+        --serif:    Georgia, 'Times New Roman', serif;
+
+        font-family: var(--serif);
+        background: var(--bg);
+        color: var(--fg);
+        min-height: 100vh;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 1.5rem 1rem 5rem;
+        display: flex; flex-direction: column; gap: 1.25rem;
+      }
+      .pd-center { justify-content: center; align-items: center; }
+
+      /* ── login card ── */
+      .pd-login-card {
+        background: var(--surface); border: 1px solid var(--border2);
+        border-radius: 16px; padding: 2.5rem;
+        display: flex; flex-direction: column; align-items: center;
+        gap: .75rem; text-align: center; max-width: 360px; width: 100%;
+      }
+      .pd-login-icon { color: var(--muted); }
+      .pd-login-title { font-size: 1rem; font-weight: 700; color: var(--fg); margin: 0; }
+      .pd-login-sub   { font-size: .8rem; color: var(--muted); font-style: italic; margin: 0; line-height: 1.55; }
+
+      /* ── header ── */
+      .pd-header {
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 1rem; flex-wrap: wrap;
+        padding-bottom: 1.25rem;
+        border-bottom: 1px solid var(--border2);
+        animation: fadeDown .4s ease both;
+      }
+      .pd-header-left { display: flex; align-items: center; gap: .85rem; }
+      .pd-icon-wrap {
+        width: 40px; height: 40px; flex-shrink: 0;
+        background: linear-gradient(135deg, #6a5acd, #4a3aad);
+        border-radius: 11px;
+        display: flex; align-items: center; justify-content: center;
+        color: #fff;
+        box-shadow: 0 2px 10px rgba(106,90,205,.3);
+      }
+      .pd-title    { font-size: 1.5rem; font-weight: 700; margin: 0 0 .15rem; color: var(--fg); }
+      .pd-subtitle { font-size: .78rem; color: var(--muted); font-style: italic; margin: 0; }
+      .pd-global-badge {
+        background: var(--gold-dim); color: var(--gold);
+        border: 1px solid rgba(201,168,76,.3);
+        border-radius: 20px; padding: .28rem .85rem;
+        font-size: .75rem; font-weight: 700;
+        white-space: nowrap;
+      }
+
+      /* ── stats ── */
+      .pd-stats {
+        display: grid; grid-template-columns: repeat(4, 1fr); gap: .7rem;
+      }
+      @media (max-width: 520px) { .pd-stats { grid-template-columns: repeat(2, 1fr); } }
+      .pd-stat {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-top: 2px solid var(--accent);
+        border-radius: 13px; padding: .85rem .6rem;
+        display: flex; flex-direction: column; align-items: center; gap: .18rem;
+        text-align: center;
+        transition: border-color .15s;
+        animation: fadeUp .4s ease both;
+      }
+      .pd-stat:hover { border-color: var(--accent); }
+      .pd-stat-icon { color: var(--accent); margin-bottom: .1rem; }
+      .pd-stat-value { font-size: 1.55rem; font-weight: 700; color: var(--accent); line-height: 1; }
+      .pd-stat-label { font-size: .68rem; color: var(--fg); font-weight: 600; }
+      .pd-stat-sub   { font-size: .62rem; color: var(--muted); line-height: 1.3; text-align: center; }
+
+      /* ── card ── */
+      .pd-card {
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: 16px; padding: 1.3rem;
+        display: flex; flex-direction: column; gap: 1rem;
+        animation: fadeUp .45s ease both;
+      }
+      .pd-card-header {
+        display: flex; align-items: center; gap: .5rem;
+        font-size: .7rem; text-transform: uppercase; letter-spacing: .09em;
+        color: var(--gold); font-style: italic;
+        padding-bottom: .85rem; border-bottom: 1px solid var(--border);
+      }
+      .pd-card-icon { opacity: .8; }
+
+      /* ── chart ── */
+      .pd-chart-wrap { height: 200px; width: 100%; }
+      .pd-chart-empty { font-size: .75rem; color: var(--muted); font-style: italic; }
+      .pd-tooltip {
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        border-radius: 8px; padding: .45rem .7rem;
+        display: flex; flex-direction: column; gap: .15rem;
+      }
+      .pd-tooltip-date { font-size: .68rem; color: var(--muted); }
+      .pd-tooltip-val  { font-size: .82rem; font-weight: 700; color: var(--fg); }
+
+      /* ── upcoming ── */
+      .pd-upcoming-list { display: flex; flex-direction: column; gap: .45rem; }
+      .pd-upcoming-row {
+        display: flex; align-items: center; gap: .75rem;
+        background: var(--surface2); border: 1px solid var(--border);
+        border-radius: 10px; padding: .65rem .85rem;
+        animation: fadeUp .35s ease both;
+        animation-delay: var(--delay, 0ms);
+        transition: border-color .15s;
+      }
+      .pd-upcoming-row:hover { border-color: var(--border2); }
+      .pd-upcoming-num {
+        width: 30px; height: 30px; flex-shrink: 0;
+        background: linear-gradient(135deg, #4a9fc8, #2d6ca8);
+        border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: .68rem; font-weight: 700; color: #fff;
+      }
+      .pd-upcoming-info { flex: 1; min-width: 0; }
+      .pd-upcoming-title { display: block; font-size: .83rem; font-weight: 700; color: var(--fg); }
+      .pd-upcoming-meta  { display: block; font-size: .68rem; color: var(--muted); }
+      .pd-upcoming-date  { text-align: right; flex-shrink: 0; }
+      .pd-upcoming-date span:first-child { display: block; font-size: .8rem; font-weight: 700; color: var(--fg); }
+      .pd-upcoming-date-sub { font-size: .62rem; color: var(--muted); }
+      .pd-empty-txt { font-size: .82rem; color: var(--muted); font-style: italic; }
+
+      /* ── detail list ── */
+      .pd-skeleton-list { display: flex; flex-direction: column; gap: .4rem; }
+      .pd-skeleton-row {
+        height: 52px; background: var(--surface2); border-radius: 10px;
+        animation: pulse 1.4s ease infinite;
+      }
+      @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+      .pd-detail-list { display: flex; flex-direction: column; gap: .35rem; }
+      .pd-detail-row {
+        display: flex; align-items: center; gap: 0;
+        background: var(--surface2); border: 1px solid var(--border);
+        border-radius: 10px; overflow: hidden;
+        transition: border-color .13s, transform .13s;
+        animation: fadeUp .3s ease both;
+        animation-delay: var(--delay, 0ms);
+      }
+      .pd-detail-row:hover { border-color: var(--border2); transform: translateX(2px); }
+      .pd-detail-bar {
+        width: 3px; flex-shrink: 0; align-self: stretch;
+        background: var(--status-clr, var(--muted));
+      }
+      .pd-detail-num {
+        width: 36px; flex-shrink: 0; text-align: center;
+        font-size: .7rem; font-weight: 700; color: var(--muted);
+        padding: 0 .25rem;
+      }
+      .pd-detail-body {
+        flex: 1; min-width: 0;
+        padding: .6rem .5rem;
+        display: flex; flex-direction: column; gap: .15rem;
+      }
+      .pd-detail-title { font-size: .82rem; font-weight: 700; color: var(--fg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .pd-detail-meta  { font-size: .65rem; color: var(--muted); }
+      .pd-detail-right {
+        padding: .6rem .75rem;
+        display: flex; flex-direction: column; align-items: flex-end; gap: .2rem;
+        flex-shrink: 0;
+      }
+      .pd-detail-status {
+        display: inline-flex; align-items: center; gap: .28rem;
+        font-size: .68rem; color: var(--clr);
+        background: color-mix(in srgb, var(--clr) 12%, transparent);
+        border-radius: 20px; padding: 1px 7px;
+      }
+      .pd-detail-dot {
+        width: 5px; height: 5px; border-radius: 50%;
+        background: var(--clr); flex-shrink: 0;
+      }
+      .pd-detail-date {
+        display: flex; align-items: center; gap: .25rem;
+        font-size: .62rem; color: var(--muted);
+      }
+
+      /* ── animations ── */
+      @keyframes fadeUp   { from{opacity:0;transform:translateY(8px)}  to{opacity:1;transform:translateY(0)} }
+      @keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+    `}</style>
   );
 }
