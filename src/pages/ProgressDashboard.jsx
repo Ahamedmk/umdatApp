@@ -10,9 +10,7 @@ import {
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis,
   Tooltip as RechartsTooltip, CartesianGrid, Cell,
 } from "recharts";
-
-import { HADITHS_TAHARA as HADITHS } from "../data/seed_hadiths_tahara";
-
+import { ALL_HADITHS } from "../data/allHadiths";
 /* ─── helpers ─── */
 function formatDate(dateStr) {
   if (!dateStr) return "—";
@@ -21,15 +19,28 @@ function formatDate(dateStr) {
   } catch { return dateStr; }
 }
 
+function todayStrRef() {
+  return new Date().toISOString().slice(0, 10);
+}
+
 function computeStreak(dates) {
   if (!dates.length) return 0;
   return new Set(dates.map(d => new Date(d).toISOString().slice(0, 10))).size;
 }
 
-function normalizeStatus(raw) {
+function normalizeStatus(raw, nextReviewDate, todayStr) {
   if (!raw) return "not_started";
-  if (raw === "learned") return "memorized";
-  return raw;
+
+  if (raw === "mastered") return "mastered";
+
+  if (nextReviewDate && nextReviewDate <= todayStr) {
+    return "review";
+  }
+
+  if (raw === "learned") return "scheduled";
+  if (raw === "learning") return "learning";
+
+  return "not_started";
 }
 
 /* ─── custom bar tooltip ─── */
@@ -69,7 +80,10 @@ export default function ProgressDashboard() {
           .order("created_at", { ascending: false }).limit(365);
         if (ee) throw ee;
 
-        setProgressRows((prog || []).map(r => ({ ...r, status: normalizeStatus(r.status) })));
+        setProgressRows((prog || []).map(r => ({
+  ...r,
+  status: normalizeStatus(r.status, r.next_review_date, todayStrRef()),
+})));
         setReviewDates((events || []).map(e => e.created_at));
       } catch (err) {
         console.error(err);
@@ -80,7 +94,7 @@ export default function ProgressDashboard() {
   }, [user?.id]);
 
   const todayStr      = useMemo(() => new Date().toISOString().slice(0, 10), []);
-  const totalHadiths  = HADITHS.length;
+  const totalHadiths  = ALL_HADITHS.length;
 
   const progressMap = useMemo(() => {
     const m = {};
@@ -88,8 +102,35 @@ export default function ProgressDashboard() {
     return m;
   }, [progressRows]);
 
-  const memorizedCount = useMemo(() => progressRows.filter(p => p.status === "memorized").length, [progressRows]);
-  const learningCount  = useMemo(() => progressRows.filter(p => p.status === "learning").length,  [progressRows]);
+  const hadithsWithProgress = useMemo(() => {
+  return ALL_HADITHS.map(h => {
+    const p = progressRows.find(x => x.hadith_number === h.number);
+
+    return {
+      ...h,
+      progressStatus: p?.status || "not_started",
+      next_review_date: p?.next_review_date,
+      repetitions: p?.repetitions || 0,
+      last_result: p?.last_result,
+    };
+  });
+}, [progressRows]);
+
+ const memorizedCount = useMemo(() =>
+  hadithsWithProgress.filter(h => h.progressStatus === "mastered").length
+, [hadithsWithProgress]);
+
+const learningCount = useMemo(() =>
+  hadithsWithProgress.filter(h =>
+    h.progressStatus === "learning" || h.progressStatus === "scheduled"
+  ).length
+, [hadithsWithProgress]);
+
+const newCount = useMemo(() =>
+  hadithsWithProgress.filter(h =>
+    !h.progressStatus || h.progressStatus === "not_started"
+  ).length
+, [hadithsWithProgress]);
   const dueTodayOrLate = useMemo(() => progressRows.filter(p => p.next_review_date && p.next_review_date <= todayStr).length, [progressRows, todayStr]);
   const streak         = useMemo(() => computeStreak(reviewDates), [reviewDates]);
   const memorizedPct   = totalHadiths ? Math.round((memorizedCount / totalHadiths) * 100) : 0;
@@ -138,10 +179,12 @@ export default function ProgressDashboard() {
 
   /* ── status helpers ── */
   const STATUS_META = {
-    memorized:   { label: "Mémorisé",      color: "#4a9f82" },
-    learning:    { label: "En cours",      color: "#4a9fc8" },
-    not_started: { label: "Non commencé",  color: "#7a8694" },
-  };
+  mastered:    { label: "Maîtrisé",      color: "#4a9f82" },
+  learning:    { label: "En cours",      color: "#4a9fc8" },
+  scheduled:   { label: "En cours",      color: "#4a9fc8" },
+  review:      { label: "À réviser",     color: "#e08a3c" },
+  not_started: { label: "Non commencé",  color: "#7a8694" },
+};
 
   return (
     <>
@@ -160,15 +203,16 @@ export default function ProgressDashboard() {
             </div>
           </div>
           <span className="pd-global-badge">
-            {memorizedCount}/{totalHadiths} mémorisés
+            {memorizedCount}/{totalHadiths} maîtrisés
           </span>
         </header>
 
         {/* ── Stats ── */}
         <div className="pd-stats">
           {[
-            { icon: CheckCircle2, label: "Mémorisés",  value: memorizedCount, sub: `${memorizedPct}% des ${totalHadiths}`, accent: "#4a9f82" },
+            { icon: CheckCircle2, label: "Maîtrisés",  value: memorizedCount, sub: `${memorizedPct}% des ${totalHadiths}`, accent: "#4a9f82" },
             { icon: Sparkles,     label: "En cours",   value: learningCount,  sub: "Activement révisés",                    accent: "#4a9fc8" },
+            { icon: Sparkles,     label: "Nouveaux",   value: newCount,       sub: "Jamais étudiés",                        accent: "#7a8694" },
             { icon: Clock,        label: "À réviser",  value: dueTodayOrLate, sub: "Aujourd'hui ou en retard",              accent: "#e08a3c" },
             { icon: Flame,        label: "Streak",     value: streak,         sub: "Jours de révision",                     accent: "#c95a4a" },
           ].map(s => {
@@ -258,9 +302,9 @@ export default function ProgressDashboard() {
             </div>
           ) : (
             <div className="pd-detail-list">
-              {HADITHS.map((h, i) => {
+              {ALL_HADITHS.map((h, i) => {
                 const prog   = progressMap[h.number];
-                const status = normalizeStatus(prog?.status);
+                const status = prog?.status || "not_started";
                 const meta   = STATUS_META[status] || STATUS_META.not_started;
 
                 return (
