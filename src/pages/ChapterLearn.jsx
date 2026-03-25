@@ -23,10 +23,16 @@ const FILTERS = [
 
 function statusMeta(status) {
   switch (status) {
-    case "mastered": return { label: "Maîtrisé", color: "#c9a84c" };
-    case "review":   return { label: "À revoir",  color: "#e08a3c" };
-    case "learning": return { label: "En cours",  color: "#4a9fc8" };
-    default:         return { label: "Nouveau",   color: "#7a8694" };
+    case "mastered":
+      return { label: "Maîtrisé", color: "#c9a84c" };
+    case "review":
+      return { label: "À revoir", color: "#e08a3c" };
+    case "learning":
+      return { label: "En cours", color: "#4a9fc8" };
+    case "scheduled":
+      return { label: "En cours", color: "#4a9fc8" };
+    default:
+      return { label: "Nouveau", color: "#7a8694" };
   }
 }
 
@@ -80,7 +86,11 @@ export default function ChapterLearn() {
       || String(h.number).includes(q)
       || String(h.id).includes(q)
       || String(h.hadithOrder || "").includes(q);
-    const matchFilter = activeFilter === "all" || h.progressStatus === activeFilter;
+    const matchFilter =
+  activeFilter === "all" ||
+  (activeFilter === "learning" &&
+    (h.progressStatus === "learning" || h.progressStatus === "scheduled")) ||
+  h.progressStatus === activeFilter;
     return matchSearch && matchFilter;
   }), [hadiths, search, activeFilter]);
 
@@ -88,7 +98,9 @@ export default function ChapterLearn() {
     const total    = hadiths.length;
     const mastered = hadiths.filter(h => h.progressStatus === "mastered").length;
     const review   = hadiths.filter(h => h.progressStatus === "review").length;
-    const learning = hadiths.filter(h => h.progressStatus === "learning").length;
+    const learning = hadiths.filter(
+  h => h.progressStatus === "learning" || h.progressStatus === "scheduled"
+).length;
     const fresh    = hadiths.filter(h => h.progressStatus === "new").length;
     const percent  = total > 0 ? Math.round((mastered / total) * 100) : 0;
     return { total, mastered, review, learning, fresh, percent };

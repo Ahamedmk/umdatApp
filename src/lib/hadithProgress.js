@@ -336,8 +336,9 @@ export function getProgressStatusFromRow(row) {
     return "review";
   }
 
+  // Hadith déjà travaillé mais pas encore dû
   if (status === "learned") {
-    return "learning";
+    return "scheduled";
   }
 
   if (status === "learning") {

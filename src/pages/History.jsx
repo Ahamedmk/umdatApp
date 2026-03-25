@@ -103,13 +103,18 @@ export default function HistoryPage() {
     }
 
     async function loadHistory() {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from("review_events")
-        .select("hadith_number, quality, event_type, created_at")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false })
-        .limit(200); // de quoi voir large
+  setLoading(true);
+
+  const since = new Date();
+  since.setDate(since.getDate() - 13); // aujourd’hui inclus + 13 jours avant = 14 jours
+  const sinceISO = since.toISOString();
+
+  const { data, error } = await supabase
+    .from("review_events")
+    .select("hadith_number, quality, event_type, created_at")
+    .eq("user_id", user.id)
+    .gte("created_at", sinceISO)
+    .order("created_at", { ascending: false });
 
       if (error) {
         console.error("Erreur historique :", error);
@@ -182,9 +187,8 @@ export default function HistoryPage() {
             <Badge variant="outline" className="flex items-center gap-1">
               <Star className="h-3 w-3 text-yellow-500" />
               <span className="text-xs">
-                {events.length} évènement{events.length > 1 ? "s" : ""} suivi
-                {events.length > 1 ? "s" : ""}
-              </span>
+  {events.length} évènement{events.length > 1 ? "s" : ""} sur les 14 derniers jours
+</span>
             </Badge>
           </div>
         </div>

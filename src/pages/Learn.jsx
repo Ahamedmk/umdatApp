@@ -31,10 +31,16 @@ import {
 
 function statusLabel(status) {
   switch (status) {
-    case "mastered": return "Maîtrisé";
-    case "review":   return "À revoir";
-    case "learning": return "En cours";
-    default:         return "Nouveau";
+    case "mastered":
+      return "Maîtrisé";
+    case "review":
+      return "À revoir";
+    case "learning":
+      return "En cours";
+    case "scheduled":
+      return "Planifié";
+    default:
+      return "Nouveau";
   }
 }
 
@@ -43,9 +49,12 @@ function statusColor(status) {
     case "mastered": return "var(--clr-gold)";
     case "review":   return "var(--clr-amber)";
     case "learning": return "var(--clr-accent)";
+    case "scheduled": return "var(--clr-muted-fg)";
     default:         return "var(--clr-muted-fg)";
   }
 }
+
+
 
 /* ─── sub-components ─── */
 
@@ -127,7 +136,9 @@ export function Learn() {
     const total    = hadithsWithProgress.length;
     const mastered = hadithsWithProgress.filter(h => h.progressStatus === "mastered").length;
     const review   = hadithsWithProgress.filter(h => h.progressStatus === "review").length;
-    const learning = hadithsWithProgress.filter(h => h.progressStatus === "learning").length;
+    const learning = hadithsWithProgress.filter(
+  h => h.progressStatus === "learning" || h.progressStatus === "scheduled"
+).length;
     return { total, mastered, review, learning };
   }, [hadithsWithProgress]);
 
@@ -140,25 +151,47 @@ export function Learn() {
       const total    = ch.length;
       const mastered = ch.filter(h => h.progressStatus === "mastered").length;
       const review   = ch.filter(h => h.progressStatus === "review").length;
-      const learning = ch.filter(h => h.progressStatus === "learning").length;
+      const learning = ch.filter(
+  h => h.progressStatus === "learning" || h.progressStatus === "scheduled"
+).length;
       const percent  = total > 0 ? Math.round((mastered / total) * 100) : 0;
 
       const nextRecommended =
-        ch.find(h => h.progressStatus === "review")   ||
-        ch.find(h => h.progressStatus === "learning") ||
-        ch.find(h => h.progressStatus === "new")      ||
-        ch[0];
+  ch.find(h => h.progressStatus === "review")   ||
+  ch.find(h => h.progressStatus === "learning") ||
+  ch.find(h => h.progressStatus === "new")      ||
+  ch.find(h => h.progressStatus === "scheduled") ||
+  ch[0];
 
       return { ...chapter, total, mastered, review, learning, percent, nextRecommended };
     }).sort((a, b) => a.order - b.order);
   }, [hadithsWithProgress]);
 
-  const globalNextHadith = useMemo(() => (
-    hadithsWithProgress.find(h => h.progressStatus === "review")   ||
-    hadithsWithProgress.find(h => h.progressStatus === "learning") ||
-    hadithsWithProgress.find(h => h.progressStatus === "new")      ||
+  const globalNextHadith = useMemo(() => {
+  const reviewHadiths = hadithsWithProgress
+    .filter((h) => h.progressStatus === "review")
+    .sort((a, b) => {
+      const aDate = a.next_review_date || "9999-12-31";
+      const bDate = b.next_review_date || "9999-12-31";
+      return aDate.localeCompare(bDate);
+    });
+
+  const learningHadiths = hadithsWithProgress.filter(
+    (h) => h.progressStatus === "learning"
+  );
+
+  const newHadiths = hadithsWithProgress.filter(
+    (h) => h.progressStatus === "new"
+  );
+
+  return (
+    reviewHadiths[0] ||
+    learningHadiths[0] ||
+    newHadiths[0] ||
+    hadithsWithProgress.find((h) => h.progressStatus === "scheduled") ||
     hadithsWithProgress[0]
-  ), [hadithsWithProgress]);
+  );
+}, [hadithsWithProgress]);
 
   /* ── loading state ── */
   if (loading) {
