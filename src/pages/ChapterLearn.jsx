@@ -1,17 +1,17 @@
 // /src/pages/ChapterLearn.jsx
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
+import { useAuth } from "@/context/AuthContext";
 import { useNavigate, useParams } from "react-router-dom";
+import {
+  getUserHadithProgress,
+  mergeHadithsWithSupabaseProgress,
+} from "../lib/hadithProgress";
 import { ArrowLeft, Search } from "lucide-react";
 
 import { CHAPTERS } from "../data/chapters";
 import { ALL_HADITHS } from "../data/allHadiths";
 
-function getFakeStatus(hadithId) {
-  if (hadithId % 7 === 0) return "mastered";
-  if (hadithId % 5 === 0) return "review";
-  if (hadithId % 3 === 0) return "learning";
-  return "new";
-}
+
 
 const FILTERS = [
   { key: "all",      label: "Tous",      accent: null },
@@ -33,23 +33,51 @@ function statusMeta(status) {
 export default function ChapterLearn() {
   const navigate = useNavigate();
   const { chapterSlug } = useParams();
+  const { user } = useAuth();
 
   const [search, setSearch]           = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
+  const [progressRows, setProgressRows] = useState([]);
 
   const chapter = useMemo(() => CHAPTERS.find(c => c.slug === chapterSlug), [chapterSlug]);
+   useEffect(() => {
+  let mounted = true;
 
-  const hadiths = useMemo(() => (
-    ALL_HADITHS
-      .filter(h => h.chapterSlug === chapterSlug)
-      .map(h => ({ ...h, progressStatus: getFakeStatus(h.id) }))
-      .sort((a, b) => (a.hadithOrder || a.id) - (b.hadithOrder || b.id))
-  ), [chapterSlug]);
+  async function loadProgress() {
+    if (!user?.id) {
+      if (mounted) setProgressRows([]);
+      return;
+    }
+
+    try {
+      const rows = await getUserHadithProgress(user.id);
+      if (mounted) setProgressRows(rows);
+    } catch (error) {
+      console.error("Erreur chargement progression chapitre:", error);
+      if (mounted) setProgressRows([]);
+    }
+  }
+
+  loadProgress();
+
+  return () => {
+    mounted = false;
+  };
+}, [user?.id]);
+
+  const hadiths = useMemo(() => {
+  const chapterHadiths = ALL_HADITHS
+    .filter(h => h.chapterSlug === chapterSlug)
+    .sort((a, b) => (a.hadithOrder || a.number || a.id) - (b.hadithOrder || b.number || b.id));
+
+  return mergeHadithsWithSupabaseProgress(chapterHadiths, progressRows);
+}, [chapterSlug, progressRows]);
 
   const filteredHadiths = useMemo(() => hadiths.filter(h => {
     const q = search.toLowerCase();
     const matchSearch = !search
       || (h.title || "").toLowerCase().includes(q)
+      || String(h.number).includes(q)
       || String(h.id).includes(q)
       || String(h.hadithOrder || "").includes(q);
     const matchFilter = activeFilter === "all" || h.progressStatus === activeFilter;
@@ -191,7 +219,7 @@ export default function ChapterLearn() {
                   <div className="cl-hadith-body">
                     <div className="cl-hadith-top">
                       <span className="cl-hadith-num">
-                        Hadith {hadith.hadithOrder || hadith.id}
+                        Hadith {hadith.hadithOrder || hadith.number || hadith.id}
                       </span>
                       <span className="cl-status-pill" style={{ "--clr": color }}>
                         <span className="cl-status-dot" />
@@ -200,7 +228,7 @@ export default function ChapterLearn() {
                     </div>
 
                     <h3 className="cl-hadith-title">
-                      {hadith.title || `Hadith ${hadith.hadithOrder || hadith.id}`}
+                      {hadith.title || `Hadith ${hadith.hadithOrder || hadith.number || hadith.id}`}
                     </h3>
 
                     <p className="cl-hadith-chapter">{chapter.shortFr || chapter.titleFr}</p>
