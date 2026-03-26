@@ -251,14 +251,26 @@ export default function HadithDetail() {
     try {
       const userId = user?.id || null;
       const base = progress || { ease_factor: 2.5, interval_days: 0, repetitions: 0 };
-      const calc = nextReview({ ease_factor: base.ease_factor, interval_days: base.interval_days, repetitions: base.repetitions }, quality);
-      const payload = {
-        user_id: userId, hadith_number: hadith.number,
-        status: quality >= 4 ? "learned" : "learning",
-        ...calc,
-        last_review_date: new Date().toISOString().slice(0, 10),
-        last_result: quality,
-      };
+      const calc = nextReview(
+  {
+    ease_factor: base.ease_factor,
+    interval_days: base.interval_days,
+    repetitions: base.repetitions,
+  },
+  quality
+);
+
+const payload = {
+  user_id: userId,
+  hadith_number: hadith.number,
+  status: quality >= 4 ? "learned" : "learning",
+  ease_factor: calc.ease_factor ?? calc.ease ?? base.ease_factor ?? 2.5,
+  interval_days: calc.interval_days ?? 0,
+  repetitions: calc.repetitions ?? 0,
+  next_review_date: calc.next_review_date ?? null,
+  last_review_date: new Date().toISOString().slice(0, 10),
+  last_result: quality,
+};
       if (userId) { const { error } = await supabase.from("user_hadith_progress").upsert(payload); if (error) throw error; }
       else localStorage.setItem(`progress_${hadith.number}`, JSON.stringify(payload));
       setProgress(payload); setHasProgress(true);
