@@ -11,8 +11,8 @@ export const CHAPTERS = [
     description: "Les hadiths liés à la purification, aux ablutions et aux impuretés.",
   },
   {
-    id: "salah",
-    slug: "salah",
+    id: "salat",
+    slug: "salat",
     titleAr: "كتاب الصلاة",
     titleFr: "Kitāb aṣ-Ṣalāh",
     shortFr: "Prière",

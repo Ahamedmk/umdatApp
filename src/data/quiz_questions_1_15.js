@@ -4873,31 +4873,163 @@ const QUIZ_HADITH_44 = [
   correctIndex: 2,
   explain:
     "Le hadith montre que la règle est basée sur l’ordre prophétique, non sur une simple logique analogique."
+},
+/* ----------------- HADITH 47 : « Les œuvres les plus aimées d’Allah » ----------------- */
+
+{
+  n: 47,
+  q: "Quelle est l’œuvre la plus aimée d’Allah mentionnée en premier dans ce hadith ?",
+  options: [
+    "Le jeûne",
+    "La prière à son heure",
+    "Le jihad",
+    "L’aumône"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le Prophète ﷺ a dit : « الصلاة على وقتها » — la prière accomplie à son temps."
+},
+
+{
+  n: 47,
+  q: "Quelle œuvre vient juste après la prière dans ce hadith ?",
+  options: [
+    "Le pèlerinage",
+    "La zakat",
+    "La bonté envers les parents",
+    "Le jihad"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith mentionne ensuite : « بر الوالدين » — la bonté envers les deux parents."
+},
+
+{
+  n: 47,
+  q: "Quelle est la troisième œuvre mentionnée par le Prophète ﷺ ?",
+  options: [
+    "La lecture du Coran",
+    "Le jihad dans le sentier d’Allah",
+    "L’invocation",
+    "La patience"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le Prophète ﷺ dit : « الجهاد في سبيل الله » comme troisième œuvre."
+},
+
+{
+  n: 47,
+  q: "Que signifie l’expression « الصلاة على وقتها » dans ce hadith ?",
+  options: [
+    "Prier quand on veut",
+    "Prier uniquement en groupe",
+    "Prier dans son temps prescrit",
+    "Prier la nuit uniquement"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le commentaire précise que cela signifie accomplir la prière dans son temps, idéalement au début."
+},
+
+{
+  n: 47,
+  q: "Quel compagnon a posé la question au Prophète ﷺ ?",
+  options: [
+    "ʿUmar ibn al-Khaṭṭāb",
+    "ʿAlī ibn Abī Ṭālib",
+    "ʿAbd Allāh ibn Masʿūd",
+    "Abū Hurayra"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith indique que la question provient de ʿAbd Allāh ibn Masʿūd (ra)."
+},
+
+{
+  n: 47,
+  q: "Quelle leçon principale peut-on tirer de l’ordre mentionné dans ce hadith ?",
+  options: [
+    "Toutes les œuvres ont la même valeur",
+    "L’ordre des œuvres indique leur importance relative",
+    "Le jihad est toujours obligatoire",
+    "La prière est facultative"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le classement montre une hiérarchie des œuvres en fonction de leur importance auprès d’Allah."
+},
+/* ----------------- HADITH 48 : « La prière du fajr dans l’obscurité » ----------------- */
+
+{
+  n: 48,
+  q: "À quel moment le Prophète ﷺ accomplissait-il la prière du fajr selon ce hadith ?",
+  options: [
+    "Après le lever du soleil",
+    "Lorsque la lumière était déjà forte",
+    "Au début de l’aube, dans l’obscurité",
+    "Au milieu de la nuit"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith mentionne « مِنَ الْغَلَسِ » qui signifie l’obscurité de la fin de la nuit, indiquant que la prière était faite très tôt."
+},
+
+{
+  n: 48,
+  q: "Comment étaient les femmes qui assistaient à la prière avec le Prophète ﷺ ?",
+  options: [
+    "Sans voile",
+    "En habits légers",
+    "Enveloppées dans leurs manteaux",
+    "En vêtements blancs uniquement"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le texte dit « مُتَلَفِّعَاتٍ بِمُرُوطِهِنَّ », c’est-à-dire enveloppées dans leurs manteaux."
+},
+
+{
+  n: 48,
+  q: "Pourquoi les femmes n’étaient-elles pas reconnues en rentrant chez elles ?",
+  options: [
+    "Parce qu’elles couraient",
+    "Parce qu’il faisait sombre",
+    "Parce qu’elles changeaient de vêtements",
+    "Parce qu’elles étaient voilées complètement"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le hadith précise « مَا يَعْرِفُهُنَّ أَحَدٌ، مِنَ الْغَلَسِ », à cause de l’obscurité de l’aube."
+},
+
+{
+  n: 48,
+  q: "Quelle pratique ce hadith met-il en valeur concernant la prière du fajr ?",
+  options: [
+    "La retarder jusqu’au lever du soleil",
+    "La faire en groupe uniquement",
+    "La faire très tôt au début de son temps",
+    "La faire individuellement chez soi"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith est une preuve de la recommandation du « taghlîs », c’est-à-dire accomplir la prière du fajr dès le début de son temps."
+},
+
+{
+  n: 48,
+  q: "Quel est l’avis de la majorité des savants mentionné dans le document ?",
+  options: [
+    "Retarder le fajr est obligatoire",
+    "Le fajr doit être fait après le lever du soleil",
+    "Faire le fajr tôt (taghlîs) est préférable",
+    "Il n’y a aucune préférence"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le document indique que la majorité des savants considère que le taghlîs (prier tôt dans l’obscurité) est préférable."
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ];
 

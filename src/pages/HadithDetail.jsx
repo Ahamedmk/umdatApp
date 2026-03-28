@@ -14,6 +14,7 @@ import {
 import { supabase } from "../lib/supabase";
 import { nextReview } from "../lib/spaced";
 import { HADITHS_TAHARA } from "../data/seed_hadiths_tahara";
+import { HADITHS_SALAT } from "../data/seed_hadiths_salat";
 import { NARRATORS_MOCK } from "@/data/narrators_mock";
 import { useAuth } from "../context/AuthContext";
 
@@ -174,7 +175,13 @@ export default function HadithDetail() {
     localStorage.setItem("theme", checked ? "dark" : "light");
   };
 
-  const localSeed = useMemo(() => HADITHS_TAHARA.find(h => h.number === hadithNumber) || null, [hadithNumber]);
+  const localSeed = useMemo(() => {
+  return (
+    HADITHS_TAHARA.find(h => h.number === hadithNumber) ||
+    HADITHS_SALAT.find(h => h.number === hadithNumber) ||
+    null
+  );
+}, [hadithNumber]);
 
   // load hadith + progress
   useEffect(() => {
@@ -541,9 +548,9 @@ const payload = {
         <nav className="hd-nav">
           <Link
             to={`/hadith/${hadith.number - 1}`}
-            className={`hd-nav-btn ${hadith.number <= 8 ? "hd-nav-btn--disabled" : ""}`}
-            aria-disabled={hadith.number <= 8}
-            onClick={e => hadith.number <= 8 && e.preventDefault()}
+            className={`hd-nav-btn ${hadith.number <= 1 ? "hd-nav-btn--disabled" : ""}`}
+            aria-disabled={hadith.number <= 1}
+            onClick={e => hadith.number <= 1 && e.preventDefault()}
           >
             <ChevronLeft size={16} /> Précédent
           </Link>
