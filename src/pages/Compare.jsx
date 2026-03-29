@@ -1,585 +1,728 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+// /src/pages/Compare.jsx
+import React, { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { Scale, Moon, Sun, Search, Filter, BookMarked, ChevronDown, ChevronUp } from "lucide-react";
+import {
+  Scale, Search, Filter, BookMarked, ExternalLink, FileText,
+} from "lucide-react";
 
-/* ---- Données (remplace par vraies données quand prêtes) ---- */
-const COMPARISON_DATA = [
-  {
-    category: "Purification (Wuḍūʾ)",
-    items: [
-      {
-        point: "Basmala au wuḍūʾ",
-        hanafi: "Sunna confirmée",
-        maliki: "Recommandée",
-        shafi: "Sunna",
-        hanbali: "Obligatoire (sauf oubli)",
-        details:
-          "Les hanbalites considèrent la basmala comme obligatoire mais elle tombe en cas d'oubli.",
-      },
-      {
-        point: "Nombre minimum de lavages",
-        hanafi: "Un seul suffit",
-        maliki: "Un seul suffit",
-        shafi: "Un seul suffit",
-        hanbali: "Un seul suffit",
-        details: "Consensus sur la validité d'un seul lavage, le triple étant sunna.",
-      },
-      {
-        point: "Allonger الغرّة والتحجيل",
-        hanafi: "Déconseillé (makrûh)",
-        maliki: "Déconseillé (makrûh)",
-        shafi: "Recommandé (modéré)",
-        hanbali: "Recommandé (modéré)",
-        details:
-          "Divergence sur l'extension des lavages au-delà des zones obligatoires.",
-      },
-    ],
-  },
-  {
-    category: "Étiquette (Ādāb)",
-    items: [
-      {
-        point: "Commencer par la droite (tayammun)",
-        hanafi: "Recommandé dans l'honneur",
-        maliki: "Recommandé dans l'honneur",
-        shafi: "Recommandé dans l'honneur",
-        hanbali: "Recommandé dans l'honneur",
-        details:
-          "Consensus : droite pour les actes d'honneur, gauche pour leur contraire.",
-      },
-      {
-        point: "Main droite pendant le besoin",
-        hanafi: "Makrûh",
-        maliki: "Makrûh",
-        shafi: "Makrûh",
-        hanbali: "Interdit (tahrîm)",
-        details: "Les hanbalites sont plus stricts sur l'interdiction.",
-      },
-    ],
-  },
-  {
-    category: "Toilettes & Qibla",
-    items: [
-      {
-        point: "Qibla en plein air",
-        hanafi: "Interdit (face/dos)",
-        maliki: "Interdit (face/dos)",
-        shafi: "Interdit (face/dos)",
-        hanbali: "Interdit (face/dos)",
-        details:
-          "Consensus absolu : ne pas faire face ni dos à la qibla en plein air.",
-      },
-      {
-        point: "Qibla (toilettes bâties)",
-        hanafi: "Permis",
-        maliki: "Permis",
-        shafi: "Permis",
-        hanbali: "Interdit",
-        details:
-          "Les hanbalites maintiennent l'interdiction même en intérieur, contrairement à la majorité.",
-      },
-      {
-        point: "Invocation à l'entrée",
-        hanafi: "Recommandée",
-        maliki: "Recommandée",
-        shafi: "Recommandée",
-        hanbali: "Recommandée",
-        details:
-          "« اللهم إني أعوذ بك من الخبث والخبائث » avant d'entrer.",
-      },
-    ],
-  },
-  {
-    category: "Istinjāʾ",
-    items: [
-      {
-        point: "Eau ou pierres",
-        hanafi: "Les deux valides",
-        maliki: "Les deux valides",
-        shafi: "Les deux valides",
-        hanbali: "Les deux valides",
-        details:
-          "Consensus : eau et pierres (minimum 3) sont légitimes.",
-      },
-      {
-        point: "Meilleure méthode",
-        hanafi: "Combiner (pierres + eau)",
-        maliki: "Combiner (pierres + eau)",
-        shafi: "Combiner (pierres + eau)",
-        hanbali: "Combiner (pierres + eau)",
-        details:
-          "Consensus sur la supériorité de combiner les deux méthodes.",
-      },
-    ],
-  },
-];
+import { ALL_HADITHS } from "../data/allHadiths";
 
-/* ---- Couleurs fixes (pas de classes dynamiques) ---- */
-const CONSENSUS_STYLES = {
-  consensus:
-    "bg-emerald-50 dark:bg-emerald-950 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300",
-  majority:
-    "bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300",
-  divergence:
-    "bg-orange-50 dark:bg-orange-950 border-orange-200 dark:border-orange-800 text-orange-700 dark:text-orange-300",
+/* ─── config ─── */
+const SCHOOL_CONFIG = {
+  hanafi:  { label: "Hanafite",  color: "#4a9fc8", getFr: i => i.opinions?.Hanafi?.fr  || "", getAr: i => i.opinions?.Hanafi?.ar  || "" },
+  maliki:  { label: "Malikite",  color: "#4a9f82", getFr: i => i.opinions?.Maliki?.fr  || "", getAr: i => i.opinions?.Maliki?.ar  || "" },
+  shafi:   { label: "Chafi'ite", color: "#9f7ae0", getFr: i => i.opinions?.Shafi?.fr   || "", getAr: i => i.opinions?.Shafi?.ar   || "" },
+  hanbali: { label: "Hanbalite", color: "#c9a84c", getFr: i => i.opinions?.Hanbali?.fr || "", getAr: i => i.opinions?.Hanbali?.ar || "" },
 };
 
+const CONSENSUS_META = {
+  consensus:  { label: "Consensus",         color: "#4a9f82" },
+  majority:   { label: "Majorité",          color: "#4a9fc8" },
+  divergence: { label: "Divergence",        color: "#e08a3c" },
+  partial:    { label: "Données partielles",color: "#7a8694" },
+};
+
+const CHAPTER_LABELS = {
+  tahara: "Ṭahāra", salat: "Ṣalāh", zakat: "Zakāh",
+  siyam: "Ṣiyām", hajj: "Ḥajj", buyu: "Buyūʿ", nikah: "Nikāḥ",
+};
+
+/* ─── helpers ─── */
+function norm(v) { return String(v || "").toLowerCase(); }
+function getVisibleSchools(sel) { return sel === "all" ? Object.keys(SCHOOL_CONFIG) : [sel]; }
+function hasOpinion(item) {
+  return !!(item?.opinions?.Hanafi?.fr || item?.opinions?.Maliki?.fr ||
+            item?.opinions?.Shafi?.fr  || item?.opinions?.Hanbali?.fr);
+}
+function getOpinionValues(item) {
+  return [
+    item.opinions?.Hanafi?.fr, item.opinions?.Maliki?.fr,
+    item.opinions?.Shafi?.fr,  item.opinions?.Hanbali?.fr,
+  ].filter(Boolean);
+}
 function getConsensus(item) {
-  const opinions = [item.hanafi, item.maliki, item.shafi, item.hanbali];
-  const unique = new Set(opinions);
-  if (unique.size === 1) return { level: "consensus", label: "Consensus" };
-  if (unique.size === 2) return { level: "majority", label: "Majorité" };
-  return { level: "divergence", label: "Divergence" };
+  const ops = getOpinionValues(item);
+  if (ops.length < 4) return { level: "partial", ...CONSENSUS_META.partial };
+  const counts = {};
+  ops.forEach(o => { counts[o] = (counts[o] || 0) + 1; });
+  const max = Math.max(...Object.values(counts));
+  if (max === 4) return { level: "consensus",  ...CONSENSUS_META.consensus  };
+  if (max === 3) return { level: "majority",   ...CONSENSUS_META.majority   };
+  return { level: "divergence", ...CONSENSUS_META.divergence };
+}
+function trunc(text, max = 100) {
+  const s = String(text || "").trim();
+  return s ? (s.length <= max ? s : `${s.slice(0, max).trim()}…`) : "—";
+}
+function buildGroups(hadiths) {
+  const map = new Map();
+  hadiths.forEach(h => {
+    const key = h.chapterSlug || h.chapter || "autre";
+    if (!map.has(key)) map.set(key, {
+      chapter: key,
+      category: h.chapterTitle || CHAPTER_LABELS[key] || key,
+      chapterOrder: h.chapterOrder ?? 999,
+      items: [],
+    });
+    map.get(key).items.push(h);
+  });
+  return [...map.values()]
+    .map(g => ({ ...g, items: g.items.sort((a, b) => (a.number || 0) - (b.number || 0)) }))
+    .sort((a, b) => a.chapterOrder - b.chapterOrder);
 }
 
-export function Compare() {
-  const [dark, setDark] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [expandedCategories, setExpandedCategories] = useState(
-    new Set(["Purification (Wuḍūʾ)"])
+/* ─── sub-components ─── */
+function ConsensusPill({ level, label, color }) {
+  return (
+    <span className="cmp-consensus-pill" style={{ "--clr": color }}>
+      <span className="cmp-consensus-dot" />
+      {label}
+    </span>
   );
-  const [selectedSchool, setSelectedSchool] = useState("all");
-  const [expandedDetails, setExpandedDetails] = useState(new Set());
+}
 
-  useEffect(() => {
-    const pref = localStorage.getItem("theme");
-    const prefersDark =
-      window.matchMedia?.("(prefers-color-scheme: dark)").matches;
-    const enable = pref ? pref === "dark" : prefersDark;
-    setDark(enable);
-    document.documentElement.classList.toggle("dark", enable);
-  }, []);
+function SchoolDetailCard({ schoolKey, item }) {
+  const s  = SCHOOL_CONFIG[schoolKey];
+  const fr = s.getFr(item);
+  const ar = s.getAr(item);
+  return (
+    <div className="cmp-school-card" style={{ "--clr": s.color }}>
+      <div className="cmp-school-card-head">
+        <span className="cmp-school-dot" />
+        <span className="cmp-school-card-label">{s.label}</span>
+      </div>
+      {fr
+        ? <p className="cmp-school-fr">{fr}</p>
+        : <p className="cmp-school-empty">Aucun avis détaillé disponible.</p>
+      }
+      {ar && (
+        <div className="cmp-school-ar-wrap">
+          <p className="cmp-school-ar" dir="rtl">{ar}</p>
+        </div>
+      )}
+    </div>
+  );
+}
 
-  const toggleTheme = (checked) => {
-    setDark(checked);
-    document.documentElement.classList.toggle("dark", checked);
-    localStorage.setItem("theme", checked ? "dark" : "light");
-  };
-
-  const toggleCategory = (category) => {
-    setExpandedCategories((prev) => {
-      const next = new Set(prev);
-      next.has(category) ? next.delete(category) : next.add(category);
-      return next;
-    });
-  };
-
-  const toggleDetails = (key) => {
-    setExpandedDetails((prev) => {
-      const next = new Set(prev);
-      next.has(key) ? next.delete(key) : next.add(key);
-      return next;
-    });
-  };
-
-  /* ---- Filtrage texte ---- */
-  const filteredData = useMemo(() => {
-    return COMPARISON_DATA.map((category) => ({
-      ...category,
-      items: category.items.filter((item) => {
-        if (!searchQuery) return true;
-        const q = searchQuery.toLowerCase();
-        return (
-          item.point.toLowerCase().includes(q) ||
-          item.details?.toLowerCase().includes(q) ||
-          item.hanafi.toLowerCase().includes(q) ||
-          item.maliki.toLowerCase().includes(q) ||
-          item.shafi.toLowerCase().includes(q) ||
-          item.hanbali.toLowerCase().includes(q)
-        );
-      }),
-    })).filter((c) => c.items.length);
-  }, [searchQuery]);
-
-  /* ---- Rendu d’une ligne “mobile card” ---- */
-const MobileItem = ({ item, detailKey, isExpanded }) => {
-    const { level, label } = getConsensus(item);
-    const consensusClass = CONSENSUS_STYLES[level];
-
-    const pairs = [
-      {
-        label: "Hanafite",
-        color: "bg-blue-500",
-        value: item.hanafi,
-        key: "hanafi",
-      },
-      {
-        label: "Malikite",
-        color: "bg-green-500",
-        value: item.maliki,
-        key: "maliki",
-      },
-      {
-        label: "Chafi'ite",
-        color: "bg-purple-500",
-        value: item.shafi,
-        key: "shafi",
-      },
-      {
-        label: "Hanbalite",
-        color: "bg-amber-500",
-        value: item.hanbali,
-        key: "hanbali",
-      },
-    ].filter((p) => (selectedSchool === "all" ? true : p.key === selectedSchool));
-
-    return (
-      <div
-        className="
-          rounded-lg border w-full border-slate-200 dark:border-slate-700 
-          p-4 space-y-3 
-          max-h-64  /* ≈ 256px */
-        "
-      >
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <div className="font-medium text-slate-800 dark:text-slate-200 break-words text-pretty">
-              {item.point}
-            </div>
-            <div className="mt-1 flex items-center gap-2">
-              <Badge
-                variant="outline"
-                className={consensusClass + " text-xs whitespace-nowrap"}
-              >
-                {label}
-              </Badge>
-              {item.details && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => toggleDetails(detailKey)}
-                  className="h-6 px-2 text-xs text-black dark:hover:text-black"
-                >
-                  {isExpanded ? "Masquer" : "Détails"}
-                </Button>
-              )}
-            </div>
-          </div>
+function MobileItem({ item, detailKey, isExpanded, toggleDetails, visibleSchools, onOpenHadith }) {
+  const cons = getConsensus(item);
+  return (
+    <div className="cmp-mobile-row" style={{ "--status-clr": cons.color }}>
+      <div className="cmp-mobile-row-bar" />
+      <div className="cmp-mobile-row-body">
+        <div className="cmp-mobile-row-top">
+          <span className="cmp-mobile-hadith-title">
+            Hadith {item.number}{item.title ? ` — ${item.title}` : ""}
+          </span>
+          <ConsensusPill {...cons} />
         </div>
 
-        <div className="space-y-2">
-          {pairs.map((p, i) => (
-            <div key={i} className="flex items-start gap-2">
-              <div
-                className={`w-1.5 h-1.5 rounded-full ${p.color} mt-2 shrink-0`}
-              />
-              <div className="text-slate-700 dark:text-slate-300 break-words">
-                <span className="font-semibold">{p.label} : </span>
-                {p.value}
+        <div className="cmp-mobile-opinions">
+          {visibleSchools.map(k => {
+            const s = SCHOOL_CONFIG[k];
+            return (
+              <div key={k} className="cmp-mobile-opinion">
+                <span className="cmp-opinion-dot" style={{ background: s.color }} />
+                <span><strong style={{ color: s.color }}>{s.label} : </strong>{trunc(s.getFr(item))}</span>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
-        {isExpanded && item.details && (
-          <div className="mt-2 rounded-lg bg-slate-50 dark:bg-slate-900/50 p-3 text-sm text-slate-600 dark:text-slate-400 break-words">
-            <span className="font-semibold text-slate-700 dark:text-slate-300">
-              Précision :{" "}
-            </span>
-            {item.details}
+        <div className="cmp-mobile-row-actions">
+          <button className="cmp-btn-ghost-xs" onClick={() => onOpenHadith(item.number)}>
+            <ExternalLink size={11} /> Ouvrir
+          </button>
+          <button className="cmp-btn-ghost-xs" onClick={() => toggleDetails(detailKey)}>
+            <FileText size={11} /> {isExpanded ? "Masquer" : "Détails"}
+          </button>
+        </div>
+
+        {isExpanded && (
+          <div className="cmp-mobile-detail">
+            {item.french_text && (
+              <p className="cmp-detail-fr">
+                <strong>Traduction : </strong>{item.french_text}
+              </p>
+            )}
+            {item.source && (
+              <p className="cmp-detail-source"><strong>Source : </strong>{item.source}</p>
+            )}
+            <div className="cmp-detail-schools">
+              {visibleSchools.map(k => <SchoolDetailCard key={k} schoolKey={k} item={item} />)}
+            </div>
           </div>
         )}
       </div>
-    );
-  };
+    </div>
+  );
+}
 
+/* ══════════════════════════════════ */
+export function Compare() {
+  const navigate = useNavigate();
 
+  const [searchQuery, setSearchQuery]       = useState("");
+  const [selectedSchool, setSelectedSchool] = useState("all");
+  const [selectedChapter, setSelectedChapter] = useState("all");
+  const [expandedDetails, setExpandedDetails] = useState(new Set());
+
+  const compareHadiths = useMemo(() => ALL_HADITHS.filter(hasOpinion), []);
+
+  const chapterOptions = useMemo(() => {
+    const map = new Map();
+    compareHadiths.forEach(h => {
+      const key = h.chapterSlug || h.chapter || "autre";
+      if (!map.has(key)) map.set(key, {
+        key, order: h.chapterOrder ?? 999,
+        label: h.chapterTitle || CHAPTER_LABELS[key] || key,
+      });
+    });
+    return [{ key: "all", label: "Tous", order: 0 }, ...[...map.values()].sort((a,b) => a.order - b.order)];
+  }, [compareHadiths]);
+
+  const groupedData = useMemo(() => {
+    const q = norm(searchQuery);
+    const filtered = compareHadiths.filter(item => {
+      if (selectedChapter !== "all" && (item.chapterSlug || item.chapter || "autre") !== selectedChapter) return false;
+      if (!q) return true;
+      const cons = getConsensus(item);
+      return [item.title, item.number, item.french_text, item.source, item.chapterTitle, cons.label,
+        ...Object.values(SCHOOL_CONFIG).map(s => s.getFr(item))
+      ].some(v => norm(v).includes(q));
+    });
+    return buildGroups(filtered);
+  }, [compareHadiths, searchQuery, selectedChapter]);
+
+  const flatItems = useMemo(() => groupedData.flatMap(g => g.items), [groupedData]);
+
+  const summary = useMemo(() => {
+    const acc = { consensus: 0, majority: 0, divergence: 0, partial: 0 };
+    flatItems.forEach(item => { acc[getConsensus(item).level]++; });
+    return acc;
+  }, [flatItems]);
+
+  const visibleSchools = useMemo(() => getVisibleSchools(selectedSchool), [selectedSchool]);
+
+  const toggleDetails = key => setExpandedDetails(prev => {
+    const next = new Set(prev);
+    next.has(key) ? next.delete(key) : next.add(key);
+    return next;
+  });
+
+  const hasFilters = selectedSchool !== "all" || selectedChapter !== "all" || searchQuery;
 
   return (
-    <div className="min-h-screen w-full overflow-x-clip bg-gradient-to-br from-slate-50 via-amber-50 to-orange-50 dark:from-slate-950 dark:via-amber-950 dark:to-orange-950 px-4 sm:px-6 py-6 transition-colors duration-300">
-      <div className="max-w-5xl w-full mx-auto space-y-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-2">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="p-3 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl shadow-lg shrink-0">
-              <Scale className="h-6 w-6 text-white" />
-            </div>
-            <div className="min-w-0">
-              <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 truncate">
-                Comparateur des 4 écoles
-              </h2>
-              <p className="text-sm text-slate-600 dark:text-slate-400">
-                Analyse comparative des divergences majeures
-              </p>
+    <>
+      <CompareStyles />
+      <div className="cmp-root">
+
+        {/* ── Header ── */}
+        <header className="cmp-header">
+          <div className="cmp-header-left">
+            <div className="cmp-icon-wrap"><Scale size={17} /></div>
+            <div>
+              <h1 className="cmp-title">Comparateur des 4 écoles</h1>
+              <p className="cmp-subtitle">Vue synthétique + détails par école juridique</p>
             </div>
           </div>
+        </header>
 
-          {/* <div className="flex items-center gap-2 bg-white dark:bg-slate-800 px-3 py-2 rounded-full shadow-sm border border-slate-200 dark:border-slate-700 self-start sm:self-auto">
-            <Sun className="h-4 w-4 text-slate-600 dark:text-slate-400" />
-            <Switch checked={dark} onCheckedChange={toggleTheme} className="scale-90" />
-            <Moon className="h-4 w-4 text-slate-600 dark:text-slate-400" />
-          </div> */}
-        </div>
-
-        {/* Stat Cards (filtre par école) */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {[
-            { key: "hanafi", label: "Hanafite", grad: "from-blue-500 to-blue-600" },
-            { key: "maliki", label: "Malikite", grad: "from-green-500 to-green-600" },
-            { key: "shafi", label: "Chafi'ite", grad: "from-purple-500 to-purple-600" },
-            { key: "hanbali", label: "Hanbalite", grad: "from-amber-500 to-amber-600" },
-          ].map((s) => (
-            <Card
-              key={s.key}
-              className={`bg-gradient-to-br ${s.grad} border-0 text-white shadow-lg cursor-pointer hover:scale-105 transition-transform ${
-                selectedSchool === s.key ? "ring-2 ring-offset-2 ring-white/70" : ""
-              }`}
-              onClick={() => setSelectedSchool(selectedSchool === s.key ? "all" : s.key)}
-            >
-              <CardContent className="pt-4 pb-3 text-center">
-                <BookMarked className="h-5 w-5 mx-auto mb-1 opacity-90" />
-                <div className="text-base font-bold mb-1">{s.label}</div>
-                <div className="text-xs opacity-90">
-                  {selectedSchool === s.key ? "Filtre actif" : "Cliquer pour filtrer"}
-                </div>
-              </CardContent>
-            </Card>
+        {/* ── Summary stats ── */}
+        <div className="cmp-stats">
+          <div className="cmp-stat cmp-stat--total">
+            <span className="cmp-stat-value">{flatItems.length}</span>
+            <span className="cmp-stat-label">Hadiths</span>
+          </div>
+          {Object.entries(CONSENSUS_META).map(([k, m]) => (
+            <div key={k} className="cmp-stat" style={{ "--accent": m.color }}>
+              <span className="cmp-stat-value">{summary[k]}</span>
+              <span className="cmp-stat-label">{m.label}</span>
+            </div>
           ))}
         </div>
 
-        {/* Search */}
-        <Card className="border-slate-200 dark:border-slate-700 shadow-lg bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
-          <CardContent className="pt-6">
-            <div className="flex flex-col sm:flex-row gap-3">
-              <div className="relative flex-1 min-w-0">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                <Input
-                  placeholder="Rechercher un point de fiqh…"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-white dark:bg-slate-900"
-                />
-              </div>
-              {selectedSchool !== "all" && (
-                <Button
-                  variant="outline"
-                  onClick={() => setSelectedSchool("all")}
-                  className="gap-2 w-full sm:w-auto bg-slate-900! text-gray-500" 
-                >
-                  <Filter className="h-4 w-4 " />
-                  Réinitialiser le filtre
-                </Button>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Categories */}
-        <div className="space-y-4">
-          {filteredData.length === 0 ? (
-            <Card className="border-dashed border-2 border-slate-300 dark:border-slate-700">
-              <CardContent className="py-16 text-center">
-                <Search className="h-16 w-16 text-slate-400 mx-auto mb-4" />
-                <p className="text-slate-600 dark:text-slate-400">Aucun résultat trouvé</p>
-              </CardContent>
-            </Card>
-          ) : (
-            filteredData.map((category, catIdx) => (
-              <Card
-                key={catIdx}
-                className="border-slate-200 dark:border-slate-700 shadow-lg bg-white dark:bg-slate-800 overflow-auto"
-              >
-                <CardHeader
-                  className="cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700/40 transition-colors"
-                  onClick={() => toggleCategory(category.category)}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="p-2 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg shrink-0">
-                        <BookMarked className="h-5 w-5 text-white" />
-                      </div>
-                      <div className="min-w-0">
-                        <CardTitle className="text-lg text-slate-800 dark:text-slate-100 break-words">
-                          {category.category}
-                        </CardTitle>
-                        <CardDescription>
-                          {category.items.length} point{category.items.length > 1 ? "s" : ""} de comparaison
-                        </CardDescription>
-                      </div>
-                    </div>
-                    {expandedCategories.has(category.category) ? (
-                      <ChevronUp className="h-5 w-5 text-slate-400" />
-                    ) : (
-                      <ChevronDown className="h-5 w-5 text-slate-400" />
-                    )}
-                  </div>
-                </CardHeader>
-
-                {expandedCategories.has(category.category) && (
-                  <>
-                    <Separator className="bg-slate-200 dark:bg-slate-700" />
-                    <CardContent className="p-0">
-                      <ScrollArea className="max-h-[600px]">
-                        {/* --- Mobile: cartes empilées --- */}
-                        <div className="block md:hidden p-4 space-y-4">
-                          {category.items.map((item, idx) => {
-                            const detailKey = `${catIdx}-${idx}`;
-                            const isExpanded = expandedDetails.has(detailKey);
-                            return (
-                              <MobileItem
-                                key={idx}
-                                item={item}
-                                detailKey={detailKey}
-                                isExpanded={isExpanded}
-                              />
-                            );
-                          })}
-                        </div>
-
-                        {/* --- Desktop (md+): tableau --- */}
-                        <div className="hidden md:block overflow-x-auto">
-                          <table className="w-full text-sm">
-                            <thead className="sticky top-0 bg-slate-100 dark:bg-slate-900 z-10">
-                              <tr className="border-b border-slate-200 dark:border-slate-700">
-                                <th className="text-left p-4 font-semibold text-slate-700 dark:text-slate-300 min-w-[260px]">
-                                  Point de fiqh
-                                </th>
-                                <th className={`text-left p-4 font-semibold min-w-[220px] ${selectedSchool==='hanafi'?'bg-blue-50/60 dark:bg-blue-950/30':''}`}>
-                                  <div className="flex items-center gap-2">
-                                    <div className="w-3 h-3 rounded-full bg-blue-500" />
-                                    Hanafite
-                                  </div>
-                                </th>
-                                <th className={`text-left p-4 font-semibold min-w-[220px] ${selectedSchool==='maliki'?'bg-green-50/60 dark:bg-green-950/30':''}`}>
-                                  <div className="flex items-center gap-2">
-                                    <div className="w-3 h-3 rounded-full bg-green-500" />
-                                    Malikite
-                                  </div>
-                                </th>
-                                <th className={`text-left p-4 font-semibold min-w-[220px] ${selectedSchool==='shafi'?'bg-purple-50/60 dark:bg-purple-950/30':''}`}>
-                                  <div className="flex items-center gap-2">
-                                    <div className="w-3 h-3 rounded-full bg-purple-500" />
-                                    Chafi'ite
-                                  </div>
-                                </th>
-                                <th className={`text-left p-4 font-semibold min-w-[220px] ${selectedSchool==='hanbali'?'bg-amber-50/60 dark:bg-amber-950/30':''}`}>
-                                  <div className="flex items-center gap-2">
-                                    <div className="w-3 h-3 rounded-full bg-amber-500" />
-                                    Hanbalite
-                                  </div>
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {category.items.map((item, idx) => {
-                                const { level, label } = getConsensus(item);
-                                const detailKey = `${catIdx}-${idx}`;
-                                const isExpanded = expandedDetails.has(detailKey);
-                                const badgeClass = CONSENSUS_STYLES[level];
-
-                                const SchoolCell = ({ value, dot }) => (
-                                  <td className="p-4 text-slate-700 dark:text-slate-300 align-top">
-                                    <div className="flex items-start gap-2">
-                                      <div className={`w-1.5 h-1.5 rounded-full ${dot} mt-1.5 shrink-0`} />
-                                      <div className="break-words text-pretty">{value}</div>
-                                    </div>
-                                  </td>
-                                );
-
-                                return (
-                                  <React.Fragment key={idx}>
-                                    <tr className="border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
-                                      <td className="p-4 align-top">
-                                        <div className="space-y-2">
-                                          <div className="font-medium text-slate-800 dark:text-slate-200 break-words text-pretty">
-                                            {item.point}
-                                          </div>
-                                          <div className="flex items-center gap-2">
-                                            <Badge variant="outline" className={`text-xs ${badgeClass}`}>
-                                              {label}
-                                            </Badge>
-                                            {item.details && (
-                                              <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                onClick={() => toggleDetails(detailKey)}
-                                                className="h-6 px-2 text-xs text-black"
-                                              >
-                                                {isExpanded ? "Masquer" : "Détails"}
-                                              </Button>
-                                            )}
-                                          </div>
-                                        </div>
-                                      </td>
-
-                                      <SchoolCell value={item.hanafi} dot="bg-blue-500" />
-                                      <SchoolCell value={item.maliki} dot="bg-green-500" />
-                                      <SchoolCell value={item.shafi} dot="bg-purple-500" />
-                                      <SchoolCell value={item.hanbali} dot="bg-amber-500" />
-                                    </tr>
-
-                                    {isExpanded && item.details && (
-                                      <tr className="bg-slate-50 dark:bg-slate-900/40">
-                                        <td colSpan={5} className="p-4">
-                                          <div className="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-400">
-                                            <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg shrink-0">
-                                              <BookMarked className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                                            </div>
-                                            <div className="leading-relaxed break-words">
-                                              <span className="font-semibold text-slate-700 dark:text-slate-300">
-                                                Précision :{" "}
-                                              </span>
-                                              {item.details}
-                                            </div>
-                                          </div>
-                                        </td>
-                                      </tr>
-                                    )}
-                                  </React.Fragment>
-                                );
-                              })}
-                            </tbody>
-                          </table>
-                        </div>
-                      </ScrollArea>
-                    </CardContent>
-                  </>
-                )}
-              </Card>
-            ))
-          )}
+        {/* ── School filter cards ── */}
+        <div className="cmp-school-filters">
+          {Object.entries(SCHOOL_CONFIG).map(([key, s]) => (
+            <button
+              key={key}
+              className={`cmp-school-filter ${selectedSchool === key ? "cmp-school-filter--active" : ""}`}
+              style={{ "--clr": s.color }}
+              onClick={() => setSelectedSchool(selectedSchool === key ? "all" : key)}
+            >
+              <BookMarked size={14} />
+              <span className="cmp-school-filter-label">{s.label}</span>
+              {selectedSchool === key && <span className="cmp-school-filter-active-txt">actif</span>}
+            </button>
+          ))}
         </div>
 
-        {/* Légende */}
-        <Card className="border-slate-200 dark:border-slate-700 shadow-lg bg-white dark:bg-slate-800">
-          <CardHeader>
-            <CardTitle className="text-base">Légende</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid sm:grid-cols-3 gap-4 text-sm">
-              <div className="flex items-center gap-2">
-                <Badge variant="outline" className={CONSENSUS_STYLES.consensus}>
-                  Consensus
-                </Badge>
-                <span className="text-slate-600 dark:text-slate-400">
-                  Les 4 écoles s'accordent
-                </span>
+        {/* ── Search + chapter filters ── */}
+        <div className="cmp-toolbar">
+          <div className="cmp-search-wrap">
+            <Search size={13} className="cmp-search-icon" />
+            <input
+              className="cmp-search-input"
+              placeholder="Rechercher un hadith, un avis, un numéro…"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+            />
+            {searchQuery && (
+              <button className="cmp-search-clear" onClick={() => setSearchQuery("")}>✕</button>
+            )}
+          </div>
+
+          <div className="cmp-chapter-filters">
+            {chapterOptions.map(c => (
+              <button
+                key={c.key}
+                className={`cmp-chapter-btn ${selectedChapter === c.key ? "cmp-chapter-btn--active" : ""}`}
+                onClick={() => setSelectedChapter(c.key)}
+              >
+                {c.label}
+              </button>
+            ))}
+            {hasFilters && (
+              <button
+                className="cmp-chapter-btn cmp-chapter-btn--reset"
+                onClick={() => { setSelectedSchool("all"); setSelectedChapter("all"); setSearchQuery(""); }}
+              >
+                <Filter size={11} /> Réinitialiser
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* ── Groups ── */}
+        {groupedData.length === 0 ? (
+          <div className="cmp-empty">
+            <Search size={32} className="cmp-empty-icon" />
+            <p>Aucun résultat trouvé.</p>
+          </div>
+        ) : (
+          <div className="cmp-groups">
+            {groupedData.map((group, catIdx) => (
+              <div key={group.chapter} className="cmp-group">
+                {/* Group header */}
+                <div className="cmp-group-header">
+                  <div className="cmp-group-icon"><BookMarked size={14} /></div>
+                  <div>
+                    <span className="cmp-group-title">{group.category}</span>
+                    <span className="cmp-group-count">
+                      {group.items.length} hadith{group.items.length > 1 ? "s" : ""}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Mobile list */}
+                <div className="cmp-mobile-list">
+                  {group.items.map((item, idx) => {
+                    const detailKey = `${catIdx}-${idx}`;
+                    return (
+                      <MobileItem
+                        key={detailKey} item={item} detailKey={detailKey}
+                        isExpanded={expandedDetails.has(detailKey)}
+                        toggleDetails={toggleDetails}
+                        visibleSchools={visibleSchools}
+                        onOpenHadith={n => navigate(`/hadith/${n}`)}
+                      />
+                    );
+                  })}
+                </div>
+
+                {/* Desktop table */}
+                <div className="cmp-desktop-table">
+                  <ScrollArea className="max-h-[620px]">
+                    <table className="cmp-table">
+                      <thead>
+                        <tr className="cmp-table-head-row">
+                          <th className="cmp-th cmp-th--hadith">Hadith</th>
+                          {visibleSchools.map(k => (
+                            <th key={k} className="cmp-th" style={{ "--clr": SCHOOL_CONFIG[k].color }}>
+                              <span className="cmp-th-dot" />
+                              {SCHOOL_CONFIG[k].label}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {group.items.map((item, idx) => {
+                          const cons     = getConsensus(item);
+                          const detailKey = `${catIdx}-${idx}`;
+                          const expanded  = expandedDetails.has(detailKey);
+                          return (
+                            <React.Fragment key={detailKey}>
+                              <tr className="cmp-table-row">
+                                <td className="cmp-td cmp-td--hadith">
+                                  <div className="cmp-td-hadith-name">
+                                    Hadith {item.number}{item.title ? ` — ${item.title}` : ""}
+                                  </div>
+                                  <div className="cmp-td-hadith-actions">
+                                    <ConsensusPill {...cons} />
+                                    <button className="cmp-btn-ghost-xs" onClick={() => navigate(`/hadith/${item.number}`)}>
+                                      <ExternalLink size={11} /> Ouvrir
+                                    </button>
+                                    <button className="cmp-btn-ghost-xs" onClick={() => toggleDetails(detailKey)}>
+                                      <FileText size={11} /> {expanded ? "Masquer" : "Détails"}
+                                    </button>
+                                  </div>
+                                </td>
+                                {visibleSchools.map(k => {
+                                  const s  = SCHOOL_CONFIG[k];
+                                  const fr = trunc(s.getFr(item));
+                                  return (
+                                    <td key={k} className="cmp-td">
+                                      <div className="cmp-td-opinion">
+                                        <span className="cmp-opinion-dot" style={{ background: s.color }} />
+                                        <span className={fr === "—" ? "cmp-td-empty" : ""}>{fr}</span>
+                                      </div>
+                                    </td>
+                                  );
+                                })}
+                              </tr>
+
+                              {expanded && (
+                                <tr className="cmp-table-row-expanded">
+                                  <td colSpan={1 + visibleSchools.length} className="cmp-td-expanded">
+                                    {(item.french_text || item.source) && (
+                                      <div className="cmp-expanded-meta">
+                                        {item.french_text && (
+                                          <p className="cmp-detail-fr">
+                                            <strong>Traduction : </strong>{item.french_text}
+                                          </p>
+                                        )}
+                                        {item.source && (
+                                          <p className="cmp-detail-source">
+                                            <strong>Source : </strong>{item.source}
+                                          </p>
+                                        )}
+                                      </div>
+                                    )}
+                                    <div className="cmp-detail-schools cmp-detail-schools--grid">
+                                      {visibleSchools.map(k => <SchoolDetailCard key={k} schoolKey={k} item={item} />)}
+                                    </div>
+                                  </td>
+                                </tr>
+                              )}
+                            </React.Fragment>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </ScrollArea>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Badge variant="outline" className={CONSENSUS_STYLES.majority}>
-                  Majorité
-                </Badge>
-                <span className="text-slate-600 dark:text-slate-400">
-                  3 écoles s'accordent
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Badge variant="outline" className={CONSENSUS_STYLES.divergence}>
-                  Divergence
-                </Badge>
-                <span className="text-slate-600 dark:text-slate-400">Avis variés</span>
-              </div>
+            ))}
+          </div>
+        )}
+
+        {/* ── Legend ── */}
+        <div className="cmp-legend">
+          <span className="cmp-legend-title">Légende</span>
+          {Object.entries(CONSENSUS_META).map(([k, m]) => (
+            <div key={k} className="cmp-legend-item">
+              <span className="cmp-legend-pill" style={{ "--clr": m.color }}>
+                <span className="cmp-consensus-dot" />{m.label}
+              </span>
+              <span className="cmp-legend-desc">
+                {k === "consensus" ? "Les 4 écoles s'accordent"
+                  : k === "majority" ? "3 écoles s'accordent"
+                  : k === "divergence" ? "Avis variés"
+                  : "Avis incomplets"}
+              </span>
             </div>
-          </CardContent>
-        </Card>
+          ))}
+        </div>
+
       </div>
-    </div>
+    </>
+  );
+}
+
+/* ═══════════════════════════════════ */
+function CompareStyles() {
+  return (
+    <style>{`
+      .cmp-root {
+        --bg:       #0d1117;
+        --surface:  #161c24;
+        --surface2: #1e2630;
+        --border:   rgba(255,255,255,.07);
+        --border2:  rgba(255,255,255,.13);
+        --fg:       #e8e0d0;
+        --muted:    #7a8694;
+        --gold:     #c9a84c;
+        --gold-dim: rgba(201,168,76,.13);
+        --serif:    Georgia, 'Times New Roman', serif;
+
+        font-family: var(--serif);
+        background: var(--bg);
+        color: var(--fg);
+        min-height: 100vh;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 1.5rem 1rem 5rem;
+        display: flex; flex-direction: column; gap: 1.25rem;
+      }
+
+      /* ── header ── */
+      .cmp-header {
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 1rem; padding-bottom: 1.25rem;
+        border-bottom: 1px solid var(--border2);
+        animation: fadeDown .4s ease both;
+      }
+      .cmp-header-left { display: flex; align-items: center; gap: .85rem; }
+      .cmp-icon-wrap {
+        width: 40px; height: 40px; flex-shrink: 0;
+        background: linear-gradient(135deg, #c9a84c, #a07830);
+        border-radius: 11px;
+        display: flex; align-items: center; justify-content: center;
+        color: #fff; box-shadow: 0 2px 10px rgba(201,168,76,.3);
+      }
+      .cmp-title    { font-size: 1.5rem; font-weight: 700; margin: 0 0 .15rem; color: var(--fg); }
+      .cmp-subtitle { font-size: .78rem; color: var(--muted); font-style: italic; margin: 0; }
+
+      /* ── summary stats ── */
+      .cmp-stats {
+        display: grid; grid-template-columns: repeat(5, 1fr); gap: .65rem;
+      }
+      @media (max-width: 560px) { .cmp-stats { grid-template-columns: repeat(3, 1fr); } }
+      @media (max-width: 380px) { .cmp-stats { grid-template-columns: repeat(2, 1fr); } }
+      .cmp-stat {
+        background: var(--surface); border: 1px solid var(--border);
+        border-top: 2px solid var(--accent, var(--border2));
+        border-radius: 12px; padding: .7rem .5rem;
+        text-align: center; transition: border-color .15s;
+        animation: fadeUp .4s ease both;
+      }
+      .cmp-stat:hover { border-color: var(--accent, var(--gold)); }
+      .cmp-stat--total { --accent: var(--gold); }
+      .cmp-stat-value { display: block; font-size: 1.45rem; font-weight: 700; color: var(--accent, var(--fg)); line-height: 1; }
+      .cmp-stat-label { display: block; font-size: .63rem; color: var(--muted); margin-top: .25rem; }
+
+      /* ── school filter cards ── */
+      .cmp-school-filters {
+        display: grid; grid-template-columns: repeat(4, 1fr); gap: .65rem;
+      }
+      @media (max-width: 480px) { .cmp-school-filters { grid-template-columns: repeat(2, 1fr); } }
+      .cmp-school-filter {
+        background: var(--surface); border: 1px solid var(--border);
+        border-left: 3px solid var(--clr);
+        border-radius: 12px; padding: .75rem .85rem;
+        display: flex; align-items: center; gap: .5rem;
+        font-family: var(--serif); color: var(--muted);
+        font-size: .8rem; cursor: pointer;
+        transition: background .15s, border-color .15s, color .15s, transform .15s;
+      }
+      .cmp-school-filter:hover { background: color-mix(in srgb, var(--clr) 8%, transparent); color: var(--fg); transform: translateY(-1px); }
+      .cmp-school-filter--active {
+        background: color-mix(in srgb, var(--clr) 14%, transparent);
+        border-color: var(--clr); color: var(--fg);
+      }
+      .cmp-school-filter-label { flex: 1; font-weight: 600; }
+      .cmp-school-filter-active-txt {
+        font-size: .62rem; color: var(--clr);
+        background: color-mix(in srgb, var(--clr) 15%, transparent);
+        border-radius: 20px; padding: 1px 6px;
+      }
+
+      /* ── toolbar ── */
+      .cmp-toolbar {
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: 14px; padding: 1rem 1.1rem;
+        display: flex; flex-direction: column; gap: .8rem;
+      }
+      .cmp-search-wrap {
+        display: flex; align-items: center; gap: .5rem;
+        background: var(--surface2); border: 1px solid var(--border2);
+        border-radius: 10px; padding: 0 .75rem; height: 38px;
+        transition: border-color .15s;
+      }
+      .cmp-search-wrap:focus-within { border-color: var(--gold); }
+      .cmp-search-icon  { color: var(--muted); flex-shrink: 0; }
+      .cmp-search-input {
+        flex: 1; background: transparent; border: none; outline: none;
+        font-size: .85rem; font-family: var(--serif); color: var(--fg);
+      }
+      .cmp-search-input::placeholder { color: var(--muted); }
+      .cmp-search-clear {
+        background: transparent; border: none; color: var(--muted);
+        font-size: .75rem; cursor: pointer; transition: color .15s;
+      }
+      .cmp-search-clear:hover { color: var(--fg); }
+
+      .cmp-chapter-filters { display: flex; flex-wrap: wrap; gap: .4rem; }
+      .cmp-chapter-btn {
+        background: transparent; border: 1px solid var(--border2);
+        border-radius: 99px; padding: .25rem .7rem;
+        font-size: .72rem; color: var(--muted);
+        font-family: var(--serif); cursor: pointer;
+        transition: border-color .13s, color .13s;
+      }
+      .cmp-chapter-btn:hover { border-color: var(--gold); color: var(--fg); }
+      .cmp-chapter-btn--active { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+      .cmp-chapter-btn--reset { display: inline-flex; align-items: center; gap: .3rem; color: var(--muted); }
+      .cmp-chapter-btn--reset:hover { border-color: #c95a4a; color: #c95a4a; }
+
+      /* ── groups ── */
+      .cmp-groups { display: flex; flex-direction: column; gap: 1rem; }
+      .cmp-group {
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: 16px; overflow: hidden;
+        animation: fadeUp .4s ease both;
+      }
+      .cmp-group-header {
+        display: flex; align-items: center; gap: .75rem;
+        padding: .95rem 1.2rem;
+        border-bottom: 1px solid var(--border);
+        background: linear-gradient(135deg, var(--surface) 0%, rgba(201,168,76,.04) 100%);
+      }
+      .cmp-group-icon {
+        width: 30px; height: 30px;
+        background: linear-gradient(135deg, #c9a84c, #a07830);
+        border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+        color: #fff; flex-shrink: 0;
+      }
+      .cmp-group-title { font-size: .95rem; font-weight: 700; color: var(--fg); display: block; }
+      .cmp-group-count { font-size: .7rem; color: var(--muted); font-style: italic; display: block; margin-top: .1rem; }
+
+      /* ── consensus pill ── */
+      .cmp-consensus-pill {
+        display: inline-flex; align-items: center; gap: .3rem;
+        font-size: .67rem; color: var(--clr);
+        background: color-mix(in srgb, var(--clr) 12%, transparent);
+        border-radius: 20px; padding: 1px 7px;
+      }
+      .cmp-consensus-dot {
+        width: 5px; height: 5px; border-radius: 50%;
+        background: currentColor; flex-shrink: 0;
+      }
+
+      /* ── mobile list ── */
+      .cmp-mobile-list { display: flex; flex-direction: column; gap: 0; }
+      @media (min-width: 768px) { .cmp-mobile-list { display: none; } }
+
+      .cmp-mobile-row {
+        display: flex; align-items: stretch;
+        border-top: 1px solid var(--border);
+        transition: background .13s;
+      }
+      .cmp-mobile-row:hover { background: rgba(255,255,255,.02); }
+      .cmp-mobile-row-bar { width: 3px; flex-shrink: 0; background: var(--status-clr, var(--muted)); }
+      .cmp-mobile-row-body { flex: 1; padding: .9rem .95rem; display: flex; flex-direction: column; gap: .6rem; }
+      .cmp-mobile-row-top { display: flex; align-items: flex-start; justify-content: space-between; gap: .5rem; flex-wrap: wrap; }
+      .cmp-mobile-hadith-title { font-size: .85rem; font-weight: 700; color: var(--fg); line-height: 1.35; }
+      .cmp-mobile-opinions { display: flex; flex-direction: column; gap: .35rem; }
+      .cmp-mobile-opinion { display: flex; align-items: flex-start; gap: .5rem; font-size: .78rem; color: var(--muted); line-height: 1.5; }
+      .cmp-mobile-row-actions { display: flex; gap: .4rem; flex-wrap: wrap; }
+      .cmp-mobile-detail { background: var(--surface2); border-radius: 10px; padding: .85rem; display: flex; flex-direction: column; gap: .75rem; }
+      .cmp-detail-fr     { font-size: .8rem; color: var(--fg); line-height: 1.65; margin: 0; font-style: italic; }
+      .cmp-detail-source { font-size: .75rem; color: var(--muted); margin: 0; }
+      .cmp-detail-schools { display: flex; flex-direction: column; gap: .6rem; }
+      .cmp-detail-schools--grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: .6rem; }
+      @media (max-width: 600px) { .cmp-detail-schools--grid { grid-template-columns: 1fr; } }
+
+      /* ── desktop table ── */
+      .cmp-desktop-table { display: none; }
+      @media (min-width: 768px) { .cmp-desktop-table { display: block; } }
+      .cmp-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+      .cmp-table-head-row {
+        background: var(--surface2);
+        border-bottom: 1px solid var(--border2);
+        position: sticky; top: 0; z-index: 5;
+      }
+      .cmp-th {
+        text-align: left; padding: .75rem 1rem;
+        font-size: .68rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .07em;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+      .cmp-th--hadith { min-width: 280px; }
+      .cmp-th { display: table-cell; }
+      .cmp-th:not(.cmp-th--hadith) { color: var(--clr); min-width: 200px; }
+      .cmp-th-dot {
+        display: inline-block; width: 6px; height: 6px;
+        border-radius: 50%; background: var(--clr);
+        margin-right: .4rem; vertical-align: middle;
+      }
+      .cmp-table-row { border-bottom: 1px solid var(--border); transition: background .12s; }
+      .cmp-table-row:hover { background: rgba(255,255,255,.025); }
+      .cmp-table-row-expanded { background: var(--surface2); }
+      .cmp-td { padding: .85rem 1rem; vertical-align: top; color: var(--fg); }
+      .cmp-td--hadith { padding: .85rem 1rem; vertical-align: top; }
+      .cmp-td-hadith-name { font-size: .85rem; font-weight: 700; color: var(--fg); margin-bottom: .4rem; line-height: 1.35; }
+      .cmp-td-hadith-actions { display: flex; align-items: center; gap: .4rem; flex-wrap: wrap; }
+      .cmp-td-opinion { display: flex; align-items: flex-start; gap: .45rem; font-size: .8rem; color: var(--fg); line-height: 1.55; }
+      .cmp-td-empty   { color: var(--muted); font-style: italic; }
+      .cmp-opinion-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: .45rem; }
+      .cmp-td-expanded { padding: 1rem 1.2rem; }
+      .cmp-expanded-meta {
+        background: var(--surface); border: 1px solid var(--border2);
+        border-radius: 10px; padding: .85rem 1rem;
+        margin-bottom: .85rem; display: flex; flex-direction: column; gap: .4rem;
+      }
+
+      /* ── school detail card ── */
+      .cmp-school-card {
+        background: color-mix(in srgb, var(--clr) 6%, var(--surface));
+        border: 1px solid color-mix(in srgb, var(--clr) 22%, transparent);
+        border-top: 2px solid var(--clr);
+        border-radius: 10px; padding: .85rem;
+        display: flex; flex-direction: column; gap: .5rem;
+      }
+      .cmp-school-card-head { display: flex; align-items: center; gap: .5rem; }
+      .cmp-school-dot {
+        width: 8px; height: 8px; border-radius: 50%;
+        background: var(--clr); flex-shrink: 0;
+      }
+      .cmp-school-card-label { font-size: .78rem; font-weight: 700; color: var(--clr); }
+      .cmp-school-fr     { font-size: .8rem; color: var(--fg); line-height: 1.65; margin: 0; }
+      .cmp-school-empty  { font-size: .78rem; color: var(--muted); font-style: italic; margin: 0; }
+      .cmp-school-ar-wrap {
+        border-top: 1px solid color-mix(in srgb, var(--clr) 18%, transparent);
+        padding-top: .5rem;
+      }
+      .cmp-school-ar { font-size: .85rem; color: var(--fg); line-height: 2; margin: 0; }
+
+      /* ── ghost xs button ── */
+      .cmp-btn-ghost-xs {
+        display: inline-flex; align-items: center; gap: .28rem;
+        background: transparent; border: 1px solid var(--border2);
+        border-radius: 6px; padding: .22rem .6rem;
+        font-size: .7rem; color: var(--muted);
+        font-family: var(--serif); cursor: pointer;
+        transition: border-color .13s, color .13s;
+      }
+      .cmp-btn-ghost-xs:hover { border-color: var(--gold); color: var(--gold); }
+
+      /* ── empty ── */
+      .cmp-empty {
+        background: var(--surface); border: 2px dashed var(--border2);
+        border-radius: 16px; padding: 3rem 2rem;
+        text-align: center; font-size: .9rem; color: var(--muted); font-style: italic;
+      }
+      .cmp-empty-icon { opacity: .3; margin: 0 auto .75rem; display: block; }
+
+      /* ── legend ── */
+      .cmp-legend {
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: 14px; padding: 1rem 1.2rem;
+        display: flex; align-items: flex-start; gap: 1rem; flex-wrap: wrap;
+      }
+      .cmp-legend-title { font-size: .7rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-right: .25rem; align-self: center; }
+      .cmp-legend-item  { display: flex; align-items: center; gap: .5rem; }
+      .cmp-legend-pill  { display: inline-flex; align-items: center; gap: .3rem; font-size: .68rem; color: var(--clr); background: color-mix(in srgb, var(--clr) 12%, transparent); border-radius: 20px; padding: 2px 8px; }
+      .cmp-legend-desc  { font-size: .72rem; color: var(--muted); }
+
+      /* ── animations ── */
+      @keyframes fadeUp   { from{opacity:0;transform:translateY(8px)}  to{opacity:1;transform:translateY(0)} }
+      @keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+    `}</style>
   );
 }
 
