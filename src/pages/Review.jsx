@@ -7,7 +7,8 @@ import { RotateCcw, ChevronLeft, ChevronRight, Eye, EyeOff, Trophy, Sparkles, Br
 
 import { saveReviewResult } from "../lib/hadithProgress";
 import { supabase } from "../lib/supabase";
-import { HADITHS_TAHARA } from "../data/seed_hadiths_tahara";
+
+import { ALL_HADITHS } from "../data/allHadiths";
 
 function toLocalISODate(date = new Date()) {
   const y = date.getFullYear();
@@ -35,7 +36,13 @@ export function Review() {
   const [showFr, setShowFr]   = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving]   = useState(false);
-  const [sessionStats, setSessionStats] = useState({ total: 0, perfect: 0, good: 0, needs_work: 0 });
+  const [sessionStats, setSessionStats] = useState({
+  total: 0,
+  perfect: 0,
+  good: 0,
+  medium: 0,
+  needs_work: 0,
+});
 
   const answeredInSessionRef = useRef(new Set());
 
@@ -49,7 +56,13 @@ export function Review() {
     if (!userId) {
       setHadiths([]); setHadithDueBadge(0); setProgressByNumber({});
       setIdx(0); setShowFr(false); setShowFullArabic(false);
-      setSessionStats({ total: 0, perfect: 0, good: 0, needs_work: 0 });
+      setSessionStats({
+  total: 0,
+  perfect: 0,
+  good: 0,
+  medium: 0,
+  needs_work: 0,
+});
       return;
     }
     setLoading(true);
@@ -71,7 +84,9 @@ export function Review() {
         .in("number", dueNumbers).order("number", { ascending: true });
       if (hadithError) throw hadithError;
       const dbMap = new Map((hadithData || []).map(h => [h.number, h]));
-      const merged = dueNumbers.map(n => dbMap.get(n) || HADITHS_TAHARA.find(x => x.number === n)).filter(Boolean);
+      const merged = dueNumbers.map(n => 
+  dbMap.get(n) || ALL_HADITHS.find(x => x.number === n)
+).filter(Boolean);
       const filtered = merged.filter(item => !answeredInSessionRef.current.has(item.number));
       setHadiths(filtered); setHadithDueBadge(filtered.length);
       setProgressByNumber(progMap); setIdx(0); setShowFr(false); setShowFullArabic(false);
@@ -99,11 +114,12 @@ export function Review() {
     const num = h.number;
     setSaving(true);
     setSessionStats(prev => ({
-      total: prev.total + 1,
-      perfect: prev.perfect + (quality === 5 ? 1 : 0),
-      good: prev.good + (quality === 4 ? 1 : 0),
-      needs_work: prev.needs_work + (quality < 3 ? 1 : 0),
-    }));
+  total: prev.total + 1,
+  perfect: prev.perfect + (quality === 5 ? 1 : 0),
+  good: prev.good + (quality === 4 ? 1 : 0),
+  medium: prev.medium + (quality === 3 ? 1 : 0),
+  needs_work: prev.needs_work + (quality < 3 ? 1 : 0),
+}));
     answeredInSessionRef.current.add(num);
     setHadiths(prev => {
       const next = prev.filter(item => item.number !== num);
@@ -163,6 +179,7 @@ export function Review() {
             { label: "Notés",    value: sessionStats.total,      accent: "#4a9fc8" },
             { label: "Parfait",  value: sessionStats.perfect,    accent: "#4a9f82" },
             { label: "Fluide",   value: sessionStats.good,       accent: "#c9a84c" },
+            { label: "Avec effort",   value: sessionStats.medium,     accent: "#9f7ae0" },
             { label: "À revoir", value: sessionStats.needs_work, accent: "#c95a4a" },
           ].map(s => (
             <div key={s.label} className="rv-stat" style={{ "--accent": s.accent }}>
@@ -380,9 +397,16 @@ function ReviewStyles() {
 
       /* ── stats ── */
       .rv-stats {
-        display: grid; grid-template-columns: repeat(4, 1fr); gap: .7rem;
-      }
-      @media (max-width: 400px) { .rv-stats { grid-template-columns: repeat(2, 1fr); } }
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: .7rem;
+}
+@media (max-width: 700px) {
+  .rv-stats { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 400px) {
+  .rv-stats { grid-template-columns: repeat(2, 1fr); }
+}
       .rv-stat {
         background: var(--surface);
         border: 1px solid var(--border);

@@ -1,7 +1,7 @@
 // /src/components/Navbar.jsx
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { HADITHS_TAHARA } from "../data/seed_hadiths_tahara";
+import { ALL_HADITHS } from "../data/allHadiths";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
@@ -50,7 +50,7 @@ export function Navbar() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const totalHadiths = HADITHS_TAHARA.length;
+  const totalHadiths = ALL_HADITHS.length;
 
   const [open, setOpen] = useState(false);
   const [goto, setGoto] = useState("");
