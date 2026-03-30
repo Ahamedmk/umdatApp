@@ -1,36 +1,12 @@
 // src/pages/Quiz.jsx
 import React, { useMemo, useState, useEffect } from "react";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
 import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
+  Select, SelectTrigger, SelectValue, SelectContent, SelectItem,
 } from "@/components/ui/select";
-
 import {
-  Brain,
-  CheckCircle2,
-  XCircle,
-  Lightbulb,
-  Moon,
-  Sun,
-  Trophy,
-  Target,
-  RotateCcw,
-  Sparkles,
+  Brain, CheckCircle2, XCircle, Lightbulb, Moon, Sun,
+  Trophy, Target, RotateCcw, Sparkles,
 } from "lucide-react";
 
 import { HADITHS_TAHARA } from "@/data/seed_hadiths_tahara";
@@ -38,649 +14,702 @@ import { QUIZ_QUESTIONS_1_15 } from "@/data/quiz_questions_1_15";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
 
+/* ══════════════════════════════════════════ */
 export function Quiz() {
   const { user } = useAuth();
 
-  const [filterN, setFilterN] = useState("all");
-  const [index, setIndex] = useState(0);
-  const [selected, setSelected] = useState(null);
-  const [score, setScore] = useState(0);
-  const [done, setDone] = useState(false);
-  const [dark, setDark] = useState(false);
-  const [showHint, setShowHint] = useState(false);
+  const [filterN, setFilterN]           = useState("all");
+  const [index, setIndex]               = useState(0);
+  const [selected, setSelected]         = useState(null);
+  const [score, setScore]               = useState(0);
+  const [done, setDone]                 = useState(false);
+  const [dark, setDark]                 = useState(false);
+  const [showHint, setShowHint]         = useState(false);
   const [showFrenchRef, setShowFrenchRef] = useState(false);
-
-  const [learnedNumbers, setLearnedNumbers] = useState([]); // hadith appris
+  const [learnedNumbers, setLearnedNumbers] = useState([]);
   const [loadingLearned, setLoadingLearned] = useState(true);
 
-  // Thème (light / dark) persistant
+  /* theme */
   useEffect(() => {
     const pref = localStorage.getItem("theme");
-    const prefersDark =
-      typeof window !== "undefined" &&
-      window.matchMedia?.("(prefers-color-scheme: dark)").matches;
-
+    const prefersDark = typeof window !== "undefined" && window.matchMedia?.("(prefers-color-scheme: dark)").matches;
     const enable = pref ? pref === "dark" : prefersDark;
     setDark(enable);
     document.documentElement.classList.toggle("dark", enable);
   }, []);
 
-  const toggleTheme = (checked) => {
+  const toggleTheme = v => {
+    const checked = typeof v === "boolean" ? v : !dark;
     setDark(checked);
     document.documentElement.classList.toggle("dark", checked);
     localStorage.setItem("theme", checked ? "dark" : "light");
   };
 
-  // 🔥 Charger la liste des hadiths APPRIS depuis user_hadith_progress
+  /* load learned hadiths */
   useEffect(() => {
     let active = true;
-
-    async function loadLearned() {
+    async function load() {
       setLoadingLearned(true);
-
       try {
-        if (!user) {
-          setLearnedNumbers([]);
-          return;
-        }
-
+        if (!user) { if (active) setLearnedNumbers([]); return; }
         const { data, error } = await supabase
-          .from("user_hadith_progress")
-          .select("hadith_number, status")
-          .eq("user_id", user.id)
-          .eq("status", "learned"); // ⚠️ on ne prend que les appris
-
+          .from("user_hadith_progress").select("hadith_number, status")
+          .eq("user_id", user.id).eq("status", "learned");
         if (error) throw error;
-
-        const nums = Array.from(
-          new Set((data || []).map((r) => r.hadith_number)),
-        ).sort((a, b) => a - b);
-
+        const nums = [...new Set((data || []).map(r => r.hadith_number))].sort((a,b)=>a-b);
         if (active) {
           setLearnedNumbers(nums);
-          // si le filtre actuel ne fait pas partie des appris → reset
-          if (
-            nums.length === 0 ||
-            (filterN !== "all" && !nums.includes(parseInt(filterN, 10)))
-          ) {
-            setFilterN("all");
-            setIndex(0);
+          if (nums.length === 0 || (filterN !== "all" && !nums.includes(parseInt(filterN,10)))) {
+            setFilterN("all"); setIndex(0);
           }
         }
-      } catch (e) {
-        console.error("Erreur loadLearned:", e);
-        if (active) setLearnedNumbers([]);
-      } finally {
-        if (active) setLoadingLearned(false);
-      }
+      } catch(e) { console.error(e); if (active) setLearnedNumbers([]); }
+      finally { if (active) setLoadingLearned(false); }
     }
-
-    loadLearned();
-    return () => {
-      active = false;
-    };
+    load();
+    return () => { active = false; };
   }, [user?.id]);
 
-  // Pool de questions filtré :
-  // 1) seulement les hadiths APPRIS
-  // 2) + filtre optionnel sur un numéro précis
   const pool = useMemo(() => {
     if (!learnedNumbers.length) return [];
-
-    let base = QUIZ_QUESTIONS_1_15.filter((q) => learnedNumbers.includes(q.n));
-
-    if (filterN !== "all") {
-      const num = parseInt(filterN, 10);
-      base = base.filter((q) => q.n === num);
-    }
-
+    let base = QUIZ_QUESTIONS_1_15.filter(q => learnedNumbers.includes(q.n));
+    if (filterN !== "all") base = base.filter(q => q.n === parseInt(filterN,10));
     return base;
   }, [learnedNumbers, filterN]);
 
-  const current = pool[index];
-
+  const current  = pool[index];
   const answered = index + (done ? 1 : 0);
-  const progressValue = pool.length
-    ? Math.round((answered / pool.length) * 100)
-    : 0;
-  const accuracy = answered ? Math.round((score / answered) * 100) : 0;
+  const progressPct = pool.length ? Math.round((answered / pool.length) * 100) : 0;
+  const accuracy    = answered ? Math.round((score / answered) * 100) : 0;
 
   const onValidate = () => {
     if (selected == null || !current) return;
-    const ok = selected === current.correctIndex;
-    setScore((s) => s + (ok ? 1 : 0));
+    setScore(s => s + (selected === current.correctIndex ? 1 : 0));
     setDone(true);
   };
 
   const onNext = () => {
     if (!pool.length) return;
     if (index + 1 < pool.length) {
-      setIndex((i) => i + 1);
-      setSelected(null);
-      setDone(false);
-      setShowHint(false);
-      setShowFrenchRef(false);
+      setIndex(i => i + 1); setSelected(null); setDone(false);
+      setShowHint(false); setShowFrenchRef(false);
     } else {
-      // fin de quiz → on reset la session
-      setIndex(0);
-      setSelected(null);
-      setDone(false);
-      setScore(0);
-      setShowHint(false);
-      setShowFrenchRef(false);
+      setIndex(0); setSelected(null); setDone(false); setScore(0);
+      setShowHint(false); setShowFrenchRef(false);
     }
   };
 
   const onRestart = () => {
-    setIndex(0);
-    setSelected(null);
-    setDone(false);
-    setScore(0);
-    setShowHint(false);
-    setShowFrenchRef(false);
+    setIndex(0); setSelected(null); setDone(false); setScore(0);
+    setShowHint(false); setShowFrenchRef(false);
   };
 
-  const handleFilterChange = (v) => {
-    setFilterN(v);
-    setIndex(0);
-    setSelected(null);
-    setDone(false);
-    setScore(0);
-    setShowHint(false);
-    setShowFrenchRef(false);
+  const handleFilter = v => {
+    setFilterN(v); setIndex(0); setSelected(null); setDone(false);
+    setScore(0); setShowHint(false); setShowFrenchRef(false);
   };
 
-  useEffect(() => {
-    setShowFrenchRef(false);
-  }, [index, filterN]);
+  useEffect(() => { setShowFrenchRef(false); }, [index, filterN]);
 
-  // Styles pour les options (identiques à ta version)
-  const getOptionStyle = (isSelected, isCorrect, isWrong) => {
-    if (done) {
-      if (isCorrect) {
-        return {
-          backgroundImage: "linear-gradient(135deg,#22c55e,#16a34a)",
-          color: "#ffffff",
-          border: "none",
-        };
-      }
-      if (isWrong) {
-        return {
-          backgroundImage: "linear-gradient(135deg,#f97373,#ef4444)",
-          color: "#ffffff",
-          border: "none",
-        };
-      }
-      return dark
-        ? {
-            backgroundColor: "#020617",
-            color: "#e5e7eb",
-            border: "1px solid #1f2937",
-          }
-        : {
-            backgroundColor: "#ffffff",
-            color: "#0f172a",
-            border: "1px solid #e2e8f0",
-          };
-    }
+  const isCorrect = i => done && i === current?.correctIndex;
+  const isWrong   = i => done && selected === i && i !== current?.correctIndex;
 
-    if (isSelected) {
-      return dark
-        ? {
-            backgroundImage: "linear-gradient(135deg,#4c1d95,#db2777)",
-            color: "#ffffff",
-            border: "none",
-          }
-        : {
-            backgroundImage: "linear-gradient(135deg,#8b5cf6,#ec4899)",
-            color: "#ffffff",
-            border: "none",
-          };
-    }
-
-    return dark
-      ? {
-          backgroundColor: "#020617",
-          color: "#e5e7eb",
-          border: "1px solid #1f2937",
-        }
-      : {
-          backgroundColor: "#ffffff",
-          color: "#0f172a",
-          border: "1px solid #e2e8f0",
-        };
-  };
-
-  const getRadioStyle = (isSelected, isCorrect, isWrong) => {
-    if (done) {
-      if (isCorrect) {
-        return {
-          borderColor: "#22c55e",
-          backgroundColor: "#22c55e",
-          color: "#ffffff",
-        };
-      }
-      if (isWrong) {
-        return {
-          borderColor: "#ef4444",
-          backgroundColor: "#ef4444",
-          color: "#ffffff",
-        };
-      }
-      return dark
-        ? {
-            borderColor: "#4b5563",
-            backgroundColor: "transparent",
-            color: "#e5e7eb",
-          }
-        : {
-            borderColor: "#cbd5f5",
-            backgroundColor: "transparent",
-            color: "#0f172a",
-          };
-    }
-
-    if (isSelected) {
-      return dark
-        ? {
-            borderColor: "#e5e7eb",
-            backgroundColor: "#e5e7eb33",
-            color: "#e5e7eb",
-          }
-        : {
-            borderColor: "#4c1d95",
-            backgroundColor: "#4c1d95",
-            color: "#ffffff",
-          };
-    }
-
-    return dark
-      ? {
-          borderColor: "#4b5563",
-          backgroundColor: "transparent",
-          color: "#e5e7eb",
-        }
-      : {
-          borderColor: "#cbd5f5",
-          backgroundColor: "transparent",
-          color: "#0f172a",
-        };
-  };
-
-  // ================== RENDER ==================
   return (
-    <div className="min-h-screen w-full overflow-x-clip bg-gradient-to-br from-slate-50 via-purple-50 to-pink-50 dark:from-slate-950 dark:via-purple-950 dark:to-pink-950 px-4 sm:px-6 py-6 transition-colors duration-300">
-      <div className="max-w-4xl w-full mx-auto space-y-6">
-        {/* HEADER */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="p-3 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl shadow-lg shrink-0">
-              <Brain className="h-6 w-6 text-white" />
-            </div>
-            <div className="min-w-0">
-              <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 truncate">
-                Quiz Interactif
-              </h2>
-              <p className="text-sm text-slate-600 dark:text-slate-400">
-                Teste tes connaissances sur les hadiths que tu as déjà appris
-              </p>
+    <>
+      <QuizStyles dark={dark} />
+      <div className="qz-root">
+
+        {/* ── Header ── */}
+        <header className="qz-header">
+          <div className="qz-header-left">
+            <div className="qz-icon-wrap"><Brain size={17} /></div>
+            <div>
+              <h1 className="qz-title">Quiz Interactif</h1>
+              <p className="qz-subtitle">Teste tes connaissances sur les hadiths appris</p>
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
-            <Select value={filterN} onValueChange={handleFilterChange}>
-              <SelectTrigger className="w-full sm:w-44 bg-white dark:bg-slate-800">
+          <div className="qz-header-right">
+            <Select value={filterN} onValueChange={handleFilter}>
+              <SelectTrigger className="qz-select-trigger">
                 <SelectValue placeholder="Tous" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tous (appris)</SelectItem>
-                {learnedNumbers.map((n) => (
-                  <SelectItem key={n} value={String(n)}>
-                    Hadith {n}
-                  </SelectItem>
+              <SelectContent className="qz-select-content">
+                <SelectItem value="all">Tous les hadiths appris</SelectItem>
+                {learnedNumbers.map(n => (
+                  <SelectItem key={n} value={String(n)}>Hadith {n}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
 
-            <div className="flex items-center justify-between sm:justify-center gap-2 bg-white dark:bg-slate-800 px-3 py-2 rounded-full shadow-sm border border-slate-200 dark:border-slate-700">
-              <Sun className="h-4 w-4 text-slate-600 dark:text-slate-400" />
-              <Switch
-                checked={dark}
-                onCheckedChange={toggleTheme}
-                className="scale-90"
-              />
-              <Moon className="h-4 w-4 text-slate-600 dark:text-slate-400" />
+            <div className="qz-theme-toggle">
+              <Sun size={12} />
+              <Switch checked={dark} onCheckedChange={toggleTheme} />
+              <Moon size={12} />
             </div>
+          </div>
+        </header>
+
+        {/* ── Stats ── */}
+        <div className="qz-stats">
+          {[
+            { icon: Target,   label: "Questions vues",   value: answered,  accent: "#9f7ae0" },
+            { icon: Trophy,   label: "Bonnes réponses",  value: score,     accent: "#4a9f82" },
+            { icon: Sparkles, label: "Précision",        value: `${isNaN(accuracy) ? 0 : accuracy}%`, accent: "#4a9fc8" },
+            { icon: RotateCcw,label: "Dispo",            value: pool.length, accent: "#c9a84c" },
+          ].map(s => {
+            const Icon = s.icon;
+            return (
+              <div key={s.label} className="qz-stat" style={{ "--accent": s.accent }}>
+                <Icon size={14} className="qz-stat-icon" />
+                <span className="qz-stat-value">{s.value}</span>
+                <span className="qz-stat-label">{s.label}</span>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* ── Progress ── */}
+        <div className="qz-progress-wrap">
+          <div className="qz-progress-label">
+            <span>Progression</span>
+            <span className="qz-progress-pct">{progressPct}%</span>
+          </div>
+          <div className="qz-progress-track">
+            <div className="qz-progress-fill" style={{ width: `${progressPct}%` }} />
           </div>
         </div>
 
-        {/* STATS */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <Card className="bg-gradient-to-br from-purple-500 to-pink-600 border-0 text-white shadow-lg">
-            <CardContent className="pt-4 pb-3 text-center">
-              <Target className="h-5 w-5 mx-auto mb-1 opacity-90" />
-              <div className="text-2xl font-bold mb-1">{answered}</div>
-              <div className="text-xs opacity-90">Questions vues</div>
-            </CardContent>
-          </Card>
+        {/* ── Empty / loading states ── */}
+        {loadingLearned && (
+          <div className="qz-state-card qz-state-card--pulse">
+            <Brain size={28} className="qz-state-icon" />
+            <p>Chargement de tes hadiths appris…</p>
+          </div>
+        )}
 
-          <Card className="bg-gradient-to-br from-emerald-500 to-teal-600 border-0 text-white shadow-lg">
-            <CardContent className="pt-4 pb-3 text-center">
-              <Trophy className="h-5 w-5 mx-auto mb-1 opacity-90" />
-              <div className="text-2xl font-bold mb-1">{score}</div>
-              <div className="text-xs opacity-90">Bonnes réponses</div>
-            </CardContent>
-          </Card>
+        {!loadingLearned && !user && (
+          <div className="qz-state-card">
+            <Brain size={28} className="qz-state-icon" />
+            <p className="qz-state-title">Connecte-toi pour accéder au quiz.</p>
+            <p className="qz-state-sub">Le quiz utilise ta progression personnelle.</p>
+          </div>
+        )}
 
-          <Card className="bg-gradient-to-br from-blue-500 to-indigo-600 border-0 text-white shadow-lg">
-            <CardContent className="pt-4 pb-3 text-center">
-              <Sparkles className="h-5 w-5 mx-auto mb-1 opacity-90" />
-              <div className="text-2xl font-bold mb-1">
-                {isNaN(accuracy) ? 0 : accuracy}%
-              </div>
-              <div className="text-xs opacity-90">Précision</div>
-            </CardContent>
-          </Card>
+        {!loadingLearned && user && learnedNumbers.length === 0 && (
+          <div className="qz-state-card qz-state-card--dashed">
+            <Brain size={28} className="qz-state-icon" />
+            <p className="qz-state-title">Aucun hadith appris pour l'instant.</p>
+            <p className="qz-state-sub">
+              Va dans <strong>Apprendre</strong>, note un hadith <strong>4 ou 5</strong>, puis reviens ici.
+            </p>
+          </div>
+        )}
 
-          <Card className="bg-gradient-to-br from-orange-500 to-red-500 border-0 text-white shadow-lg">
-            <CardContent className="pt-4 pb-3 text-center">
-              <RotateCcw className="h-5 w-5 mx-auto mb-1 opacity-90" />
-              <div className="text-2xl font-bold mb-1">{pool.length}</div>
-              <div className="text-xs opacity-90">Questions dispo</div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* PROGRESSION */}
-        <Card className="border-slate-200 dark:border-slate-700 shadow-lg bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
-          <CardContent className="pt-6">
-            <div className="space-y-3">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-600 dark:text-slate-400">
-                  Progression du quiz
-                </span>
-                <span className="font-semibold text-slate-800 dark:text-slate-200">
-                  {progressValue}%
-                </span>
-              </div>
-              <Progress value={progressValue} className="h-3" />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* CAS : pas connecté ou aucun hadith appris */}
-        {loadingLearned ? (
-          <Card className="border-slate-200 dark:border-slate-700 shadow-xl">
-            <CardContent className="py-12 text-center animate-pulse">
-              <Brain className="h-10 w-10 text-slate-400 mx-auto mb-3" />
-              <p className="text-slate-600 dark:text-slate-400 text-sm">
-                Chargement de tes hadiths appris...
-              </p>
-            </CardContent>
-          </Card>
-        ) : !user ? (
-          <Card className="border-slate-200 dark:border-slate-700 shadow-xl">
-            <CardContent className="py-12 text-center space-y-3">
-              <Brain className="h-10 w-10 text-slate-400 mx-auto mb-2" />
-              <p className="text-slate-700 dark:text-slate-200 font-semibold">
-                Connecte-toi pour accéder au quiz.
-              </p>
-              <p className="text-sm text-slate-500 dark:text-slate-400">
-                Le quiz utilise ta progression personnelle (table
-                <code className="mx-1">user_hadith_progress</code>).
-              </p>
-            </CardContent>
-          </Card>
-        ) : learnedNumbers.length === 0 ? (
-          <Card className="border-dashed border-2 border-slate-300 dark:border-slate-700">
-            <CardContent className="py-12 text-center space-y-3">
-              <Brain className="h-10 w-10 text-slate-400 mx-auto mb-2" />
-              <p className="text-slate-700 dark:text-slate-200 font-semibold">
-                Tu n&apos;as pas encore de hadith marqué comme appris.
-              </p>
-              <p className="text-sm text-slate-500 dark:text-slate-400">
-                Va dans la page <span className="font-semibold">Apprendre</span>
-                , auto-évalue un hadith avec une note <strong>4 ou 5</strong>,
-                puis reviens ici pour l&apos;avoir en quiz.
-              </p>
-            </CardContent>
-          </Card>
-        ) : null}
-
-        {/* CARTE PRINCIPALE QUIZ */}
-        {pool.length === 0 || !current ? null : (
+        {/* ── Main quiz card ── */}
+        {pool.length > 0 && current && (
           <>
-            <Card className="border-slate-200 dark:border-slate-700 shadow-xl bg-white dark:bg-slate-800 overflow-hidden relative">
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5" />
+            <div className="qz-question-card">
+              <div className="qz-question-card-topline" />
 
-              <CardHeader className="relative z-10">
-                <div className="flex items-center justify-between gap-2 mb-2 min-w-0">
-                  <Badge variant="secondary" className="rounded-full shrink-0">
-                    Question {index + 1} / {pool.length}
-                  </Badge>
-                  <Badge variant="outline" className="text-xs shrink-0">
-                    Hadith {current.n}
-                  </Badge>
-                </div>
-                <CardTitle className="text-xl text-slate-800 dark:text-slate-100 break-words text-pretty">
-                  {current.q}
-                </CardTitle>
-              </CardHeader>
+              {/* Question meta */}
+              <div className="qz-question-meta">
+                <span className="qz-badge">Q {index + 1} / {pool.length}</span>
+                <span className="qz-badge qz-badge--hadith">Hadith {current.n}</span>
+              </div>
 
-              <Separator className="bg-slate-200 dark:bg-slate-700" />
+              <p className="qz-question-text">{current.q}</p>
 
-              <CardContent className="space-y-6 pt-6 relative z-10">
-                {/* OPTIONS */}
-                <div className="grid gap-3">
-                  {current.options.map((opt, i) => {
-                    const isSelected = selected === i;
-                    const isCorrect = done && i === current.correctIndex;
-                    const isWrong =
-                      done && isSelected && i !== current.correctIndex;
-
-                    const buttonStyle = getOptionStyle(
-                      isSelected,
-                      isCorrect,
-                      isWrong,
-                    );
-                    const radioStyle = getRadioStyle(
-                      isSelected,
-                      isCorrect,
-                      isWrong,
-                    );
-
-                    return (
-                      <Button
-                        key={i}
-                        onClick={() => !done && setSelected(i)}
-                        disabled={done}
-                        className="justify-start text-left h-auto py-4 px-4 transition-all min-w-0 whitespace-normal break-words text-pretty rounded-xl"
-                        style={buttonStyle}
-                      >
-                        <div className="flex items-start gap-3 w-full">
-                          <div
-                            className="flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center"
-                            style={radioStyle}
-                          >
-                            {isCorrect && (
-                              <CheckCircle2 className="h-4 w-4 text-white" />
-                            )}
-                            {isWrong && (
-                              <XCircle className="h-4 w-4 text-white" />
-                            )}
-                          </div>
-                          <span className="flex-1 min-w-0 break-words">
-                            {opt}
-                          </span>
-                        </div>
-                      </Button>
-                    );
-                  })}
-                </div>
-
-                {/* ACTIONS */}
-                <div className="grid grid-cols-1 sm:flex sm:flex-wrap sm:items-center gap-2">
-                  {!done ? (
-                    <>
-                      <Button
-                        onClick={onValidate}
-                        disabled={selected == null}
-                        className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white shadow-md"
-                      >
-                        Valider ma réponse
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setShowHint(!showHint)}
-                        className="w-full sm:w-auto gap-2 text-black "
-                      >
-                        <Lightbulb className="h-4 w-4 shrink-0 " />
-                        {showHint ? "Masquer" : "Indice"}
-                      </Button>
-                    </>
-                  ) : (
-                    <Button
-                      onClick={onNext}
-                      className="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-md"
-                    >
-                      {index + 1 < pool.length
-                        ? "Question suivante →"
-                        : "Recommencer le quiz"}
-                    </Button>
-                  )}
-                </div>
-
-                {/* INDICE */}
-                {showHint && !done && (
-                  <Card className="bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
-                    <CardContent className="pt-4">
-                      <div className="flex items-start gap-2">
-                        <Lightbulb className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
-                        <div className="text-sm text-blue-800 dark:text-blue-200">
-                          Relis le hadith {current.n} et son explication pour
-                          retrouver la bonne réponse.
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-
-                {/* EXPLICATION APRES VALIDATION */}
-                {done && (
-                  <Card
-                    className={
-                      selected === current.correctIndex
-                        ? "bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800"
-                        : "bg-red-50 dark:bg-red-950 border-red-200 dark:border-red-800"
-                    }
-                  >
-                    <CardContent className="pt-4">
-                      <div className="flex items-start gap-2">
-                        {selected === current.correctIndex ? (
-                          <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
-                        ) : (
-                          <XCircle className="h-5 w-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
-                        )}
-                        <div className="min-w-0">
-                          <div
-                            className={`text-sm font-semibold mb-1 ${
-                              selected === current.correctIndex
-                                ? "text-green-800 dark:text-green-200"
-                                : "text-red-800 dark:text-red-200"
-                            }`}
-                          >
-                            {selected === current.correctIndex
-                              ? "Excellente réponse !"
-                              : "Pas tout à fait..."}
-                          </div>
-                          <div
-                            className={`text-sm break-words text-pretty ${
-                              selected === current.correctIndex
-                                ? "text-green-700 dark:text-green-300"
-                                : "text-red-700 dark:text-red-300"
-                            }`}
-                          >
-                            {current.explain}
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* RAPPEL HADITH */}
-            <Card className="border-slate-200 dark:border-slate-700 shadow-lg bg-white dark:bg-slate-800">
-              <CardHeader>
-                <CardTitle className="text-base flex items-center gap-2">
-                  <Sparkles className="h-4 w-4 text-yellow-500 shrink-0" />
-                  <span className="truncate">Rappel — Hadith {current.n}</span>
-                </CardTitle>
-                <CardDescription>
-                  Contexte pour ancrer ta compréhension
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {(() => {
-                  const h = HADITHS_TAHARA.find((x) => x.number === current.n);
-                  if (!h) {
-                    return (
-                      <div className="text-sm text-slate-500 dark:text-slate-400">
-                        —
-                      </div>
-                    );
-                  }
-
+              {/* Options */}
+              <div className="qz-options">
+                {current.options.map((opt, i) => {
+                  const ok  = isCorrect(i);
+                  const bad = isWrong(i);
+                  const sel = !done && selected === i;
                   return (
-                    <>
-                      <div className="space-y-3 max-h-64 overflow-y-auto pr-2">
-                        <div
-                          dir="rtl"
-                          className="p-4 rounded-lg bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900 border border-slate-200 dark:border-slate-700 font-serif text-lg leading-loose break-words"
-                        >
-                          {h.arabic_text}
-                        </div>
-
-                        {showFrenchRef && (
-                          <div className="p-4 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-300 break-words">
-                            {h.french_text}
-                          </div>
-                        )}
+                    <button
+                      key={i}
+                      className={`qz-option ${sel ? "qz-option--selected" : ""} ${ok ? "qz-option--correct" : ""} ${bad ? "qz-option--wrong" : ""}`}
+                      onClick={() => !done && setSelected(i)}
+                      disabled={done}
+                    >
+                      <div className={`qz-option-radio ${sel ? "qz-option-radio--sel" : ""} ${ok ? "qz-option-radio--ok" : ""} ${bad ? "qz-option-radio--bad" : ""}`}>
+                        {ok  && <CheckCircle2 size={12} />}
+                        {bad && <XCircle size={12} />}
+                        {sel && !done && <div className="qz-option-radio-dot" />}
                       </div>
-
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setShowFrenchRef((v) => !v)}
-                        className="mt-2 text-black"
-                      >
-                        {showFrenchRef
-                          ? "Masquer la traduction"
-                          : "Afficher la traduction"}
-                      </Button>
-                    </>
+                      <span className="qz-option-text">{opt}</span>
+                    </button>
                   );
-                })()}
-              </CardContent>
-            </Card>
+                })}
+              </div>
 
-            {/* BOUTON RESTART GLOBAL */}
-            <div className="flex flex-col sm:flex-row justify-center gap-2">
-              <Button
-                variant="outline"
-                onClick={onRestart}
-                className="w-full sm:w-auto gap-2 text-black"
-              >
-                <RotateCcw className="h-4 w-4" />
-                Recommencer ce quiz
-              </Button>
+              {/* Actions */}
+              <div className="qz-actions">
+                {!done ? (
+                  <>
+                    <button
+                      className="qz-btn-validate"
+                      onClick={onValidate}
+                      disabled={selected == null}
+                    >
+                      Valider ma réponse
+                    </button>
+                    <button
+                      className="qz-btn-hint"
+                      onClick={() => setShowHint(v => !v)}
+                    >
+                      <Lightbulb size={13} /> {showHint ? "Masquer l'indice" : "Indice"}
+                    </button>
+                  </>
+                ) : (
+                  <button className="qz-btn-next" onClick={onNext}>
+                    {index + 1 < pool.length ? "Question suivante →" : "Recommencer le quiz"}
+                  </button>
+                )}
+              </div>
+
+              {/* Hint */}
+              {showHint && !done && (
+                <div className="qz-hint">
+                  <Lightbulb size={14} className="qz-hint-icon" />
+                  <span>Relis le hadith {current.n} et son explication pour retrouver la bonne réponse.</span>
+                </div>
+              )}
+
+              {/* Result feedback */}
+              {done && (
+                <div className={`qz-feedback ${selected === current.correctIndex ? "qz-feedback--ok" : "qz-feedback--ko"}`}>
+                  <div className="qz-feedback-bar" />
+                  <div className="qz-feedback-body">
+                    {selected === current.correctIndex
+                      ? <CheckCircle2 size={15} className="qz-feedback-icon" />
+                      : <XCircle size={15} className="qz-feedback-icon" />
+                    }
+                    <div>
+                      <p className="qz-feedback-title">
+                        {selected === current.correctIndex ? "Excellente réponse !" : "Pas tout à fait…"}
+                      </p>
+                      {current.explain && <p className="qz-feedback-explain">{current.explain}</p>}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
+
+            {/* ── Hadith recall card ── */}
+            <div className="qz-recall-card">
+              <div className="qz-recall-header">
+                <Sparkles size={13} className="qz-recall-sparkle" />
+                <span>Rappel — Hadith {current.n}</span>
+              </div>
+
+              {(() => {
+                const h = HADITHS_TAHARA.find(x => x.number === current.n);
+                if (!h) return <p className="qz-recall-empty">—</p>;
+                return (
+                  <>
+                    <div className="qz-arabic-block">
+                      <p className="qz-arabic" dir="rtl">{h.arabic_text}</p>
+                    </div>
+                    {showFrenchRef && (
+                      <div className="qz-french-block">
+                        <p className="qz-french">{h.french_text}</p>
+                      </div>
+                    )}
+                    <button className="qz-toggle-fr-btn" onClick={() => setShowFrenchRef(v => !v)}>
+                      {showFrenchRef ? "Masquer la traduction" : "Afficher la traduction"}
+                    </button>
+                  </>
+                );
+              })()}
+            </div>
+
+            {/* ── Restart ── */}
+            <button className="qz-restart-btn" onClick={onRestart}>
+              <RotateCcw size={14} /> Recommencer ce quiz
+            </button>
           </>
         )}
+
       </div>
-    </div>
+    </>
+  );
+}
+
+/* ═══════════════════════════════════════
+   STYLES — full dark / light
+═══════════════════════════════════════ */
+function QuizStyles({ dark }) {
+  const light = {
+    bg:        "#faf6ee",
+    surface:   "#fff8ed",
+    surface2:  "#f3ead8",
+    border:    "rgba(160,120,48,.15)",
+    border2:   "rgba(160,120,48,.28)",
+    fg:        "#2c1f0e",
+    muted:     "#7a6a48",
+    gold:      "#a07830",
+    goldDim:   "rgba(160,120,48,.12)",
+    accent:    "#6a3acd",   /* violet for quiz */
+    accentDim: "rgba(106,58,205,.1)",
+    green:     "#3d7a5f",
+    greenDim:  "rgba(61,122,95,.12)",
+    danger:    "#b54a3a",
+  };
+  const d = {
+    bg:        "#0d1117",
+    surface:   "#161c24",
+    surface2:  "#1e2630",
+    border:    "rgba(255,255,255,.07)",
+    border2:   "rgba(255,255,255,.13)",
+    fg:        "#e8e0d0",
+    muted:     "#7a8694",
+    gold:      "#c9a84c",
+    goldDim:   "rgba(201,168,76,.13)",
+    accent:    "#9f7ae0",
+    accentDim: "rgba(159,122,224,.12)",
+    green:     "#4a9f82",
+    greenDim:  "rgba(74,159,130,.12)",
+    danger:    "#c95a4a",
+  };
+  const t = dark ? d : light;
+
+  return (
+    <style>{`
+      .qz-root {
+        --bg:         ${t.bg};
+        --surface:    ${t.surface};
+        --surface2:   ${t.surface2};
+        --border:     ${t.border};
+        --border2:    ${t.border2};
+        --fg:         ${t.fg};
+        --muted:      ${t.muted};
+        --gold:       ${t.gold};
+        --gold-dim:   ${t.goldDim};
+        --accent:     ${t.accent};
+        --accent-dim: ${t.accentDim};
+        --green:      ${t.green};
+        --green-dim:  ${t.greenDim};
+        --danger:     ${t.danger};
+        --serif:      Georgia, 'Times New Roman', serif;
+
+        font-family: var(--serif);
+        background: var(--bg);
+        color: var(--fg);
+        min-height: 100vh;
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 1.5rem 1rem 5rem;
+        display: flex; flex-direction: column; gap: 1.25rem;
+        transition: background .3s, color .3s;
+      }
+
+      /* ── header ── */
+      .qz-header {
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 1rem; padding-bottom: 1.25rem;
+        border-bottom: 1px solid var(--border2);
+        flex-wrap: wrap;
+        animation: fadeDown .4s ease both;
+      }
+      .qz-header-left { display: flex; align-items: center; gap: .85rem; }
+      .qz-icon-wrap {
+        width: 40px; height: 40px; flex-shrink: 0;
+        background: linear-gradient(135deg, var(--accent), #5a2aad);
+        border-radius: 11px;
+        display: flex; align-items: center; justify-content: center;
+        color: #fff; box-shadow: 0 2px 10px rgba(159,122,224,.35);
+        transition: background .3s;
+      }
+      .qz-title    { font-size: 1.5rem; font-weight: 700; margin: 0 0 .15rem; color: var(--fg); }
+      .qz-subtitle { font-size: .78rem; color: var(--muted); font-style: italic; margin: 0; }
+
+      .qz-header-right { display: flex; align-items: center; gap: .65rem; flex-wrap: wrap; }
+
+      .qz-select-trigger {
+        background: var(--surface2) !important;
+        border: 1px solid var(--border2) !important;
+        border-radius: 9px !important;
+        color: var(--fg) !important;
+        font-family: var(--serif) !important;
+        font-size: .8rem !important;
+        height: 34px !important;
+        min-width: 160px;
+        transition: background .3s, border-color .3s !important;
+      }
+      .qz-select-content {
+        background: var(--surface) !important;
+        border: 1px solid var(--border2) !important;
+        border-radius: 11px !important;
+        color: var(--fg) !important;
+        font-family: var(--serif) !important;
+      }
+
+      .qz-theme-toggle {
+        display: flex; align-items: center; gap: .35rem;
+        background: var(--surface);
+        border: 1px solid var(--border2);
+        border-radius: 99px; padding: .28rem .6rem;
+        color: var(--muted); flex-shrink: 0;
+        transition: background .3s;
+      }
+
+      /* ── stats ── */
+      .qz-stats {
+        display: grid; grid-template-columns: repeat(4, 1fr); gap: .65rem;
+      }
+      @media (max-width: 480px) { .qz-stats { grid-template-columns: repeat(2, 1fr); } }
+      .qz-stat {
+        background: var(--surface); border: 1px solid var(--border);
+        border-top: 2px solid var(--accent);
+        border-radius: 12px; padding: .75rem .5rem;
+        text-align: center; display: flex; flex-direction: column;
+        align-items: center; gap: .18rem;
+        transition: background .3s;
+        animation: fadeUp .4s ease both;
+      }
+      .qz-stat-icon  { color: var(--accent); }
+      .qz-stat-value { font-size: 1.45rem; font-weight: 700; color: var(--accent); line-height: 1; }
+      .qz-stat-label { font-size: .63rem; color: var(--muted); }
+
+      /* ── progress ── */
+      .qz-progress-wrap { display: flex; flex-direction: column; gap: .35rem; }
+      .qz-progress-label {
+        display: flex; justify-content: space-between;
+        font-size: .72rem; color: var(--muted);
+      }
+      .qz-progress-pct { color: var(--accent); font-weight: 700; }
+      .qz-progress-track {
+        height: 5px; background: var(--surface2);
+        border-radius: 99px; overflow: hidden;
+        transition: background .3s;
+      }
+      .qz-progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent), #7a5abf);
+        border-radius: 99px; transition: width .4s ease;
+      }
+
+      /* ── empty states ── */
+      .qz-state-card {
+        background: var(--surface); border: 1px solid var(--border2);
+        border-radius: 16px; padding: 2.5rem 1.5rem;
+        text-align: center; display: flex; flex-direction: column;
+        align-items: center; gap: .65rem;
+        transition: background .3s;
+      }
+      .qz-state-card--dashed { border-style: dashed; }
+      .qz-state-card--pulse  { animation: pulse 1.4s ease infinite; }
+      .qz-state-icon  { color: var(--muted); opacity: .5; }
+      .qz-state-title { font-size: .92rem; font-weight: 700; color: var(--fg); margin: 0; }
+      .qz-state-sub   { font-size: .8rem; color: var(--muted); font-style: italic; margin: 0; line-height: 1.55; }
+
+      /* ── question card ── */
+      .qz-question-card {
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: 16px; padding: 1.4rem 1.3rem;
+        display: flex; flex-direction: column; gap: 1.1rem;
+        position: relative; overflow: hidden;
+        animation: fadeUp .4s ease both;
+        transition: background .3s;
+      }
+      .qz-question-card-topline {
+        position: absolute; top: 0; left: 0; right: 0; height: 2px;
+        background: linear-gradient(90deg, var(--accent), transparent);
+        border-radius: 16px 16px 0 0;
+      }
+      .qz-question-meta { display: flex; gap: .4rem; }
+      .qz-badge {
+        display: inline-flex; align-items: center;
+        background: var(--surface2); border: 1px solid var(--border2);
+        border-radius: 20px; padding: 2px 9px;
+        font-size: .7rem; color: var(--muted);
+        transition: background .3s;
+      }
+      .qz-badge--hadith { color: var(--gold); border-color: rgba(160,120,48,.25); }
+      .qz-question-text {
+        font-size: 1.05rem; font-weight: 700; color: var(--fg);
+        line-height: 1.5; margin: 0;
+      }
+
+      /* ── options ── */
+      .qz-options { display: flex; flex-direction: column; gap: .5rem; }
+      .qz-option {
+        display: flex; align-items: center; gap: .85rem;
+        background: var(--surface2); border: 1px solid var(--border2);
+        border-radius: 11px; padding: .8rem 1rem;
+        text-align: left; font-family: var(--serif);
+        color: var(--fg); cursor: pointer;
+        transition: border-color .13s, background .13s, transform .12s;
+      }
+      .qz-option:not(:disabled):hover { border-color: var(--accent); transform: translateX(3px); }
+      .qz-option:disabled { cursor: default; }
+      .qz-option--selected {
+        border-color: var(--accent);
+        background: var(--accent-dim);
+        transform: translateX(4px);
+      }
+      .qz-option--correct {
+        border-color: var(--green) !important;
+        background: var(--green-dim) !important;
+      }
+      .qz-option--wrong {
+        border-color: var(--danger) !important;
+        background: rgba(181,74,58,.1) !important;
+      }
+
+      .qz-option-radio {
+        width: 20px; height: 20px; flex-shrink: 0;
+        border-radius: 50%; border: 2px solid var(--border2);
+        display: flex; align-items: center; justify-content: center;
+        transition: border-color .13s, background .13s;
+        color: #fff;
+      }
+      .qz-option-radio--sel { border-color: var(--accent); }
+      .qz-option-radio--ok  { border-color: var(--green); background: var(--green); }
+      .qz-option-radio--bad { border-color: var(--danger); background: var(--danger); }
+      .qz-option-radio-dot {
+        width: 8px; height: 8px; border-radius: 50%;
+        background: var(--accent);
+      }
+      .qz-option-text { font-size: .88rem; line-height: 1.45; }
+
+      /* ── actions ── */
+      .qz-actions { display: flex; gap: .6rem; flex-wrap: wrap; }
+      .qz-btn-validate {
+        background: linear-gradient(135deg, var(--accent), #5a2aad);
+        color: #fff; border: none; border-radius: 10px;
+        padding: .6rem 1.25rem; font-size: .88rem; font-weight: 700;
+        font-family: var(--serif); cursor: pointer;
+        box-shadow: 0 3px 12px rgba(159,122,224,.3);
+        transition: opacity .15s, transform .15s;
+      }
+      .qz-btn-validate:hover:not(:disabled) { opacity: .88; transform: translateY(-1px); }
+      .qz-btn-validate:disabled { opacity: .35; cursor: not-allowed; }
+
+      .qz-btn-hint {
+        display: inline-flex; align-items: center; gap: .4rem;
+        background: transparent; border: 1px solid var(--border2);
+        border-radius: 10px; padding: .6rem 1rem;
+        font-size: .83rem; color: var(--muted);
+        font-family: var(--serif); cursor: pointer;
+        transition: border-color .13s, color .13s;
+      }
+      .qz-btn-hint:hover { border-color: var(--gold); color: var(--gold); }
+
+      .qz-btn-next {
+        background: linear-gradient(135deg, #4a9fc8, #2d6ca8);
+        color: #fff; border: none; border-radius: 10px;
+        padding: .6rem 1.25rem; font-size: .88rem; font-weight: 700;
+        font-family: var(--serif); cursor: pointer;
+        transition: opacity .15s, transform .15s;
+      }
+      .qz-btn-next:hover { opacity: .88; transform: translateY(-1px); }
+
+      /* ── hint ── */
+      .qz-hint {
+        display: flex; align-items: flex-start; gap: .6rem;
+        background: color-mix(in srgb, #4a9fc8 10%, transparent);
+        border: 1px solid rgba(74,159,200,.25);
+        border-radius: 10px; padding: .75rem .9rem;
+        font-size: .8rem; color: var(--fg); line-height: 1.55;
+      }
+      .qz-hint-icon { color: #4a9fc8; flex-shrink: 0; margin-top: .1rem; }
+
+      /* ── feedback ── */
+      .qz-feedback {
+        display: flex; align-items: stretch;
+        border-radius: 11px; overflow: hidden;
+        border: 1px solid transparent;
+      }
+      .qz-feedback--ok { border-color: rgba(74,159,130,.3); background: var(--green-dim); }
+      .qz-feedback--ko { border-color: rgba(181,74,58,.3);  background: rgba(181,74,58,.08); }
+      .qz-feedback-bar { width: 3px; flex-shrink: 0; }
+      .qz-feedback--ok .qz-feedback-bar { background: var(--green); }
+      .qz-feedback--ko .qz-feedback-bar { background: var(--danger); }
+      .qz-feedback-body {
+        flex: 1; padding: .8rem .95rem;
+        display: flex; align-items: flex-start; gap: .55rem;
+      }
+      .qz-feedback-icon { flex-shrink: 0; margin-top: .1rem; }
+      .qz-feedback--ok .qz-feedback-icon { color: var(--green); }
+      .qz-feedback--ko .qz-feedback-icon { color: var(--danger); }
+      .qz-feedback-title {
+        font-size: .83rem; font-weight: 700; color: var(--fg); margin: 0 0 .25rem;
+      }
+      .qz-feedback-explain {
+        font-size: .78rem; color: var(--muted); font-style: italic;
+        line-height: 1.55; margin: 0;
+      }
+
+      /* ── recall card ── */
+      .qz-recall-card {
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: 14px; padding: 1.15rem 1.2rem;
+        display: flex; flex-direction: column; gap: .85rem;
+        animation: fadeUp .45s ease both;
+        transition: background .3s;
+      }
+      .qz-recall-header {
+        display: flex; align-items: center; gap: .4rem;
+        font-size: .7rem; text-transform: uppercase; letter-spacing: .09em;
+        color: var(--gold); font-style: italic;
+        padding-bottom: .75rem; border-bottom: 1px solid var(--border);
+      }
+      .qz-recall-sparkle { opacity: .75; }
+      .qz-recall-empty { font-size: .82rem; color: var(--muted); font-style: italic; }
+
+      .qz-arabic-block {
+        background: color-mix(in srgb, var(--accent) 5%, var(--surface2));
+        border: 1px solid var(--border2);
+        border-radius: 11px; padding: 1.1rem 1.2rem;
+        transition: background .3s;
+      }
+      .qz-arabic {
+        font-size: clamp(1.1rem, 3vw, 1.5rem);
+        line-height: 2.2; color: var(--fg); margin: 0;
+        font-family: 'Amiri', 'Scheherazade New', var(--serif);
+        text-align: center;
+      }
+      .qz-french-block {
+        background: var(--surface2);
+        border-left: 3px solid var(--accent);
+        border-radius: 0 9px 9px 0; padding: .8rem 1rem;
+        transition: background .3s;
+      }
+      .qz-french {
+        font-size: .85rem; line-height: 1.7; color: var(--fg);
+        font-style: italic; margin: 0;
+      }
+      .qz-toggle-fr-btn {
+        display: inline-flex; align-items: center;
+        background: transparent; border: 1px solid var(--border2);
+        border-radius: 9px; padding: .35rem .85rem;
+        font-size: .75rem; color: var(--muted);
+        font-family: var(--serif); cursor: pointer;
+        transition: border-color .13s, color .13s;
+        align-self: flex-start;
+      }
+      .qz-toggle-fr-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+      /* ── restart ── */
+      .qz-restart-btn {
+        display: flex; align-items: center; justify-content: center; gap: .5rem;
+        width: 100%; background: transparent;
+        border: 1px solid var(--border2);
+        border-radius: 11px; padding: .6rem;
+        font-size: .82rem; color: var(--muted);
+        font-family: var(--serif); cursor: pointer;
+        transition: border-color .13s, color .13s;
+      }
+      .qz-restart-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+      /* ── animations ── */
+      @keyframes fadeUp   { from{opacity:0;transform:translateY(8px)}  to{opacity:1;transform:translateY(0)} }
+      @keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+      @keyframes pulse    { 0%,100%{opacity:1} 50%{opacity:.45} }
+    `}</style>
   );
 }
 
