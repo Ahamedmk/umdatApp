@@ -1,7 +1,7 @@
 // /src/pages/Home.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BookOpen, RotateCcw, Brain, Scale, CheckCircle2 } from "lucide-react";
+import { BookOpen, RotateCcw, Brain, Scale, CheckCircle2, Sun, Moon } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { getDueCount } from "@/lib/hadithProgress";
 
@@ -11,14 +11,23 @@ export function Home() {
 
   const [dueCount, setDueCount]     = useState(null);
   const [loadingDue, setLoadingDue] = useState(true);
+  const [isDark, setIsDark]         = useState(true);
 
-  /* theme sync */
+  /* theme sync on mount */
   useEffect(() => {
     const pref = localStorage.getItem("theme");
     const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
-    const enable = pref ? pref === "dark" : prefersDark;
-    document.documentElement.classList.toggle("dark", enable);
+    const dark = pref ? pref === "dark" : prefersDark;
+    setIsDark(dark);
+    document.documentElement.classList.toggle("dark", dark);
   }, []);
+
+  function toggleTheme() {
+    const next = !isDark;
+    setIsDark(next);
+    document.documentElement.classList.toggle("dark", next);
+    localStorage.setItem("theme", next ? "dark" : "light");
+  }
 
   /* notification permission */
   useEffect(() => {
@@ -69,16 +78,24 @@ export function Home() {
   }, [user?.id]);
 
   const features = [
-    { icon: BookOpen, title: "Apprendre",  desc: "Texte arabe, audio et opinions détaillées des savants", href: "/learn",   accent: "#4a9f82" },
-    { icon: RotateCcw, title: "Réviser",   desc: "Système de révision espacée intelligent (SM-2)",        href: "/review",  accent: "#4a9fc8" },
-    { icon: Brain,     title: "Quiz",      desc: "Teste et renforce ta compréhension des hadiths",         href: "/quiz",    accent: "#9f7ae0" },
-    { icon: Scale,     title: "Comparer",  desc: "Analyse comparative des quatre écoles juridiques",       href: "/compare", accent: "#c9a84c" },
+    { icon: BookOpen, title: "Apprendre",  desc: "Texte arabe, audio et opinions détaillées des savants", href: "/learn",   accent: isDark ? "#4a9f82" : "#2d8c6a" },
+    { icon: RotateCcw, title: "Réviser",   desc: "Système de révision espacée intelligent (SM-2)",        href: "/review",  accent: isDark ? "#4a9fc8" : "#2a7ab0" },
+    { icon: Brain,     title: "Quiz",      desc: "Teste et renforce ta compréhension des hadiths",         href: "/quiz",    accent: isDark ? "#9f7ae0" : "#7c56c8" },
+    { icon: Scale,     title: "Comparer",  desc: "Analyse comparative des quatre écoles juridiques",       href: "/compare", accent: isDark ? "#c9a84c" : "#a07d28" },
   ];
 
   return (
     <>
-      <HomeStyles />
-      <div className="hm-root">
+      <HomeStyles isDark={isDark} />
+      <div className={`hm-root ${isDark ? "hm-dark" : "hm-light"}`}>
+
+        {/* ── Theme toggle ── */}
+        <div className="hm-topbar">
+          <button className="hm-theme-toggle" onClick={toggleTheme} aria-label="Changer de thème">
+            {isDark ? <Sun size={16} /> : <Moon size={16} />}
+            <span>{isDark ? "Mode clair" : "Mode sombre"}</span>
+          </button>
+        </div>
 
         {/* ── Due today banner ── */}
         {!loadingDue && (
@@ -147,9 +164,9 @@ export function Home() {
         {/* ── Stats ── */}
         <div className="hm-stats">
           {[
-            { value: "500+", label: "Hadiths",  accent: "#4a9f82" },
-            { value: "4",    label: "Écoles",   accent: "#c9a84c" },
-            { value: "100%", label: "Gratuit",  accent: "#9f7ae0" },
+            { value: "500+", label: "Hadiths",  accent: isDark ? "#4a9f82" : "#2d8c6a" },
+            { value: "4",    label: "Écoles",   accent: isDark ? "#c9a84c" : "#a07d28" },
+            { value: "100%", label: "Gratuit",  accent: isDark ? "#9f7ae0" : "#7c56c8" },
           ].map(s => (
             <div key={s.label} className="hm-stat" style={{ "--accent": s.accent }}>
               <span className="hm-stat-value">{s.value}</span>
@@ -159,41 +176,145 @@ export function Home() {
         </div>
 
         {/* ── Footer ornament ── */}
-        <p className="hm-footer-ornament" aria-hidden="true">
-          ﷽
-        </p>
+        <p className="hm-footer-ornament" aria-hidden="true">﷽</p>
 
       </div>
     </>
   );
 }
 
-function HomeStyles() {
+function HomeStyles({ isDark }) {
+  const dark = `
+    .hm-dark {
+      --bg:       #0d1117;
+      --surface:  #161c24;
+      --surface2: #1e2630;
+      --border:   rgba(255,255,255,.07);
+      --border2:  rgba(255,255,255,.13);
+      --fg:       #e8e0d0;
+      --muted:    #7a8694;
+      --gold:     #c9a84c;
+      --gold-dim: rgba(201,168,76,.13);
+    }
+    .hm-dark .hm-theme-toggle {
+      background: rgba(255,255,255,.07);
+      color: #c9a84c;
+      border-color: rgba(201,168,76,.2);
+    }
+    .hm-dark .hm-theme-toggle:hover {
+      background: rgba(201,168,76,.12);
+    }
+    .hm-dark .hm-due-banner--active {
+      background: linear-gradient(135deg, rgba(74,159,200,.15), rgba(74,100,200,.1));
+      border-color: rgba(74,159,200,.3);
+    }
+    .hm-dark .hm-due-banner--done {
+      background: linear-gradient(135deg, rgba(74,159,130,.12), rgba(45,122,98,.08));
+      border-color: rgba(74,159,130,.25);
+    }
+    .hm-dark .hm-due-icon-wrap { background: rgba(74,159,200,.2); color: #4a9fc8; }
+    .hm-dark .hm-due-icon-wrap--done { background: rgba(74,159,130,.2); color: #4a9f82; }
+    .hm-dark .hm-due-cta { background: #4a9fc8; color: #0d1117; }
+    .hm-dark .hm-hero-ar { color: #c9a84c; }
+    .hm-dark .hm-feature-card { background: #161c24; border-color: rgba(255,255,255,.07); }
+    .hm-dark .hm-stat { background: #161c24; border-color: rgba(255,255,255,.07); }
+    .hm-dark .hm-footer-ornament { color: #c9a84c; }
+  `;
+
+  const light = `
+    .hm-light {
+      --bg:       #fdf8f0;
+      --surface:  #ffffff;
+      --surface2: #fef6e4;
+      --border:   rgba(160,125,40,.13);
+      --border2:  rgba(160,125,40,.22);
+      --fg:       #2c2416;
+      --muted:    #7a6d58;
+      --gold:     #a07d28;
+      --gold-dim: rgba(160,125,40,.1);
+    }
+    .hm-light .hm-theme-toggle {
+      background: rgba(160,125,40,.08);
+      color: #7c56c8;
+      border-color: rgba(124,86,200,.2);
+    }
+    .hm-light .hm-theme-toggle:hover {
+      background: rgba(124,86,200,.1);
+    }
+    .hm-light .hm-due-banner--active {
+      background: linear-gradient(135deg, rgba(42,122,176,.1), rgba(42,90,170,.07));
+      border-color: rgba(42,122,176,.28);
+    }
+    .hm-light .hm-due-banner--done {
+      background: linear-gradient(135deg, rgba(45,140,106,.1), rgba(30,100,78,.07));
+      border-color: rgba(45,140,106,.28);
+    }
+    .hm-light .hm-due-icon-wrap { background: rgba(42,122,176,.13); color: #2a7ab0; }
+    .hm-light .hm-due-icon-wrap--done { background: rgba(45,140,106,.15); color: #2d8c6a; }
+    .hm-light .hm-due-cta { background: #2a7ab0; color: #ffffff; }
+    .hm-light .hm-hero-ar { color: #a07d28; }
+    .hm-light .hm-hero-title { color: #1e1810; }
+    .hm-light .hm-hero-sub { color: #7a6d58; }
+    .hm-light .hm-feature-card {
+      background: #ffffff;
+      border-color: rgba(160,125,40,.13);
+      box-shadow: 0 1px 6px rgba(160,125,40,.08);
+    }
+    .hm-light .hm-feature-card:hover {
+      box-shadow: 0 8px 28px rgba(160,125,40,.14);
+    }
+    .hm-light .hm-feature-title { color: #1e1810; }
+    .hm-light .hm-feature-desc { color: #7a6d58; }
+    .hm-light .hm-stat {
+      background: #ffffff;
+      border-color: rgba(160,125,40,.13);
+      box-shadow: 0 1px 6px rgba(160,125,40,.07);
+    }
+    .hm-light .hm-stat:hover { box-shadow: 0 4px 18px rgba(160,125,40,.13); }
+    .hm-light .hm-stat-label { color: #7a6d58; }
+    .hm-light .hm-due-count { color: #2c2416; }
+    .hm-light .hm-due-count strong { color: #1e1810; }
+    .hm-light .hm-due-label { color: #7a6d58; }
+    .hm-light .hm-footer-ornament { color: #a07d28; }
+  `;
+
   return (
     <style>{`
       .hm-root {
-        --bg:       #0d1117;
-        --surface:  #161c24;
-        --surface2: #1e2630;
-        --border:   rgba(255,255,255,.07);
-        --border2:  rgba(255,255,255,.13);
-        --fg:       #e8e0d0;
-        --muted:    #7a8694;
-        --gold:     #c9a84c;
-        --gold-dim: rgba(201,168,76,.13);
-        --serif:    Georgia, 'Times New Roman', serif;
-
+        --serif: Georgia, 'Times New Roman', serif;
         font-family: var(--serif);
         background: var(--bg);
         color: var(--fg);
         min-height: 100vh;
         max-width: 780px;
         margin: 0 auto;
-        padding: 1.5rem 1rem 5rem;
+        padding: 1.2rem 1rem 5rem;
         display: flex;
         flex-direction: column;
-        gap: 2rem;
+        gap: 1.75rem;
+        transition: background .3s ease, color .3s ease;
       }
+
+      /* ── topbar ── */
+      .hm-topbar {
+        display: flex;
+        justify-content: flex-end;
+      }
+      .hm-theme-toggle {
+        display: flex;
+        align-items: center;
+        gap: .45rem;
+        border: 1px solid transparent;
+        border-radius: 20px;
+        padding: .38rem .85rem;
+        font-size: .78rem;
+        font-family: var(--serif);
+        font-weight: 600;
+        cursor: pointer;
+        transition: background .2s, color .2s, transform .15s;
+        letter-spacing: .02em;
+      }
+      .hm-theme-toggle:hover { transform: translateY(-1px); }
 
       /* ── due banner ── */
       .hm-due-banner {
@@ -201,14 +322,7 @@ function HomeStyles() {
         padding: 1rem 1.2rem;
         border: 1px solid transparent;
         animation: fadeDown .4s ease both;
-      }
-      .hm-due-banner--active {
-        background: linear-gradient(135deg, rgba(74,159,200,.15), rgba(74,100,200,.1));
-        border-color: rgba(74,159,200,.3);
-      }
-      .hm-due-banner--done {
-        background: linear-gradient(135deg, rgba(74,159,130,.12), rgba(45,122,98,.08));
-        border-color: rgba(74,159,130,.25);
+        transition: background .3s, border-color .3s;
       }
       .hm-due-inner {
         display: flex; align-items: center;
@@ -217,39 +331,34 @@ function HomeStyles() {
       .hm-due-left { display: flex; align-items: center; gap: .75rem; }
       .hm-due-icon-wrap {
         width: 34px; height: 34px; flex-shrink: 0;
-        background: rgba(74,159,200,.2);
         border-radius: 50%;
         display: flex; align-items: center; justify-content: center;
-        color: #4a9fc8;
+        transition: background .3s, color .3s;
       }
-      .hm-due-icon-wrap--done { background: rgba(74,159,130,.2); color: #4a9f82; }
-      .hm-due-label { font-size: .7rem; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: .15rem; }
+      .hm-due-label { font-size: .7rem; text-transform: uppercase; letter-spacing: .07em; margin-bottom: .15rem; color: var(--muted); }
       .hm-due-count { font-size: .9rem; color: var(--fg); }
-      .hm-due-count strong { color: #fff; }
       .hm-due-cta {
-        background: #4a9fc8;
-        color: #0d1117;
         border: none; border-radius: 9px;
         padding: .5rem 1.1rem;
         font-size: .83rem; font-weight: 700; font-family: var(--serif);
         cursor: pointer; flex-shrink: 0;
-        transition: opacity .15s, transform .15s;
+        transition: opacity .15s, transform .15s, background .3s;
       }
       .hm-due-cta:hover { opacity: .88; transform: translateY(-1px); }
 
       /* ── hero ── */
       .hm-hero {
         text-align: center;
-        padding: 1.5rem 0 .5rem;
+        padding: 1.2rem 0 .4rem;
         animation: fadeUp .5s ease both;
       }
       .hm-hero-ar {
         font-size: 1.6rem;
-        color: var(--gold);
-        opacity: .55;
+        opacity: .5;
         margin-bottom: .6rem;
         letter-spacing: .04em;
         font-weight: 400;
+        transition: color .3s;
       }
       .hm-hero-title {
         font-size: clamp(2rem, 5vw, 3rem);
@@ -258,6 +367,7 @@ function HomeStyles() {
         color: var(--fg);
         margin: 0 0 .9rem;
         line-height: 1.05;
+        transition: color .3s;
       }
       .hm-hero-sub {
         font-size: .95rem;
@@ -266,6 +376,7 @@ function HomeStyles() {
         max-width: 520px;
         margin: 0 auto;
         font-style: italic;
+        transition: color .3s;
       }
       .hm-hero-br { display: none; }
       @media (min-width: 480px) { .hm-hero-br { display: block; } }
@@ -279,7 +390,6 @@ function HomeStyles() {
       @media (max-width: 480px) { .hm-features { grid-template-columns: 1fr; } }
 
       .hm-feature-card {
-        background: var(--surface);
         border: 1px solid var(--border);
         border-left: 3px solid var(--accent);
         border-radius: 14px;
@@ -289,7 +399,7 @@ function HomeStyles() {
         display: flex;
         align-items: flex-start;
         gap: .9rem;
-        transition: border-color .18s, transform .18s, box-shadow .18s, background .18s;
+        transition: border-color .18s, transform .18s, box-shadow .18s, background .3s;
         animation: fadeUp .45s ease both;
         animation-delay: var(--delay, 0ms);
         position: relative;
@@ -303,7 +413,7 @@ function HomeStyles() {
         transition: opacity .2s;
         pointer-events: none;
       }
-      .hm-feature-card:hover { transform: translateY(-3px); box-shadow: 0 10px 32px rgba(0,0,0,.35); border-color: var(--accent); }
+      .hm-feature-card:hover { transform: translateY(-3px); border-color: var(--accent); }
       .hm-feature-card:hover::after { opacity: 1; }
 
       .hm-feature-icon {
@@ -313,16 +423,19 @@ function HomeStyles() {
         display: flex; align-items: center; justify-content: center;
         color: var(--accent);
         margin-top: .1rem;
+        transition: background .3s;
       }
       .hm-feature-body { flex: 1; min-width: 0; }
       .hm-feature-title {
         font-size: 1rem; font-weight: 700;
         color: var(--fg); margin: 0 0 .3rem;
+        transition: color .3s;
       }
       .hm-feature-desc {
         font-size: .78rem; color: var(--muted);
         line-height: 1.5; margin: 0;
         font-style: italic;
+        transition: color .3s;
       }
       .hm-feature-arrow {
         font-size: .9rem; color: var(--accent);
@@ -338,15 +451,13 @@ function HomeStyles() {
         gap: .85rem;
       }
       .hm-stat {
-        background: var(--surface);
         border: 1px solid var(--border);
         border-radius: 14px;
         padding: 1.2rem;
         text-align: center;
-        transition: border-color .18s;
+        transition: border-color .18s, background .3s, box-shadow .2s;
         animation: fadeUp .5s ease both;
       }
-      .hm-stat:hover { border-color: var(--accent); }
       .hm-stat-value {
         display: block;
         font-size: 1.8rem; font-weight: 700;
@@ -358,16 +469,17 @@ function HomeStyles() {
         display: block;
         font-size: .72rem; color: var(--muted);
         letter-spacing: .05em; text-transform: uppercase;
+        transition: color .3s;
       }
 
       /* ── footer ornament ── */
       .hm-footer-ornament {
         text-align: center;
         font-size: 1.3rem;
-        color: var(--gold);
-        opacity: .15;
+        opacity: .18;
         margin: 0;
         user-select: none;
+        transition: color .3s;
       }
 
       /* ── animations ── */
@@ -379,6 +491,9 @@ function HomeStyles() {
         from { opacity: 0; transform: translateY(-8px); }
         to   { opacity: 1; transform: translateY(0); }
       }
+
+      ${dark}
+      ${light}
     `}</style>
   );
 }
