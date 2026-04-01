@@ -5029,6 +5029,176 @@ const QUIZ_HADITH_44 = [
   correctIndex: 2,
   explain:
     "Le document indique que la majorité des savants considère que le taghlîs (prier tôt dans l’obscurité) est préférable."
+},
+/* ----------------- HADITH 49 : « Les horaires des prières » ----------------- */
+
+{
+  n: 49,
+  q: "À quel moment le Prophète ﷺ priait-il le ẓuhr ?",
+  options: [
+    "Avant le zénith",
+    "Pendant la grande chaleur",
+    "Au coucher du soleil",
+    "La nuit"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le hadith dit « بِالْهَاجِرَةِ », c’est-à-dire pendant la chaleur après le zénith."
+},
+
+{
+  n: 49,
+  q: "Comment le Prophète ﷺ priait-il le ‘aṣr ?",
+  options: [
+    "Quand le soleil se couchait",
+    "Quand il faisait nuit",
+    "Quand le soleil était encore clair",
+    "Après le maghrib"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith mentionne « وَالشَّمْسُ نَقِيَّةٌ », c’est-à-dire encore claire et élevée."
+},
+
+{
+  n: 49,
+  q: "Quand le Prophète ﷺ accomplissait-il le maghrib ?",
+  options: [
+    "Après la disparition des étoiles",
+    "Quand le soleil se couchait",
+    "Au milieu de la nuit",
+    "Avant le coucher du soleil"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le texte dit « إِذَا وَجَبَتْ » c’est-à-dire lorsque le soleil se couche."
+},
+
+{
+  n: 49,
+  q: "Que faisait le Prophète ﷺ pour la prière du ‘ishâ’ selon la situation ?",
+  options: [
+    "Il la priait toujours en retard",
+    "Il la priait toujours en avance",
+    "Il l’adaptait selon la présence des gens",
+    "Il ne la priait pas en groupe"
+  ],
+  correctIndex: 2,
+  explain:
+    "S’il voyait les gens réunis, il avançait, sinon il retardait."
+},
+
+{
+  n: 49,
+  q: "À quel moment priait-il le fajr ?",
+  options: [
+    "Après le lever du soleil",
+    "En pleine nuit",
+    "Dans l’obscurité de l’aube",
+    "À midi"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith dit « بِغَلَسٍ », c’est-à-dire dans l’obscurité de l’aube."
+},
+/* ----------------- HADITH 50 : « Les horaires et attitudes autour des prières » ----------------- */
+
+{
+  n: 50,
+  q: "À quel moment le Prophète ﷺ accomplissait-il la prière du ẓuhr (al-hajīr) ?",
+  options: [
+    "Avant le lever du soleil",
+    "Lorsque le soleil décline",
+    "Après le coucher du soleil",
+    "Au milieu de la nuit"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le hadith mentionne « حِينَ تَدْحَضُ الشَّمْسُ », c’est-à-dire lorsque le soleil commence à décliner après le zénith."
+},
+
+{
+  n: 50,
+  q: "Dans quel état était le soleil après la prière du ‘aṣr selon le hadith ?",
+  options: [
+    "Couché",
+    "Rouge et faible",
+    "Encore haut et lumineux",
+    "Invisible"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le texte dit « وَالشَّمْسُ حَيَّةٌ », c’est-à-dire encore claire et élevée."
+},
+
+{
+  n: 50,
+  q: "Quelle était l’attitude du Prophète ﷺ concernant la prière du ‘ishā’ ?",
+  options: [
+    "Il la priait toujours très tôt",
+    "Il la supprimait parfois",
+    "Il aimait la retarder",
+    "Il ne la priait pas en groupe"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith dit « وَكَانَ يَسْتَحِبُّ أَنْ يُؤَخِّرَ الْعِشَاءَ » : il aimait retarder la prière du ‘ishā’."
+},
+
+{
+  n: 50,
+  q: "Que détestait le Prophète ﷺ avant et après la prière du ‘ishā’ ?",
+  options: [
+    "Manger avant et dormir après",
+    "Dormir avant et parler après",
+    "Lire avant et écrire après",
+    "Voyager avant et commercer après"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le hadith dit « يَكْرَهُ النَّوْمَ قَبْلَهَا وَالْحَدِيثَ بَعْدَهَا »."
+},
+
+{
+  n: 50,
+  q: "À quel moment se terminait la prière du fajr selon ce hadith ?",
+  options: [
+    "Quand il faisait totalement nuit",
+    "Quand on pouvait reconnaître son voisin",
+    "Après le lever du soleil",
+    "Avant l’aube"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le texte dit « حِينَ يَعْرِفُ الرَّجُلُ جَلِيسَهُ » : quand l’homme peut reconnaître celui qui est à côté de lui."
+},
+
+{
+  n: 50,
+  q: "Combien de versets environ le Prophète ﷺ récitait-il dans la prière du fajr ?",
+  options: [
+    "10 à 20 versets",
+    "30 à 50 versets",
+    "60 à 100 versets",
+    "Plus de 200 versets"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith précise « بِالسِّتِّينَ إِلَى الْمِائَةِ »."
+},
+
+{
+  n: 50,
+  q: "Quelle leçon principale peut-on tirer concernant l’organisation des prières ?",
+  options: [
+    "Les prières sont fixes sans adaptation",
+    "Il faut adapter certains horaires selon la situation",
+    "Il faut toujours retarder toutes les prières",
+    "Il faut toujours prier seul"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le hadith montre que certaines prières (comme ‘ishā’) peuvent être adaptées selon les circonstances, tout en respectant les temps."
 }
 
 ];
