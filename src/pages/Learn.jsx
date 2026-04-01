@@ -12,12 +12,9 @@ import {
   Sparkles,
   ChevronRight,
   Star,
+  Sun,
+  Moon,
 } from "lucide-react";
-
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 
 import { CHAPTERS } from "../data/chapters";
 import { ALL_HADITHS } from "../data/allHadiths";
@@ -31,30 +28,23 @@ import {
 
 function statusLabel(status) {
   switch (status) {
-    case "mastered":
-      return "Maîtrisé";
-    case "review":
-      return "À revoir";
-    case "learning":
-      return "En cours";
-    case "scheduled":
-      return "Planifié";
-    default:
-      return "Nouveau";
+    case "mastered":  return "Maîtrisé";
+    case "review":    return "À revoir";
+    case "learning":  return "En cours";
+    case "scheduled": return "Planifié";
+    default:          return "Nouveau";
   }
 }
 
-function statusColor(status) {
+function statusColor(status, isDark) {
   switch (status) {
-    case "mastered": return "var(--clr-gold)";
-    case "review":   return "var(--clr-amber)";
-    case "learning": return "var(--clr-accent)";
-    case "scheduled": return "var(--clr-muted-fg)";
-    default:         return "var(--clr-muted-fg)";
+    case "mastered":  return isDark ? "#c9a84c" : "#a07d28";
+    case "review":    return isDark ? "#e08a3c" : "#bf6a1a";
+    case "learning":  return isDark ? "#4a9f82" : "#2d8c6a";
+    case "scheduled": return isDark ? "#7a8694" : "#6a7580";
+    default:          return isDark ? "#7a8694" : "#6a7580";
   }
 }
-
-
 
 /* ─── sub-components ─── */
 
@@ -98,10 +88,26 @@ export function Learn() {
   const [progressRows, setProgressRows] = useState([]);
   const [loading, setLoading]           = useState(true);
   const [loadError, setLoadError]       = useState("");
+  const [isDark, setIsDark]             = useState(true);
+
+  /* theme sync on mount */
+  useEffect(() => {
+    const pref = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
+    const dark = pref ? pref === "dark" : prefersDark;
+    setIsDark(dark);
+    document.documentElement.classList.toggle("dark", dark);
+  }, []);
+
+  function toggleTheme() {
+    const next = !isDark;
+    setIsDark(next);
+    document.documentElement.classList.toggle("dark", next);
+    localStorage.setItem("theme", next ? "dark" : "light");
+  }
 
   useEffect(() => {
     let mounted = true;
-
     async function loadProgress() {
       if (!user?.id) {
         if (mounted) { setProgressRows([]); setLoading(false); }
@@ -122,7 +128,6 @@ export function Learn() {
         if (mounted) setLoading(false);
       }
     }
-
     loadProgress();
     return () => { mounted = false; };
   }, [user?.id]);
@@ -137,8 +142,8 @@ export function Learn() {
     const mastered = hadithsWithProgress.filter(h => h.progressStatus === "mastered").length;
     const review   = hadithsWithProgress.filter(h => h.progressStatus === "review").length;
     const learning = hadithsWithProgress.filter(
-  h => h.progressStatus === "learning" || h.progressStatus === "scheduled"
-).length;
+      h => h.progressStatus === "learning" || h.progressStatus === "scheduled"
+    ).length;
     return { total, mastered, review, learning };
   }, [hadithsWithProgress]);
 
@@ -152,55 +157,50 @@ export function Learn() {
       const mastered = ch.filter(h => h.progressStatus === "mastered").length;
       const review   = ch.filter(h => h.progressStatus === "review").length;
       const learning = ch.filter(
-  h => h.progressStatus === "learning" || h.progressStatus === "scheduled"
-).length;
+        h => h.progressStatus === "learning" || h.progressStatus === "scheduled"
+      ).length;
       const percent  = total > 0 ? Math.round((mastered / total) * 100) : 0;
 
       const nextRecommended =
-  ch.find(h => h.progressStatus === "review")   ||
-  ch.find(h => h.progressStatus === "learning") ||
-  ch.find(h => h.progressStatus === "new")      ||
-  ch.find(h => h.progressStatus === "scheduled") ||
-  ch[0];
+        ch.find(h => h.progressStatus === "review")    ||
+        ch.find(h => h.progressStatus === "learning")  ||
+        ch.find(h => h.progressStatus === "new")       ||
+        ch.find(h => h.progressStatus === "scheduled") ||
+        ch[0];
 
       return { ...chapter, total, mastered, review, learning, percent, nextRecommended };
     }).sort((a, b) => a.order - b.order);
   }, [hadithsWithProgress]);
 
   const globalNextHadith = useMemo(() => {
-  const reviewHadiths = hadithsWithProgress
-    .filter((h) => h.progressStatus === "review")
-    .sort((a, b) => {
-      const aDate = a.next_review_date || "9999-12-31";
-      const bDate = b.next_review_date || "9999-12-31";
-      return aDate.localeCompare(bDate);
-    });
-
-  const learningHadiths = hadithsWithProgress.filter(
-    (h) => h.progressStatus === "learning"
-  );
-
-  const newHadiths = hadithsWithProgress.filter(
-    (h) => h.progressStatus === "new"
-  );
-
-  return (
-    reviewHadiths[0] ||
-    learningHadiths[0] ||
-    newHadiths[0] ||
-    hadithsWithProgress.find((h) => h.progressStatus === "scheduled") ||
-    hadithsWithProgress[0]
-  );
-}, [hadithsWithProgress]);
+    const reviewHadiths = hadithsWithProgress
+      .filter(h => h.progressStatus === "review")
+      .sort((a, b) => {
+        const aDate = a.next_review_date || "9999-12-31";
+        const bDate = b.next_review_date || "9999-12-31";
+        return aDate.localeCompare(bDate);
+      });
+    const learningHadiths = hadithsWithProgress.filter(h => h.progressStatus === "learning");
+    const newHadiths      = hadithsWithProgress.filter(h => h.progressStatus === "new");
+    return (
+      reviewHadiths[0]  ||
+      learningHadiths[0] ||
+      newHadiths[0]     ||
+      hadithsWithProgress.find(h => h.progressStatus === "scheduled") ||
+      hadithsWithProgress[0]
+    );
+  }, [hadithsWithProgress]);
 
   /* ── loading state ── */
   if (loading) {
     return (
       <>
-        <LearnStyles />
-        <div className="learn-loader">
-          <Loader2 className="learn-loader-icon" />
-          <span>Chargement de ta progression…</span>
+        <LearnStyles isDark={isDark} />
+        <div className={`learn-root ${isDark ? "learn-dark" : "learn-light"}`}>
+          <div className="learn-loader">
+            <Loader2 className="learn-loader-icon" />
+            <span>Chargement de ta progression…</span>
+          </div>
         </div>
       </>
     );
@@ -209,8 +209,16 @@ export function Learn() {
   /* ── main render ── */
   return (
     <>
-      <LearnStyles />
-      <div className="learn-root">
+      <LearnStyles isDark={isDark} />
+      <div className={`learn-root ${isDark ? "learn-dark" : "learn-light"}`}>
+
+        {/* ── Theme toggle ── */}
+        <div className="learn-topbar">
+          <button className="learn-theme-toggle" onClick={toggleTheme} aria-label="Changer de thème">
+            {isDark ? <Sun size={15} /> : <Moon size={15} />}
+            <span>{isDark ? "Mode clair" : "Mode sombre"}</span>
+          </button>
+        </div>
 
         {/* ── Header ── */}
         <header className="learn-header">
@@ -245,7 +253,7 @@ export function Learn() {
                 <div className="learn-continue-badges">
                   <span
                     className="learn-status-dot"
-                    style={{ "--dot": statusColor(globalNextHadith.progressStatus) }}
+                    style={{ "--dot": statusColor(globalNextHadith.progressStatus, isDark) }}
                   />
                   <span className="learn-status-text">
                     {statusLabel(globalNextHadith.progressStatus)}
@@ -368,33 +376,173 @@ export function Learn() {
   );
 }
 
-/* ─── scoped styles injected as a component ─── */
-function LearnStyles() {
+/* ─── scoped styles ─── */
+function LearnStyles({ isDark }) {
+  const dark = `
+    .learn-dark {
+      --clr-bg:         #0d1117;
+      --clr-surface:    #161c24;
+      --clr-surface2:   #1e2630;
+      --clr-border:     rgba(255,255,255,.07);
+      --clr-border2:    rgba(255,255,255,.12);
+      --clr-fg:         #e8e0d0;
+      --clr-muted-fg:   #7a8694;
+      --clr-gold:       #c9a84c;
+      --clr-gold-dim:   rgba(201,168,76,.15);
+      --clr-amber:      #e08a3c;
+      --clr-accent:     #4a9f82;
+      --clr-accent-dim: rgba(74,159,130,.12);
+    }
+    .learn-dark .learn-theme-toggle {
+      background: rgba(255,255,255,.07);
+      color: #c9a84c;
+      border-color: rgba(201,168,76,.2);
+    }
+    .learn-dark .learn-theme-toggle:hover { background: rgba(201,168,76,.12); }
+    .learn-dark .learn-continue-card {
+      background: linear-gradient(135deg, #161c24 0%, rgba(201,168,76,.06) 100%);
+      border-color: rgba(201,168,76,.15);
+    }
+    .learn-dark .learn-continue-card::before {
+      background: linear-gradient(90deg, #c9a84c, transparent);
+    }
+    .learn-dark .learn-btn-primary { background: #c9a84c; color: #0d1117; }
+    .learn-dark .learn-btn-ghost {
+      color: #7a8694;
+      border-color: rgba(255,255,255,.12);
+    }
+    .learn-dark .learn-btn-ghost:hover { border-color: #c9a84c; color: #c9a84c; }
+    .learn-dark .learn-score-badge { color: #c9a84c; background: rgba(201,168,76,.15); }
+    .learn-dark .learn-chapter-card { background: #161c24; border-color: rgba(255,255,255,.07); }
+    .learn-dark .learn-chapter-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,.35); }
+    .learn-dark .learn-chapter-stat { background: #1e2630; }
+    .learn-dark .learn-chapter-next { background: #1e2630; }
+    .learn-dark .learn-chapter-divider { background: rgba(255,255,255,.07); }
+    .learn-dark .learn-stat-pill { background: #161c24; border-color: rgba(255,255,255,.07); }
+    .learn-dark .learn-header { border-color: rgba(255,255,255,.12); }
+    .learn-dark .learn-header-ornament { color: #c9a84c; }
+    .learn-dark .learn-title-ar { color: #c9a84c; }
+    .learn-dark .learn-ring-bg { stroke: #1e2630; }
+    .learn-dark .learn-ring-fg { stroke: #c9a84c; }
+    .learn-dark .learn-ring-text { fill: #c9a84c; }
+    .learn-dark .learn-loader { color: #7a8694; }
+  `;
+
+  const light = `
+    .learn-light {
+      --clr-bg:         #fdf8f0;
+      --clr-surface:    #ffffff;
+      --clr-surface2:   #fef6e4;
+      --clr-border:     rgba(160,125,40,.13);
+      --clr-border2:    rgba(160,125,40,.25);
+      --clr-fg:         #2c2416;
+      --clr-muted-fg:   #7a6d58;
+      --clr-gold:       #a07d28;
+      --clr-gold-dim:   rgba(160,125,40,.1);
+      --clr-amber:      #bf6a1a;
+      --clr-accent:     #2d8c6a;
+      --clr-accent-dim: rgba(45,140,106,.1);
+    }
+    .learn-light .learn-theme-toggle {
+      background: rgba(160,125,40,.08);
+      color: #7c56c8;
+      border-color: rgba(124,86,200,.2);
+    }
+    .learn-light .learn-theme-toggle:hover { background: rgba(124,86,200,.1); }
+    .learn-light .learn-continue-card {
+      background: linear-gradient(135deg, #ffffff 0%, rgba(160,125,40,.05) 100%);
+      border-color: rgba(160,125,40,.18);
+      box-shadow: 0 2px 16px rgba(160,125,40,.07);
+    }
+    .learn-light .learn-continue-card::before {
+      background: linear-gradient(90deg, #a07d28, transparent);
+    }
+    .learn-light .learn-continue-chapter { color: #7a6d58; }
+    .learn-light .learn-continue-hadith  { color: #1e1810; }
+    .learn-light .learn-btn-primary { background: #a07d28; color: #ffffff; }
+    .learn-light .learn-btn-ghost {
+      color: #7a6d58;
+      border-color: rgba(160,125,40,.22);
+    }
+    .learn-light .learn-btn-ghost:hover { border-color: #a07d28; color: #a07d28; }
+    .learn-light .learn-score-badge { color: #a07d28; background: rgba(160,125,40,.1); }
+    .learn-light .learn-chapter-card {
+      background: #ffffff;
+      border-color: rgba(160,125,40,.13);
+      box-shadow: 0 1px 6px rgba(160,125,40,.07);
+    }
+    .learn-light .learn-chapter-card:hover {
+      box-shadow: 0 8px 28px rgba(160,125,40,.13);
+      border-color: rgba(160,125,40,.28);
+    }
+    .learn-light .learn-chapter-title-fr { color: #1e1810; }
+    .learn-light .learn-chapter-title-ar { color: #a07d28; }
+    .learn-light .learn-chapter-desc     { color: #7a6d58; }
+    .learn-light .learn-chapter-stat     { background: #fef6e4; }
+    .learn-light .learn-chapter-stat-val { color: #1e1810; }
+    .learn-light .learn-chapter-stat-lbl { color: #7a6d58; }
+    .learn-light .learn-chapter-next     { background: #fef6e4; }
+    .learn-light .learn-chapter-next-label { color: #7a6d58; }
+    .learn-light .learn-chapter-next-title { color: #1e1810; }
+    .learn-light .learn-chapter-divider  { background: rgba(160,125,40,.1); }
+    .learn-light .learn-stat-pill {
+      background: #ffffff;
+      border-color: rgba(160,125,40,.13);
+      box-shadow: 0 1px 4px rgba(160,125,40,.06);
+    }
+    .learn-light .learn-stat-value  { color: #1e1810; }
+    .learn-light .learn-stat-label  { color: #7a6d58; }
+    .learn-light .learn-header      { border-color: rgba(160,125,40,.15); }
+    .learn-light .learn-header-ornament { color: #a07d28; }
+    .learn-light .learn-title       { color: #1e1810; }
+    .learn-light .learn-title-ar    { color: #a07d28; }
+    .learn-light .learn-subtitle    { color: #7a6d58; }
+    .learn-light .learn-section-title { color: #1e1810; }
+    .learn-light .learn-section-sub   { color: #7a6d58; }
+    .learn-light .learn-continue-label { color: #a07d28; }
+    .learn-light .learn-status-text    { color: #7a6d58; }
+    .learn-light .learn-ring-bg  { stroke: #fef6e4; }
+    .learn-light .learn-ring-fg  { stroke: #a07d28; }
+    .learn-light .learn-ring-text { fill: #a07d28; }
+    .learn-light .learn-loader   { color: #7a6d58; }
+    .learn-light .learn-empty    { color: #7a6d58; }
+  `;
+
   return (
     <style>{`
-      /* ── tokens ── */
+      /* ── base layout ── */
       .learn-root {
-        --clr-bg:        #0d1117;
-        --clr-surface:   #161c24;
-        --clr-surface2:  #1e2630;
-        --clr-border:    rgba(255,255,255,.07);
-        --clr-border2:   rgba(255,255,255,.12);
-        --clr-fg:        #e8e0d0;
-        --clr-muted-fg:  #7a8694;
-        --clr-gold:      #c9a84c;
-        --clr-gold-dim:  rgba(201,168,76,.15);
-        --clr-amber:     #e08a3c;
-        --clr-accent:    #4a9f82;
-        --clr-accent-dim:rgba(74,159,130,.12);
-
-        font-family: 'Georgia', 'Times New Roman', serif;
+        --serif: Georgia, 'Times New Roman', serif;
+        font-family: var(--serif);
         background: var(--clr-bg);
         color: var(--clr-fg);
         min-height: 100vh;
-        padding: 1.5rem 1rem 4rem;
+        padding: 1.2rem 1rem 4rem;
         max-width: 900px;
         margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        transition: background .3s ease, color .3s ease;
       }
+
+      /* ── topbar ── */
+      .learn-topbar { display: flex; justify-content: flex-end; }
+      .learn-theme-toggle {
+        display: flex;
+        align-items: center;
+        gap: .45rem;
+        border: 1px solid transparent;
+        border-radius: 20px;
+        padding: .38rem .85rem;
+        font-size: .78rem;
+        font-family: var(--serif);
+        font-weight: 600;
+        cursor: pointer;
+        transition: background .2s, color .2s, transform .15s;
+        letter-spacing: .02em;
+      }
+      .learn-theme-toggle:hover { transform: translateY(-1px); }
 
       /* ── loader ── */
       .learn-loader {
@@ -403,8 +551,6 @@ function LearnStyles() {
         gap: .75rem;
         justify-content: center;
         min-height: 50vh;
-        color: var(--clr-muted-fg);
-        font-family: Georgia, serif;
       }
       .learn-loader-icon { animation: spin 1s linear infinite; }
       @keyframes spin { to { transform: rotate(360deg); } }
@@ -414,9 +560,9 @@ function LearnStyles() {
         display: flex;
         align-items: flex-start;
         justify-content: space-between;
-        margin-bottom: 2rem;
-        padding-bottom: 1.5rem;
+        padding-bottom: 1.25rem;
         border-bottom: 1px solid var(--clr-border2);
+        transition: border-color .3s;
       }
       .learn-title {
         font-size: 1.9rem;
@@ -427,50 +573,45 @@ function LearnStyles() {
         align-items: baseline;
         gap: .55rem;
         margin: 0 0 .35rem;
-        color: var(--clr-fg);
+        transition: color .3s;
       }
       .learn-title-ar {
         font-size: 1.2rem;
-        color: var(--clr-gold);
         font-weight: 400;
         opacity: .8;
+        transition: color .3s;
       }
       .learn-subtitle {
         font-size: .82rem;
-        color: var(--clr-muted-fg);
         font-style: italic;
         margin: 0;
+        color: var(--clr-muted-fg);
+        transition: color .3s;
       }
-      .learn-error {
-        font-size: .8rem;
-        color: #e05555;
-        margin-top: .4rem;
-      }
+      .learn-error { font-size: .8rem; color: #e05555; margin-top: .4rem; }
       .learn-header-ornament {
         font-size: 1.6rem;
-        color: var(--clr-gold);
         opacity: .25;
         line-height: 1;
         flex-shrink: 0;
         padding-top: .15rem;
+        transition: color .3s;
       }
 
       /* ── continue card ── */
       .learn-continue-card {
-        background: linear-gradient(135deg, var(--clr-surface) 0%, rgba(201,168,76,.06) 100%);
-        border: 1px solid var(--clr-gold-dim);
+        border: 1px solid transparent;
         border-radius: 16px;
         padding: 1.4rem 1.5rem;
-        margin-bottom: 1.5rem;
         position: relative;
         overflow: hidden;
+        transition: background .3s, border-color .3s, box-shadow .3s;
       }
       .learn-continue-card::before {
         content: '';
         position: absolute;
         top: 0; left: 0; right: 0;
         height: 2px;
-        background: linear-gradient(90deg, var(--clr-gold), transparent);
         border-radius: 16px 16px 0 0;
       }
       .learn-continue-label {
@@ -480,10 +621,9 @@ function LearnStyles() {
         font-size: .72rem;
         letter-spacing: .1em;
         text-transform: uppercase;
-        color: var(--clr-gold);
         margin-bottom: 1rem;
-        font-family: 'Georgia', serif;
         font-style: italic;
+        transition: color .3s;
       }
       .learn-continue-body {
         display: flex;
@@ -494,18 +634,18 @@ function LearnStyles() {
       }
       .learn-continue-chapter {
         font-size: .75rem;
-        color: var(--clr-muted-fg);
         text-transform: uppercase;
         letter-spacing: .07em;
         display: block;
         margin-bottom: .3rem;
+        transition: color .3s;
       }
       .learn-continue-hadith {
         font-size: 1.15rem;
         font-weight: 700;
         margin: 0 0 .6rem;
-        color: var(--clr-fg);
         line-height: 1.3;
+        transition: color .3s;
       }
       .learn-continue-badges {
         display: flex;
@@ -518,20 +658,21 @@ function LearnStyles() {
         border-radius: 50%;
         background: var(--dot);
         flex-shrink: 0;
+        transition: background .3s;
       }
       .learn-status-text {
         font-size: .78rem;
         color: var(--clr-muted-fg);
+        transition: color .3s;
       }
       .learn-score-badge {
         display: flex;
         align-items: center;
         gap: 3px;
         font-size: .73rem;
-        color: var(--clr-gold);
-        background: var(--clr-gold-dim);
         border-radius: 20px;
         padding: 2px 8px;
+        transition: color .3s, background .3s;
       }
       .learn-continue-actions {
         display: flex;
@@ -539,27 +680,21 @@ function LearnStyles() {
         flex-wrap: wrap;
         flex-shrink: 0;
       }
-      .learn-empty {
-        font-size: .85rem;
-        color: var(--clr-muted-fg);
-        font-style: italic;
-      }
+      .learn-empty { font-size: .85rem; font-style: italic; transition: color .3s; }
 
       /* ── buttons ── */
       .learn-btn-primary {
         display: inline-flex;
         align-items: center;
         gap: .4rem;
-        background: var(--clr-gold);
-        color: #0d1117;
         border: none;
         border-radius: 9px;
         padding: .55rem 1.1rem;
         font-size: .85rem;
         font-weight: 700;
-        font-family: Georgia, serif;
+        font-family: var(--serif);
         cursor: pointer;
-        transition: opacity .15s, transform .15s;
+        transition: opacity .15s, transform .15s, background .3s, color .3s;
       }
       .learn-btn-primary:hover { opacity: .88; transform: translateY(-1px); }
       .learn-btn-primary:active { transform: translateY(0); opacity: 1; }
@@ -569,21 +704,15 @@ function LearnStyles() {
         align-items: center;
         gap: .4rem;
         background: transparent;
-        color: var(--clr-muted-fg);
-        border: 1px solid var(--clr-border2);
+        border: 1px solid transparent;
         border-radius: 9px;
         padding: .55rem 1.1rem;
         font-size: .85rem;
-        font-family: Georgia, serif;
+        font-family: var(--serif);
         cursor: pointer;
         transition: border-color .15s, color .15s, transform .15s;
       }
-      .learn-btn-ghost:hover {
-        border-color: var(--clr-gold);
-        color: var(--clr-gold);
-        transform: translateY(-1px);
-      }
-
+      .learn-btn-ghost:hover { transform: translateY(-1px); }
       .learn-btn-sm { padding: .42rem .9rem; font-size: .8rem; }
 
       /* ── stats strip ── */
@@ -591,55 +720,26 @@ function LearnStyles() {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: .75rem;
-        margin-bottom: 2.5rem;
       }
-      @media (max-width: 540px) {
-        .learn-stats-strip { grid-template-columns: repeat(2, 1fr); }
-      }
+      @media (max-width: 540px) { .learn-stats-strip { grid-template-columns: repeat(2, 1fr); } }
       .learn-stat-pill {
-        background: var(--clr-surface);
         border: 1px solid var(--clr-border);
         border-radius: 12px;
         padding: .85rem .9rem;
         display: flex;
         flex-direction: column;
         gap: .2rem;
-        transition: border-color .2s;
+        transition: border-color .2s, background .3s;
       }
       .learn-stat-pill:hover { border-color: var(--clr-border2); }
-      .learn-stat-icon {
-        color: var(--accent);
-        line-height: 1;
-        margin-bottom: .1rem;
-      }
-      .learn-stat-value {
-        font-size: 1.5rem;
-        font-weight: 700;
-        line-height: 1;
-        color: var(--clr-fg);
-      }
-      .learn-stat-label {
-        font-size: .72rem;
-        color: var(--clr-muted-fg);
-        letter-spacing: .03em;
-      }
+      .learn-stat-icon { color: var(--accent); line-height: 1; margin-bottom: .1rem; }
+      .learn-stat-value { font-size: 1.5rem; font-weight: 700; line-height: 1; transition: color .3s; }
+      .learn-stat-label { font-size: .72rem; letter-spacing: .03em; transition: color .3s; }
 
       /* ── section head ── */
-      .learn-section-head {
-        margin-bottom: 1rem;
-      }
-      .learn-section-title {
-        font-size: 1.25rem;
-        font-weight: 700;
-        margin: 0 0 .2rem;
-        color: var(--clr-fg);
-      }
-      .learn-section-sub {
-        font-size: .8rem;
-        color: var(--clr-muted-fg);
-        margin: 0;
-        font-style: italic;
-      }
+      .learn-section-head { margin-bottom: .75rem; }
+      .learn-section-title { font-size: 1.25rem; font-weight: 700; margin: 0 0 .2rem; transition: color .3s; }
+      .learn-section-sub   { font-size: .8rem; margin: 0; font-style: italic; transition: color .3s; }
 
       /* ── chapters grid ── */
       .learn-chapters-grid {
@@ -650,22 +750,17 @@ function LearnStyles() {
 
       /* ── chapter card ── */
       .learn-chapter-card {
-        background: var(--clr-surface);
         border: 1px solid var(--clr-border);
         border-radius: 16px;
         padding: 1.3rem;
         display: flex;
         flex-direction: column;
         gap: .9rem;
-        transition: border-color .2s, transform .2s, box-shadow .2s;
+        transition: border-color .2s, transform .2s, box-shadow .2s, background .3s;
         animation: cardIn .4s ease both;
         animation-delay: var(--delay, 0ms);
       }
-      .learn-chapter-card:hover {
-        border-color: var(--clr-border2);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 32px rgba(0,0,0,.35);
-      }
+      .learn-chapter-card:hover { border-color: var(--clr-border2); transform: translateY(-2px); }
       @keyframes cardIn {
         from { opacity: 0; transform: translateY(10px); }
         to   { opacity: 1; transform: translateY(0); }
@@ -678,26 +773,19 @@ function LearnStyles() {
         gap: .75rem;
       }
       .learn-chapter-title-fr {
-        font-size: 1rem;
-        font-weight: 700;
-        color: var(--clr-fg);
-        margin: 0 0 .2rem;
-        line-height: 1.25;
+        font-size: 1rem; font-weight: 700;
+        margin: 0 0 .2rem; line-height: 1.25;
+        transition: color .3s;
       }
       .learn-chapter-title-ar {
-        font-size: .95rem;
-        color: var(--clr-gold);
-        opacity: .75;
-        margin: 0;
-        font-weight: 400;
+        font-size: .95rem; font-weight: 400;
+        opacity: .75; margin: 0;
         direction: rtl;
+        transition: color .3s;
       }
       .learn-chapter-desc {
-        font-size: .8rem;
-        color: var(--clr-muted-fg);
-        line-height: 1.5;
-        margin: 0;
-        font-style: italic;
+        font-size: .8rem; line-height: 1.5; margin: 0;
+        font-style: italic; transition: color .3s;
       }
 
       .learn-chapter-stats {
@@ -706,79 +794,46 @@ function LearnStyles() {
         gap: .45rem;
       }
       .learn-chapter-stat {
-        background: var(--clr-surface2);
-        border-radius: 9px;
-        padding: .55rem .4rem;
-        text-align: center;
+        border-radius: 9px; padding: .55rem .4rem; text-align: center;
+        transition: background .3s;
       }
       .learn-chapter-stat-val {
-        display: block;
-        font-size: 1.05rem;
-        font-weight: 700;
-        color: var(--clr-fg);
-        line-height: 1;
+        display: block; font-size: 1.05rem; font-weight: 700; line-height: 1;
+        transition: color .3s;
       }
       .learn-chapter-stat-lbl {
-        display: block;
-        font-size: .65rem;
-        color: var(--clr-muted-fg);
-        margin-top: .2rem;
-        letter-spacing: .03em;
+        display: block; font-size: .65rem; margin-top: .2rem; letter-spacing: .03em;
+        transition: color .3s;
       }
 
-      .learn-chapter-divider {
-        height: 1px;
-        background: var(--clr-border);
-        margin: 0 -.1rem;
-      }
+      .learn-chapter-divider { height: 1px; margin: 0 -.1rem; transition: background .3s; }
 
-      .learn-chapter-next {
-        background: var(--clr-surface2);
-        border-radius: 10px;
-        padding: .7rem .9rem;
-      }
+      .learn-chapter-next { border-radius: 10px; padding: .7rem .9rem; transition: background .3s; }
       .learn-chapter-next-label {
-        display: block;
-        font-size: .7rem;
-        color: var(--clr-muted-fg);
-        letter-spacing: .05em;
-        text-transform: uppercase;
-        margin-bottom: .25rem;
+        display: block; font-size: .7rem; letter-spacing: .05em;
+        text-transform: uppercase; margin-bottom: .25rem; transition: color .3s;
       }
       .learn-chapter-next-title {
-        display: block;
-        font-size: .85rem;
-        color: var(--clr-fg);
-        font-weight: 600;
-        line-height: 1.35;
+        display: block; font-size: .85rem; font-weight: 600; line-height: 1.35;
+        transition: color .3s;
       }
 
-      .learn-chapter-actions {
-        display: flex;
-        gap: .6rem;
-        flex-wrap: wrap;
-      }
+      .learn-chapter-actions { display: flex; gap: .6rem; flex-wrap: wrap; }
 
       /* ── progress ring ── */
       .learn-ring { flex-shrink: 0; }
-      .learn-ring-bg {
-        fill: none;
-        stroke: var(--clr-surface2);
-        stroke-width: 4;
-      }
+      .learn-ring-bg { fill: none; stroke-width: 4; transition: stroke .3s; }
       .learn-ring-fg {
-        fill: none;
-        stroke: var(--clr-gold);
-        stroke-width: 4;
-        stroke-linecap: round;
-        transition: stroke-dashoffset .6s ease;
+        fill: none; stroke-width: 4; stroke-linecap: round;
+        transition: stroke-dashoffset .6s ease, stroke .3s;
       }
       .learn-ring-text {
-        fill: var(--clr-gold);
-        font-size: 11px;
-        font-family: Georgia, serif;
-        font-weight: 700;
+        font-size: 11px; font-family: Georgia, serif; font-weight: 700;
+        transition: fill .3s;
       }
+
+      ${dark}
+      ${light}
     `}</style>
   );
 }

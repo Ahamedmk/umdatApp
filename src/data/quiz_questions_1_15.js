@@ -5199,6 +5199,148 @@ const QUIZ_HADITH_44 = [
   correctIndex: 1,
   explain:
     "Le hadith montre que certaines prières (comme ‘ishā’) peuvent être adaptées selon les circonstances, tout en respectant les temps."
+},
+/* ----------------- HADITH 51 : « La prière médiane (ṣalāt al-wusṭā) » ----------------- */
+
+{
+  n: 51,
+  q: "Lors de quel événement le Prophète ﷺ a-t-il mentionné la 'prière médiane' ?",
+  options: [
+    "La conquête de La Mecque",
+    "La bataille de Badr",
+    "La bataille du Fossé (al-Khandaq)",
+    "Le voyage nocturne"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith mentionne explicitement : « يوم الخندق » (le jour du Fossé)."
+},
+
+{
+  n: 51,
+  q: "Quelle prière est explicitement identifiée comme la prière médiane dans le hadith ?",
+  options: [
+    "Fajr",
+    "Dhuhr",
+    "‘Asr",
+    "Maghrib"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le Prophète ﷺ a dit : « شغلونا عن الصلاة الوسطى صلاة العصر » — la prière médiane est la prière du ‘Asr."
+},
+
+{
+  n: 51,
+  q: "Que firent les ennemis selon le hadith ?",
+  options: [
+    "Ils empêchèrent la zakat",
+    "Ils retardèrent la prière du fajr",
+    "Ils occupèrent les musulmans jusqu’à retarder le ‘asr",
+    "Ils détruisirent la mosquée"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith dit : « شغلونا » — ils nous ont occupés, empêchant d’accomplir la prière à son وقت."
+},
+
+{
+  n: 51,
+  q: "Quelle invocation le Prophète ﷺ a-t-il faite contre eux ?",
+  options: [
+    "Qu’Allah leur pardonne",
+    "Qu’Allah remplisse leurs maisons et leurs tombes de feu",
+    "Qu’Allah les guide",
+    "Qu’Allah leur donne la richesse"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le texte dit : « ملأ الله بيوتهم وقبورهم نارًا »."
+},
+
+{
+  n: 51,
+  q: "Quelle règle peut-on tirer concernant la prière ?",
+  options: [
+    "On peut abandonner une prière",
+    "Il est permis de retarder la prière sans raison",
+    "La prière doit être faite à son وقت même en difficulté",
+    "La prière du ‘asr n’est pas importante"
+  ],
+  correctIndex: 2,
+  explain:
+    "Le hadith montre la gravité de retarder la prière et l’importance de la صلاة الوسطى."
+},
+/* ----------------- HADITH 52 : « Gravité de manquer la prière du ‘Asr » ----------------- */
+
+{
+  n: 52,
+  q: "Pourquoi les polythéistes ont-ils empêché le Prophète ﷺ d’accomplir la prière ?",
+  options: [
+    "À cause d’un voyage",
+    "À cause du combat",
+    "À cause de la pluie",
+    "À cause du sommeil"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le hadith mentionne qu’ils l’ont occupé « عن صلاة العصر » à cause du contexte de guerre."
+},
+
+{
+  n: 52,
+  q: "Jusqu’à quel moment la prière du ‘asr a-t-elle été retardée ?",
+  options: [
+    "Jusqu’au coucher du soleil",
+    "Jusqu’à minuit",
+    "Jusqu’à l’aube",
+    "Jusqu’à midi"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le texte indique « حتى احمرت الشمس أو اصفرت » — jusqu’à l’approche du coucher."
+},
+
+{
+  n: 52,
+  q: "Quelle invocation le Prophète ﷺ a-t-il faite dans ce hadith ?",
+  options: [
+    "Qu’Allah leur donne la victoire",
+    "Qu’Allah remplisse leurs cœurs et leurs tombes de feu",
+    "Qu’Allah les récompense",
+    "Qu’Allah les protège"
+  ],
+  correctIndex: 1,
+  explain:
+    "Le hadith mentionne : « ملأ الله أجوافهم وقبورهم نارًا »."
+},
+
+{
+  n: 52,
+  q: "Quelle est la gravité de retarder la prière du ‘asr selon ce hadith ?",
+  options: [
+    "C’est une simple erreur",
+    "C’est un péché mineur",
+    "C’est très grave et mérite une invocation sévère",
+    "Ce n’est pas important"
+  ],
+  correctIndex: 2,
+  explain:
+    "L’invocation sévère du Prophète ﷺ montre la grande gravité de retarder cette prière."
+},
+
+{
+  n: 52,
+  q: "Quelle leçon principale ressort de ces deux hadiths (51 et 52) ?",
+  options: [
+    "Toutes les prières ont la même importance sans distinction",
+    "La prière du ‘asr (الصلاة الوسطى) a une importance particulière",
+    "Seule la prière du fajr est importante",
+    "On peut regrouper toutes les prières sans excuse"
+  ],
+  correctIndex: 1,
+  explain:
+    "Les deux hadiths insistent sur la valeur particulière de « الصلاة الوسطى » qui est la prière du ‘asr."
 }
 
 ];

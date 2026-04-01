@@ -183,4 +183,66 @@ export const HADITHS_SALAT = [
     },
     audio_url: null,
   }),
+    salatHadith({
+    number: 51,
+    title: "La prière médiane (ṣalāt al-wusṭā) et le retard du ʿaṣr",
+    arabic_text:
+      "عَنْ عَلِيٍّ رَضِيَ اللَّهُ عَنْهُ أَنَّ النَّبِيَّ ﷺ قَالَ يَوْمَ الْخَنْدَقِ: «مَلَأَ اللَّهُ قُبُورَهُمْ وَبُيُوتَهُمْ نَارًا، شَغَلُونَا عَنِ الصَّلَاةِ الْوُسْطَى حَتَّى غَابَتِ الشَّمْسُ».",
+    french_text:
+      "ʿAlī (ra) rapporte que le Prophète ﷺ dit le jour de la bataille du Fossé : « Qu’Allah remplisse leurs tombes et leurs maisons de feu ! Ils nous ont détournés de la prière médiane jusqu’à ce que le soleil se couche. »",
+    source: "Muslim — ʿUmdat al-Aḥkām (Hadith 51)",
+    tags: ["salat", "asr", "salat-wusta", "khandaq"],
+
+    opinions: {
+      Hanafi: {
+        ar: "قال أبو حنيفة: الصلاة الوسطى هي صلاة العصر.",
+        fr: "Les hanafites considèrent que la prière médiane est la prière du ‘aṣr."
+      },
+      Maliki: {
+        ar: "قال مالك: الصلاة الوسطى هي صلاة العصر.",
+        fr: "Les malikites considèrent également que la prière médiane est le ‘aṣr."
+      },
+      Shafi: {
+        ar: "قال الشافعي: أرجح الأقوال أن الصلاة الوسطى هي العصر.",
+        fr: "Les shafi‘ites privilégient l’avis selon lequel la prière médiane est le ‘aṣr."
+      },
+      Hanbali: {
+        ar: "قال أحمد: الصلاة الوسطى هي صلاة العصر بلا خلاف معتبر.",
+        fr: "Les hanbalites affirment clairement que la prière médiane est le ‘aṣr."
+      }
+    },
+
+    audio_url: null,
+  }),
+    salatHadith({
+    number: 52,
+    title: "Gravité de retarder la prière du ʿaṣr",
+    arabic_text:
+      "وَعَنْ عَبْدِ اللَّهِ بْنِ مَسْعُودٍ قَالَ: حَبَسَ الْمُشْرِكُونَ رَسُولَ اللَّهِ ﷺ عَنِ الصَّلَاةِ الْعَصْرِ حَتَّى احْمَرَّتِ الشَّمْسُ أَوِ اصْفَرَّتْ، فَقَالَ رَسُولُ اللَّهِ ﷺ: «شَغَلُونَا عَنِ الصَّلَاةِ الْوُسْطَى صَلَاةِ الْعَصْرِ، مَلَأَ اللَّهُ أَجْوَافَهُمْ وَقُبُورَهُمْ نَارًا».",
+    french_text:
+      "ʿAbd Allāh ibn Masʿūd (ra) rapporte : « Les polythéistes ont retenu le Prophète ﷺ de la prière du ‘aṣr jusqu’à ce que le soleil devienne rouge ou jaune. Alors le Prophète ﷺ dit : “Ils nous ont occupés de la prière médiane, la prière du ‘aṣr. Qu’Allah remplisse leurs ventres et leurs tombes de feu.” »",
+    source: "Muslim — ʿUmdat al-Aḥkām (Hadith 52)",
+    tags: ["salat", "asr", "salat-wusta", "retard"],
+
+    opinions: {
+      Hanafi: {
+        ar: "قال أبو حنيفة: يحرم تأخير العصر إلى اصفرار الشمس بلا عذر.",
+        fr: "Les hanafites interdisent de retarder le ‘aṣr jusqu’au jaunissement du soleil sans excuse."
+      },
+      Maliki: {
+        ar: "قال مالك: يجب أداء العصر في وقته ويحرم تأخيره بلا عذر.",
+        fr: "Les malikites considèrent obligatoire d’accomplir le ‘aṣr dans son temps et interdisent de le retarder sans excuse."
+      },
+      Shafi: {
+        ar: "قال الشافعي: تأخير العصر إلى ما قبل الغروب مكروه شديد.",
+        fr: "Les shafi‘ites considèrent que retarder le ‘aṣr jusqu’avant le coucher est fortement déconseillé."
+      },
+      Hanbali: {
+        ar: "قال أحمد: تأخير العصر إلى اصفرار الشمس مكروه تحريما.",
+        fr: "Les hanbalites jugent ce retard comme répréhensible au niveau proche de l’interdit."
+      }
+    },
+
+    audio_url: null,
+  }),
 ];
