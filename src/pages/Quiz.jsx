@@ -1,12 +1,24 @@
 // src/pages/Quiz.jsx
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import { Switch } from "@/components/ui/switch";
 import {
-  Select, SelectTrigger, SelectValue, SelectContent, SelectItem,
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
 } from "@/components/ui/select";
 import {
-  Brain, CheckCircle2, XCircle, Lightbulb, Moon, Sun,
-  Trophy, Target, RotateCcw, Sparkles,
+  Brain,
+  CheckCircle2,
+  XCircle,
+  Lightbulb,
+  Moon,
+  Sun,
+  Trophy,
+  Target,
+  RotateCcw,
+  Sparkles,
 } from "lucide-react";
 
 import { HADITHS_TAHARA } from "@/data/seed_hadiths_tahara";
@@ -15,30 +27,48 @@ import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
 
 /* ══════════════════════════════════════════ */
+/* Session persistence helpers */
+const QUIZ_STORAGE_KEY = "quiz_session_v1";
+
+function getQuizStorageKey(userId) {
+  return `${QUIZ_STORAGE_KEY}:${userId || "guest"}`;
+}
+
+function buildPoolSignature(pool) {
+  return JSON.stringify(pool.map((q) => `${q.n}-${q.q}`));
+}
+
+/* ══════════════════════════════════════════ */
 export function Quiz() {
   const { user } = useAuth();
+  const restoredRef = useRef(false);
 
-  const [filterN, setFilterN]           = useState("all");
-  const [index, setIndex]               = useState(0);
-  const [selected, setSelected]         = useState(null);
-  const [score, setScore]               = useState(0);
-  const [done, setDone]                 = useState(false);
-  const [dark, setDark]                 = useState(false);
-  const [showHint, setShowHint]         = useState(false);
+  const [filterN, setFilterN] = useState("all");
+  const [index, setIndex] = useState(0);
+  const [selected, setSelected] = useState(null);
+  const [score, setScore] = useState(0);
+  const [done, setDone] = useState(false);
+  const [dark, setDark] = useState(false);
+  const [showHint, setShowHint] = useState(false);
   const [showFrenchRef, setShowFrenchRef] = useState(false);
   const [learnedNumbers, setLearnedNumbers] = useState([]);
   const [loadingLearned, setLoadingLearned] = useState(true);
+  const [pendingSession, setPendingSession] = useState(null);
+  const [showResumeCard, setShowResumeCard] = useState(false);
 
   /* theme */
   useEffect(() => {
     const pref = localStorage.getItem("theme");
-    const prefersDark = typeof window !== "undefined" && window.matchMedia?.("(prefers-color-scheme: dark)").matches;
+    const prefersDark =
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-color-scheme: dark)").matches;
+
     const enable = pref ? pref === "dark" : prefersDark;
     setDark(enable);
     document.documentElement.classList.toggle("dark", enable);
   }, []);
 
-  const toggleTheme = v => {
+  const toggleTheme = (v) => {
     const checked = typeof v === "boolean" ? v : !dark;
     setDark(checked);
     document.documentElement.classList.toggle("dark", checked);
@@ -48,84 +78,257 @@ export function Quiz() {
   /* load learned hadiths */
   useEffect(() => {
     let active = true;
+
     async function load() {
       setLoadingLearned(true);
       try {
-        if (!user) { if (active) setLearnedNumbers([]); return; }
+        if (!user) {
+          if (active) setLearnedNumbers([]);
+          return;
+        }
+
         const { data, error } = await supabase
-          .from("user_hadith_progress").select("hadith_number, status")
-          .eq("user_id", user.id).eq("status", "learned");
+          .from("user_hadith_progress")
+          .select("hadith_number, status")
+          .eq("user_id", user.id)
+          .eq("status", "learned");
+
         if (error) throw error;
-        const nums = [...new Set((data || []).map(r => r.hadith_number))].sort((a,b)=>a-b);
+
+        const nums = [...new Set((data || []).map((r) => r.hadith_number))].sort(
+          (a, b) => a - b
+        );
+
         if (active) {
           setLearnedNumbers(nums);
-          if (nums.length === 0 || (filterN !== "all" && !nums.includes(parseInt(filterN,10)))) {
-            setFilterN("all"); setIndex(0);
+
+          if (
+            nums.length === 0 ||
+            (filterN !== "all" && !nums.includes(parseInt(filterN, 10)))
+          ) {
+            setFilterN("all");
+            setIndex(0);
           }
         }
-      } catch(e) { console.error(e); if (active) setLearnedNumbers([]); }
-      finally { if (active) setLoadingLearned(false); }
+      } catch (e) {
+        console.error(e);
+        if (active) setLearnedNumbers([]);
+      } finally {
+        if (active) setLoadingLearned(false);
+      }
     }
+
     load();
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, [user?.id]);
 
   const pool = useMemo(() => {
     if (!learnedNumbers.length) return [];
-    let base = QUIZ_QUESTIONS_1_15.filter(q => learnedNumbers.includes(q.n));
-    if (filterN !== "all") base = base.filter(q => q.n === parseInt(filterN,10));
+
+    let base = QUIZ_QUESTIONS_1_15.filter((q) =>
+      learnedNumbers.includes(q.n)
+    );
+
+    if (filterN !== "all") {
+      base = base.filter((q) => q.n === parseInt(filterN, 10));
+    }
+
     return base;
   }, [learnedNumbers, filterN]);
 
-  const current  = pool[index];
+  const poolSignature = useMemo(() => buildPoolSignature(pool), [pool]);
+
+  /* Detect saved quiz session once pool is ready */
+useEffect(() => {
+  if (!user || !pool.length || restoredRef.current) return;
+
+  const raw = localStorage.getItem(getQuizStorageKey(user.id));
+
+  if (!raw) {
+    restoredRef.current = true;
+    return;
+  }
+
+  try {
+    const saved = JSON.parse(raw);
+
+    if (saved.poolSignature !== poolSignature) {
+      localStorage.removeItem(getQuizStorageKey(user.id));
+      restoredRef.current = true;
+      return;
+    }
+
+    setPendingSession(saved);
+    setShowResumeCard(true);
+  } catch (err) {
+    console.error("Impossible de lire la session du quiz :", err);
+    localStorage.removeItem(getQuizStorageKey(user.id));
+  } finally {
+    restoredRef.current = true;
+  }
+}, [user, pool.length, poolSignature]);
+
+  /* Save quiz session */
+  useEffect(() => {
+    if (!user || !pool.length || !restoredRef.current || showResumeCard) return;
+
+    const payload = {
+      filterN,
+      index,
+      selected,
+      score,
+      done,
+      showHint,
+      showFrenchRef,
+      poolSignature,
+      savedAt: Date.now(),
+    };
+
+    localStorage.setItem(
+      getQuizStorageKey(user.id),
+      JSON.stringify(payload)
+    );
+  }, [
+    user,
+    filterN,
+    index,
+    selected,
+    score,
+    done,
+    showHint,
+    showFrenchRef,
+    poolSignature,
+    pool.length,
+  ]);
+
+  const current = pool[index];
   const answered = index + (done ? 1 : 0);
-  const progressPct = pool.length ? Math.round((answered / pool.length) * 100) : 0;
-  const accuracy    = answered ? Math.round((score / answered) * 100) : 0;
+  const progressPct = pool.length
+    ? Math.round((answered / pool.length) * 100)
+    : 0;
+  const accuracy = answered ? Math.round((score / answered) * 100) : 0;
 
   const onValidate = () => {
     if (selected == null || !current) return;
-    setScore(s => s + (selected === current.correctIndex ? 1 : 0));
+
+    setScore((s) => s + (selected === current.correctIndex ? 1 : 0));
     setDone(true);
   };
 
   const onNext = () => {
     if (!pool.length) return;
+
     if (index + 1 < pool.length) {
-      setIndex(i => i + 1); setSelected(null); setDone(false);
-      setShowHint(false); setShowFrenchRef(false);
+      setIndex((i) => i + 1);
+      setSelected(null);
+      setDone(false);
+      setShowHint(false);
+      setShowFrenchRef(false);
     } else {
-      setIndex(0); setSelected(null); setDone(false); setScore(0);
-      setShowHint(false); setShowFrenchRef(false);
+      setIndex(0);
+      setSelected(null);
+      setDone(false);
+      setScore(0);
+      setShowHint(false);
+      setShowFrenchRef(false);
+
+      if (user) {
+        localStorage.removeItem(getQuizStorageKey(user.id));
+      }
     }
   };
 
   const onRestart = () => {
-    setIndex(0); setSelected(null); setDone(false); setScore(0);
-    setShowHint(false); setShowFrenchRef(false);
+    setIndex(0);
+    setSelected(null);
+    setDone(false);
+    setScore(0);
+    setShowHint(false);
+    setShowFrenchRef(false);
+
+    if (user) {
+      localStorage.removeItem(getQuizStorageKey(user.id));
+    }
   };
 
-  const handleFilter = v => {
-    setFilterN(v); setIndex(0); setSelected(null); setDone(false);
-    setScore(0); setShowHint(false); setShowFrenchRef(false);
+  const handleFilter = (v) => {
+    setFilterN(v);
+    setIndex(0);
+    setSelected(null);
+    setDone(false);
+    setScore(0);
+    setShowHint(false);
+    setShowFrenchRef(false);
+
+    if (user) {
+      localStorage.removeItem(getQuizStorageKey(user.id));
+    }
+
+    restoredRef.current = true;
   };
 
-  useEffect(() => { setShowFrenchRef(false); }, [index, filterN]);
+  const resumeSavedSession = () => {
+  if (!pendingSession) return;
 
-  const isCorrect = i => done && i === current?.correctIndex;
-  const isWrong   = i => done && selected === i && i !== current?.correctIndex;
+  const safeIndex =
+    typeof pendingSession.index === "number" &&
+    pendingSession.index >= 0 &&
+    pendingSession.index < pool.length
+      ? pendingSession.index
+      : 0;
+
+  setFilterN(pendingSession.filterN ?? "all");
+  setIndex(safeIndex);
+  setSelected(pendingSession.selected ?? null);
+  setScore(pendingSession.score ?? 0);
+  setDone(!!pendingSession.done);
+  setShowHint(!!pendingSession.showHint);
+  setShowFrenchRef(!!pendingSession.showFrenchRef);
+
+  setShowResumeCard(false);
+  setPendingSession(null);
+};
+
+const discardSavedSession = () => {
+  if (user) {
+    localStorage.removeItem(getQuizStorageKey(user.id));
+  }
+
+  setPendingSession(null);
+  setShowResumeCard(false);
+
+  setFilterN("all");
+  setIndex(0);
+  setSelected(null);
+  setScore(0);
+  setDone(false);
+  setShowHint(false);
+  setShowFrenchRef(false);
+};
+  useEffect(() => {
+    setShowFrenchRef(false);
+  }, [index, filterN]);
+
+  const isCorrect = (i) => done && i === current?.correctIndex;
+  const isWrong = (i) => done && selected === i && i !== current?.correctIndex;
 
   return (
     <>
       <QuizStyles dark={dark} />
       <div className="qz-root">
-
         {/* ── Header ── */}
         <header className="qz-header">
           <div className="qz-header-left">
-            <div className="qz-icon-wrap"><Brain size={17} /></div>
+            <div className="qz-icon-wrap">
+              <Brain size={17} />
+            </div>
             <div>
               <h1 className="qz-title">Quiz Interactif</h1>
-              <p className="qz-subtitle">Teste tes connaissances sur les hadiths appris</p>
+              <p className="qz-subtitle">
+                Teste tes connaissances sur les hadiths appris
+              </p>
             </div>
           </div>
 
@@ -136,8 +339,10 @@ export function Quiz() {
               </SelectTrigger>
               <SelectContent className="qz-select-content">
                 <SelectItem value="all">Tous les hadiths appris</SelectItem>
-                {learnedNumbers.map(n => (
-                  <SelectItem key={n} value={String(n)}>Hadith {n}</SelectItem>
+                {learnedNumbers.map((n) => (
+                  <SelectItem key={n} value={String(n)}>
+                    Hadith {n}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -153,14 +358,38 @@ export function Quiz() {
         {/* ── Stats ── */}
         <div className="qz-stats">
           {[
-            { icon: Target,   label: "Questions vues",   value: answered,  accent: "#9f7ae0" },
-            { icon: Trophy,   label: "Bonnes réponses",  value: score,     accent: "#4a9f82" },
-            { icon: Sparkles, label: "Précision",        value: `${isNaN(accuracy) ? 0 : accuracy}%`, accent: "#4a9fc8" },
-            { icon: RotateCcw,label: "Dispo",            value: pool.length, accent: "#c9a84c" },
-          ].map(s => {
+            {
+              icon: Target,
+              label: "Questions vues",
+              value: answered,
+              accent: "#9f7ae0",
+            },
+            {
+              icon: Trophy,
+              label: "Bonnes réponses",
+              value: score,
+              accent: "#4a9f82",
+            },
+            {
+              icon: Sparkles,
+              label: "Précision",
+              value: `${isNaN(accuracy) ? 0 : accuracy}%`,
+              accent: "#4a9fc8",
+            },
+            {
+              icon: RotateCcw,
+              label: "Dispo",
+              value: pool.length,
+              accent: "#c9a84c",
+            },
+          ].map((s) => {
             const Icon = s.icon;
             return (
-              <div key={s.label} className="qz-stat" style={{ "--accent": s.accent }}>
+              <div
+                key={s.label}
+                className="qz-stat"
+                style={{ "--accent": s.accent }}
+              >
                 <Icon size={14} className="qz-stat-icon" />
                 <span className="qz-stat-value">{s.value}</span>
                 <span className="qz-stat-label">{s.label}</span>
@@ -176,7 +405,10 @@ export function Quiz() {
             <span className="qz-progress-pct">{progressPct}%</span>
           </div>
           <div className="qz-progress-track">
-            <div className="qz-progress-fill" style={{ width: `${progressPct}%` }} />
+            <div
+              className="qz-progress-fill"
+              style={{ width: `${progressPct}%` }}
+            />
           </div>
         </div>
 
@@ -191,31 +423,59 @@ export function Quiz() {
         {!loadingLearned && !user && (
           <div className="qz-state-card">
             <Brain size={28} className="qz-state-icon" />
-            <p className="qz-state-title">Connecte-toi pour accéder au quiz.</p>
-            <p className="qz-state-sub">Le quiz utilise ta progression personnelle.</p>
+            <p className="qz-state-title">
+              Connecte-toi pour accéder au quiz.
+            </p>
+            <p className="qz-state-sub">
+              Le quiz utilise ta progression personnelle.
+            </p>
           </div>
         )}
 
         {!loadingLearned && user && learnedNumbers.length === 0 && (
           <div className="qz-state-card qz-state-card--dashed">
             <Brain size={28} className="qz-state-icon" />
-            <p className="qz-state-title">Aucun hadith appris pour l'instant.</p>
+            <p className="qz-state-title">
+              Aucun hadith appris pour l'instant.
+            </p>
             <p className="qz-state-sub">
-              Va dans <strong>Apprendre</strong>, note un hadith <strong>4 ou 5</strong>, puis reviens ici.
+              Va dans <strong>Apprendre</strong>, note un hadith{" "}
+              <strong>4 ou 5</strong>, puis reviens ici.
             </p>
           </div>
         )}
+         {showResumeCard && user && pool.length > 0 && (
+  <div className="qz-resume-card">
+    <div className="qz-resume-card-topline" />
+    <p className="qz-resume-title">Session retrouvée</p>
+    <p className="qz-resume-text">
+      Tu avais quitté le quiz en cours. Veux-tu reprendre là où tu t’étais arrêté ?
+    </p>
 
+    <div className="qz-resume-actions">
+      <button className="qz-btn-resume" onClick={resumeSavedSession}>
+        Reprendre
+      </button>
+      <button className="qz-btn-discard" onClick={discardSavedSession}>
+        Recommencer
+      </button>
+    </div>
+  </div>
+)}
         {/* ── Main quiz card ── */}
-        {pool.length > 0 && current && (
+        {pool.length > 0 && current && !showResumeCard && (
           <>
             <div className="qz-question-card">
               <div className="qz-question-card-topline" />
 
               {/* Question meta */}
               <div className="qz-question-meta">
-                <span className="qz-badge">Q {index + 1} / {pool.length}</span>
-                <span className="qz-badge qz-badge--hadith">Hadith {current.n}</span>
+                <span className="qz-badge">
+                  Q {index + 1} / {pool.length}
+                </span>
+                <span className="qz-badge qz-badge--hadith">
+                  Hadith {current.n}
+                </span>
               </div>
 
               <p className="qz-question-text">{current.q}</p>
@@ -223,18 +483,27 @@ export function Quiz() {
               {/* Options */}
               <div className="qz-options">
                 {current.options.map((opt, i) => {
-                  const ok  = isCorrect(i);
+                  const ok = isCorrect(i);
                   const bad = isWrong(i);
                   const sel = !done && selected === i;
+
                   return (
                     <button
                       key={i}
-                      className={`qz-option ${sel ? "qz-option--selected" : ""} ${ok ? "qz-option--correct" : ""} ${bad ? "qz-option--wrong" : ""}`}
+                      className={`qz-option ${sel ? "qz-option--selected" : ""} ${
+                        ok ? "qz-option--correct" : ""
+                      } ${bad ? "qz-option--wrong" : ""}`}
                       onClick={() => !done && setSelected(i)}
                       disabled={done}
                     >
-                      <div className={`qz-option-radio ${sel ? "qz-option-radio--sel" : ""} ${ok ? "qz-option-radio--ok" : ""} ${bad ? "qz-option-radio--bad" : ""}`}>
-                        {ok  && <CheckCircle2 size={12} />}
+                      <div
+                        className={`qz-option-radio ${
+                          sel ? "qz-option-radio--sel" : ""
+                        } ${ok ? "qz-option-radio--ok" : ""} ${
+                          bad ? "qz-option-radio--bad" : ""
+                        }`}
+                      >
+                        {ok && <CheckCircle2 size={12} />}
                         {bad && <XCircle size={12} />}
                         {sel && !done && <div className="qz-option-radio-dot" />}
                       </div>
@@ -257,14 +526,17 @@ export function Quiz() {
                     </button>
                     <button
                       className="qz-btn-hint"
-                      onClick={() => setShowHint(v => !v)}
+                      onClick={() => setShowHint((v) => !v)}
                     >
-                      <Lightbulb size={13} /> {showHint ? "Masquer l'indice" : "Indice"}
+                      <Lightbulb size={13} />{" "}
+                      {showHint ? "Masquer l'indice" : "Indice"}
                     </button>
                   </>
                 ) : (
                   <button className="qz-btn-next" onClick={onNext}>
-                    {index + 1 < pool.length ? "Question suivante →" : "Recommencer le quiz"}
+                    {index + 1 < pool.length
+                      ? "Question suivante →"
+                      : "Recommencer le quiz"}
                   </button>
                 )}
               </div>
@@ -273,24 +545,40 @@ export function Quiz() {
               {showHint && !done && (
                 <div className="qz-hint">
                   <Lightbulb size={14} className="qz-hint-icon" />
-                  <span>Relis le hadith {current.n} et son explication pour retrouver la bonne réponse.</span>
+                  <span>
+                    Relis le hadith {current.n} et son explication pour retrouver
+                    la bonne réponse.
+                  </span>
                 </div>
               )}
 
               {/* Result feedback */}
               {done && (
-                <div className={`qz-feedback ${selected === current.correctIndex ? "qz-feedback--ok" : "qz-feedback--ko"}`}>
+                <div
+                  className={`qz-feedback ${
+                    selected === current.correctIndex
+                      ? "qz-feedback--ok"
+                      : "qz-feedback--ko"
+                  }`}
+                >
                   <div className="qz-feedback-bar" />
                   <div className="qz-feedback-body">
-                    {selected === current.correctIndex
-                      ? <CheckCircle2 size={15} className="qz-feedback-icon" />
-                      : <XCircle size={15} className="qz-feedback-icon" />
-                    }
+                    {selected === current.correctIndex ? (
+                      <CheckCircle2 size={15} className="qz-feedback-icon" />
+                    ) : (
+                      <XCircle size={15} className="qz-feedback-icon" />
+                    )}
                     <div>
                       <p className="qz-feedback-title">
-                        {selected === current.correctIndex ? "Excellente réponse !" : "Pas tout à fait…"}
+                        {selected === current.correctIndex
+                          ? "Excellente réponse !"
+                          : "Pas tout à fait…"}
                       </p>
-                      {current.explain && <p className="qz-feedback-explain">{current.explain}</p>}
+                      {current.explain && (
+                        <p className="qz-feedback-explain">
+                          {current.explain}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -305,20 +593,30 @@ export function Quiz() {
               </div>
 
               {(() => {
-                const h = HADITHS_TAHARA.find(x => x.number === current.n);
+                const h = HADITHS_TAHARA.find((x) => x.number === current.n);
                 if (!h) return <p className="qz-recall-empty">—</p>;
+
                 return (
                   <>
                     <div className="qz-arabic-block">
-                      <p className="qz-arabic" dir="rtl">{h.arabic_text}</p>
+                      <p className="qz-arabic" dir="rtl">
+                        {h.arabic_text}
+                      </p>
                     </div>
+
                     {showFrenchRef && (
                       <div className="qz-french-block">
                         <p className="qz-french">{h.french_text}</p>
                       </div>
                     )}
-                    <button className="qz-toggle-fr-btn" onClick={() => setShowFrenchRef(v => !v)}>
-                      {showFrenchRef ? "Masquer la traduction" : "Afficher la traduction"}
+
+                    <button
+                      className="qz-toggle-fr-btn"
+                      onClick={() => setShowFrenchRef((v) => !v)}
+                    >
+                      {showFrenchRef
+                        ? "Masquer la traduction"
+                        : "Afficher la traduction"}
                     </button>
                   </>
                 );
@@ -331,7 +629,6 @@ export function Quiz() {
             </button>
           </>
         )}
-
       </div>
     </>
   );
@@ -342,37 +639,39 @@ export function Quiz() {
 ═══════════════════════════════════════ */
 function QuizStyles({ dark }) {
   const light = {
-    bg:        "#faf6ee",
-    surface:   "#fff8ed",
-    surface2:  "#f3ead8",
-    border:    "rgba(160,120,48,.15)",
-    border2:   "rgba(160,120,48,.28)",
-    fg:        "#2c1f0e",
-    muted:     "#7a6a48",
-    gold:      "#a07830",
-    goldDim:   "rgba(160,120,48,.12)",
-    accent:    "#6a3acd",   /* violet for quiz */
+    bg: "#faf6ee",
+    surface: "#fff8ed",
+    surface2: "#f3ead8",
+    border: "rgba(160,120,48,.15)",
+    border2: "rgba(160,120,48,.28)",
+    fg: "#2c1f0e",
+    muted: "#7a6a48",
+    gold: "#a07830",
+    goldDim: "rgba(160,120,48,.12)",
+    accent: "#6a3acd",
     accentDim: "rgba(106,58,205,.1)",
-    green:     "#3d7a5f",
-    greenDim:  "rgba(61,122,95,.12)",
-    danger:    "#b54a3a",
+    green: "#3d7a5f",
+    greenDim: "rgba(61,122,95,.12)",
+    danger: "#b54a3a",
   };
+
   const d = {
-    bg:        "#0d1117",
-    surface:   "#161c24",
-    surface2:  "#1e2630",
-    border:    "rgba(255,255,255,.07)",
-    border2:   "rgba(255,255,255,.13)",
-    fg:        "#e8e0d0",
-    muted:     "#7a8694",
-    gold:      "#c9a84c",
-    goldDim:   "rgba(201,168,76,.13)",
-    accent:    "#9f7ae0",
+    bg: "#0d1117",
+    surface: "#161c24",
+    surface2: "#1e2630",
+    border: "rgba(255,255,255,.07)",
+    border2: "rgba(255,255,255,.13)",
+    fg: "#e8e0d0",
+    muted: "#7a8694",
+    gold: "#c9a84c",
+    goldDim: "rgba(201,168,76,.13)",
+    accent: "#9f7ae0",
     accentDim: "rgba(159,122,224,.12)",
-    green:     "#4a9f82",
-    greenDim:  "rgba(74,159,130,.12)",
-    danger:    "#c95a4a",
+    green: "#4a9f82",
+    greenDim: "rgba(74,159,130,.12)",
+    danger: "#c95a4a",
   };
+
   const t = dark ? d : light;
 
   return (
@@ -405,13 +704,80 @@ function QuizStyles({ dark }) {
         transition: background .3s, color .3s;
       }
 
-      /* ── header ── */
       .qz-header {
         display: flex; align-items: center; justify-content: space-between;
         gap: 1rem; padding-bottom: 1.25rem;
         border-bottom: 1px solid var(--border2);
         flex-wrap: wrap;
         animation: fadeDown .4s ease both;
+      }
+
+            .qz-resume-card {
+        background: var(--surface);
+        border: 1px solid var(--border2);
+        border-radius: 16px;
+        padding: 1.2rem 1.2rem 1rem;
+        position: relative;
+        overflow: hidden;
+        animation: fadeUp .35s ease both;
+      }
+
+      .qz-resume-card-topline {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, var(--accent), transparent);
+      }
+
+      .qz-resume-title {
+        margin: 0 0 .35rem;
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--fg);
+      }
+
+      .qz-resume-text {
+        margin: 0;
+        font-size: .84rem;
+        line-height: 1.6;
+        color: var(--muted);
+      }
+
+      .qz-resume-actions {
+        display: flex;
+        gap: .65rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+      }
+
+      .qz-btn-resume {
+        background: linear-gradient(135deg, var(--accent), #5a2aad);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: .6rem 1.1rem;
+        font-size: .84rem;
+        font-weight: 700;
+        font-family: var(--serif);
+        cursor: pointer;
+      }
+
+      .qz-btn-discard {
+        background: transparent;
+        color: var(--muted);
+        border: 1px solid var(--border2);
+        border-radius: 10px;
+        padding: .6rem 1.1rem;
+        font-size: .84rem;
+        font-family: var(--serif);
+        cursor: pointer;
+      }
+
+      .qz-btn-discard:hover {
+        border-color: var(--accent);
+        color: var(--accent);
       }
       .qz-header-left { display: flex; align-items: center; gap: .85rem; }
       .qz-icon-wrap {
@@ -422,7 +788,7 @@ function QuizStyles({ dark }) {
         color: #fff; box-shadow: 0 2px 10px rgba(159,122,224,.35);
         transition: background .3s;
       }
-      .qz-title    { font-size: 1.5rem; font-weight: 700; margin: 0 0 .15rem; color: var(--fg); }
+      .qz-title { font-size: 1.5rem; font-weight: 700; margin: 0 0 .15rem; color: var(--fg); }
       .qz-subtitle { font-size: .78rem; color: var(--muted); font-style: italic; margin: 0; }
 
       .qz-header-right { display: flex; align-items: center; gap: .65rem; flex-wrap: wrap; }
@@ -455,11 +821,13 @@ function QuizStyles({ dark }) {
         transition: background .3s;
       }
 
-      /* ── stats ── */
       .qz-stats {
         display: grid; grid-template-columns: repeat(4, 1fr); gap: .65rem;
       }
-      @media (max-width: 480px) { .qz-stats { grid-template-columns: repeat(2, 1fr); } }
+      @media (max-width: 480px) {
+        .qz-stats { grid-template-columns: repeat(2, 1fr); }
+      }
+
       .qz-stat {
         background: var(--surface); border: 1px solid var(--border);
         border-top: 2px solid var(--accent);
@@ -469,11 +837,10 @@ function QuizStyles({ dark }) {
         transition: background .3s;
         animation: fadeUp .4s ease both;
       }
-      .qz-stat-icon  { color: var(--accent); }
+      .qz-stat-icon { color: var(--accent); }
       .qz-stat-value { font-size: 1.45rem; font-weight: 700; color: var(--accent); line-height: 1; }
       .qz-stat-label { font-size: .63rem; color: var(--muted); }
 
-      /* ── progress ── */
       .qz-progress-wrap { display: flex; flex-direction: column; gap: .35rem; }
       .qz-progress-label {
         display: flex; justify-content: space-between;
@@ -491,7 +858,6 @@ function QuizStyles({ dark }) {
         border-radius: 99px; transition: width .4s ease;
       }
 
-      /* ── empty states ── */
       .qz-state-card {
         background: var(--surface); border: 1px solid var(--border2);
         border-radius: 16px; padding: 2.5rem 1.5rem;
@@ -500,12 +866,14 @@ function QuizStyles({ dark }) {
         transition: background .3s;
       }
       .qz-state-card--dashed { border-style: dashed; }
-      .qz-state-card--pulse  { animation: pulse 1.4s ease infinite; }
-      .qz-state-icon  { color: var(--muted); opacity: .5; }
+      .qz-state-card--pulse { animation: pulse 1.4s ease infinite; }
+      .qz-state-icon { color: var(--muted); opacity: .5; }
       .qz-state-title { font-size: .92rem; font-weight: 700; color: var(--fg); margin: 0; }
-      .qz-state-sub   { font-size: .8rem; color: var(--muted); font-style: italic; margin: 0; line-height: 1.55; }
+      .qz-state-sub {
+        font-size: .8rem; color: var(--muted); font-style: italic;
+        margin: 0; line-height: 1.55;
+      }
 
-      /* ── question card ── */
       .qz-question-card {
         background: var(--surface); border: 1px solid var(--border);
         border-radius: 16px; padding: 1.4rem 1.3rem;
@@ -533,7 +901,6 @@ function QuizStyles({ dark }) {
         line-height: 1.5; margin: 0;
       }
 
-      /* ── options ── */
       .qz-options { display: flex; flex-direction: column; gap: .5rem; }
       .qz-option {
         display: flex; align-items: center; gap: .85rem;
@@ -567,7 +934,7 @@ function QuizStyles({ dark }) {
         color: #fff;
       }
       .qz-option-radio--sel { border-color: var(--accent); }
-      .qz-option-radio--ok  { border-color: var(--green); background: var(--green); }
+      .qz-option-radio--ok { border-color: var(--green); background: var(--green); }
       .qz-option-radio--bad { border-color: var(--danger); background: var(--danger); }
       .qz-option-radio-dot {
         width: 8px; height: 8px; border-radius: 50%;
@@ -575,7 +942,6 @@ function QuizStyles({ dark }) {
       }
       .qz-option-text { font-size: .88rem; line-height: 1.45; }
 
-      /* ── actions ── */
       .qz-actions { display: flex; gap: .6rem; flex-wrap: wrap; }
       .qz-btn-validate {
         background: linear-gradient(135deg, var(--accent), #5a2aad);
@@ -607,7 +973,6 @@ function QuizStyles({ dark }) {
       }
       .qz-btn-next:hover { opacity: .88; transform: translateY(-1px); }
 
-      /* ── hint ── */
       .qz-hint {
         display: flex; align-items: flex-start; gap: .6rem;
         background: color-mix(in srgb, #4a9fc8 10%, transparent);
@@ -617,14 +982,13 @@ function QuizStyles({ dark }) {
       }
       .qz-hint-icon { color: #4a9fc8; flex-shrink: 0; margin-top: .1rem; }
 
-      /* ── feedback ── */
       .qz-feedback {
         display: flex; align-items: stretch;
         border-radius: 11px; overflow: hidden;
         border: 1px solid transparent;
       }
       .qz-feedback--ok { border-color: rgba(74,159,130,.3); background: var(--green-dim); }
-      .qz-feedback--ko { border-color: rgba(181,74,58,.3);  background: rgba(181,74,58,.08); }
+      .qz-feedback--ko { border-color: rgba(181,74,58,.3); background: rgba(181,74,58,.08); }
       .qz-feedback-bar { width: 3px; flex-shrink: 0; }
       .qz-feedback--ok .qz-feedback-bar { background: var(--green); }
       .qz-feedback--ko .qz-feedback-bar { background: var(--danger); }
@@ -643,7 +1007,6 @@ function QuizStyles({ dark }) {
         line-height: 1.55; margin: 0;
       }
 
-      /* ── recall card ── */
       .qz-recall-card {
         background: var(--surface); border: 1px solid var(--border);
         border-radius: 14px; padding: 1.15rem 1.2rem;
@@ -693,7 +1056,6 @@ function QuizStyles({ dark }) {
       }
       .qz-toggle-fr-btn:hover { border-color: var(--gold); color: var(--gold); }
 
-      /* ── restart ── */
       .qz-restart-btn {
         display: flex; align-items: center; justify-content: center; gap: .5rem;
         width: 100%; background: transparent;
@@ -705,10 +1067,9 @@ function QuizStyles({ dark }) {
       }
       .qz-restart-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-      /* ── animations ── */
-      @keyframes fadeUp   { from{opacity:0;transform:translateY(8px)}  to{opacity:1;transform:translateY(0)} }
+      @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
       @keyframes fadeDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
-      @keyframes pulse    { 0%,100%{opacity:1} 50%{opacity:.45} }
+      @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.45} }
     `}</style>
   );
 }
