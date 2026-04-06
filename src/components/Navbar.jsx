@@ -2,49 +2,31 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { ALL_HADITHS } from "../data/allHadiths";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
+  DropdownMenu, DropdownMenuTrigger, DropdownMenuContent,
+  DropdownMenuItem, DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import {
-  Sheet,
-  SheetTrigger,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-  SheetClose,
+  Sheet, SheetTrigger, SheetContent, SheetClose,
 } from "@/components/ui/sheet";
-import { Input } from "@/components/ui/input";
 
 import {
-  BookOpen,
-  Brain,
-  RotateCcw,
-  Scale3d,
-  User2,
-  Menu,
-  Search,
-  Moon,
-  Sun,
-  LogOut,
-  UserCircle,
-  Sparkles,
-  Target,
-  BarChart3,
-  Map,
-  ClipboardCheck,
-  X,
-  History, // 👈 pour le bouton Historique des révisions
+  BookOpen, Brain, RotateCcw, Scale3d, User2, Menu, Search,
+  Moon, Sun, LogOut, UserCircle, Sparkles, BarChart3, History, X,
 } from "lucide-react";
 
 import { useAuth } from "../context/AuthContext";
+
+const NAV_LINKS = [
+  { to: "/learn",     label: "Apprendre",  icon: BookOpen,  accent: "#4a9f82" },
+  { to: "/review",    label: "Réviser",    icon: RotateCcw, accent: "#4a9fc8" },
+  { to: "/progress",  label: "Progression",icon: BarChart3, accent: "#9f7ae0" },
+  { to: "/quiz",      label: "Quiz",       icon: Brain,     accent: "#c96aaa" },
+  { to: "/compare",   label: "Comparer",   icon: Scale3d,   accent: "#c9a84c" },
+  { to: "/history",   label: "Historique", icon: History,   accent: "#7a8694" },
+  { to: "/narrators", label: "Rapporteurs",icon: Sparkles,  accent: "#e07ac8" },
+];
 
 export function Navbar() {
   const { user, signOut } = useAuth();
@@ -56,416 +38,457 @@ export function Navbar() {
   const [goto, setGoto] = useState("");
   const [dark, setDark] = useState(false);
 
-  // Thème
   useEffect(() => {
     const pref = localStorage.getItem("theme");
-    const prefersDark =
-      typeof window !== "undefined" &&
-      window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const prefersDark = typeof window !== "undefined" && window.matchMedia?.("(prefers-color-scheme: dark)").matches;
     const enable = pref ? pref === "dark" : prefersDark;
     setDark(enable);
     document.documentElement.classList.toggle("dark", enable);
   }, []);
 
-  const toggleTheme = (checked) => {
+  const toggleTheme = v => {
+    const checked = typeof v === "boolean" ? v : !dark;
     setDark(checked);
     document.documentElement.classList.toggle("dark", checked);
     localStorage.setItem("theme", checked ? "dark" : "light");
   };
 
-  // Aller à un hadith par numéro
-  const goToHadith = (n) => {
-    const num = Math.max(1, Math.min(totalHadiths, Number(n)));
-    navigate(`/hadith/${num}`);
+  const goToHadith = n => {
+    navigate(`/hadith/${Math.max(1, Math.min(totalHadiths, Number(n)))}`);
     setOpen(false);
   };
 
   const handleGo = () => {
     const n = parseInt(String(goto).trim(), 10);
-    if (!Number.isNaN(n)) {
-      setGoto("");
-      goToHadith(n);
-    }
+    if (!Number.isNaN(n)) { setGoto(""); goToHadith(n); }
   };
 
-  const isActive = (path) => location.pathname === path;
-
-  const navLinks = [
-    {
-      to: "/learn",
-      label: "Apprendre",
-      icon: BookOpen,
-      gradient: "from-emerald-500 to-teal-600",
-    },
-    {
-      to: "/review",
-      label: "Réviser",
-      icon: RotateCcw,
-      gradient: "from-blue-500 to-indigo-600",
-    },
-    {
-      to: "/progress",
-      label: "Progression",
-      icon: BarChart3,
-      gradient: "from-violet-500 to-purple-600",
-    },
-    {
-      to: "/quiz",
-      label: "Quiz",
-      icon: Brain,
-      gradient: "from-purple-500 to-pink-600",
-    },
-    {
-      to: "/compare",
-      label: "Comparer",
-      icon: Scale3d,
-      gradient: "from-amber-500 to-orange-600",
-    },
-    // {
-    //   to: "/exam",
-    //   label: "Examen",
-    //   icon: ClipboardCheck,
-    //   gradient: "from-red-500 to-rose-600",
-    // },
-    // {
-    //   to: "/exam/targeted",
-    //   label: "Ciblé",
-    //   icon: Target,
-    //   gradient: "from-cyan-500 to-blue-600",
-    // },
-    //   {
-    //   to: "/timeline",
-    //   label: "Timeline Sîra",
-    //   icon: Map,
-    //   gradient: "from-emerald-500 to-sky-500",
-    // },
-    // 👇 Nouveau bouton : Historique des révisions
-    {
-      to: "/history",
-      label: "Historique",
-      icon: History,
-      gradient: "from-slate-500 to-slate-800",
-    },
-    {
-      to: "/narrators",
-      label: "Rapporteurs",
-      icon: Sparkles,
-      gradient: "from-fuchsia-500 to-pink-600",
-    },
-  ];
-
-  const NavLink = ({ to, label, icon: Icon, gradient, mobile = false }) => {
-    const active = isActive(to);
-
-    if (mobile) {
-      return (
-        <Button
-          variant={active ? "default" : "ghost"}
-          className={`w-full justify-start gap-2 ${
-            active ? `bg-gradient-to-r ${gradient} text-black` : ""
-          }`}
-          asChild
-          onClick={() => setOpen(false)}
-        >
-          <Link to={to}>
-            <Icon className="h-4 w-4" />
-            {label}
-          </Link>
-        </Button>
-      );
-    }
-
-    return (
-      <Button
-        asChild
-        variant="ghost"
-        size="sm"
-        className={`gap-2 relative ${
-          active
-            ? "bg-gradient-to-r " + gradient + " text-white hover:opacity-90"
-            : "hover:bg-slate-100 dark:hover:bg-slate-800"
-        }`}
-      >
-        <Link to={to}>
-          <Icon className="h-4 w-4" />
-          <span className="hidden lg:inline">{label}</span>
-          {active && (
-            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-white rounded-full" />
-          )}
-        </Link>
-      </Button>
-    );
-  };
+  const isActive = path => location.pathname === path;
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-3 group">
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl blur opacity-50 group-hover:opacity-75 transition-opacity" />
-            <Badge
-              variant="secondary"
-              className="relative rounded-xl px-3 py-1.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white border-0 shadow-md"
-            >
-              <Sparkles className="h-3 w-3 inline mr-1" />
-              عمدة
-            </Badge>
-          </div>
-          <div className="hidden sm:block">
-            <div className="font-bold text-lg text-slate-800 dark:text-slate-100 tracking-tight">
-              Umdat al-Ahkam
+    <>
+      <NavbarStyles dark={dark} />
+      <header className="nb-root">
+        <div className="nb-inner">
+
+          {/* ── Logo ── */}
+          <Link to="/" className="nb-logo">
+            <span className="nb-logo-badge">عمدة</span>
+            <div className="nb-logo-text">
+              <span className="nb-logo-title">Umdat al-Ahkam</span>
+              <span className="nb-logo-sub">Mémorisation & Fiqh</span>
             </div>
-            <div className="text-xs text-slate-500 dark:text-slate-400 -mt-0.5">
-              Mémorisation & Fiqh
+          </Link>
+
+          {/* ── Desktop nav ── */}
+          <nav className="nb-links">
+            {NAV_LINKS.map(({ to, label, icon: Icon, accent }) => {
+              const active = isActive(to);
+              return (
+                <Link
+                  key={to} to={to}
+                  className={`nb-link ${active ? "nb-link--active" : ""}`}
+                  style={{ "--accent": accent }}
+                >
+                  <Icon size={14} />
+                  <span className="nb-link-label">{label}</span>
+                  {active && <span className="nb-link-dot" aria-hidden="true" />}
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* ── Desktop actions ── */}
+          <div className="nb-actions">
+            <form className="nb-jump" onSubmit={e => { e.preventDefault(); handleGo(); }}>
+              <input
+                className="nb-jump-input" value={goto}
+                onChange={e => setGoto(e.target.value)}
+                placeholder="# Hadith" aria-label="Aller au hadith"
+              />
+              <button type="submit" className="nb-jump-btn" aria-label="Aller">
+                <Search size={13} />
+              </button>
+            </form>
+
+            <div className="nb-theme">
+              <Sun size={12} />
+              <Switch checked={dark} onCheckedChange={toggleTheme} className="nb-switch" />
+              <Moon size={12} />
             </div>
-          </div>
-        </Link>
 
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-1">
-          {navLinks.map((link) => (
-            <NavLink key={link.to} {...link} />
-          ))}
-        </div>
-
-        {/* Desktop Actions */}
-        <div className="hidden md:flex items-center gap-2 ">
-          {/* Quick Jump */}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleGo();
-            }}
-            className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700"
-          >
-            <Input
-              value={goto}
-              onChange={(e) => setGoto(e.target.value)}
-              placeholder="# Hadith"
-              className="h-7 w-24 text-sm border-0 bg-transparent focus-visible:ring-0"
-            />
-            <Button
-              size="sm"
-              variant="ghost"
-              className="h-7 w-7 p-0 dark:bg-slate-800 "
-              type="submit"
-            >
-              <Search className=" dark:text-slate-800  " />
-            </Button>
-          </form>
-
-          {/* Theme Toggle */}
-          <div className="flex items-center gap-1.5 px-2 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
-            <Sun className="h-3.5 w-3.5 text-slate-600 dark:text-slate-400" />
-            <Switch
-              checked={dark}
-              onCheckedChange={toggleTheme}
-              className="scale-75"
-            />
-            <Moon className="h-3.5 w-3.5 text-slate-600 dark:text-slate-400" />
-          </div>
-
-          {/* User Menu */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                size="sm"
-                className="gap-2 border-slate-200 dark:bg-slate-800 dark:border-slate-200"
-              >
-                <User2 className="h-4 w-4 dark:text-slate-800" />
-                <span className="hidden lg:inline dark:text-slate-800">
-                  {user ? user.name?.split(" ")[0] || "Profil" : "Connexion"}
-                </span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              {user ? (
-                <>
-                  <div className="px-2 py-1.5 text-sm">
-                    <div className="font-semibold text-slate-900 dark:text-slate-100">
-                      {user.name || "Utilisateur"}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="nb-user-btn">
+                  <User2 size={14} />
+                  <span className="nb-user-label">
+                    {user ? (user.name?.split(" ")[0] || "Profil") : "Connexion"}
+                  </span>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="nb-dropdown">
+                {user ? (
+                  <>
+                    <div className="nb-dropdown-info">
+                      <span className="nb-dropdown-name">{user.name || "Utilisateur"}</span>
+                      <span className="nb-dropdown-email">{user.email}</span>
                     </div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400 truncate">
-                      {user.email}
-                    </div>
-                  </div>
-                  <DropdownMenuSeparator />
+                    <DropdownMenuSeparator className="nb-sep" />
+                    <DropdownMenuItem asChild>
+                      <Link to="/profile" className="nb-dropdown-item"><UserCircle size={14} /> Mon profil</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator className="nb-sep" />
+                    <DropdownMenuItem onClick={signOut} className="nb-dropdown-item nb-dropdown-item--danger">
+                      <LogOut size={14} /> Se déconnecter
+                    </DropdownMenuItem>
+                  </>
+                ) : (
                   <DropdownMenuItem asChild>
-                    <Link to="/profile" className="cursor-pointer">
-                      <UserCircle className="h-4 w-4 mr-2" />
-                      Mon profil
-                    </Link>
+                    <Link to="/profile" className="nb-dropdown-item"><User2 size={14} /> Se connecter</Link>
                   </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={signOut}
-                    className="text-red-600 dark:text-red-400 cursor-pointer"
-                  >
-                    <LogOut className="h-4 w-4 mr-2" />
-                    Se déconnecter
-                  </DropdownMenuItem>
-                </>
-              ) : (
-                <DropdownMenuItem asChild>
-                  <Link to="/profile" className="cursor-pointer">
-                    <User2 className="h-4 w-4 mr-2" />
-                    Se connecter
-                  </Link>
-                </DropdownMenuItem>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
 
-        {/* Mobile Menu */}
-        <div className="md:hidden flex items-center gap-2 ">
-          {/* Theme Toggle Mobile */}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => toggleTheme(!dark)}
-            className="h-9 w-9 hover:bg-slate-100 dark:hover:bg-slate-800 da "
-          >
-            {dark ? (
-              <Sun className="h-4 w-4 text-slate-700 dark:text-slate-500 " />
-            ) : (
-              <Moon className="h-4 w-4 text-slate-700 dark:text-slate-500 " />
-            )}
-          </Button>
-
-          <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger asChild>
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-9 w-9 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 "
-              >
-                <Menu className="h-5 w-5 text-slate-700 dark:text-slate-300" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent
-              side="right"
-              className="w-80 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800"
-            >
-              {/* Bouton de fermeture personnalisé */}
-              <SheetClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
-                <X className="h-4 w-4 text-slate-700 dark:text-slate-300" />
-                <span className="sr-only">Close</span>
-              </SheetClose>
-
-              <SheetHeader>
-                <SheetTitle className="flex items-center gap-2 text-slate-900 dark:text-slate-100">
-                  <Sparkles className="h-5 w-5 text-emerald-500" />
-                  Navigation
-                </SheetTitle>
-                <SheetDescription className="text-slate-600 dark:text-slate-400 pt-4">
-                  Accède rapidement aux différentes sections
-                </SheetDescription>
-              </SheetHeader>
-
-              <div className="mt-6 space-y-6">
-                {/* Quick Jump mobile */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium px-2.5 text-slate-700 dark:text-slate-300">
-                    Accès direct
-                  </label>
-                  <form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      handleGo();
-                    }}
-                    className="flex items-center px-2.5 gap-2"
-                  >
-                    <Input
-                      value={goto}
-                      onChange={(e) => setGoto(e.target.value)}
-                      placeholder="Numéro du hadith"
-                      className="flex-1"
-                    />
-                    <Button
-                      type="submit"
-                      variant="default"
-                      className="gap-2 bg-gradient-to-r from-emerald-500 to-teal-600"
-                    >
-                      <Search className="h-4 w-4" />
-                      Go
-                    </Button>
+          {/* ── Mobile ── */}
+          <div className="nb-mobile-controls">
+            <button className="nb-icon-btn" onClick={() => toggleTheme(!dark)} aria-label="Thème">
+              {dark ? <Sun size={15} /> : <Moon size={15} />}
+            </button>
+            <Sheet open={open} onOpenChange={setOpen}>
+              <SheetTrigger asChild>
+                <button className="nb-icon-btn" aria-label="Menu"><Menu size={17} /></button>
+              </SheetTrigger>
+              <SheetContent side="right" className="nb-sheet">
+                <SheetClose className="nb-sheet-close"><X size={15} /></SheetClose>
+                <div className="nb-sheet-header">
+                  <span className="nb-logo-badge nb-logo-badge--sm">عمدة</span>
+                  <div>
+                    <p className="nb-sheet-title">Navigation</p>
+                    <p className="nb-sheet-sub">Umdat al-Ahkam</p>
+                  </div>
+                </div>
+                <div className="nb-sheet-section">
+                  <p className="nb-sheet-section-label">Accès direct</p>
+                  <form className="nb-jump nb-jump--full" onSubmit={e => { e.preventDefault(); handleGo(); }}>
+                    <input className="nb-jump-input nb-jump-input--full" value={goto} onChange={e => setGoto(e.target.value)} placeholder="Numéro du hadith" />
+                    <button type="submit" className="nb-jump-btn nb-jump-btn--label"><Search size={13} /> Aller</button>
                   </form>
                 </div>
-
-                {/* Navigation Links */}
-                <div className="space-y-2 mx-3">
-                  <label className="text-sm font-medium px-2.5 text-slate-700 dark:text-slate-300">
-                    Pages principales
-                  </label>
-                  <div className="space-y-1">
-                    {navLinks.map((link) => (
-                      <NavLink key={link.to} {...link} mobile />
-                    ))}
+                <div className="nb-sheet-section">
+                  <p className="nb-sheet-section-label">Pages</p>
+                  <div className="nb-sheet-links">
+                    {NAV_LINKS.map(({ to, label, icon: Icon, accent }) => {
+                      const active = isActive(to);
+                      return (
+                        <Link key={to} to={to}
+                          className={`nb-sheet-link ${active ? "nb-sheet-link--active" : ""}`}
+                          style={{ "--accent": accent }} onClick={() => setOpen(false)}
+                        >
+                          <span className="nb-sheet-link-icon"><Icon size={15} /></span>
+                          {label}
+                          {active && <span className="nb-sheet-active-dot" />}
+                        </Link>
+                      );
+                    })}
                   </div>
                 </div>
-
-                {/* User Section */}
-                <div className="pt-4 border-t mx-3 border-slate-200 dark:border-slate-700 space-y-2">
-                  <label className="text-sm font-medium text-slate-700 px-2 dark:text-slate-300">
-                    Compte
-                  </label>
+                <div className="nb-sheet-section nb-sheet-section--border">
+                  <p className="nb-sheet-section-label">Compte</p>
                   {user ? (
-                    <div className="space-y-2">
-                      <div className="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                        <div className="font-semibold text-sm text-slate-900 dark:text-slate-100">
-                          {user.name || "Utilisateur"}
-                        </div>
-                        <div className="text-xs text-slate-500 dark:text-slate-400">
-                          {user.email}
-                        </div>
+                    <>
+                      <div className="nb-sheet-user">
+                        <span className="nb-sheet-user-name">{user.name || "Utilisateur"}</span>
+                        <span className="nb-sheet-user-email">{user.email}</span>
                       </div>
-                      <Button
-                        variant="ghost"
-                        className="w-full justify-start gap-2"
-                        asChild
-                        onClick={() => setOpen(false)}
-                      >
-                        <Link to="/profile">
-                          <UserCircle className="h-4 w-4" />
-                          Mon profil
-                        </Link>
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        className="w-full justify-start gap-2 text-red-600 dark:text-red-400 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950"
-                        onClick={() => {
-                          setOpen(false);
-                          signOut();
-                        }}
-                      >
-                        <LogOut className="h-4 w-4" />
-                        Se déconnecter
-                      </Button>
-                    </div>
-                  ) : (
-                    <Button
-                      variant="default"
-                      className="w-full gap-2 bg-gradient-to-r from-emerald-500 to-teal-600"
-                      asChild
-                      onClick={() => setOpen(false)}
-                    >
-                      <Link to="/profile">
-                        <User2 className="h-4 w-4" />
-                        Se connecter
+                      <Link to="/profile" className="nb-sheet-link" style={{ "--accent": "#7a8694" }} onClick={() => setOpen(false)}>
+                        <span className="nb-sheet-link-icon"><UserCircle size={15} /></span>Mon profil
                       </Link>
-                    </Button>
+                      <button className="nb-sheet-link nb-sheet-link--danger" style={{ "--accent": "#c95a4a" }} onClick={() => { setOpen(false); signOut(); }}>
+                        <span className="nb-sheet-link-icon"><LogOut size={15} /></span>Se déconnecter
+                      </button>
+                    </>
+                  ) : (
+                    <Link to="/profile" className="nb-sheet-link nb-sheet-link--cta" style={{ "--accent": "#4a9f82" }} onClick={() => setOpen(false)}>
+                      <span className="nb-sheet-link-icon"><User2 size={15} /></span>Se connecter
+                    </Link>
                   )}
                 </div>
-              </div>
-            </SheetContent>
-          </Sheet>
+              </SheetContent>
+            </Sheet>
+          </div>
+
         </div>
-      </div>
-    </header>
+      </header>
+    </>
+  );
+}
+
+function NavbarStyles({ dark }) {
+  const light = {
+    bg:      "rgba(250,246,238,.94)",
+    surface: "#fff8ed",
+    surface2:"#f3ead8",
+    border:  "rgba(160,120,48,.18)",
+    border2: "rgba(160,120,48,.32)",
+    fg:      "#2c1f0e",
+    muted:   "#7a6a48",
+    gold:    "#a07830",
+    hover:   "rgba(0,0,0,.04)",
+  };
+  const d = {
+    bg:      "rgba(13,17,23,.88)",
+    surface: "#161c24",
+    surface2:"#1e2630",
+    border:  "rgba(255,255,255,.08)",
+    border2: "rgba(255,255,255,.14)",
+    fg:      "#e8e0d0",
+    muted:   "#7a8694",
+    gold:    "#c9a84c",
+    hover:   "rgba(255,255,255,.05)",
+  };
+  const t = dark ? d : light;
+
+  return (
+    <style>{`
+      .nb-root {
+        --bg:      ${t.bg};
+        --surface: ${t.surface};
+        --surface2:${t.surface2};
+        --border:  ${t.border};
+        --border2: ${t.border2};
+        --fg:      ${t.fg};
+        --muted:   ${t.muted};
+        --gold:    ${t.gold};
+        --hover:   ${t.hover};
+        --serif:   Georgia, 'Times New Roman', serif;
+
+        position: sticky; top: 0; z-index: 50;
+        background: var(--bg);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-bottom: 1px solid var(--border);
+        font-family: var(--serif);
+        transition: background .3s, border-color .3s;
+      }
+      .nb-inner {
+        max-width: 1200px; margin: 0 auto;
+        padding: 0 1rem; height: 56px;
+        display: flex; align-items: center; gap: 1rem;
+      }
+
+      /* logo */
+      .nb-logo { display: flex; align-items: center; gap: .65rem; text-decoration: none; flex-shrink: 0; }
+      .nb-logo-badge {
+        display: inline-flex; align-items: center; justify-content: center;
+        background: linear-gradient(135deg, #4a9f82, #2d7a62);
+        color: #fff; font-size: .8rem; font-weight: 700;
+        padding: .28rem .65rem; border-radius: 8px; letter-spacing: .04em;
+        box-shadow: 0 2px 8px rgba(74,159,130,.35); flex-shrink: 0;
+        transition: box-shadow .2s;
+      }
+      .nb-logo:hover .nb-logo-badge { box-shadow: 0 3px 14px rgba(74,159,130,.55); }
+      .nb-logo-badge--sm { font-size: .75rem; padding: .22rem .55rem; }
+      .nb-logo-text { display: none; line-height: 1.15; }
+      @media (min-width: 640px) { .nb-logo-text { display: block; } }
+      .nb-logo-title { display: block; font-size: .88rem; font-weight: 700; color: var(--fg); transition: color .3s; }
+      .nb-logo-sub   { display: block; font-size: .65rem; color: var(--muted); font-style: italic; transition: color .3s; }
+
+      /* desktop nav */
+      .nb-links { display: none; align-items: center; gap: .15rem; flex: 1; overflow-x: auto; scrollbar-width: none; }
+      .nb-links::-webkit-scrollbar { display: none; }
+      @media (min-width: 768px) { .nb-links { display: flex; } }
+      .nb-link {
+        display: inline-flex; align-items: center; gap: .35rem;
+        padding: .35rem .65rem; border-radius: 8px;
+        font-size: .75rem; color: var(--muted);
+        text-decoration: none; white-space: nowrap;
+        position: relative;
+        transition: color .15s, background .15s;
+      }
+      .nb-link:hover { color: var(--fg); background: var(--hover); }
+      .nb-link--active { color: var(--accent) !important; background: color-mix(in srgb, var(--accent) 12%, transparent); }
+      .nb-link-label { display: none; }
+      @media (min-width: 1024px) { .nb-link-label { display: inline; } }
+      .nb-link-dot {
+        position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%);
+        width: 4px; height: 4px; background: var(--accent); border-radius: 50%;
+      }
+
+      /* desktop actions */
+      .nb-actions { display: none; align-items: center; gap: .55rem; flex-shrink: 0; }
+      @media (min-width: 768px) { .nb-actions { display: flex; } }
+
+      .nb-jump {
+        display: flex; align-items: center;
+        background: var(--surface2); border: 1px solid var(--border2);
+        border-radius: 9px; overflow: hidden; height: 32px;
+        transition: background .3s, border-color .15s;
+      }
+      .nb-jump--full { height: 38px; width: 100%; border-radius: 10px; }
+      .nb-jump:focus-within { border-color: var(--gold); }
+      .nb-jump-input {
+        background: transparent; border: none; outline: none;
+        color: var(--fg); font-size: .78rem; font-family: var(--serif);
+        padding: 0 .6rem; width: 80px; transition: color .3s;
+      }
+      .nb-jump-input--full { flex: 1; width: auto; font-size: .83rem; padding: 0 .75rem; }
+      .nb-jump-input::placeholder { color: var(--muted); }
+      .nb-jump-btn {
+        display: flex; align-items: center; justify-content: center;
+        width: 30px; height: 100%;
+        background: transparent; border: none; border-left: 1px solid var(--border);
+        color: var(--muted); cursor: pointer;
+        transition: color .15s, background .15s; flex-shrink: 0;
+      }
+      .nb-jump-btn:hover { color: var(--gold); background: color-mix(in srgb, var(--gold) 8%, transparent); }
+      .nb-jump-btn--label {
+        width: auto; gap: .3rem; padding: 0 .75rem;
+        font-size: .78rem; font-family: var(--serif); color: var(--fg);
+        display: flex; align-items: center;
+      }
+      .nb-jump-btn--label:hover { color: var(--gold); }
+
+      .nb-theme {
+        display: flex; align-items: center; gap: .35rem;
+        background: var(--surface2); border: 1px solid var(--border2);
+        border-radius: 9px; padding: 0 .55rem; height: 32px; color: var(--muted);
+        transition: background .3s, border-color .3s;
+      }
+      .nb-switch { transform: scale(.75); }
+
+      .nb-user-btn {
+        display: inline-flex; align-items: center; gap: .4rem;
+        background: var(--surface2); border: 1px solid var(--border2);
+        border-radius: 9px; padding: 0 .75rem; height: 32px;
+        color: var(--fg); font-size: .78rem; font-family: var(--serif);
+        cursor: pointer; transition: border-color .15s, background .3s;
+      }
+      .nb-user-btn:hover { border-color: var(--gold); }
+      .nb-user-label { display: none; }
+      @media (min-width: 1024px) { .nb-user-label { display: inline; } }
+
+      /* dropdown */
+      .nb-dropdown {
+        background: var(--surface) !important; border: 1px solid var(--border2) !important;
+        border-radius: 12px !important; padding: .35rem !important;
+        box-shadow: 0 12px 32px rgba(0,0,0,.2) !important; min-width: 180px;
+      }
+      .nb-dropdown-info { padding: .5rem .6rem .4rem; display: flex; flex-direction: column; gap: .1rem; }
+      .nb-dropdown-name  { font-size: .83rem; font-weight: 700; color: var(--fg); }
+      .nb-dropdown-email { font-size: .7rem; color: var(--muted); }
+      .nb-sep { background: var(--border) !important; margin: .25rem 0 !important; }
+      .nb-dropdown-item {
+        display: flex; align-items: center; gap: .5rem;
+        font-size: .8rem; color: var(--fg); padding: .42rem .6rem;
+        border-radius: 7px; cursor: pointer; text-decoration: none;
+        font-family: var(--serif); transition: background .12s;
+      }
+      .nb-dropdown-item:hover { background: var(--hover); }
+      .nb-dropdown-item--danger { color: #c95a4a !important; }
+      .nb-dropdown-item--danger:hover { background: rgba(201,90,74,.1) !important; }
+
+      /* mobile */
+      .nb-mobile-controls { display: flex; align-items: center; gap: .5rem; margin-left: auto; }
+      @media (min-width: 768px) { .nb-mobile-controls { display: none; } }
+
+      /* Mobile buttons — full opacity, always clearly visible */
+      .nb-icon-btn {
+        display: flex; align-items: center; justify-content: center;
+        width: 36px; height: 36px;
+        background: ${dark ? "#1e2630" : "#f3ead8"};
+        border: 1.5px solid ${dark ? "rgba(201,168,76,.45)" : "rgba(160,120,48,.4)"};
+        border-radius: 10px;
+        color: ${dark ? "#e8e0d0" : "#2c1f0e"};
+        cursor: pointer;
+        box-shadow: ${dark ? "0 2px 8px rgba(0,0,0,.5)" : "0 2px 6px rgba(160,120,48,.2)"};
+        transition: border-color .15s, color .15s, background .15s, box-shadow .15s;
+      }
+      .nb-icon-btn:hover {
+        border-color: var(--gold);
+        color: var(--gold);
+        background: ${dark ? "#252e3a" : "#ede4cc"};
+        box-shadow: ${dark ? "0 3px 12px rgba(0,0,0,.6)" : "0 3px 10px rgba(160,120,48,.3)"};
+      }
+      .nb-icon-btn svg { flex-shrink: 0; }
+
+      /* sheet — fully opaque, never transparent */
+      .nb-sheet {
+        background: ${dark ? "#0f151d" : "#fdf7ec"} !important;
+        border-left: 1.5px solid ${dark ? "rgba(201,168,76,.25)" : "rgba(160,120,48,.3)"} !important;
+        width: 300px !important; padding: 1.25rem 1rem 2rem !important;
+        display: flex; flex-direction: column; gap: 0;
+        box-shadow: ${dark ? "-8px 0 32px rgba(0,0,0,.6)" : "-8px 0 32px rgba(0,0,0,.12)"} !important;
+      }
+      .nb-sheet-close {
+        position: absolute; top: 1rem; right: 1rem;
+        width: 30px; height: 30px;
+        background: ${dark ? "#1e2630" : "#ede4cc"};
+        border: 1.5px solid ${dark ? "rgba(201,168,76,.35)" : "rgba(160,120,48,.35)"};
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        color: ${dark ? "#e8e0d0" : "#2c1f0e"}; cursor: pointer;
+        transition: color .15s, background .15s;
+      }
+      .nb-sheet-close:hover { color: var(--gold); background: ${dark ? "#252e3a" : "#e0d4b4"}; }
+      .nb-sheet-header {
+        display: flex; align-items: center; gap: .75rem;
+        padding-bottom: 1.1rem; border-bottom: 1px solid ${dark ? "rgba(201,168,76,.2)" : "rgba(160,120,48,.2)"};
+        margin-bottom: 1.1rem;
+      }
+      .nb-sheet-title { font-size: .9rem; font-weight: 700; color: ${dark ? "#e8e0d0" : "#2c1f0e"}; margin: 0 0 .1rem; }
+      .nb-sheet-sub   { font-size: .68rem; color: ${dark ? "#7a8694" : "#7a6a48"}; font-style: italic; margin: 0; }
+      .nb-sheet-section { margin-bottom: 1.1rem; }
+      .nb-sheet-section--border { padding-top: 1rem; border-top: 1px solid ${dark ? "rgba(255,255,255,.08)" : "rgba(160,120,48,.15)"}; }
+      .nb-sheet-section-label {
+        font-size: .65rem; color: ${dark ? "#7a8694" : "#7a6a48"};
+        text-transform: uppercase; letter-spacing: .09em; margin-bottom: .5rem;
+      }
+      .nb-sheet-links { display: flex; flex-direction: column; gap: .2rem; }
+      .nb-sheet-link {
+        display: flex; align-items: center; gap: .65rem;
+        padding: .5rem .65rem; border-radius: 9px;
+        font-size: .83rem; color: ${dark ? "#a09080" : "#5a4a30"};
+        text-decoration: none; background: transparent; border: none;
+        cursor: pointer; font-family: var(--serif);
+        transition: background .13s, color .13s;
+        position: relative; width: 100%; text-align: left;
+      }
+      .nb-sheet-link:hover {
+        background: ${dark ? "rgba(255,255,255,.07)" : "rgba(160,120,48,.08)"};
+        color: ${dark ? "#e8e0d0" : "#2c1f0e"};
+      }
+      .nb-sheet-link--active { color: var(--accent) !important; background: color-mix(in srgb, var(--accent) 12%, transparent) !important; }
+      .nb-sheet-link--danger { color: #c95a4a !important; }
+      .nb-sheet-link--danger:hover { background: rgba(201,90,74,.12) !important; }
+      .nb-sheet-link--cta { color: #4a9f82 !important; font-weight: 700; }
+      .nb-sheet-link--cta:hover { background: rgba(74,159,130,.12) !important; }
+      .nb-sheet-link-icon {
+        width: 28px; height: 28px; flex-shrink: 0;
+        background: color-mix(in srgb, var(--accent) 18%, transparent);
+        border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+        color: var(--accent);
+      }
+      .nb-sheet-active-dot {
+        position: absolute; right: .75rem;
+        width: 6px; height: 6px; background: var(--accent); border-radius: 50%;
+      }
+      .nb-sheet-user {
+        background: ${dark ? "#1a2230" : "#ede4cc"};
+        border: 1px solid ${dark ? "rgba(201,168,76,.2)" : "rgba(160,120,48,.25)"};
+        border-radius: 9px; padding: .7rem .8rem; margin-bottom: .4rem;
+      }
+      .nb-sheet-user-name  { display: block; font-size: .85rem; font-weight: 700; color: ${dark ? "#e8e0d0" : "#2c1f0e"}; }
+      .nb-sheet-user-email { display: block; font-size: .7rem; color: ${dark ? "#7a8694" : "#7a6a48"}; margin-top: .15rem; }
+
+      /* jump inside sheet */
+      .nb-jump--full { height: 40px; width: 100%; border-radius: 10px;
+        background: ${dark ? "#1a2230" : "#ede4cc"} !important;
+        border: 1.5px solid ${dark ? "rgba(201,168,76,.3)" : "rgba(160,120,48,.35)"} !important;
+      }
+      .nb-jump--full:focus-within { border-color: var(--gold) !important; }
+    `}</style>
   );
 }
 
