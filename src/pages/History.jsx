@@ -4,8 +4,9 @@ import { useAuth } from "../context/AuthContext";
 import { supabase } from "../lib/supabase";
 import {
   History, Clock, BookOpenCheck, RotateCcw, Star,
-  Sparkles, Flame, CalendarDays, TrendingUp, Sun, Moon,
+  Sparkles, Flame, CalendarDays, TrendingUp,
 } from "lucide-react";
+import { useTheme } from "@/hooks/useTheme";
 
 /* ── helpers ── */
 function formatDate(dateString) {
@@ -73,23 +74,7 @@ export default function HistoryPage() {
   const { user } = useAuth();
   const [events, setEvents]   = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isDark, setIsDark]   = useState(true);
-
-  /* theme sync */
-  useEffect(() => {
-    const pref = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
-    const dark = pref ? pref === "dark" : prefersDark;
-    setIsDark(dark);
-    document.documentElement.classList.toggle("dark", dark);
-  }, []);
-
-  function toggleTheme() {
-    const next = !isDark;
-    setIsDark(next);
-    document.documentElement.classList.toggle("dark", next);
-    localStorage.setItem("theme", next ? "dark" : "light");
-  }
+  const { isDark } = useTheme();
 
   useEffect(() => {
     if (!user?.id) { setEvents([]); setLoading(false); return; }
@@ -154,12 +139,6 @@ export default function HistoryPage() {
     <>
       <HistoryStyles isDark={isDark} />
       <div className={`hs-root hs-center ${themeClass}`}>
-        <div className="hs-topbar-abs">
-          <button className="hs-theme-toggle" onClick={toggleTheme}>
-            {isDark ? <Sun size={15} /> : <Moon size={15} />}
-            <span>{isDark ? "Mode clair" : "Mode sombre"}</span>
-          </button>
-        </div>
         <div className="hs-login-card">
           <History size={28} className="hs-login-icon" />
           <p className="hs-login-title">Tu dois être connecté pour voir ton historique.</p>
@@ -175,13 +154,6 @@ export default function HistoryPage() {
       <div className={`hs-root ${themeClass}`}>
 
         {/* ── Topbar ── */}
-        <div className="hs-topbar">
-          <button className="hs-theme-toggle" onClick={toggleTheme} aria-label="Changer de thème">
-            {isDark ? <Sun size={15} /> : <Moon size={15} />}
-            <span>{isDark ? "Mode clair" : "Mode sombre"}</span>
-          </button>
-        </div>
-
         {/* ── Header ── */}
         <header className="hs-header">
           <div className="hs-header-left">

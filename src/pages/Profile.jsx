@@ -5,24 +5,14 @@ import { supabase } from "../lib/supabase";
 
 import { ProfileGuest } from "./ProfileGuest";
 import { ProfileDashboard } from "./ProfileDashboard";
+import { useTheme } from "@/hooks/useTheme";
 
 export function Profile() {
   const { user, signIn, signOut } = useAuth();
+  useTheme();
 
   const [stats, setStats] = useState(null);
   const [loadingStats, setLoadingStats] = useState(false);
-
-  // Thème (comme avant)
-  useEffect(() => {
-    const pref = localStorage.getItem("theme");
-    const prefersDark =
-      typeof window !== "undefined" &&
-      window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-    const enable = pref ? pref === "dark" : prefersDark;
-    document.documentElement.classList.toggle("dark", enable);
-  }, []);
 
   // Charger ou créer les stats pour ce user
   useEffect(() => {

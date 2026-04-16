@@ -4,8 +4,9 @@ import { Link } from "react-router-dom";
 import {
   Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription,
 } from "@/components/ui/sheet";
-import { Sparkles, BookOpen, Lock, Unlock, Star, Filter, Search, Sun, Moon } from "lucide-react";
+import { Sparkles, BookOpen, Lock, Unlock, Star, Filter, Search } from "lucide-react";
 import { NARRATORS_MOCK } from "@/data/narrators_mock";
+import { useTheme } from "@/hooks/useTheme";
 
 const rarityConfig = {
   common:    { label: "Commun",    gradient: "from-emerald-500 to-teal-600",      glowColor: "rgba(16,185,129,.2)",  borderColor: "#10b981" },
@@ -124,23 +125,7 @@ export function NarratorsCollection() {
   const [openSheet, setOpenSheet]       = useState(false);
   const [selectedNarrator, setSelectedNarrator] = useState(null);
   const [selectedUnlocked, setSelectedUnlocked] = useState(false);
-  const [isDark, setIsDark]             = useState(true);
-
-  /* theme sync */
-  useEffect(() => {
-    const pref = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
-    const dark = pref ? pref === "dark" : prefersDark;
-    setIsDark(dark);
-    document.documentElement.classList.toggle("dark", dark);
-  }, []);
-
-  function toggleTheme() {
-    const next = !isDark;
-    setIsDark(next);
-    document.documentElement.classList.toggle("dark", next);
-    localStorage.setItem("theme", next ? "dark" : "light");
-  }
+  const { isDark } = useTheme();
 
   /* load unlocked */
   useEffect(() => {
@@ -176,14 +161,6 @@ export function NarratorsCollection() {
     <>
       <NarratorsStyles isDark={isDark} />
       <div className={`nc-root ${themeClass}`}>
-
-        {/* ── Topbar ── */}
-        <div className="nc-topbar">
-          <button className="nc-theme-toggle" onClick={toggleTheme} aria-label="Changer de thème">
-            {isDark ? <Sun size={15} /> : <Moon size={15} />}
-            <span>{isDark ? "Mode clair" : "Mode sombre"}</span>
-          </button>
-        </div>
 
         {/* ── Header ── */}
         <header className="nc-header">
@@ -558,3 +535,4 @@ function NarratorsStyles({ isDark }) {
 }
 
 export default NarratorsCollection;
+

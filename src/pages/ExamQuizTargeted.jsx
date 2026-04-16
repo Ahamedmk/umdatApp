@@ -12,7 +12,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
-import { Switch } from "@/components/ui/switch";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
@@ -24,8 +23,6 @@ import {
 import {
   Target,
   Clock,
-  Moon,
-  Sun,
   Play,
   CheckCircle2,
   XCircle,
@@ -40,6 +37,7 @@ import {
 import { QUIZ_QUESTIONS_1_15 } from "@/data/quiz_questions_1_15";
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "../lib/supabase";
+import { useTheme } from "@/hooks/useTheme";
 
 // 🧮 Liste dynamique des numéros de hadith présents dans le fichier
 const HADITH_NUMBERS = Array.from(
@@ -150,24 +148,7 @@ export function ExamQuizTargeted() {
   const [answers, setAnswers] = useState([]);
   const [timeLeft, setTimeLeft] = useState(0);
   const [finished, setFinished] = useState(false);
-  const [dark, setDark] = useState(false);
-
-  // Thème
-  useEffect(() => {
-    const pref = localStorage.getItem("theme");
-    const prefersDark =
-      typeof window !== "undefined" &&
-      window.matchMedia?.("(prefers-color-scheme: dark)").matches;
-    const enable = pref ? pref === "dark" : prefersDark;
-    setDark(enable);
-    document.documentElement.classList.toggle("dark", enable);
-  }, []);
-
-  const toggleTheme = (checked) => {
-    setDark(checked);
-    document.documentElement.classList.toggle("dark", checked);
-    localStorage.setItem("theme", checked ? "dark" : "light");
-  };
+  const { isDark: dark } = useTheme();
 
   // 🔁 On calcule les hadiths "faibles" pour cet utilisateur
   useEffect(() => {
@@ -309,11 +290,6 @@ export function ExamQuizTargeted() {
               </div>
             </div>
 
-            <div className="flex items-center gap-2 bg-white dark:bg-slate-800 px-3 py-2 rounded-full shadow-sm border">
-              <Sun className="h-4 w-4" />
-              <Switch checked={dark} onCheckedChange={toggleTheme} />
-              <Moon className="h-4 w-4" />
-            </div>
           </div>
 
           <Card className="border-2 border-cyan-200 dark:border-cyan-800 shadow-xl bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-950 dark:to-blue-950">

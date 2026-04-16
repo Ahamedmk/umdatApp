@@ -1,9 +1,10 @@
 // /src/pages/Home.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BookOpen, RotateCcw, Brain, Scale, CheckCircle2, Sun, Moon } from "lucide-react";
+import { BookOpen, RotateCcw, Brain, Scale, CheckCircle2 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { getDueCount } from "@/lib/hadithProgress";
+import { useTheme } from "@/hooks/useTheme";
 
 export function Home() {
   const navigate = useNavigate();
@@ -11,23 +12,7 @@ export function Home() {
 
   const [dueCount, setDueCount]     = useState(null);
   const [loadingDue, setLoadingDue] = useState(true);
-  const [isDark, setIsDark]         = useState(true);
-
-  /* theme sync on mount */
-  useEffect(() => {
-    const pref = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
-    const dark = pref ? pref === "dark" : prefersDark;
-    setIsDark(dark);
-    document.documentElement.classList.toggle("dark", dark);
-  }, []);
-
-  function toggleTheme() {
-    const next = !isDark;
-    setIsDark(next);
-    document.documentElement.classList.toggle("dark", next);
-    localStorage.setItem("theme", next ? "dark" : "light");
-  }
+  const { isDark } = useTheme();
 
   /* notification permission */
   useEffect(() => {
@@ -89,13 +74,6 @@ export function Home() {
       <HomeStyles isDark={isDark} />
       <div className={`hm-root ${isDark ? "hm-dark" : "hm-light"}`}>
 
-        {/* ── Theme toggle ── */}
-        <div className="hm-topbar">
-          <button className="hm-theme-toggle" onClick={toggleTheme} aria-label="Changer de thème">
-            {isDark ? <Sun size={16} /> : <Moon size={16} />}
-            <span>{isDark ? "Mode clair" : "Mode sombre"}</span>
-          </button>
-        </div>
 
         {/* ── Due today banner ── */}
         {!loadingDue && (
@@ -499,3 +477,5 @@ function HomeStyles({ isDark }) {
 }
 
 export default Home;
+
+

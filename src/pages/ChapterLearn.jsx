@@ -6,7 +6,8 @@ import {
   getUserHadithProgress,
   mergeHadithsWithSupabaseProgress,
 } from "../lib/hadithProgress";
-import { ArrowLeft, Search, Sun, Moon } from "lucide-react";
+import { ArrowLeft, Search } from "lucide-react";
+import { useTheme } from "@/hooks/useTheme";
 
 import { CHAPTERS } from "../data/chapters";
 import { ALL_HADITHS } from "../data/allHadiths";
@@ -37,23 +38,7 @@ export default function ChapterLearn() {
   const [search, setSearch]             = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
   const [progressRows, setProgressRows] = useState([]);
-  const [isDark, setIsDark]             = useState(true);
-
-  /* theme sync on mount */
-  useEffect(() => {
-    const pref = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
-    const dark = pref ? pref === "dark" : prefersDark;
-    setIsDark(dark);
-    document.documentElement.classList.toggle("dark", dark);
-  }, []);
-
-  function toggleTheme() {
-    const next = !isDark;
-    setIsDark(next);
-    document.documentElement.classList.toggle("dark", next);
-    localStorage.setItem("theme", next ? "dark" : "light");
-  }
+  const { isDark } = useTheme();
 
   const chapter = useMemo(() => CHAPTERS.find(c => c.slug === chapterSlug), [chapterSlug]);
 
@@ -142,10 +127,6 @@ export default function ChapterLearn() {
         <div className="cl-topbar">
           <button className="cl-back-btn" onClick={() => navigate("/learn")}>
             <ArrowLeft size={14} /> Retour à l'apprentissage
-          </button>
-          <button className="cl-theme-toggle" onClick={toggleTheme} aria-label="Changer de thème">
-            {isDark ? <Sun size={15} /> : <Moon size={15} />}
-            <span>{isDark ? "Mode clair" : "Mode sombre"}</span>
           </button>
         </div>
 

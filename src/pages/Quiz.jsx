@@ -1,6 +1,5 @@
 // src/pages/Quiz.jsx
 import React, { useMemo, useState, useEffect, useRef } from "react";
-import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectTrigger,
@@ -13,8 +12,6 @@ import {
   CheckCircle2,
   XCircle,
   Lightbulb,
-  Moon,
-  Sun,
   Trophy,
   Target,
   RotateCcw,
@@ -25,6 +22,7 @@ import { HADITHS_TAHARA } from "@/data/seed_hadiths_tahara";
 import { QUIZ_QUESTIONS_1_15 } from "@/data/quiz_questions_1_15";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
+import { useTheme } from "@/hooks/useTheme";
 
 /* ══════════════════════════════════════════ */
 /* Session persistence helpers */
@@ -48,7 +46,6 @@ export function Quiz() {
   const [selected, setSelected] = useState(null);
   const [score, setScore] = useState(0);
   const [done, setDone] = useState(false);
-  const [dark, setDark] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [showFrenchRef, setShowFrenchRef] = useState(false);
   const [learnedNumbers, setLearnedNumbers] = useState([]);
@@ -56,24 +53,7 @@ export function Quiz() {
   const [pendingSession, setPendingSession] = useState(null);
   const [showResumeCard, setShowResumeCard] = useState(false);
 
-  /* theme */
-  useEffect(() => {
-    const pref = localStorage.getItem("theme");
-    const prefersDark =
-      typeof window !== "undefined" &&
-      window.matchMedia?.("(prefers-color-scheme: dark)").matches;
-
-    const enable = pref ? pref === "dark" : prefersDark;
-    setDark(enable);
-    document.documentElement.classList.toggle("dark", enable);
-  }, []);
-
-  const toggleTheme = (v) => {
-    const checked = typeof v === "boolean" ? v : !dark;
-    setDark(checked);
-    document.documentElement.classList.toggle("dark", checked);
-    localStorage.setItem("theme", checked ? "dark" : "light");
-  };
+  const { isDark: dark } = useTheme();
 
   /* load learned hadiths */
   useEffect(() => {
@@ -347,11 +327,6 @@ const discardSavedSession = () => {
               </SelectContent>
             </Select>
 
-            <div className="qz-theme-toggle">
-              <Sun size={12} />
-              <Switch checked={dark} onCheckedChange={toggleTheme} />
-              <Moon size={12} />
-            </div>
           </div>
         </header>
 

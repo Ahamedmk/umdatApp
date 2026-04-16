@@ -1,5 +1,5 @@
 // /src/components/Navbar.jsx
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { ALL_HADITHS } from "../data/allHadiths";
 import { Switch } from "@/components/ui/switch";
@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../hooks/useTheme";
 
 const NAV_LINKS = [
   { to: "/learn",     label: "Apprendre",  icon: BookOpen,  accent: "#4a9f82" },
@@ -36,21 +37,11 @@ export function Navbar() {
 
   const [open, setOpen] = useState(false);
   const [goto, setGoto] = useState("");
-  const [dark, setDark] = useState(false);
-
-  useEffect(() => {
-    const pref = localStorage.getItem("theme");
-    const prefersDark = typeof window !== "undefined" && window.matchMedia?.("(prefers-color-scheme: dark)").matches;
-    const enable = pref ? pref === "dark" : prefersDark;
-    setDark(enable);
-    document.documentElement.classList.toggle("dark", enable);
-  }, []);
+  const { isDark: dark, setTheme } = useTheme();
 
   const toggleTheme = v => {
     const checked = typeof v === "boolean" ? v : !dark;
-    setDark(checked);
-    document.documentElement.classList.toggle("dark", checked);
-    localStorage.setItem("theme", checked ? "dark" : "light");
+    setTheme(checked ? "dark" : "light");
   };
 
   const goToHadith = n => {

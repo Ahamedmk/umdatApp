@@ -1,18 +1,18 @@
 // /src/pages/ExamQuiz.jsx
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Switch } from "@/components/ui/switch";
 import {
   Select, SelectTrigger, SelectValue, SelectContent, SelectItem,
 } from "@/components/ui/select";
 import {
-  ClipboardCheck, Clock, Moon, Sun, Play, CheckCircle2,
+  ClipboardCheck, Clock, Play, CheckCircle2,
   XCircle, AlertCircle, Trophy, Target, Zap, RotateCcw,
 } from "lucide-react";
 
 import { QUIZ_QUESTIONS_1_15 } from "@/data/quiz_questions_1_15";
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "../lib/supabase";
+import { useTheme } from "@/hooks/useTheme";
 
 /* ─── helpers ─── */
 const shuffle = arr => {
@@ -54,26 +54,10 @@ export function ExamQuiz() {
   const [answers, setAnswers] = useState([]);
   const [timeLeft, setTimeLeft] = useState(0);
   const [finished, setFinished] = useState(false);
-  const [dark, setDark]       = useState(false);
 
   const [learnedNumbers, setLearnedNumbers] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  /* theme */
-  useEffect(() => {
-    const pref = localStorage.getItem("theme");
-    const prefersDark = typeof window !== "undefined" && window.matchMedia?.("(prefers-color-scheme: dark)").matches;
-    const enable = pref ? pref === "dark" : prefersDark;
-    setDark(enable);
-    document.documentElement.classList.toggle("dark", enable);
-  }, []);
-
-  const toggleTheme = v => {
-    const checked = typeof v === "boolean" ? v : !dark;
-    setDark(checked);
-    document.documentElement.classList.toggle("dark", checked);
-    localStorage.setItem("theme", checked ? "dark" : "light");
-  };
+  const { isDark: dark } = useTheme();
 
   /* load learned hadiths */
   useEffect(() => {
@@ -139,14 +123,6 @@ export function ExamQuiz() {
   const timeWarning = timeLeft > 0 && timeLeft <= 60;
   const noLearned = !loading && learnedNumbers.length === 0;
 
-  const ThemeToggle = () => (
-    <div className="eq-theme-toggle">
-      <Sun size={13} />
-      <Switch checked={dark} onCheckedChange={toggleTheme} />
-      <Moon size={13} />
-    </div>
-  );
-
   /* ════════════════════════════════
      SCREEN: CONFIG
   ════════════════════════════════ */
@@ -163,7 +139,6 @@ export function ExamQuiz() {
               {noLearned && <p className="eq-warn">Apprends au moins un hadith avant de lancer l'examen.</p>}
             </div>
           </div>
-          <ThemeToggle />
         </header>
 
         <div className="eq-config-card">
@@ -274,7 +249,6 @@ export function ExamQuiz() {
                 <p className="eq-subtitle">Analyse de ta performance</p>
               </div>
             </div>
-            <ThemeToggle />
           </header>
 
           {/* Score card */}

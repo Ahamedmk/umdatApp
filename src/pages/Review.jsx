@@ -3,11 +3,12 @@ import React, { useMemo, useState, useEffect, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
 import { setHadithDueBadge } from "@/lib/appBadge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { RotateCcw, ChevronLeft, ChevronRight, Eye, EyeOff, Trophy, Sparkles, Brain, Sun, Moon } from "lucide-react";
+import { RotateCcw, ChevronLeft, ChevronRight, Eye, EyeOff, Trophy, Sparkles, Brain } from "lucide-react";
 
 import { saveReviewResult } from "../lib/hadithProgress";
 import { supabase } from "../lib/supabase";
 import { ALL_HADITHS } from "../data/allHadiths";
+import { useTheme } from "@/hooks/useTheme";
 
 function toLocalISODate(date = new Date()) {
   const y = date.getFullYear();
@@ -35,28 +36,12 @@ export function Review() {
   const [showFr, setShowFr]   = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving]   = useState(false);
-  const [isDark, setIsDark]   = useState(true);
   const [sessionStats, setSessionStats] = useState({
     total: 0, perfect: 0, good: 0, medium: 0, needs_work: 0,
   });
 
   const answeredInSessionRef = useRef(new Set());
-
-  /* theme sync */
-  useEffect(() => {
-    const pref = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
-    const dark = pref ? pref === "dark" : prefersDark;
-    setIsDark(dark);
-    document.documentElement.classList.toggle("dark", dark);
-  }, []);
-
-  function toggleTheme() {
-    const next = !isDark;
-    setIsDark(next);
-    document.documentElement.classList.toggle("dark", next);
-    localStorage.setItem("theme", next ? "dark" : "light");
-  }
+  const { isDark } = useTheme();
 
   async function loadDue(userId) {
     if (!userId) {
@@ -161,13 +146,6 @@ export function Review() {
       <div className={`rv-root ${themeClass}`}>
 
         {/* ── Topbar ── */}
-        <div className="rv-topbar">
-          <button className="rv-theme-toggle" onClick={toggleTheme} aria-label="Changer de thème">
-            {isDark ? <Sun size={15} /> : <Moon size={15} />}
-            <span>{isDark ? "Mode clair" : "Mode sombre"}</span>
-          </button>
-        </div>
-
         {/* ── Header ── */}
         <header className="rv-header">
           <div className="rv-header-left">

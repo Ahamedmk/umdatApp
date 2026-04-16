@@ -5,7 +5,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
-  Play, Pause, Sun, Moon, ChevronLeft, ChevronRight,
+  Play, Pause, ChevronLeft, ChevronRight,
   BookOpen, Sparkles, Volume2, Eye, EyeOff, CheckCircle2,
   Clock, RotateCcw, Scale3d, Mic, Square,
 } from "lucide-react";
@@ -16,6 +16,7 @@ import { HADITHS_TAHARA } from "../data/seed_hadiths_tahara";
 import { HADITHS_SALAT } from "../data/seed_hadiths_salat";
 import { NARRATORS_MOCK } from "@/data/narrators_mock";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "@/hooks/useTheme";
 
 /* ─── router helper ─── */
 function useHadithNumberFromRouter() {
@@ -145,10 +146,10 @@ export default function HadithDetail() {
   const [progress, setProgress]       = useState(null);
   const [hasProgress, setHasProgress] = useState(false);
   const [hideFR, setHideFR]           = useState(false);
-  const [isDark, setIsDark]           = useState(true);
 
   const [unlockedNarrators, setUnlockedNarrators] = useState([]);
   const [showUnlockModal, setShowUnlockModal]     = useState(false);
+  const { isDark } = useTheme();
 
   const SCHOOL_META = isDark ? SCHOOL_META_DARK : SCHOOL_META_LIGHT;
   const hasReviewPlan = !!progress?.next_review_date;
@@ -165,22 +166,6 @@ export default function HadithDetail() {
     isSupported: isRecSupported, isRecording, audioUrl, error: recError,
     elapsed, startRecording, stopRecording, resetRecording, playerRef,
   } = useAudioRecorder();
-
-  /* theme sync */
-  useEffect(() => {
-    const pref = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
-    const dark = pref ? pref === "dark" : prefersDark;
-    setIsDark(dark);
-    document.documentElement.classList.toggle("dark", dark);
-  }, []);
-
-  function toggleTheme() {
-    const next = !isDark;
-    setIsDark(next);
-    document.documentElement.classList.toggle("dark", next);
-    localStorage.setItem("theme", next ? "dark" : "light");
-  }
 
   const localSeed = useMemo(() => (
     HADITHS_TAHARA.find(h => h.number === hadithNumber) ||
@@ -320,10 +305,6 @@ export default function HadithDetail() {
             </div>
           </div>
 
-          <button className="hd-theme-btn" onClick={toggleTheme} aria-label="Changer de thème">
-            {isDark ? <Sun size={14} /> : <Moon size={14} />}
-            <span>{isDark ? "Mode clair" : "Mode sombre"}</span>
-          </button>
         </header>
 
         {/* ── Arabic text card ── */}
@@ -968,3 +949,4 @@ function HadithStyles({ isDark }) {
     `}</style>
   );
 }
+

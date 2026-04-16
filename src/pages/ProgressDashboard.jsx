@@ -4,13 +4,14 @@ import { useAuth } from "../context/AuthContext";
 import { supabase } from "../lib/supabase";
 import {
   BarChart3, Flame, CheckCircle2, Clock,
-  CalendarDays, AlertTriangle, Sparkles, Sun, Moon,
+  CalendarDays, AlertTriangle, Sparkles,
 } from "lucide-react";
 import {
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis,
   Tooltip as RechartsTooltip, CartesianGrid, Cell,
 } from "recharts";
 import { ALL_HADITHS } from "../data/allHadiths";
+import { useTheme } from "@/hooks/useTheme";
 
 /* ─── helpers ─── */
 function formatDate(dateStr) {
@@ -57,23 +58,7 @@ export default function ProgressDashboard() {
   const [loading, setLoading]           = useState(true);
   const [progressRows, setProgressRows] = useState([]);
   const [reviewDates, setReviewDates]   = useState([]);
-  const [isDark, setIsDark]             = useState(true);
-
-  /* theme sync */
-  useEffect(() => {
-    const pref = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
-    const dark = pref ? pref === "dark" : prefersDark;
-    setIsDark(dark);
-    document.documentElement.classList.toggle("dark", dark);
-  }, []);
-
-  function toggleTheme() {
-    const next = !isDark;
-    setIsDark(next);
-    document.documentElement.classList.toggle("dark", next);
-    localStorage.setItem("theme", next ? "dark" : "light");
-  }
+  const { isDark } = useTheme();
 
   useEffect(() => {
     if (!user?.id) { setLoading(false); return; }
@@ -162,12 +147,6 @@ export default function ProgressDashboard() {
     <>
       <PdStyles isDark={isDark} />
       <div className={`pd-root pd-center ${themeClass}`}>
-        <div className="pd-topbar" style={{ position: "absolute", top: "1.2rem", right: "1rem" }}>
-          <button className="pd-theme-toggle" onClick={toggleTheme}>
-            {isDark ? <Sun size={15} /> : <Moon size={15} />}
-            <span>{isDark ? "Mode clair" : "Mode sombre"}</span>
-          </button>
-        </div>
         <div className="pd-login-card">
           <BarChart3 size={28} className="pd-login-icon" />
           <p className="pd-login-title">Connecte-toi pour voir ta progression</p>
@@ -191,13 +170,6 @@ export default function ProgressDashboard() {
       <div className={`pd-root ${themeClass}`}>
 
         {/* ── Topbar ── */}
-        <div className="pd-topbar">
-          <button className="pd-theme-toggle" onClick={toggleTheme} aria-label="Changer de thème">
-            {isDark ? <Sun size={15} /> : <Moon size={15} />}
-            <span>{isDark ? "Mode clair" : "Mode sombre"}</span>
-          </button>
-        </div>
-
         {/* ── Header ── */}
         <header className="pd-header">
           <div className="pd-header-left">

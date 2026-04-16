@@ -13,7 +13,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Switch } from "@/components/ui/switch";
 
 import {
   BookOpen,
@@ -27,9 +26,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Play,
-  Sun,
-  Moon,
 } from "lucide-react";
+import { useTheme } from "@/hooks/useTheme";
 
 const SCREENS = [
   {
@@ -106,31 +104,12 @@ const SCREENS = [
 export default function Onboarding() {
   const navigate = useNavigate();
   const [index, setIndex] = useState(0);
-  const [dark, setDark] = useState(false);
   const touchStartX = useRef(null);
+  const { isDark: dark } = useTheme();
 
   const finishOnboarding = () => {
     localStorage.setItem(ONBOARDING_KEY, "1");
     navigate("/learn", { replace: true });
-  };
-
-  // thème sombre
-  useEffect(() => {
-    const pref = localStorage.getItem("theme");
-    const prefersDark =
-      typeof window !== "undefined" &&
-      window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-    const enable = pref ? pref === "dark" : prefersDark;
-    setDark(enable);
-    document.documentElement.classList.toggle("dark", enable);
-  }, []);
-
-  const toggleTheme = (checked) => {
-    setDark(checked);
-    document.documentElement.classList.toggle("dark", checked);
-    localStorage.setItem("theme", checked ? "dark" : "light");
   };
 
   const current = SCREENS[index];
@@ -198,15 +177,6 @@ export default function Onboarding() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-1 bg-slate-100/80 dark:bg-slate-800/80 px-2 py-1 rounded-full text-xs border border-slate-200 dark:border-slate-700">
-                <Sun className="h-3 w-3 text-slate-500 dark:text-slate-400" />
-                <Switch
-                  checked={dark}
-                  onCheckedChange={toggleTheme}
-                  className="scale-75"
-                />
-                <Moon className="h-3 w-3 text-slate-500 dark:text-slate-400" />
-              </div>
             </div>
           </CardHeader>
 

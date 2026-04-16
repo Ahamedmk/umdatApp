@@ -3,9 +3,10 @@ import React, { useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
-  Scale, Search, Filter, BookMarked, ExternalLink, FileText, Sun, Moon,
+  Scale, Search, Filter, BookMarked, ExternalLink, FileText,
 } from "lucide-react";
 import { ALL_HADITHS } from "../data/allHadiths";
+import { useTheme } from "@/hooks/useTheme";
 
 /* ─── config ─── */
 const SCHOOL_CONFIG = {
@@ -151,23 +152,7 @@ export function Compare() {
   const [selectedSchool, setSelectedSchool]   = useState("all");
   const [selectedChapter, setSelectedChapter] = useState("all");
   const [expandedDetails, setExpandedDetails] = useState(new Set());
-  const [isDark, setIsDark]                   = useState(true);
-
-  /* theme sync */
-  useEffect(() => {
-    const pref = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
-    const dark = pref ? pref === "dark" : prefersDark;
-    setIsDark(dark);
-    document.documentElement.classList.toggle("dark", dark);
-  }, []);
-
-  function toggleTheme() {
-    const next = !isDark;
-    setIsDark(next);
-    document.documentElement.classList.toggle("dark", next);
-    localStorage.setItem("theme", next ? "dark" : "light");
-  }
+  const { isDark } = useTheme();
 
   const CONSENSUS_META = isDark ? CONSENSUS_META_DARK : CONSENSUS_META_LIGHT;
 
@@ -218,14 +203,7 @@ export function Compare() {
       <div className={`cmp-root ${themeClass}`}>
 
         {/* ── Topbar ── */}
-        <div className="cmp-topbar">
-          <button className="cmp-theme-toggle" onClick={toggleTheme} aria-label="Changer de thème">
-            {isDark ? <Sun size={15} /> : <Moon size={15} />}
-            <span>{isDark ? "Mode clair" : "Mode sombre"}</span>
-          </button>
-        </div>
-
-        {/* ── Header ── */}
+{/* ── Header ── */}
         <header className="cmp-header">
           <div className="cmp-header-left">
             <div className="cmp-icon-wrap"><Scale size={17} /></div>
@@ -782,3 +760,4 @@ function CompareStyles({ isDark }) {
 }
 
 export default Compare;
+

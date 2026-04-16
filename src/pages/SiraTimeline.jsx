@@ -10,13 +10,10 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
-import { Switch } from "@/components/ui/switch";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 
 import {
-  Sun,
-  Moon,
   Map,
   Sparkles,
   BookOpen,
@@ -29,6 +26,7 @@ import {
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "../lib/supabase";
 import { HADITHS_TAHARA } from "@/data/seed_hadiths_tahara";
+import { useTheme } from "@/hooks/useTheme";
 
 // ──────────────────────────────────────
 // 1. TIMELINE : mapping Sîra + hadiths 1–15
@@ -249,30 +247,13 @@ const getHadithByNumber = (n) =>
 
 export function SiraTimeline() {
   const { user } = useAuth();
-  const [dark, setDark] = useState(false);
   const [learnedSet, setLearnedSet] = useState(new Set());
   const [startedSet, setStartedSet] = useState(new Set());
   const [loading, setLoading] = useState(true);
 
   // Story overlay
   const [storyStep, setStoryStep] = useState(null);
-
-  // Thème persistant
-  useEffect(() => {
-    const pref = localStorage.getItem("theme");
-    const prefersDark =
-      typeof window !== "undefined" &&
-      window.matchMedia?.("(prefers-color-scheme: dark)").matches;
-    const enable = pref ? pref === "dark" : prefersDark;
-    setDark(enable);
-    document.documentElement.classList.toggle("dark", enable);
-  }, []);
-
-  const toggleTheme = (checked) => {
-    setDark(checked);
-    document.documentElement.classList.toggle("dark", checked);
-    localStorage.setItem("theme", checked ? "dark" : "light");
-  };
+  const { isDark: dark } = useTheme();
 
   // Charger les hadiths appris / en cours
   useEffect(() => {
@@ -412,12 +393,6 @@ export function SiraTimeline() {
             </div>
 
             <div className="flex flex-col items-end gap-3">
-              <div className="flex items-center gap-2 bg-black/10 px-3 py-2 rounded-full border border-white/15 backdrop-blur">
-                <Sun className="h-4 w-4" />
-                <Switch checked={dark} onCheckedChange={toggleTheme} />
-                <Moon className="h-4 w-4" />
-              </div>
-
               <div className="hidden sm:flex flex-col items-end text-right text-sm">
                 <span className="text-emerald-50/80">
                   Hadiths liés commencés

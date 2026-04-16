@@ -12,8 +12,6 @@ import {
   Sparkles,
   ChevronRight,
   Star,
-  Sun,
-  Moon,
 } from "lucide-react";
 
 import { CHAPTERS } from "../data/chapters";
@@ -23,6 +21,7 @@ import {
   getUserHadithProgress,
   mergeHadithsWithSupabaseProgress,
 } from "../lib/hadithProgress";
+import { useTheme } from "@/hooks/useTheme";
 
 /* ─── helpers ─── */
 
@@ -88,23 +87,7 @@ export function Learn() {
   const [progressRows, setProgressRows] = useState([]);
   const [loading, setLoading]           = useState(true);
   const [loadError, setLoadError]       = useState("");
-  const [isDark, setIsDark]             = useState(true);
-
-  /* theme sync on mount */
-  useEffect(() => {
-    const pref = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
-    const dark = pref ? pref === "dark" : prefersDark;
-    setIsDark(dark);
-    document.documentElement.classList.toggle("dark", dark);
-  }, []);
-
-  function toggleTheme() {
-    const next = !isDark;
-    setIsDark(next);
-    document.documentElement.classList.toggle("dark", next);
-    localStorage.setItem("theme", next ? "dark" : "light");
-  }
+  const { isDark } = useTheme();
 
   useEffect(() => {
     let mounted = true;
@@ -213,14 +196,7 @@ export function Learn() {
       <div className={`learn-root ${isDark ? "learn-dark" : "learn-light"}`}>
 
         {/* ── Theme toggle ── */}
-        <div className="learn-topbar">
-          <button className="learn-theme-toggle" onClick={toggleTheme} aria-label="Changer de thème">
-            {isDark ? <Sun size={15} /> : <Moon size={15} />}
-            <span>{isDark ? "Mode clair" : "Mode sombre"}</span>
-          </button>
-        </div>
-
-        {/* ── Header ── */}
+{/* ── Header ── */}
         <header className="learn-header">
           <div>
             <h1 className="learn-title">
@@ -839,3 +815,4 @@ function LearnStyles({ isDark }) {
 }
 
 export default Learn;
+
