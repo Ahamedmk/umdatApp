@@ -22,13 +22,13 @@ export function normalizeArabicText(text = "") {
   return text
     .normalize("NFKC")
     .replace(ARABIC_DIACRITICS_REGEX, "")
-    .replace(/[ـ]/g, "")
-    .replace(/[أإآٱ]/g, "ا")
-    .replace(/[ؤ]/g, "و")
-    .replace(/[ئ]/g, "ي")
-    .replace(/[ى]/g, "ي")
-    .replace(/[ة]/g, "ه")
-    .replace(/[ء]/g, "")
+    .replace(/\u0640/g, "")
+    .replace(/[\u0623\u0625\u0622\u0671]/g, "ا")
+    .replace(/\u0624/g, "و")
+    .replace(/\u0626/g, "ي")
+    .replace(/\u0649/g, "ي")
+    .replace(/\u0629/g, "ه")
+    .replace(/\u0621/g, "")
     .replace(ARABIC_PUNCTUATION_REGEX, " ")
     .replace(/\s+/g, " ")
     .trim();
@@ -37,6 +37,18 @@ export function normalizeArabicText(text = "") {
 export function tokenizeArabicText(text = "") {
   const normalized = normalizeArabicText(text);
   return normalized ? normalized.split(" ") : [];
+}
+
+export function collapseImmediateDuplicateWords(text = "") {
+  const tokens = tokenizeArabicText(text);
+  if (!tokens.length) return "";
+
+  const deduped = [];
+  for (const token of tokens) {
+    if (token === deduped[deduped.length - 1]) continue;
+    deduped.push(token);
+  }
+  return deduped.join(" ");
 }
 
 export function stabilizeSpokenArabic(expectedText = "", spokenText = "") {
@@ -49,8 +61,7 @@ export function stabilizeSpokenArabic(expectedText = "", spokenText = "") {
     const previousToken = stabilizedTokens[stabilizedTokens.length - 1];
     const nextExpectedToken = expectedTokens[expectedIndex];
 
-    // Mobile speech engines sometimes emit "word word" for a single spoken word.
-    // Drop only immediate duplicates that are not also expected next in the hadith.
+    // Keep legitimate duplicates only when the next expected hadith token is also the same.
     if (token === previousToken && nextExpectedToken !== token) {
       continue;
     }
@@ -121,8 +132,8 @@ function diffArabicTokens(expectedTokens, spokenTokens) {
 export function evaluateRecitation(expectedText = "", spokenText = "") {
   const normalizedExpected = normalizeArabicText(expectedText);
   const normalizedSpoken = normalizeArabicText(spokenText);
-  const expectedTokens = tokenizeArabicText(expectedText);
-  const spokenTokens = tokenizeArabicText(spokenText);
+  const expectedTokens = normalizedExpected ? normalizedExpected.split(" ") : [];
+  const spokenTokens = normalizedSpoken ? normalizedSpoken.split(" ") : [];
   const { matchedWords, missedWords, extraWords } = diffArabicTokens(expectedTokens, spokenTokens);
   const percent = expectedTokens.length
     ? Math.round((matchedWords.length / expectedTokens.length) * 100)

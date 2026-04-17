@@ -8,7 +8,7 @@ import { saveReviewResult } from "../lib/hadithProgress";
 import { supabase } from "../lib/supabase";
 import { ALL_HADITHS } from "../data/allHadiths";
 import { useTheme } from "@/hooks/useTheme";
-import { useSpeechRecitation } from "@/hooks/useSpeechRecitation";
+import { DEBUG_SPEECH, useSpeechRecitation } from "@/hooks/useSpeechRecitation";
 import { RECITATION_BANDS, evaluateRecitation, getRecitationBand, stabilizeSpokenArabic } from "@/lib/recitationEvaluation";
 
 function toLocalISODate(date = new Date()) {
@@ -27,8 +27,8 @@ const QUALITY_LABELS = [
   { value: 5, label: "Parfait", desc: "Instantane et sur", delay: "4 jours" },
 ];
 
-function buildSpeechPreview(transcript = "", interimTranscript = "") {
-  const finalText = transcript.trim();
+function buildSpeechPreview(finalTranscript = "", interimTranscript = "") {
+  const finalText = finalTranscript.trim();
   const interimText = interimTranscript.trim();
   if (!finalText) return interimText;
   if (!interimText) return finalText;
@@ -53,7 +53,7 @@ export function Review() {
   const {
     isSupported,
     isListening,
-    transcript,
+    finalTranscript,
     interimTranscript,
     error: recitationError,
     startListening,
@@ -132,17 +132,29 @@ export function Review() {
   const visiblePart = arabicText.slice(0, 35);
   const hiddenPart = arabicText.slice(35);
   const progressPercent = hadiths.length ? Math.round(((idx + 1) / hadiths.length) * 100) : 0;
-  // Mobile browsers often replay partial words in the interim result.
-  // Build a preview that keeps only the genuinely new suffix.
   const speechPreview = useMemo(
-    () => stabilizeSpokenArabic(arabicText, buildSpeechPreview(transcript, interimTranscript)),
-    [arabicText, transcript, interimTranscript]
+    () => stabilizeSpokenArabic(arabicText, buildSpeechPreview(finalTranscript, interimTranscript)),
+    [arabicText, finalTranscript, interimTranscript]
   );
   const recitationEvaluation = useMemo(() => evaluateRecitation(arabicText, speechPreview), [arabicText, speechPreview]);
   const recitationQuality = recitationEvaluation.quality;
   const recitationLabel = QUALITY_LABELS.find(item => item.value === recitationQuality) || QUALITY_LABELS[0];
   const recitationBand = getRecitationBand(recitationQuality);
   const hasRecitationResult = Boolean(recitationEvaluation.normalizedSpoken);
+
+  useEffect(() => {
+    if (!DEBUG_SPEECH) return;
+    console.log("[speech][review] preview", {
+      finalTranscript,
+      interimTranscript,
+      speechPreview,
+    });
+  }, [finalTranscript, interimTranscript, speechPreview]);
+
+  useEffect(() => {
+    if (!DEBUG_SPEECH) return;
+    console.log("[speech][review] evaluation", recitationEvaluation);
+  }, [recitationEvaluation]);
 
   const answer = async quality => {
     if (!h || !user || saving) return;

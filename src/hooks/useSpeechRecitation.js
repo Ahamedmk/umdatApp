@@ -1,22 +1,35 @@
 import { useEffect, useRef, useState } from "react";
 
+export const DEBUG_SPEECH = false;
+
+function debugSpeech(...args) {
+  if (DEBUG_SPEECH) {
+    console.log("[speech]", ...args);
+  }
+}
+
+function readSpeechChunk(result) {
+  return result?.[0]?.transcript?.trim() || "";
+}
+
 export function useSpeechRecitation() {
   const [isSupported, setIsSupported] = useState(false);
   const [isListening, setIsListening] = useState(false);
-  const [transcript, setTranscript] = useState("");
+  const [finalTranscript, setFinalTranscript] = useState("");
   const [interimTranscript, setInterimTranscript] = useState("");
   const [error, setError] = useState(null);
   const recognitionRef = useRef(null);
+  const resultSlotsRef = useRef([]);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") return undefined;
 
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition || null;
 
     if (!SpeechRecognition) {
       setIsSupported(false);
-      return;
+      return undefined;
     }
 
     const recognition = new SpeechRecognition();
@@ -26,29 +39,47 @@ export function useSpeechRecitation() {
     recognition.maxAlternatives = 1;
 
     recognition.onstart = () => {
+      resultSlotsRef.current = [];
       setIsListening(true);
       setError(null);
+      setFinalTranscript("");
+      setInterimTranscript("");
+      debugSpeech("session-start");
     };
 
     recognition.onresult = event => {
-      const finalParts = [];
-      let nextInterimTranscript = "";
+      debugSpeech("onresult", { resultIndex: event.resultIndex, resultCount: event.results.length });
 
-      // Rebuild from the browser's canonical result list each time.
-      // This avoids duplicated segments on mobile browsers that replay prior chunks.
-      for (let index = 0; index < event.results.length; index += 1) {
+      for (let index = event.resultIndex; index < event.results.length; index += 1) {
         const result = event.results[index];
-        const chunk = result[0]?.transcript?.trim() || "";
-        if (!chunk) continue;
+        const text = readSpeechChunk(result);
+        const isFinal = Boolean(result?.isFinal);
 
-        if (result.isFinal) {
-          finalParts.push(chunk);
-        } else {
-          nextInterimTranscript = `${nextInterimTranscript} ${chunk}`.trim();
-        }
+        debugSpeech("result-slot", { index, isFinal, text });
+
+        resultSlotsRef.current[index] = { text, isFinal };
       }
 
-      setTranscript(finalParts.join(" ").trim());
+      const finalParts = [];
+      const interimParts = [];
+
+      resultSlotsRef.current.forEach((slot, index) => {
+        if (!slot?.text) return;
+        if (slot.isFinal) finalParts.push(slot.text);
+        else interimParts.push(slot.text);
+
+        debugSpeech("rebuilt-slot", { index, isFinal: slot.isFinal, text: slot.text });
+      });
+
+      const nextFinalTranscript = finalParts.join(" ").replace(/\s+/g, " ").trim();
+      const nextInterimTranscript = interimParts.join(" ").replace(/\s+/g, " ").trim();
+
+      debugSpeech("rebuilt-transcripts", {
+        finalTranscript: nextFinalTranscript,
+        interimTranscript: nextInterimTranscript,
+      });
+
+      setFinalTranscript(nextFinalTranscript);
       setInterimTranscript(nextInterimTranscript);
     };
 
@@ -59,11 +90,20 @@ export function useSpeechRecitation() {
           : event.error === "no-speech"
             ? "Aucune recitation detectee."
             : "La reconnaissance vocale a rencontre un probleme.";
+
+      debugSpeech("error", { code: event.error, message: nextError });
       setError(nextError);
       setIsListening(false);
     };
 
     recognition.onend = () => {
+      debugSpeech("session-end", {
+        finalTranscript: resultSlotsRef.current
+          .filter(slot => slot?.isFinal && slot.text)
+          .map(slot => slot.text)
+          .join(" ")
+          .trim(),
+      });
       setIsListening(false);
     };
 
@@ -82,27 +122,32 @@ export function useSpeechRecitation() {
 
   const startListening = () => {
     if (!recognitionRef.current || isListening) return;
-    setTranscript("");
+    resultSlotsRef.current = [];
+    setFinalTranscript("");
     setInterimTranscript("");
     setError(null);
+    debugSpeech("manual-start");
     recognitionRef.current.start();
   };
 
   const stopListening = () => {
     if (!recognitionRef.current || !isListening) return;
+    debugSpeech("manual-stop");
     recognitionRef.current.stop();
   };
 
   const resetTranscript = () => {
-    setTranscript("");
+    resultSlotsRef.current = [];
+    setFinalTranscript("");
     setInterimTranscript("");
     setError(null);
+    debugSpeech("manual-reset");
   };
 
   return {
     isSupported,
     isListening,
-    transcript,
+    finalTranscript,
     interimTranscript,
     error,
     startListening,
