@@ -39,6 +39,32 @@ export function tokenizeArabicText(text = "") {
   return normalized ? normalized.split(" ") : [];
 }
 
+export function stabilizeSpokenArabic(expectedText = "", spokenText = "") {
+  const expectedTokens = tokenizeArabicText(expectedText);
+  const spokenTokens = tokenizeArabicText(spokenText);
+  const stabilizedTokens = [];
+  let expectedIndex = 0;
+
+  for (const token of spokenTokens) {
+    const previousToken = stabilizedTokens[stabilizedTokens.length - 1];
+    const nextExpectedToken = expectedTokens[expectedIndex];
+
+    // Mobile speech engines sometimes emit "word word" for a single spoken word.
+    // Drop only immediate duplicates that are not also expected next in the hadith.
+    if (token === previousToken && nextExpectedToken !== token) {
+      continue;
+    }
+
+    stabilizedTokens.push(token);
+
+    if (token === nextExpectedToken) {
+      expectedIndex += 1;
+    }
+  }
+
+  return stabilizedTokens.join(" ").trim();
+}
+
 function buildLcsMatrix(expectedTokens, spokenTokens) {
   const matrix = Array.from({ length: expectedTokens.length + 1 }, () =>
     Array(spokenTokens.length + 1).fill(0)

@@ -9,7 +9,7 @@ import { supabase } from "../lib/supabase";
 import { ALL_HADITHS } from "../data/allHadiths";
 import { useTheme } from "@/hooks/useTheme";
 import { useSpeechRecitation } from "@/hooks/useSpeechRecitation";
-import { RECITATION_BANDS, evaluateRecitation, getRecitationBand } from "@/lib/recitationEvaluation";
+import { RECITATION_BANDS, evaluateRecitation, getRecitationBand, stabilizeSpokenArabic } from "@/lib/recitationEvaluation";
 
 function toLocalISODate(date = new Date()) {
   const y = date.getFullYear();
@@ -135,8 +135,8 @@ export function Review() {
   // Mobile browsers often replay partial words in the interim result.
   // Build a preview that keeps only the genuinely new suffix.
   const speechPreview = useMemo(
-    () => buildSpeechPreview(transcript, interimTranscript),
-    [transcript, interimTranscript]
+    () => stabilizeSpokenArabic(arabicText, buildSpeechPreview(transcript, interimTranscript)),
+    [arabicText, transcript, interimTranscript]
   );
   const recitationEvaluation = useMemo(() => evaluateRecitation(arabicText, speechPreview), [arabicText, speechPreview]);
   const recitationQuality = recitationEvaluation.quality;
