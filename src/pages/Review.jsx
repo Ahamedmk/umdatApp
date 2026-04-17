@@ -184,10 +184,15 @@ export function Review() {
     () => buildSpeechPreview(finalTranscript, interimTranscript),
     [finalTranscript, interimTranscript]
   );
-  const speechPreview = useMemo(
-    () => stabilizeSpokenArabic(arabicText, previewBeforeStabilization),
-    [arabicText, previewBeforeStabilization]
-  );
+  const rawSpeechPreview = useMemo(
+  () => finalTranscript || interimTranscript,
+  [finalTranscript, interimTranscript]
+);
+
+const speechPreview = useMemo(
+  () => stabilizeSpokenArabic(arabicText, rawSpeechPreview),
+  [arabicText, rawSpeechPreview]
+);
   const recitationEvaluation = useMemo(() => evaluateRecitation(arabicText, speechPreview), [arabicText, speechPreview]);
   const recitationQuality = recitationEvaluation.quality;
   const recitationLabel = QUALITY_LABELS.find(item => item.value === recitationQuality) || QUALITY_LABELS[0];

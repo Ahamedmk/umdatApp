@@ -8,8 +8,62 @@ function debugSpeech(...args) {
   }
 }
 
-function readSpeechChunk(result) {
-  return result?.[0]?.transcript?.trim() || "";
+function normalizeTranscript(value = "") {
+  return value.trim().replace(/\s+/g, " ");
+}
+
+function mergeTranscriptSegments(baseTranscript = "", nextTranscript = "") {
+  const base = normalizeTranscript(baseTranscript);
+  const next = normalizeTranscript(nextTranscript);
+
+  if (!base) return next;
+  if (!next) return base;
+  if (base === next || base.endsWith(next)) return base;
+  if (next.startsWith(base)) return next;
+
+  const baseWords = base.split(" ");
+  const nextWords = next.split(" ");
+  const maxOverlap = Math.min(baseWords.length, nextWords.length);
+
+  for (let overlap = maxOverlap; overlap > 0; overlap -= 1) {
+    const baseSuffix = baseWords.slice(-overlap).join(" ");
+    const nextPrefix = nextWords.slice(0, overlap).join(" ");
+
+    if (baseSuffix === nextPrefix) {
+      return [...baseWords, ...nextWords.slice(overlap)].join(" ");
+    }
+  }
+
+  return `${base} ${next}`.trim();
+}
+
+function extractRecognitionTexts(event, currentFinalTranscript = "") {
+  let nextFinalTranscript = normalizeTranscript(currentFinalTranscript);
+  let nextInterimTranscript = "";
+
+  for (let index = event.resultIndex; index < event.results.length; index += 1) {
+    const result = event.results[index];
+    const transcript = normalizeTranscript(result?.[0]?.transcript || "");
+
+    if (!transcript) continue;
+
+    debugSpeech("result", {
+      index,
+      isFinal: Boolean(result?.isFinal),
+      transcript,
+    });
+
+    if (result.isFinal) {
+      nextFinalTranscript = mergeTranscriptSegments(nextFinalTranscript, transcript);
+    } else {
+      nextInterimTranscript = mergeTranscriptSegments(nextInterimTranscript, transcript);
+    }
+  }
+
+  return {
+    finalTranscript: nextFinalTranscript,
+    interimTranscript: nextInterimTranscript,
+  };
 }
 
 export function useSpeechRecitation() {
@@ -18,8 +72,11 @@ export function useSpeechRecitation() {
   const [finalTranscript, setFinalTranscript] = useState("");
   const [interimTranscript, setInterimTranscript] = useState("");
   const [error, setError] = useState(null);
+
   const recognitionRef = useRef(null);
-  const resultSlotsRef = useRef([]);
+  const finalTranscriptRef = useRef("");
+  const restartTimeoutRef = useRef(null);
+  const shouldKeepListeningRef = useRef(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
@@ -32,6 +89,37 @@ export function useSpeechRecitation() {
       return undefined;
     }
 
+    setIsSupported(true);
+
+    return () => {
+      shouldKeepListeningRef.current = false;
+
+      if (restartTimeoutRef.current) {
+        window.clearTimeout(restartTimeoutRef.current);
+        restartTimeoutRef.current = null;
+      }
+
+      if (recognitionRef.current) {
+        recognitionRef.current.onstart = null;
+        recognitionRef.current.onresult = null;
+        recognitionRef.current.onerror = null;
+        recognitionRef.current.onend = null;
+        recognitionRef.current.stop();
+        recognitionRef.current = null;
+      }
+    };
+  }, []);
+
+  const attachRecognition = () => {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition || null;
+
+    if (!SpeechRecognition) {
+      setIsSupported(false);
+      setError("La reconnaissance vocale n'est pas supportee sur ce navigateur.");
+      return null;
+    }
+
     const recognition = new SpeechRecognition();
     recognition.lang = "ar-SA";
     recognition.continuous = true;
@@ -39,110 +127,129 @@ export function useSpeechRecitation() {
     recognition.maxAlternatives = 1;
 
     recognition.onstart = () => {
-      resultSlotsRef.current = [];
       setIsListening(true);
       setError(null);
-      setFinalTranscript("");
-      setInterimTranscript("");
       debugSpeech("session-start");
     };
 
     recognition.onresult = event => {
-      debugSpeech("onresult", { resultIndex: event.resultIndex, resultCount: event.results.length });
-
-      for (let index = event.resultIndex; index < event.results.length; index += 1) {
-        const result = event.results[index];
-        const text = readSpeechChunk(result);
-        const isFinal = Boolean(result?.isFinal);
-
-        debugSpeech("result-slot", { index, isFinal, text });
-
-        resultSlotsRef.current[index] = { text, isFinal };
-      }
-
-      resultSlotsRef.current.length = event.results.length;
-
-      const finalParts = [];
-      const interimParts = [];
-
-      resultSlotsRef.current.forEach((slot, index) => {
-        if (!slot?.text) return;
-        if (slot.isFinal) finalParts.push(slot.text);
-        else interimParts.push(slot.text);
-
-        debugSpeech("rebuilt-slot", { index, isFinal: slot.isFinal, text: slot.text });
+      debugSpeech("onresult", {
+        resultIndex: event.resultIndex,
+        resultCount: event.results.length,
       });
 
-      const nextFinalTranscript = finalParts.join(" ").replace(/\s+/g, " ").trim();
-      const nextInterimTranscript = interimParts.join(" ").replace(/\s+/g, " ").trim();
+      const { finalTranscript: nextFinalTranscript, interimTranscript: nextInterimTranscript } =
+        extractRecognitionTexts(event, finalTranscriptRef.current);
+
+      if (nextFinalTranscript !== finalTranscriptRef.current) {
+        finalTranscriptRef.current = nextFinalTranscript;
+        setFinalTranscript(nextFinalTranscript);
+      }
+
+      setInterimTranscript(nextInterimTranscript);
 
       debugSpeech("rebuilt-transcripts", {
         finalTranscript: nextFinalTranscript,
         interimTranscript: nextInterimTranscript,
       });
-
-      setFinalTranscript(nextFinalTranscript);
-      setInterimTranscript(nextInterimTranscript);
     };
 
     recognition.onerror = event => {
-      const nextError =
-        event.error === "not-allowed"
-          ? "L'acces au micro a ete refuse."
-          : event.error === "no-speech"
-            ? "Aucune recitation detectee."
-            : "La reconnaissance vocale a rencontre un probleme.";
+      debugSpeech("error", { code: event.error });
 
-      debugSpeech("error", { code: event.error, message: nextError });
-      setError(nextError);
       setIsListening(false);
+
+      if (event.error === "not-allowed" || event.error === "service-not-allowed") {
+        shouldKeepListeningRef.current = false;
+        setError("L'acces au micro a ete refuse.");
+      } else if (event.error === "audio-capture") {
+        shouldKeepListeningRef.current = false;
+        setError("Aucun micro detecte.");
+      } else if (event.error === "no-speech" || event.error === "aborted") {
+        setError("");
+      } else {
+        setError("La reconnaissance vocale a rencontre un probleme.");
+      }
     };
 
     recognition.onend = () => {
       debugSpeech("session-end", {
-        finalTranscript: resultSlotsRef.current
-          .filter(slot => slot?.isFinal && slot.text)
-          .map(slot => slot.text)
-          .join(" ")
-          .trim(),
+        finalTranscript: finalTranscriptRef.current,
+        shouldKeepListening: shouldKeepListeningRef.current,
       });
+
       setIsListening(false);
+
+      if (!shouldKeepListeningRef.current) {
+        return;
+      }
+
+      restartTimeoutRef.current = window.setTimeout(() => {
+        const restartedRecognition = attachRecognition();
+        if (restartedRecognition) {
+          recognitionRef.current = restartedRecognition;
+          restartedRecognition.start();
+        }
+      }, 180);
     };
 
-    recognitionRef.current = recognition;
-    setIsSupported(true);
-
-    return () => {
-      recognition.onstart = null;
-      recognition.onresult = null;
-      recognition.onerror = null;
-      recognition.onend = null;
-      recognition.stop();
-      recognitionRef.current = null;
-    };
-  }, []);
+    return recognition;
+  };
 
   const startListening = () => {
-    if (!recognitionRef.current || isListening) return;
-    resultSlotsRef.current = [];
+    if (isListening) return;
+
+    if (restartTimeoutRef.current) {
+      window.clearTimeout(restartTimeoutRef.current);
+      restartTimeoutRef.current = null;
+    }
+
+    setError("");
     setFinalTranscript("");
     setInterimTranscript("");
-    setError(null);
+    finalTranscriptRef.current = "";
+    shouldKeepListeningRef.current = true;
+
+    const recognition = attachRecognition();
+    if (!recognition) return;
+
+    recognitionRef.current = recognition;
     debugSpeech("manual-start");
-    recognitionRef.current.start();
+    recognition.start();
   };
 
   const stopListening = () => {
-    if (!recognitionRef.current || !isListening) return;
+    if (!recognitionRef.current) return;
+
     debugSpeech("manual-stop");
+    shouldKeepListeningRef.current = false;
+
+    if (restartTimeoutRef.current) {
+      window.clearTimeout(restartTimeoutRef.current);
+      restartTimeoutRef.current = null;
+    }
+
     recognitionRef.current.stop();
   };
 
   const resetTranscript = () => {
-    resultSlotsRef.current = [];
+    shouldKeepListeningRef.current = false;
+
+    if (restartTimeoutRef.current) {
+      window.clearTimeout(restartTimeoutRef.current);
+      restartTimeoutRef.current = null;
+    }
+
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+    }
+
+    finalTranscriptRef.current = "";
     setFinalTranscript("");
     setInterimTranscript("");
     setError(null);
+    setIsListening(false);
+
     debugSpeech("manual-reset");
   };
 
