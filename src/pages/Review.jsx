@@ -478,6 +478,8 @@ function ReviewStyles({ isDark }) {
     .rv-dark .rv-badge-source,.rv-dark .rv-mobile-legend,.rv-dark .rv-mode-btn,.rv-dark .rv-quality-btn,.rv-dark .rv-secondary-btn,.rv-dark .rv-recitation-controls,.rv-dark .rv-percent-card,.rv-dark .rv-recitation-results,.rv-dark .rv-result-box,.rv-dark .rv-word-group,.rv-dark .rv-transcript-card{background:#1e2630;border-color:rgba(255,255,255,.13)}
     .rv-dark .rv-arabic-block{background:linear-gradient(135deg,#1e2630 0%,rgba(74,159,200,.06) 100%);border-color:rgba(255,255,255,.13)}
     .rv-dark .rv-reveal-btn,.rv-dark .rv-nav-btn{background:#161c24;border-color:rgba(255,255,255,.13);color:#e8e0d0}
+    .rv-dark .rv-show-fr-btn{background:linear-gradient(135deg,#4a9fc8,#2d6ca8);box-shadow:0 10px 24px rgba(45,108,168,.28)}
+    .rv-dark .rv-hide-btn{color:#e8e0d0}
     .rv-dark .rv-fr-text{background:#1e2630;border-left-color:#4a9fc8}
     .rv-dark .rv-eval-header{color:#c9a84c}
     .rv-dark .rv-mode-btn--active{background:rgba(74,159,200,.16);border-color:rgba(74,159,200,.4);color:#e8e0d0}
@@ -502,6 +504,8 @@ function ReviewStyles({ isDark }) {
     .rv-light .rv-badge-source,.rv-light .rv-mobile-legend,.rv-light .rv-mode-btn,.rv-light .rv-quality-btn,.rv-light .rv-secondary-btn,.rv-light .rv-recitation-controls,.rv-light .rv-percent-card,.rv-light .rv-recitation-results,.rv-light .rv-result-box,.rv-light .rv-word-group,.rv-light .rv-transcript-card{background:#fef6e4;border-color:rgba(160,125,40,.2)}
     .rv-light .rv-arabic-block{background:linear-gradient(135deg,#fef6e4 0%,rgba(42,122,176,.05) 100%);border-color:rgba(160,125,40,.2)}
     .rv-light .rv-reveal-btn,.rv-light .rv-nav-btn{background:#ffffff;border-color:rgba(160,125,40,.22);color:#2c2416}
+    .rv-light .rv-show-fr-btn{background:linear-gradient(135deg,#2a7ab0,#1a5a8a);box-shadow:0 10px 24px rgba(42,122,176,.22)}
+    .rv-light .rv-hide-btn{color:#2c2416}
     .rv-light .rv-fr-text{background:#fef6e4;border-left-color:#2a7ab0;color:#1e1810}
     .rv-light .rv-eval-header{color:#a07d28}
     .rv-light .rv-mode-btn--active{background:rgba(42,122,176,.1);border-color:rgba(42,122,176,.28);color:#1e1810}
@@ -541,4 +545,3 @@ function ReviewStyles({ isDark }) {
 }
 
 export default Review;
-
