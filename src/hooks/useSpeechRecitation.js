@@ -7,6 +7,7 @@ export function useSpeechRecitation() {
   const [interimTranscript, setInterimTranscript] = useState("");
   const [error, setError] = useState(null);
   const recognitionRef = useRef(null);
+  const finalTranscriptRef = useRef("");
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -31,18 +32,24 @@ export function useSpeechRecitation() {
     };
 
     recognition.onresult = event => {
-      let nextFinalTranscript = "";
+      let nextFinalTranscript = finalTranscriptRef.current;
       let nextInterimTranscript = "";
 
-      for (let index = 0; index < event.results.length; index += 1) {
+      // On mobile, event.results often replays previous segments.
+      // Restricting work to resultIndex avoids duplicating the same text.
+      for (let index = event.resultIndex; index < event.results.length; index += 1) {
         const result = event.results[index];
         const chunk = result[0]?.transcript?.trim() || "";
         if (!chunk) continue;
 
-        if (result.isFinal) nextFinalTranscript = `${nextFinalTranscript} ${chunk}`.trim();
-        else nextInterimTranscript = `${nextInterimTranscript} ${chunk}`.trim();
+        if (result.isFinal) {
+          nextFinalTranscript = `${nextFinalTranscript} ${chunk}`.trim();
+        } else {
+          nextInterimTranscript = `${nextInterimTranscript} ${chunk}`.trim();
+        }
       }
 
+      finalTranscriptRef.current = nextFinalTranscript;
       setTranscript(nextFinalTranscript);
       setInterimTranscript(nextInterimTranscript);
     };
@@ -77,6 +84,7 @@ export function useSpeechRecitation() {
 
   const startListening = () => {
     if (!recognitionRef.current || isListening) return;
+    finalTranscriptRef.current = "";
     setTranscript("");
     setInterimTranscript("");
     setError(null);
@@ -89,6 +97,7 @@ export function useSpeechRecitation() {
   };
 
   const resetTranscript = () => {
+    finalTranscriptRef.current = "";
     setTranscript("");
     setInterimTranscript("");
     setError(null);
