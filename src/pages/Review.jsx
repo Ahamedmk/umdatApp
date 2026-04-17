@@ -27,6 +27,17 @@ const QUALITY_LABELS = [
   { value: 5, label: "Parfait", desc: "Instantane et sur", delay: "4 jours" },
 ];
 
+function buildSpeechPreview(transcript = "", interimTranscript = "") {
+  const finalText = transcript.trim();
+  const interimText = interimTranscript.trim();
+  if (!finalText) return interimText;
+  if (!interimText) return finalText;
+  if (interimText === finalText) return finalText;
+  if (interimText.startsWith(finalText)) return interimText;
+  if (finalText.endsWith(interimText)) return finalText;
+  return `${finalText} ${interimText}`.trim();
+}
+
 export function Review() {
   const { user } = useAuth();
   const { isDark } = useTheme();
@@ -121,7 +132,12 @@ export function Review() {
   const visiblePart = arabicText.slice(0, 35);
   const hiddenPart = arabicText.slice(35);
   const progressPercent = hadiths.length ? Math.round(((idx + 1) / hadiths.length) * 100) : 0;
-  const speechPreview = [transcript, interimTranscript].filter(Boolean).join(" ").trim();
+  // Mobile browsers often replay partial words in the interim result.
+  // Build a preview that keeps only the genuinely new suffix.
+  const speechPreview = useMemo(
+    () => buildSpeechPreview(transcript, interimTranscript),
+    [transcript, interimTranscript]
+  );
   const recitationEvaluation = useMemo(() => evaluateRecitation(arabicText, speechPreview), [arabicText, speechPreview]);
   const recitationQuality = recitationEvaluation.quality;
   const recitationLabel = QUALITY_LABELS.find(item => item.value === recitationQuality) || QUALITY_LABELS[0];
