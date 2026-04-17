@@ -27,15 +27,63 @@ const QUALITY_LABELS = [
   { value: 5, label: "Parfait", desc: "Instantane et sur", delay: "4 jours" },
 ];
 
+function splitPreviewWords(text = "") {
+  return text.trim().split(/\s+/).filter(Boolean);
+}
+
+function containsWordSequence(haystackWords = [], needleWords = []) {
+  if (!needleWords.length) return true;
+  if (needleWords.length > haystackWords.length) return false;
+
+  for (let start = 0; start <= haystackWords.length - needleWords.length; start += 1) {
+    let matches = true;
+    for (let offset = 0; offset < needleWords.length; offset += 1) {
+      if (haystackWords[start + offset] !== needleWords[offset]) {
+        matches = false;
+        break;
+      }
+    }
+
+    if (matches) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function mergeWordOverlap(left = "", right = "") {
+  const leftWords = splitPreviewWords(left);
+  const rightWords = splitPreviewWords(right);
+
+  if (!leftWords.length) return rightWords.join(" ");
+  if (!rightWords.length) return leftWords.join(" ");
+
+  const leftText = leftWords.join(" ");
+  const rightText = rightWords.join(" ");
+
+  if (leftText === rightText) return leftText;
+  if (containsWordSequence(rightWords, leftWords)) return rightText;
+  if (containsWordSequence(leftWords, rightWords)) return leftText;
+
+  const maxOverlap = Math.min(leftWords.length, rightWords.length);
+  for (let size = maxOverlap; size > 0; size -= 1) {
+    const leftSuffix = leftWords.slice(-size).join(" ");
+    const rightPrefix = rightWords.slice(0, size).join(" ");
+    if (leftSuffix === rightPrefix) {
+      return [...leftWords, ...rightWords.slice(size)].join(" ");
+    }
+  }
+
+  return [...leftWords, ...rightWords].join(" ");
+}
+
 function buildSpeechPreview(finalTranscript = "", interimTranscript = "") {
   const finalText = finalTranscript.trim();
   const interimText = interimTranscript.trim();
   if (!finalText) return interimText;
   if (!interimText) return finalText;
-  if (interimText === finalText) return finalText;
-  if (interimText.startsWith(finalText)) return interimText;
-  if (finalText.endsWith(interimText)) return finalText;
-  return `${finalText} ${interimText}`.trim();
+  return mergeWordOverlap(finalText, interimText);
 }
 
 export function Review() {
@@ -132,9 +180,13 @@ export function Review() {
   const visiblePart = arabicText.slice(0, 35);
   const hiddenPart = arabicText.slice(35);
   const progressPercent = hadiths.length ? Math.round(((idx + 1) / hadiths.length) * 100) : 0;
+  const previewBeforeStabilization = useMemo(
+    () => buildSpeechPreview(finalTranscript, interimTranscript),
+    [finalTranscript, interimTranscript]
+  );
   const speechPreview = useMemo(
-    () => stabilizeSpokenArabic(arabicText, buildSpeechPreview(finalTranscript, interimTranscript)),
-    [arabicText, finalTranscript, interimTranscript]
+    () => stabilizeSpokenArabic(arabicText, previewBeforeStabilization),
+    [arabicText, previewBeforeStabilization]
   );
   const recitationEvaluation = useMemo(() => evaluateRecitation(arabicText, speechPreview), [arabicText, speechPreview]);
   const recitationQuality = recitationEvaluation.quality;
@@ -144,17 +196,19 @@ export function Review() {
 
   useEffect(() => {
     if (!DEBUG_SPEECH) return;
-    console.log("[speech][review] preview", {
+    console.log("[speech][review] transcripts", {
       finalTranscript,
       interimTranscript,
+      previewBeforeStabilization,
       speechPreview,
     });
-  }, [finalTranscript, interimTranscript, speechPreview]);
+  }, [finalTranscript, interimTranscript, previewBeforeStabilization, speechPreview]);
 
   useEffect(() => {
     if (!DEBUG_SPEECH) return;
+    console.log("[speech][review] evaluateRecitation-input", speechPreview);
     console.log("[speech][review] evaluation", recitationEvaluation);
-  }, [recitationEvaluation]);
+  }, [speechPreview, recitationEvaluation]);
 
   const answer = async quality => {
     if (!h || !user || saving) return;

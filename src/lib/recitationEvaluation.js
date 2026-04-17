@@ -9,6 +9,7 @@ const RECITATION_BANDS = [
 
 const ARABIC_DIACRITICS_REGEX = /[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED]/g;
 const ARABIC_PUNCTUATION_REGEX = /[^\u0621-\u063A\u0641-\u064A\u0660-\u0669\u06F0-\u06F9\s]/g;
+const MAX_DUPLICATE_SEGMENT_SIZE = 4;
 
 export function qualityFromRecitationPercent(percent) {
   return RECITATION_BANDS.find(band => percent >= band.min)?.quality ?? 0;
@@ -23,11 +24,10 @@ export function normalizeArabicText(text = "") {
     .normalize("NFKC")
     .replace(ARABIC_DIACRITICS_REGEX, "")
     .replace(/\u0640/g, "")
-    .replace(/[\u0623\u0625\u0622\u0671]/g, "ا")
-    .replace(/\u0624/g, "و")
-    .replace(/\u0626/g, "ي")
-    .replace(/\u0649/g, "ي")
-    .replace(/\u0629/g, "ه")
+    .replace(/[\u0623\u0625\u0622\u0671]/g, "\u0627")
+    .replace(/\u0624/g, "\u0648")
+    .replace(/[\u0626\u0649]/g, "\u064A")
+    .replace(/\u0629/g, "\u0647")
     .replace(/\u0621/g, "")
     .replace(ARABIC_PUNCTUATION_REGEX, " ")
     .replace(/\s+/g, " ")
@@ -39,6 +39,59 @@ export function tokenizeArabicText(text = "") {
   return normalized ? normalized.split(" ") : [];
 }
 
+function tokensEqual(leftTokens = [], rightTokens = []) {
+  if (leftTokens.length !== rightTokens.length) return false;
+
+  for (let index = 0; index < leftTokens.length; index += 1) {
+    if (leftTokens[index] !== rightTokens[index]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function readSegment(tokens, start, size) {
+  return tokens.slice(start, start + size);
+}
+
+function isExpectedDuplicateSegment(expectedTokens, expectedIndex, segment) {
+  const size = segment.length;
+  const once = readSegment(expectedTokens, expectedIndex, size);
+  const twice = readSegment(expectedTokens, expectedIndex, size * 2);
+
+  return tokensEqual(once, segment) && tokensEqual(twice, [...segment, ...segment]);
+}
+
+function findImmediateDuplicateSegment(tokens, startIndex) {
+  const maxSize = Math.min(MAX_DUPLICATE_SEGMENT_SIZE, Math.floor((tokens.length - startIndex) / 2));
+
+  for (let size = maxSize; size >= 1; size -= 1) {
+    const first = readSegment(tokens, startIndex, size);
+    const second = readSegment(tokens, startIndex + size, size);
+
+    if (first.length === size && tokensEqual(first, second)) {
+      return first;
+    }
+  }
+
+  return null;
+}
+
+function alignExpectedIndex(expectedTokens, expectedIndex, token) {
+  if (expectedTokens[expectedIndex] === token) {
+    return expectedIndex;
+  }
+
+  for (let offset = 1; offset <= 3; offset += 1) {
+    if (expectedTokens[expectedIndex + offset] === token) {
+      return expectedIndex + offset;
+    }
+  }
+
+  return expectedIndex;
+}
+
 export function collapseImmediateDuplicateWords(text = "") {
   const tokens = tokenizeArabicText(text);
   if (!tokens.length) return "";
@@ -48,29 +101,62 @@ export function collapseImmediateDuplicateWords(text = "") {
     if (token === deduped[deduped.length - 1]) continue;
     deduped.push(token);
   }
+
   return deduped.join(" ");
 }
 
 export function stabilizeSpokenArabic(expectedText = "", spokenText = "") {
   const expectedTokens = tokenizeArabicText(expectedText);
   const spokenTokens = tokenizeArabicText(spokenText);
+
+  if (!spokenTokens.length) return "";
+
   const stabilizedTokens = [];
+  let spokenIndex = 0;
   let expectedIndex = 0;
 
-  for (const token of spokenTokens) {
-    const previousToken = stabilizedTokens[stabilizedTokens.length - 1];
-    const nextExpectedToken = expectedTokens[expectedIndex];
+  while (spokenIndex < spokenTokens.length) {
+    const duplicateSegment = findImmediateDuplicateSegment(spokenTokens, spokenIndex);
 
-    // Keep legitimate duplicates only when the next expected hadith token is also the same.
-    if (token === previousToken && nextExpectedToken !== token) {
+    if (duplicateSegment) {
+      const segmentSize = duplicateSegment.length;
+      const alignedExpectedIndex = alignExpectedIndex(expectedTokens, expectedIndex, duplicateSegment[0]);
+      const keepBothCopies = isExpectedDuplicateSegment(expectedTokens, alignedExpectedIndex, duplicateSegment);
+
+      if (!keepBothCopies) {
+        stabilizedTokens.push(...duplicateSegment);
+        expectedIndex = alignedExpectedIndex;
+
+        duplicateSegment.forEach(token => {
+          if (expectedTokens[expectedIndex] === token) {
+            expectedIndex += 1;
+          }
+        });
+
+        spokenIndex += segmentSize * 2;
+        continue;
+      }
+    }
+
+    const token = spokenTokens[spokenIndex];
+    const alignedExpectedIndex = alignExpectedIndex(expectedTokens, expectedIndex, token);
+
+    if (
+      token === stabilizedTokens[stabilizedTokens.length - 1] &&
+      expectedTokens[alignedExpectedIndex] !== token
+    ) {
+      spokenIndex += 1;
       continue;
     }
 
     stabilizedTokens.push(token);
+    expectedIndex = alignedExpectedIndex;
 
-    if (token === nextExpectedToken) {
+    if (expectedTokens[expectedIndex] === token) {
       expectedIndex += 1;
     }
+
+    spokenIndex += 1;
   }
 
   return stabilizedTokens.join(" ").trim();

@@ -60,6 +60,8 @@ export function useSpeechRecitation() {
         resultSlotsRef.current[index] = { text, isFinal };
       }
 
+      resultSlotsRef.current.length = event.results.length;
+
       const finalParts = [];
       const interimParts = [];
 
