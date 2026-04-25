@@ -8,12 +8,12 @@ import {
   DropdownMenuItem, DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import {
-  Sheet, SheetTrigger, SheetContent, SheetClose,
+  Sheet, SheetTrigger, SheetContent,
 } from "@/components/ui/sheet";
 
 import {
   BookOpen, Brain, RotateCcw, Scale3d, User2, Menu, Search,
-  Moon, Sun, LogOut, UserCircle, Sparkles, BarChart3, History, X,
+  Moon, Sun, LogOut, UserCircle, Sparkles, BarChart3, History,
 } from "lucide-react";
 
 import { useAuth } from "../context/AuthContext";
@@ -152,7 +152,6 @@ export function Navbar() {
                 <button className="nb-icon-btn" aria-label="Menu"><Menu size={17} /></button>
               </SheetTrigger>
               <SheetContent side="right" className="nb-sheet">
-                <SheetClose className="nb-sheet-close"><X size={15} /></SheetClose>
                 <div className="nb-sheet-header">
                   <span className="nb-logo-badge nb-logo-badge--sm">عمدة</span>
                   <div>
@@ -347,7 +346,20 @@ function NavbarStyles({ dark }) {
         border-radius: 9px; padding: 0 .55rem; height: 32px; color: var(--muted);
         transition: background .3s, border-color .3s;
       }
-      .nb-switch { transform: scale(.75); }
+      .nb-switch {
+        transform: scale(.75);
+        border: 1px solid ${dark ? "rgba(201,168,76,.38)" : "rgba(160,120,48,.28)"} !important;
+        background: ${dark ? "#1a2230" : "#d9cdae"} !important;
+        box-shadow: inset 0 0 0 1px ${dark ? "rgba(255,255,255,.04)" : "rgba(255,255,255,.45)"};
+      }
+      .nb-switch[data-state="checked"] {
+        background: ${dark ? "linear-gradient(135deg, #2d7a62, #1f5f4b)" : "linear-gradient(135deg, #4a9f82, #2d7a62)"} !important;
+        border-color: ${dark ? "rgba(74,159,130,.7)" : "rgba(45,122,98,.45)"} !important;
+      }
+      .nb-switch > span {
+        background: ${dark ? "#e8e0d0" : "#fff8ed"} !important;
+        box-shadow: 0 1px 4px rgba(0,0,0,.25);
+      }
 
       .nb-user-btn {
         display: inline-flex; align-items: center; gap: .4rem;
@@ -412,16 +424,27 @@ function NavbarStyles({ dark }) {
         display: flex; flex-direction: column; gap: 0;
         box-shadow: ${dark ? "-8px 0 32px rgba(0,0,0,.6)" : "-8px 0 32px rgba(0,0,0,.12)"} !important;
       }
-      .nb-sheet-close {
+      .nb-sheet [data-slot="sheet-close"] {
         position: absolute; top: 1rem; right: 1rem;
-        width: 30px; height: 30px;
-        background: ${dark ? "#1e2630" : "#ede4cc"};
-        border: 1.5px solid ${dark ? "rgba(201,168,76,.35)" : "rgba(160,120,48,.35)"};
+        width: 30px !important; height: 30px !important;
+        min-width: 30px !important; min-height: 30px !important;
+        padding: 0 !important;
+        box-sizing: border-box;
+        background: ${dark ? "#1e2630" : "#ede4cc"} !important;
+        border: 1.5px solid ${dark ? "rgba(201,168,76,.35)" : "rgba(160,120,48,.35)"} !important;
         border-radius: 50%; display: flex; align-items: center; justify-content: center;
-        color: ${dark ? "#e8e0d0" : "#2c1f0e"}; cursor: pointer;
-        transition: color .15s, background .15s;
+        color: ${dark ? "#e8e0d0" : "#2c1f0e"} !important; cursor: pointer;
+        opacity: 1 !important;
+        transition: color .15s, background .15s, border-color .15s;
       }
-      .nb-sheet-close:hover { color: var(--gold); background: ${dark ? "#252e3a" : "#e0d4b4"}; }
+      .nb-sheet [data-slot="sheet-close"]:hover {
+        color: var(--gold) !important;
+        background: ${dark ? "#252e3a" : "#e0d4b4"} !important;
+        border-color: var(--gold) !important;
+      }
+      .nb-sheet [data-slot="sheet-close"] svg {
+        width: 15px; height: 15px; flex-shrink: 0;
+      }
       .nb-sheet-header {
         display: flex; align-items: center; gap: .75rem;
         padding-bottom: 1.1rem; border-bottom: 1px solid ${dark ? "rgba(201,168,76,.2)" : "rgba(160,120,48,.2)"};
