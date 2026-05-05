@@ -5341,9 +5341,592 @@ const QUIZ_HADITH_44 = [
   correctIndex: 1,
   explain:
     "Les deux hadiths insistent sur la valeur particulière de « الصلاة الوسطى » qui est la prière du ‘asr."
+},
+
+/* ----------------- HADITH 53 : « Retarder la prière du ʿishāʾ sans difficulté » ----------------- */
+
+{
+  n: 53,
+  q: "Qui rapporte le hadith où le Prophète ﷺ retarda la prière du ʿishāʾ ?",
+  options: [
+    "ʿAbd Allāh ibn ʿAbbās",
+    "ʿAbd Allāh ibn Masʿūd",
+    "ʿAlī ibn Abī Ṭālib",
+    "Abū Barzah al-Aslamī"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le hadith commence par : « عن عبد الله بن عباس رضي الله عنهما قال »."
+},
+
+{
+  n: 53,
+  q: "Quelle prière le Prophète ﷺ avait-il retardée dans ce hadith ?",
+  options: [
+    "La prière du fajr",
+    "La prière du ẓuhr",
+    "La prière du ʿaṣr",
+    "La prière du ʿishāʾ"
+  ],
+  correctIndex: 3,
+  explain:
+    "Le texte dit : « أعتم النبي ﷺ بالعشاء », c’est-à-dire qu’il retarda le ʿishāʾ jusqu’à une heure avancée."
+},
+
+{
+  n: 53,
+  q: "Que dit ʿUmar رضي الله عنه lorsqu’il sortit ?",
+  options: [
+    "Les gens ont déjà prié seuls",
+    "La prière, ô Messager d’Allah ; les femmes et les enfants se sont endormis",
+    "Il est temps de la prière du fajr",
+    "La pluie empêche les fidèles de venir"
+  ],
+  correctIndex: 1,
+  explain:
+    "ʿUmar dit : « الصلاة يا رسول الله، رقد النساء والصبيان »."
+},
+
+{
+  n: 53,
+  q: "Dans quel état le Prophète ﷺ sortit-il ?",
+  options: [
+    "La tête ruisselante d’eau",
+    "Avec son armure",
+    "En voyage",
+    "En tenant un bâton"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le hadith mentionne : « ورأسه يقطر ماء »."
+},
+
+{
+  n: 53,
+  q: "Pourquoi le Prophète ﷺ n’a-t-il pas ordonné habituellement de prier le ʿishāʾ à cette heure tardive ?",
+  options: [
+    "Parce que le ʿishāʾ n’est pas obligatoire",
+    "Par crainte d’imposer une difficulté à sa communauté",
+    "Parce que cette heure était interdite",
+    "Parce que les compagnons refusaient la prière"
+  ],
+  correctIndex: 1,
+  explain:
+    "Il dit : « لولا أن أشق على أمتي - أو على الناس - لأمرتهم بالصلاة هذه الساعة »."
+},
+
+{
+  n: 53,
+  q: "Quelle règle générale ressort de l’explication fournie dans l’image ?",
+  options: [
+    "Il est préférable de retarder le ʿishāʾ lorsqu’il n’y a pas de difficulté pour les fidèles",
+    "Il faut toujours retarder toutes les prières",
+    "Il est obligatoire d’appeler le ʿishāʾ uniquement al-ʿatamah",
+    "Les femmes et les enfants ne doivent jamais assister au ʿishāʾ"
+  ],
+  correctIndex: 0,
+  explain:
+    "L’image explique que le hadith prouve la préférence de retarder le ʿishāʾ, sauf lorsqu’il y a une difficulté pour les gens."
+},
+
+/* ----------------- HADITH 54 : « Commencer par le repas » ----------------- */
+
+{
+  n: 54,
+  q: "Selon le hadith 54, que faut-il faire si la prière est établie alors que le repas est servi ?",
+  options: [
+    "Commencer par le repas",
+    "Ignorer le repas dans tous les cas",
+    "Reporter obligatoirement le repas après minuit",
+    "Annuler la prière"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le Prophète ﷺ a dit : « إذا أقيمت الصلاة وحضر العشاء فابدءوا بالعشاء »."
+},
+{
+  n: 54,
+  q: "Quelle sagesse principale le PDF donne-t-il pour commencer par le repas ?",
+  options: [
+    "Préserver le recueillement et éviter que le cœur soit occupé",
+    "Rendre le repas obligatoire avant chaque prière",
+    "Prouver que la prière en groupe n’existe pas",
+    "Retarder toutes les prières sans raison"
+  ],
+  correctIndex: 0,
+  explain:
+    "Ibn Baṭṭāl explique que l’esprit occupé par le repas peut diminuer le khushūʿ et provoquer distraction ou oubli."
+},
+{
+  n: 54,
+  q: "Qui rapporte le hadith principal « commencez par le repas » ?",
+  options: [
+    "ʿĀʾisha",
+    "Jābir",
+    "Abū Hurayra",
+    "Abū Saʿīd"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le texte commence par : « عن عائشة رضي الله عنها »."
+},
+{
+  n: 54,
+  q: "Quel autre compagnon rapporte un récit semblable ?",
+  options: [
+    "Ibn ʿUmar",
+    "Ibn Masʿūd",
+    "Abū Bakr",
+    "Muʿādh"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le texte ajoute : « وعن ابن عمر نحوه »."
+},
+
+/* ----------------- HADITH 55 : « Pas de prière en présence du repas » ----------------- */
+
+{
+  n: 55,
+  q: "Quels deux états sont mentionnés dans le hadith 55 ?",
+  options: [
+    "La présence du repas et le fait de retenir les deux besoins naturels",
+    "Le voyage et la maladie",
+    "La pluie et le froid",
+    "Le sommeil et l’oubli"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le hadith dit : « لا صلاة بحضرة طعام ولا وهو يدافعه الأخبثان »."
+},
+{
+  n: 55,
+  q: "Que signifie « الأخبثان » dans ce contexte ?",
+  options: [
+    "Les deux besoins naturels",
+    "Deux prières surérogatoires",
+    "Deux repas",
+    "Deux moments du jour"
+  ],
+  correctIndex: 0,
+  explain:
+    "L’expression vise l’urine et les selles que la personne repousse."
+},
+{
+  n: 55,
+  q: "Selon le PDF, si la personne prie dans cet état mais accomplit correctement les obligations de la prière, sa prière est :",
+  options: [
+    "Valable",
+    "Toujours invalide",
+    "Transformée en prière surérogatoire",
+    "À refaire même si tout a été accompli"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le PDF rapporte d’Ibn ʿAbd al-Barr un consensus sur la validité si les obligations de la prière ont été complétées."
+},
+{
+  n: 55,
+  q: "Pourquoi est-il réprouvé de prier en retenant ses besoins ?",
+  options: [
+    "Parce que le cœur risque d’être distrait de la prière",
+    "Parce que les ablutions deviennent toujours invalides avant la prière",
+    "Parce que la prière devient interdite toute la journée",
+    "Parce que la mosquée devient interdite"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le PDF explique que l’objectif est d’éviter que le cœur soit occupé et que la prière soit mal établie."
+},
+
+/* ----------------- HADITH 56 : « Interdiction après ṣubḥ et ʿaṣr » ----------------- */
+
+{
+  n: 56,
+  q: "Après quelles prières le hadith 56 interdit-il de prier jusqu’aux limites indiquées ?",
+  options: [
+    "Après ṣubḥ et après ʿaṣr",
+    "Après ẓuhr et après maghrib",
+    "Après ʿishāʾ seulement",
+    "Avant fajr seulement"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le texte mentionne : « بعد الصبح حتى تطلع الشمس، وبعد العصر حتى تغرب »."
+},
+{
+  n: 56,
+  q: "Selon Ibn Daqīq al-ʿĪd, le temps de réprobation après ṣubḥ et ʿaṣr dépend principalement de :",
+  options: [
+    "L’accomplissement effectif de la prière",
+    "L’entrée de l’heure seulement",
+    "La présence d’un repas",
+    "La météo"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le PDF explique que l’interdiction vise après la prière du ṣubḥ et après la prière du ʿaṣr."
+},
+{
+  n: 56,
+  q: "Qui est décrit comme le plus agréé des témoins auprès d’Ibn ʿAbbās ?",
+  options: [
+    "ʿUmar",
+    "ʿUthmān",
+    "Bilāl",
+    "Jābir"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le hadith dit : « وأرضاهم عندي عمر »."
+},
+{
+  n: 56,
+  q: "Quels sont les deux grands types de temps réprouvés expliqués dans le PDF ?",
+  options: [
+    "Ceux liés à l’acte de prier ṣubḥ/ʿaṣr et ceux liés au moment solaire",
+    "Ceux liés au voyage et ceux liés au commerce",
+    "Ceux liés au jeûne et ceux liés au zakat",
+    "Ceux liés à la nuit uniquement"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le PDF distingue les temps liés à l’acte et les temps liés au soleil : lever, zénith et coucher."
+},
+
+/* ----------------- HADITH 57 : « Pas de prière jusqu’à l’élévation du soleil » ----------------- */
+
+{
+  n: 57,
+  q: "Jusqu’à quand le hadith 57 interdit-il la prière après le ṣubḥ ?",
+  options: [
+    "Jusqu’à ce que le soleil s’élève",
+    "Jusqu’au zénith",
+    "Jusqu’au maghrib",
+    "Jusqu’à minuit"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le texte dit : « حتى ترتفع الشمس »."
+},
+{
+  n: 57,
+  q: "Qui rapporte le hadith 57 ?",
+  options: [
+    "Abū Saʿīd al-Khudrī",
+    "Abū Hurayra",
+    "ʿĀʾisha",
+    "Jābir"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le hadith est rapporté par Abū Saʿīd al-Khudrī رضي الله عنه."
+},
+{
+  n: 57,
+  q: "Selon le PDF, quel madhhab permet les prières ayant une cause après ṣubḥ et ʿaṣr ?",
+  options: [
+    "Le madhhab shafiʿite",
+    "Le madhhab hanafite uniquement",
+    "Aucun madhhab n’en parle",
+    "Le madhhab maliki dans tous ses avis uniquement"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le PDF indique que les prières ayant une cause ne sont pas réprouvées chez al-Shāfiʿī."
+},
+{
+  n: 57,
+  q: "Quelle conclusion le PDF donne-t-il sur l’interdiction après fajr et après ʿaṣr ?",
+  options: [
+    "Elle est plus légère que celle des trois temps solaires",
+    "Elle est plus grave que l’abandon de la prière",
+    "Elle concerne uniquement le vendredi",
+    "Elle abroge la prière obligatoire"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le PDF conclut que le nahy après fajr et ʿaṣr est plus léger que celui du lever, du zénith et du coucher."
+},
+
+/* ----------------- HADITH 58 : « Rattraper le ʿaṣr le jour du Fossé » ----------------- */
+
+{
+  n: 58,
+  q: "Lors de quel événement se déroule le hadith 58 ?",
+  options: [
+    "Le jour du Fossé",
+    "Le jour de Badr",
+    "La conquête de La Mecque",
+    "Le pèlerinage d’adieu"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le hadith dit : « يوم الخندق »."
+},
+{
+  n: 58,
+  q: "Quelle prière le Prophète ﷺ dit-il ne pas avoir encore accomplie ?",
+  options: [
+    "Le ʿaṣr",
+    "Le fajr",
+    "Le ẓuhr",
+    "Le ʿishāʾ"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le Prophète ﷺ dit : « والله ما صليتها », en parlant du ʿaṣr."
+},
+{
+  n: 58,
+  q: "Dans quel ordre les prières furent-elles accomplies après le coucher du soleil ?",
+  options: [
+    "D’abord le ʿaṣr, puis le maghrib",
+    "D’abord le maghrib, puis le ʿaṣr",
+    "Le fajr puis le ʿishāʾ",
+    "Seulement le maghrib"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le texte dit : « فصلى العصر بعد ما غربت الشمس، ثم صلى بعدها المغرب »."
+},
+{
+  n: 58,
+  q: "Quelle règle pratique ressort de ce hadith ?",
+  options: [
+    "La prière obligatoire manquée se rattrape même dans un temps où la nafl est interdite",
+    "Le ʿaṣr ne se rattrape jamais",
+    "Le maghrib doit toujours être retardé après minuit",
+    "L’ordre entre les prières n’a aucune importance"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le hadith montre le rattrapage du ʿaṣr après le coucher, avant le maghrib."
+},
+
+/* ----------------- HADITH 59 : « Vingt-sept degrés » ----------------- */
+
+{
+  n: 59,
+  q: "De combien de degrés la prière en groupe dépasse-t-elle la prière individuelle dans le hadith 59 ?",
+  options: [
+    "Vingt-sept degrés",
+    "Dix degrés",
+    "Sept degrés",
+    "Cent degrés"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le hadith dit : « بسبع وعشرين درجة »."
+},
+{
+  n: 59,
+  q: "Que signifie « صلاة الفذ » selon l’explication du PDF ?",
+  options: [
+    "La prière de la personne seule",
+    "La prière du vendredi",
+    "La prière du voyageur",
+    "La prière funéraire"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le PDF explique : « الفذ » signifie l’individu seul."
+},
+{
+  n: 59,
+  q: "Qui rapporte le hadith 59 ?",
+  options: [
+    "ʿAbd Allāh ibn ʿUmar",
+    "Abū Hurayra",
+    "Abū Saʿīd",
+    "ʿĀʾisha"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le hadith commence par : « عن عبد الله بن عمر »."
+},
+{
+  n: 59,
+  q: "Quelle idée principale ce hadith établit-il ?",
+  options: [
+    "Le grand mérite de la prière en groupe",
+    "L’interdiction de prier à la mosquée",
+    "La suppression des prières obligatoires",
+    "L’obligation de manger avant chaque prière"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le hadith compare explicitement la prière en groupe à celle de la personne seule."
+},
+
+/* ----------------- HADITH 60 : « Les pas vers la mosquée » ----------------- */
+
+{
+  n: 60,
+  q: "Selon le hadith 60, que reçoit celui qui marche vers la mosquée pour la prière ?",
+  options: [
+    "Un degré élevé et une faute effacée à chaque pas",
+    "Une exemption de prière",
+    "Une obligation de refaire ses ablutions",
+    "Une récompense uniquement s’il court"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le hadith dit qu’à chaque pas un degré est élevé et une faute est effacée."
+},
+{
+  n: 60,
+  q: "Quelle condition est mentionnée concernant la sortie vers la mosquée ?",
+  options: [
+    "Ne sortir que pour la prière",
+    "Sortir pour le commerce",
+    "Sortir sans ablutions",
+    "Sortir uniquement la nuit"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le hadith précise : « لا يخرجه إلا الصلاة »."
+},
+{
+  n: 60,
+  q: "Que font les anges pour celui qui reste à son lieu de prière ?",
+  options: [
+    "Ils invoquent pour lui",
+    "Ils lui ordonnent de partir",
+    "Ils annulent sa prière",
+    "Ils lui interdisent la mosquée"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le hadith dit : « اللهم صل عليه، اللهم ارحمه »."
+},
+{
+  n: 60,
+  q: "Tant qu’il attend la prière, le fidèle est considéré comme étant :",
+  options: [
+    "En prière",
+    "En voyage",
+    "En sommeil",
+    "En jeûne obligatoire"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le hadith dit : « ولا يزال في صلاة ما انتظر الصلاة »."
+},
+
+/* ----------------- HADITH 61 : « Fajr et ʿishāʾ lourds aux hypocrites » ----------------- */
+
+{
+  n: 61,
+  q: "Quelles prières sont les plus lourdes aux hypocrites selon le hadith 61 ?",
+  options: [
+    "Le ʿishāʾ et le fajr",
+    "Le ẓuhr et le ʿaṣr",
+    "Le maghrib seulement",
+    "La prière du vendredi uniquement"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le hadith dit : « صلاة العشاء وصلاة الفجر »."
+},
+{
+  n: 61,
+  q: "S’ils connaissaient leur mérite, comment viendraient-ils à ces deux prières ?",
+  options: [
+    "Même en rampant",
+    "Seulement en voyage",
+    "Uniquement après le lever du soleil",
+    "Jamais"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le texte dit : « لأتوهما ولو حبوا »."
+},
+{
+  n: 61,
+  q: "Selon le PDF, quel avis les hanbalites donnent-ils sur la prière en groupe pour les hommes capables ?",
+  options: [
+    "Une obligation individuelle, sans être condition de validité",
+    "Une simple permission sans mérite",
+    "Une interdiction",
+    "Une obligation seulement pour les femmes"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le PDF rapporte que les hanbalites la rendent obligatoire individuellement pour les hommes capables, sans en faire une condition de validité."
+},
+{
+  n: 61,
+  q: "Selon le PDF, quel avis apparent est attribué à al-Shāfiʿī sur la prière en groupe ?",
+  options: [
+    "Une obligation collective",
+    "Une interdiction",
+    "Une condition de validité",
+    "Une obligation uniquement en voyage"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le PDF dit que l’apparence du texte d’al-Shāfiʿī en fait une فرض كفاية."
+},
+
+/* ----------------- HADITH 62 : « Ne pas empêcher les femmes » ----------------- */
+
+{
+  n: 62,
+  q: "Que dit le Prophète ﷺ si une épouse demande la permission d’aller à la mosquée ?",
+  options: [
+    "Qu’on ne l’en empêche pas",
+    "Qu’on l’en empêche toujours",
+    "Qu’elle ne sorte qu’une fois par an",
+    "Que la mosquée lui est interdite"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le hadith dit : « فلا يمنعها »."
+},
+{
+  n: 62,
+  q: "Quelle version de Muslim est citée dans le hadith 62 ?",
+  options: [
+    "N’empêchez pas les servantes d’Allah des mosquées d’Allah",
+    "Ne priez pas après le ʿaṣr",
+    "Commencez par le repas",
+    "La prière en groupe vaut vingt-sept degrés"
+  ],
+  correctIndex: 0,
+  explain:
+    "La version dit : « لا تمنعوا إماء الله مساجد الله »."
+},
+{
+  n: 62,
+  q: "Pourquoi ʿAbd Allāh ibn ʿUmar réprimande-t-il Bilāl ?",
+  options: [
+    "Parce qu’il oppose son avis à une parole du Messager d’Allah ﷺ",
+    "Parce qu’il a oublié ses ablutions",
+    "Parce qu’il a mangé avant la prière",
+    "Parce qu’il a prié seul"
+  ],
+  correctIndex: 0,
+  explain:
+    "Ibn ʿUmar dit en substance : je t’informe du Messager d’Allah ﷺ et tu dis le contraire."
+},
+{
+  n: 62,
+  q: "Quelle condition générale le PDF rappelle-t-il pour la sortie des femmes ?",
+  options: [
+    "Sortir sans parfum, sans parure ostensible et sans mélange avec les hommes",
+    "Sortir avec parfum pour embellir la mosquée",
+    "Sortir uniquement pour le commerce",
+    "Sortir sans demander aucune permission"
+  ],
+  correctIndex: 0,
+  explain:
+    "Le PDF mentionne les restrictions liées au parfum, à la parure, au vêtement de renommée et au mélange avec les hommes."
 }
 
 ];
+
+QUIZ_QUESTIONS_1_15.push(...QUIZ_HADITH_43, ...QUIZ_HADITH_44);
 
 /**
  * Petite fonction utilitaire si tu veux filtrer facilement
